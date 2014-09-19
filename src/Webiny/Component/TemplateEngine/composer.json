@@ -18,10 +18,10 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"webiny/class-loader": "dev-master",
-		"webiny/config": "dev-master",
-		"webiny/std-lib": "dev-master",
-		"webiny/service-manager": "dev-master",
+		"webiny/config": "~1.0",
+		"webiny/std-lib": "~1.0",
+		"webiny/class-loader": "~1.0",
+		"webiny/service-manager": "~1.0",
 		"smarty/smarty": "3.1.*"
 	},
 	"require-dev": {
@@ -34,7 +34,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0.0-RC1"
+			"dev-master": "1.0-dev"
 		}
 	}
 }

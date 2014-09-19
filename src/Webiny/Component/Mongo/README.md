@@ -10,12 +10,11 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/mongo": "dev-master"
+        "webiny/mongo": "1.0.*"
     }
 }
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/mongo).
-Optionally you can add `"minimum-stability": "dev"` flag to your composer.json.
 
 Once you have your `composer.json` file in place, just run the install command.
 
@@ -35,11 +34,8 @@ Mongo:
         Webiny:
             Class: \Webiny\Component\Mongo\Mongo
             Arguments: [127.0.0.1:27017, webiny, null, null, 'MyDatabase_']
-    Bridges:
-        Mongo: \Webiny\Component\Mongo\Bridge\Purekid\Mongodm
-    # You don't need this part if you are using Composer autoload.
-    ClassLoader:
-        Purekid: '/var/www/vendors/Purekid/Mongodm'
+    Driver: \Webiny\Component\Mongo\Driver\Mongo
+
 ```
 
 Constructor arguments are in the following order: `host`, `database`, `username`, `password`, `collectionPrefix`.
@@ -60,7 +56,6 @@ class MyClass {
     }
 }
 ```
-
 
 Resources
 ---------

@@ -18,17 +18,17 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"aws/aws-sdk-php": "2.6.*",
-		"minime/annotations": "~1.13",
-		"jamm/memory": "@dev",
 		"symfony/yaml": "2.5.*",
-		"imagine/imagine": "0.6.*",
-		"swiftmailer/swiftmailer": "5.2.*",
-		"adoy/oauth2": "dev-master",
 		"smarty/smarty": "3.1.*",
-		"webiny/php-crypt-lib": "dev-master",
-		"webiny/abraham-twitteroauth": "dev-dev",
-		"psr/log": "1.0.*@dev"
+		"aws/aws-sdk-php": "2.6.*",
+		"imagine/imagine": "0.6.*",
+		"minime/annotations": "~1.13",
+		"swiftmailer/swiftmailer": "5.2.*",
+		"webiny/forked-jamm-memory": "~1.0",
+		"webiny/forked-adoy-php-oauth2": "~1.0",
+		"webiny/forked-abraham-twitteroauth": "~1.0",
+		"webiny/forked-ircmaxell-php-crypt-lib": "~1.0",
+		"psr/log": "~1.0"
 	},
 	"replace": {
 		"webiny/amazon": "self.version",
@@ -64,7 +64,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0.0-RC1"
+			"dev-master": "1.0-dev"
 		}
 	}
 }

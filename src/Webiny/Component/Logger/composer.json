@@ -18,10 +18,10 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"webiny/class-loader": "dev-master",
-		"webiny/std-lib": "dev-master",
-		"webiny/config": "dev-master",
-		"psr/log": "1.0.*@dev"
+		"webiny/config": "~1.0",
+		"webiny/std-lib": "~1.0",
+		"webiny/class-loader": "~1.0",
+		"psr/log": "~1.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.1.*"
@@ -33,7 +33,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0.0-RC1"
+			"dev-master": "1.0-dev"
 		}
 	}
 }

@@ -3,6 +3,27 @@ Webiny Framework
 
 This is a set of components for building PHP applications. Each of the component has its own documentation with usage examples and examples of configuration.
 
+Install the framework
+---------------------
+The best way to install the framework is using Composer.
+
+```json
+{
+    "require": {
+        "webiny/framework": "1.0.*"
+    }
+}
+```
+For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/framework).
+
+Once you have your `composer.json` file in place, just run the install command.
+
+    $ php composer.phar install
+
+To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
+
+Alternatively, you can also do a `git checkout` of the repo.
+
 ## Requirements
 
 Webiny Framework requires PHP 5.4 or later, PHP 5.5 is recommended.
@@ -97,24 +118,3 @@ This is the list of currently available components:
 ## Unit testing
 All of the components feature unit tests, but some cover more code, while others cover only a small portion. We intend to change that over time and to have as much as possible of our code covered by unit tests.
 
- Install the component
- ---------------------
- The best way to install the component is using Composer.
-
- ```json
- {
-     "require": {
-         "webiny/framework": "1.0.*"
-     }
- }
- ```
- For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/framework).
- Optionally you can add `"minimum-stability": "dev"` flag to your composer.json.
-
- Once you have your `composer.json` file in place, just run the install command.
-
-     $ php composer.phar install
-
- To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
- Alternatively, you can also do a `git checkout` of the repo.

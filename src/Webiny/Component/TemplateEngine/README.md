@@ -10,12 +10,11 @@ The best way to install the component is using Composer.
 ```json
 {
  "require": {
-     "webiny/template-engine": "dev-master"
+     "webiny/template-engine": "1.0.*"
  }
 }
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/template-engine).
-Optionally you can add `"minimum-stability": "dev"` flag to your composer.json.
 
 Once you have your `composer.json` file in place, just run the install command.
 

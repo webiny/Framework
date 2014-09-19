@@ -18,7 +18,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"webiny/config": "dev-master"
+		"webiny/config": "~1.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.1.*"
@@ -30,7 +30,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0.0-RC1"
+			"dev-master": "1.0-dev"
 		}
 	}
 }

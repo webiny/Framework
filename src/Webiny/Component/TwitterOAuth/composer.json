@@ -18,10 +18,10 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"webiny/class-loader": "dev-master",
-		"webiny/std-lib": "dev-master",
-		"webiny/http": "dev-master",
-		"webiny/abraham-twitteroauth": "dev-dev"
+		"webiny/class-loader": "~1.0",
+		"webiny/std-lib": "~1.0",
+		"webiny/http": "~1.0",
+		"webiny/forked-abraham-twitteroauth": "~1.0"
 	},
 	"suggest":{
 		"webiny/oauth2": "Use Webiny OAuth2 component for OAuth2 protocol"
@@ -36,7 +36,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0.0-RC1"
+			"dev-master": "1.0-dev"
 		}
 	}
 }
