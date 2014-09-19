@@ -1,0 +1,10 @@
+#################################
+# Image - example configuration #
+#################################
+
+# These are example definition of Image component.
+# In order to use the component, you first must call Image::setConfig($pathToYourConfig).
+Image:
+    Library: gd
+    Quality: 90
+    Bridge: \Webiny\Component\Image\Bridge\Imagine\Imagine

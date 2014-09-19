@@ -1,0 +1,37 @@
+#################################
+# Logger - example configuration #
+#################################
+
+# This is an example definition of Logger service.
+# In order to use Logger, you first must call Logger::setConfig($pathToYourConfig),
+# and then just use the LoggerTrait (eg. $this->logger('Webiny'))
+#
+#
+Logger:
+    Parameters:
+        Logger.Class: \Webiny\Component\Logger\Logger
+        Logger.Driver.Class: \Webiny\Component\Logger\Driver\Webiny
+        Logger.Processor.FileLine.Class: \Webiny\Component\Logger\Driver\Webiny\Processor\FileLineProcessor
+        Logger.Processor.MemoryUsage.Class: \Webiny\Component\Logger\Driver\Webiny\Processor\MemoryUsageProcessor
+        Logger.Formatter.File.Class: \Webiny\Component\Logger\Driver\Webiny\Formatter\FileFormatter
+        Logger.Handlers.File.Class: \Webiny\Component\Logger\Driver\Webiny\Handler\FileHandler
+        Logger.LogFile: /var/www/projects/webiny/Vendors/Webiny/Component/Logger/Tests/UnitTest.log
+    Services:
+        Webiny:
+            Class: %Logger.Class%
+            Arguments: [System, %Logger.Driver.Class%]
+            Calls:
+                - [addHandler, [@Logger.LogHandler]]
+        LogHandler:
+            Class: %Logger.Handlers.File.Class%
+            Arguments: [%Logger.LogFile%, [], true, false]
+            Calls:
+                - [addProcessor, [%Logger.Processor.FileLine.Class%]]
+                - [addProcessor, [%Logger.Processor.MemoryUsage.Class%]]
+                - [setFormatter, [%Logger.Formatter.File.Class%]]
+    Configs:
+        Formatter:
+            Default:
+                DateFormat: 'H:i:s d-m-Y'
+            File:
+                RecordFormat: '%datetime% [%loggerName%] [%level%]: %message%\nContext: %context%\nExtra: %extra%\n\n'

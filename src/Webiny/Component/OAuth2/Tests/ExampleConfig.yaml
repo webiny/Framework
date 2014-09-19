@@ -1,0 +1,19 @@
+#################################
+# OAuth2 - example configuration #
+#################################
+
+# These are example definition of OAuth2 component.
+# In order to use the component, you first must call OAuth2::setConfig($pathToYourConfig).
+OAuth2:
+    Facebook:
+        Server: \Webiny\Component\OAuth2\Server\Facebook
+        ClientId: 123
+        ClientSecret: secret
+        Scope: email
+        RedirectUri: /security/login-fb/
+    GPlus:
+        ClientId: 123.apps.googleusercontent.com
+        ClientSecret: secret_gp
+        Scope: openid%20profile%20email
+        RedirectUri: /security/login-gp/
+    Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2

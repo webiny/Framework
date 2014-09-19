@@ -1,0 +1,38 @@
+#################################
+# Mailer - example configuration #
+#################################
+
+# These are example definition of Mailer component.
+# In order to use the component, you first must call Mailer::setConfig($pathToYourConfig).
+Mailer:
+    Default:
+        Sender:
+            Email: nikola@tesla.com
+            Name: Nikola Tesla
+        Transport:
+            Type: mail
+        AntiFlood:
+            Threshold: 99
+            Sleep: 1
+        DisableDelivery: false
+    Gmail:
+        Sender:
+            Email: 'larry@gmail.com'
+            Name: 'Larry P.'
+        Transport:
+            Type: smtp
+            Host: smtp.gmail.com
+            Port: 465
+            Username: larry@gmail.com
+            Password: iRuleGoogle
+            Encryption: ssl
+            AuthMode: login
+    # You can overwrite the default driver by providing your own.
+    # How to create a new driver, read in the Readme.md file.
+    # If you don't wish to change the default driver,
+    # just ommit this definition in your config file.
+    Bridge: \Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer
+    # Entries under ClassLoader are automatically registered
+    # with ClassLoader. You don't need this part if you are using Composer autoload.
+    ClassLoader:
+        Swift_: /var/Vendors/SwiftMailer/lib/classes

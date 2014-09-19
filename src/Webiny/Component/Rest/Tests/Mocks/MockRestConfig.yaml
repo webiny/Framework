@@ -1,0 +1,6 @@
+Rest:
+    ExampleApi:
+        CompilePath: /var/www/projects/webiny/Vendors/Webiny/Component/Rest/Tests/TempCache
+    CacheTest:
+        CompilePath: /var/www/projects/webiny/Vendors/Webiny/Component/Rest/Tests/TempCache
+        Cache: TestCache

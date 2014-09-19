@@ -1,0 +1,39 @@
+##########################################
+# TemplateEngine - example configuration #
+##########################################
+
+# These are example definition of Security component.
+# In order to use the component, you first must call Security::setConfig($pathToYourConfig).
+Security:
+    Tokens:
+        MockToken:
+            Driver: '\Webiny\Component\Security\Tests\Mocks\TokenCryptDriverMock'
+            SecurityKey: $3cR3tK3y # secret key that will be used to encrypt the token data
+    Encoders:
+        MockEncoder:
+            Driver: '\Webiny\Component\Security\Tests\Mocks\EncoderMock'
+    UserProviders:
+        MockProvider:
+            Driver: 'Webiny\Component\Security\Tests\Mocks\UserProviderMock'
+    AuthenticationProviders:
+        MockProvider:
+            Driver: 'Webiny\Component\Security\Tests\Mocks\AuthenticationProviderMock'
+    Firewalls:
+        Admin:
+            RealmName: Administration
+            Anonymous: true
+            RememberMe: false
+            Encoder: MockEncoder # what encoder to use to hash and validate user passwords
+            Token: MockToken # what token crypt to use to store user login session and cookie data
+            UserProviders: [MockProvider] # what providers to use to get the user accound
+            AuthenticationProviders: [MockProvider] # what providers to use for authentication
+            AccessControl:
+                Rules:
+                    - {Path: '/^\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9]{13}$/', Roles: ROLE_MOCK}
+                    - {Path: '/^\/about/', Roles: ROLE_GOD}
+                    - {Path: '/^\/statistics/', Roles: ROLE_GOD}
+                    - {Path: '/^\/allowed/', Roles: ROLE_MOCK}
+                DecisionStrategy: affirmative
+            RoleHierarchy:
+                ROLE_USER: ROLE_EDITOR
+                ROLE_ADMIN: ROLE_USER

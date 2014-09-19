@@ -1,0 +1,8 @@
+Crypt:
+    Services:
+        Password:
+            Class: \Webiny\Component\Crypt\Crypt
+            Arguments: [Blowfish, CCM, rijndael-128, _FOO_VECTOR]
+        Cookie:
+            Class: \Webiny\Component\Crypt\Crypt
+            Arguments: [Blowfish, CCM, rijndael-128, _FOO_VECTOR]

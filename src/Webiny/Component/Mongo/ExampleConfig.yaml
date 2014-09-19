@@ -1,0 +1,17 @@
+#################################
+# Mongo - example configuration #
+#################################
+
+# This is an example definition of Mongo service.
+# In order to use Mongo, you first must call Mongo::setConfig($pathToYourConfig),
+# and then just use the MongoTrait (eg. $this->mongo('Webiny'))
+#
+# Mongo constructor parameters are: host, database, username, password, collectionPrefix
+#
+# Collection prefix will be automatically prepended to all queries for you
+Mongo:
+    Services:
+        Webiny:
+            Class: \Webiny\Component\Mongo\Mongo
+            Arguments: [127.0.0.1:27017, webiny, null, null, '']
+    Driver: \Webiny\Component\Mongo\Driver\Mongo

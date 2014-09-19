@@ -1,0 +1,28 @@
+################################
+# Http - example configuration #
+################################
+
+# These are example definition of Http component.
+# In order to use the component, you first must call Http::setConfig($pathToYourConfig)
+# to register your configuration.
+Http:
+    Session:
+        Storage:
+            Driver: '\Webiny\Component\Http\Session\Storage\NativeStorage'
+            Params:
+                Cache: 'TestCache'
+            Prefix: 'wfs_'
+            ExpireTime: 86400
+    TrustedProxies: ['127.0.0.1']
+    TrustedHeaders:
+        # note the case, they must be matched to request headers
+        client_ip: 'X_FORWARDED_FOR'
+        client_host: 'X_FORWARDED_HOST'
+        client_proto: 'X_FORWARDED_PROTO'
+        client_port: 'X_FORWARDED_PORT'
+    Cookie:
+        Storage:
+            Driver: '\Webiny\Component\Http\Cookie\Storage\NativeStorage'
+        Prefix: 'wfc_'
+        HttpOnly: 'true'
+        ExpireTime: 86400

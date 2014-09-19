@@ -1,0 +1,43 @@
+{
+	"name": "webiny/oauth2",
+	"type": "library",
+	"description": "Webiny OAuth2 Component",
+	"keywords": ["oauth2", "facebook oauth2", "google oauth2"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0",
+		"webiny/class-loader": "dev-master",
+		"webiny/config": "dev-master",
+		"webiny/http": "dev-master",
+		"webiny/std-lib": "dev-master",
+		"adoy/oauth2": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*"
+	},
+	"suggest":{
+		"webiny/twitter-oauth": "Use Webiny TwitterOAuth component for OAuth v1.1."
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\OAuth2\\": ""
+		}
+	},
+	"extras": {
+		"branch-alias": {
+			"dev-master": "1.0.0-RC1"
+		}
+	}
+}

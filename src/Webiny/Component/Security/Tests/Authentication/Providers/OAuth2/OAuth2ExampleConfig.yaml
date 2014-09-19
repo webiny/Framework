@@ -1,0 +1,10 @@
+OAuth2:
+    Facebook:
+        Server: \Webiny\Component\OAuth2\Server\Facebook
+        ClientId: 123
+        ClientSecret: secret
+        Scope: email
+        RedirectUri: http://www.webiny.com/security/login-fb/
+    Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2
+    ClassLoader:
+        OAuth2: /var/www/projects/webiny/Vendors/OAuth2

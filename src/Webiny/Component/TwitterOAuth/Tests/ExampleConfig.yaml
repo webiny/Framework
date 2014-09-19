@@ -1,0 +1,16 @@
+########################################
+# TwitterOAuth - example configuration #
+########################################
+
+# These are example definition of TwitterOAuth component.
+# In order to use the component, you first must call TwitterOAuth::setConfig($pathToYourConfig).
+TwitterOAuth:
+    MyTwitterApp:
+        ClientId: cId
+        ClientSecret: cSecret
+        RedirectUri: /security/login-tw/
+    # You can overwrite the default driver by providing your own.
+    # How to create a new driver, read in the Readme.md file.
+    # If you don't wish to change the default driver,
+    # just ommit this definition in your config file.
+    Bridge: \Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth\TwitterOAuth

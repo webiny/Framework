@@ -1,0 +1,32 @@
+#################################
+# Router - example configuration #
+#################################
+
+# These are example definition of Router component.
+# In order to use the component, you first must call Router::setConfig($pathToYourConfig).
+Router:
+    Routes:
+        Routes:
+            BlogTag:
+                Path: blog/tag/{tag}
+                Callback: MyApp\Blog\showTag
+            BlogPost:
+                Path: blog/post/{slug}/{id}
+                Callback: MyApp\Blog\showPost
+                Options:
+                    slug:
+                        Pattern: .*?
+            BlogAuthor:
+                Path: blog/authors/{author}
+                Callback: MyApp\Blog\showAuthorPosts
+                Options:
+                    author:
+                        Default: webiny
+            # Make sure that a route that can match multiple patterns is at the end of the config, or else a wrong
+            # route can be matched.
+            Blog:
+                Path: blog
+                Callback: MyApp\Blog\index
+    # Name of the cache service that router will use to cache stuff.
+    # It's not required, but will make things run faster.
+    Cache: TestCache

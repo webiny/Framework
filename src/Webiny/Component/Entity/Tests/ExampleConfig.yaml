@@ -1,0 +1,9 @@
+#################################
+# Entity - example configuration #
+#################################
+
+# This is an example configuration of Entity component
+# The only thing there is to configure is the database service Entity component will use for storing data
+# Entity depends on Mongo component so here we specify Mongo service name, in our case Webiny (default Mongo service name)
+Entity:
+    Database: Webiny

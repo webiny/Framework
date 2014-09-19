@@ -1,0 +1,41 @@
+{
+	"name": "webiny/storage",
+	"type": "library",
+	"description": "Webiny Storage Component",
+	"keywords": ["storage", "amazon s3", "local file storage"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0",
+		"webiny/class-loader": "dev-master",
+		"webiny/std-lib": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*",
+		"webiny/amazon": "dev-master"
+	},
+	"suggest":{
+		"webiny/amazon": "Allows you to store files on Amazon AWS S3"
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\Storage\\": ""
+		}
+	},
+	"extras": {
+		"branch-alias": {
+			"dev-master": "1.0.0-RC1"
+		}
+	}
+}

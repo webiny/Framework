@@ -1,0 +1,10 @@
+##################################
+# Amazon - example configuration #
+##################################
+
+# Amazon component configuraition just requires the registraion of dependant libraries with ClassLoader.
+# If you use Composer, then you don't need to register the libraries with ClassLoader.
+Amazon:
+    ClassLoader:
+        Aws: /var/www/Vendors/Aws
+        Guzzle: /var/www/Vendors/Guzzle

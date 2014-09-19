@@ -1,0 +1,31 @@
+#################################
+# Cache - example configuration #
+#################################
+
+# These are example definition of Cache services.
+# In order to use them, you first must call Cache::setConfig($pathToYourConfig),
+# and then just use the CacheTrait (eg. $this->cache('TestCache'))
+# If you don't want to use the cache as a service, you can always just
+# call the static methods on the Cache class.
+Cache:
+    Services:
+        TestCache:
+            Factory: \Webiny\Component\Cache\Cache
+            Method: Apc
+        SomeOtherCache:
+            Factory: \Webiny\Component\Cache\Cache
+            Method: Memcache
+            MethodArguments: [127.0.0.1, 11211, []]
+    # You can overwrite the default driver by providing your own.
+    # How to create a new driver, read in the Readme.md file.
+    # If you don't wish to change the default driver,
+    # just ommit this definition in your config file.
+    Bridges:
+        Apc: \Webiny\Component\Cache\Bridge\Memory\APC
+        Couchbase: \Webiny\Component\Cache\Bridge\Memory\Couchbase
+        Memcache: \Webiny\Component\Cache\Bridge\Memory\Memcache
+        Redis: \Webiny\Component\Cache\Bridge\Memory\Redis
+    # Entries under ClassLoader are automatically registered
+    # with ClassLoader. You don't need this part if you are using Composer autoload.
+    ClassLoader:
+        Jamm\Memory: /var/www/Vendors/Memory

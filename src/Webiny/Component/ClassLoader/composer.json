@@ -1,0 +1,36 @@
+{
+	"name": "webiny/class-loader",
+	"type": "library",
+	"description": "Webiny Class Loader Component",
+	"keywords": ["class loader", "autoloader", "psr-0", "psr-4"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*",
+		"webiny/cache": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\ClassLoader\\": ""
+		}
+	},
+	"extras": {
+		"branch-alias": {
+			"dev-master": "1.0.0-RC1"
+		}
+	}
+}

@@ -1,0 +1,5 @@
+DemoComponent:
+    Services:
+        PluginMock:
+            Class: \Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\DemoComponentExtension
+            Tags: [Smarty.Extension]

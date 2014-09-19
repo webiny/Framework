@@ -1,0 +1,23 @@
+#################################
+# Cache - example configuration #
+#################################
+
+# These are example definition of Cache services.
+# In order to use them, you first must call Cache::setConfig($pathToYourConfig),
+# and then just use the CacheTrait (eg. $this->cache('TestCache'))
+# If you don't want to use the cache as a service, you can always just
+# call the static methods on the Cache class.
+Cache:
+    Services:
+        TestCache:
+            Factory: \Webiny\Component\Cache\Cache
+            Method: Apc
+        SomeOtherCache:
+            Factory: \Webiny\Component\Cache\Cache
+            Method: Memcache
+            MethodArguments: [192.168.58.20, 11211, []]
+    Bridges:
+        Apc: \Webiny\Component\Cache\Bridge\Memory\APC
+        Couchbase: \Webiny\Component\Cache\Bridge\Memory\Couchbase
+        Memcache: \Webiny\Component\Cache\Bridge\Memory\Memcache
+        Redis: \Webiny\Component\Cache\Bridge\Memory\Redis

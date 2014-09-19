@@ -1,0 +1,39 @@
+{
+	"name": "webiny/entity",
+	"type": "library",
+	"description": "Webiny Entity Component",
+	"keywords": ["entity", "orm", "mongodb"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0",
+		"webiny/config": "dev-master",
+		"webiny/class-loader": "dev-master",
+		"webiny/std-lib": "dev-master",
+		"webiny/mongo": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\Entity\\": ""
+		}
+	},
+	"extras": {
+		"branch-alias": {
+			"dev-master": "1.0.0-RC1"
+		}
+	}
+}

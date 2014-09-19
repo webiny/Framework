@@ -1,0 +1,40 @@
+{
+	"name": "webiny/router",
+	"type": "library",
+	"description": "Webiny Router Component",
+	"keywords": ["router", "routing"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.0",
+		"webiny/std-lib": "dev-master",
+		"webiny/cache": "dev-master",
+		"webiny/config": "dev-master",
+		"webiny/http": "dev-master",
+		"webiny/service-manager": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\Router\\": ""
+		}
+	},
+	"extras": {
+		"branch-alias": {
+			"dev-master": "1.0.0-RC1"
+		}
+	}
+}

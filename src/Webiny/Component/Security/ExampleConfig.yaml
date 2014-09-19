@@ -1,0 +1,56 @@
+##########################################
+# TemplateEngine - example configuration #
+##########################################
+
+# These are example definition of Security component.
+# In order to use the component, you first must call Security::setConfig($pathToYourConfig).
+Security:
+    Tokens:
+        SomeTokenName:
+            Driver: '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt'
+            Params: [Cookie]
+            SecurityKey: $3cR3tK3y_654321 # secret key that will be used to encrypt the token data
+    Encoders:
+        CryptEncoder:
+            Driver: '\Webiny\Component\Security\Encoder\Drivers\Crypt'
+            Params: [Password]
+            Salt: 'CHANGE THIS SECRET' # must be 8, 16, 32 or 64 characters
+    UserProviders:
+        SomeOAuth2Provider:
+            Driver: '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2'
+        TwitterOAuthProvider:
+            Driver: '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
+        SomeBuiltInMemoryProvider:
+            john: {password: secret, roles: 'ROLE_USER'}
+            admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
+    AuthenticationProviders:
+        Http:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
+        Facebook:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2'
+            Params:
+                Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+        TwitterOAuth:
+            Driver: \Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
+            Params:
+                Server: MyTwitterApp # which twitter app to use (must be registered by TwitterOAuth component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+    Firewalls:
+        Admin:
+            RealmName: Administration
+            Anonymous: true
+            RememberMe: true
+            Token: SomeTokenName
+            Encoder: MockEncoder
+            UserProviders: [MockProvider]
+            AuthenticationProviders: ['Http', 'Facebook']
+            AccessControl:
+                Rules:
+                    - {Path: '/^\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9]{13}$/', Roles: ROLE_ANONYMOUS}
+                    - {Path: '/^\/about/', Roles: ROLE_ANONYMOUS}
+                    - {Path: '/^\/statistics/', Roles: ROLE_ANONYMOUS}
+                DecisionStrategy: affirmative
+            RoleHierarchy:
+                ROLE_USER: ROLE_EDITOR
+                ROLE_ADMIN: ROLE_USER

@@ -1,0 +1,28 @@
+#################################
+# OAuth2 - example configuration #
+#################################
+
+# These are example definition of OAuth2 component.
+# In order to use the component, you first must call OAuth2::setConfig($pathToYourConfig).
+OAuth2:
+    Facebook:
+        Server: \Webiny\Component\OAuth2\Server\Facebook
+        ClientId: 123
+        ClientSecret: secret
+        Scope: email
+        RedirectUri: /security/login-fb/
+    GPlus:
+        Server: \Webiny\Component\OAuth2\Server\Google
+        ClientId: 123.apps.googleusercontent.com
+        ClientSecret: secret_gp
+        Scope: openid%20profile%20email
+        RedirectUri: /security/login-gp/
+    # You can overwrite the default driver by providing your own.
+    # How to create a new driver, read in the Readme.md file.
+    # If you don't wish to change the default driver,
+    # just ommit this definition in your config file.
+    Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2
+    # Entries under ClassLoader are automatically registered
+    # with ClassLoader. You don't need this part if you are using Composer autoload.
+    ClassLoader:
+        OAuth2: /var/www/Vendors/OAuth2

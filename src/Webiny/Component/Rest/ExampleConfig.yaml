@@ -1,0 +1,19 @@
+################################
+# REST - example configuration #
+################################
+
+# These are example definition of REST component.
+# In order to use the component, you first must call Rest::setConfig($pathToYourConfig).
+Rest:
+    ExampleApi:
+        CompilePath: /var/tmp
+    SomeOtherApi:
+        Cache: someCacheService
+        Security:
+            Role: ROLE_SECRET
+            Firewall: Admin
+        RateControl:
+            Limit: 60
+            Interval: 1 # in minutes
+            Penalty: 10 # in minutes
+        Environment: production

@@ -1,0 +1,30 @@
+#################################
+# Mailer - example configuration #
+#################################
+
+# These are example definition of Mailer component.
+# In order to use the component, you first must call Mailer::setConfig($pathToYourConfig).
+Mailer:
+    Default:
+        Sender:
+            Email: nikola@tesla.com
+            Name: Nikola Tesla
+        Transport:
+            Type: mail
+        AntiFlood:
+            Threshold: 99
+            Sleep: 1
+        DisableDelivery: false
+    Gmail:
+        Sender:
+            Email: 'larry@gmail.com'
+            Name: 'Larry P.'
+        Transport:
+            Type: smtp
+            Host: smtp.gmail.com
+            Port: 465
+            Username: larry@gmail.com
+            Password: iRuleGoogle
+            Encryption: ssl
+            AuthMode: login
+    Bridge: \Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer

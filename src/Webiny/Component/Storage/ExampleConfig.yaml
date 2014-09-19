@@ -1,0 +1,34 @@
+#################################
+# Storage - example configuration #
+#################################
+
+# These are example definition of Storage services.
+# In order to use them, you first must call Storage::setConfig($pathToYourConfig),
+# and then just use the StorageTrait (eg. $this->storage('LocalStorage'))
+Storage:
+    # You can optionally specify parameters for use in services definitions
+    Parameters:
+        Storage.Class: \Webiny\Component\Storage\Storage
+        Storage.S3DriverArgs:
+            - AAAAAA
+            - /FOO
+            - foo # Bucket name
+            - false # DateFolderStructure
+    Services:
+        CloudStorage:
+            Class: %Storage.Class%
+            Arguments:
+                Driver:
+                    Object: \Webiny\Component\Storage\Driver\AmazonS3\AmazonS3
+                    ObjectArguments: %Storage.S3DriverArgs%
+            Tags: [cloud]
+        LocalStorage:
+            Class: %Storage.Class%
+            Arguments:
+                Driver:
+                    Object: \Webiny\Component\Storage\Driver\Local\Local
+                    ObjectArguments:
+                        - /var/www/projects/webiny/Public/Uploads # Absolute root path
+                        - http://admin.w3.com/Uploads # Web root path
+                        - false # DateFolderStructure
+                        - true # Create folder if it doesn't exist

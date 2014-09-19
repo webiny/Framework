@@ -1,0 +1,6 @@
+#################################
+# Annotations - example configuration #
+#################################
+
+Annotations:
+    Bridge: \Webiny\Component\Annotations\Bridge\Minime\Annotations
