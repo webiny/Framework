@@ -108,7 +108,7 @@ class TwitterOAuth implements TwitterOAuthInterface
     /**
      * Get the \TwitterOAuth instance.
      *
-     * @return null|\TwitterOAuth
+     * @return null|\Abraham\TwitterOAuth\TwitterOAuth
      */
     public function getDriverInstance()
     {
@@ -118,7 +118,7 @@ class TwitterOAuth implements TwitterOAuthInterface
     /**
      * Set \TwitterOAuth instance.
      *
-     * @param \TwitterOAuth $instance
+     * @param \Abraham\TwitterOAuth\TwitterOAuth $instance
      */
     public function setDriverInstance(\Abraham\TwitterOAuth\TwitterOAuth $instance)
     {

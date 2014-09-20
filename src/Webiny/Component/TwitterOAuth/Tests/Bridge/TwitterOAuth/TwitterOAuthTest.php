@@ -49,7 +49,7 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriverInstance(TwitterOAuth $instance)
     {
-        $this->assertInstanceOf('\TwitterOAuth', $instance->getDriverInstance());
+        $this->assertInstanceOf('\Abraham\TwitterOAuth\TwitterOAuth', $instance->getDriverInstance());
     }
 
     /**
