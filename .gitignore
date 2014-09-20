@@ -167,3 +167,7 @@ pip-log.txt
 
 # Webiny
 library/Webiny/webiny.yaml.parsed
+
+# Composer
+composer.lock
+vendor/
