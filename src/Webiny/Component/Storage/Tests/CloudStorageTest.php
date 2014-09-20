@@ -5,7 +5,7 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Cache\Tests;
+namespace Webiny\Component\Storage\Tests;
 
 use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageTrait;

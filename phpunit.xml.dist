@@ -18,7 +18,28 @@
     </php>
     <testsuites>
         <testsuite name="Webiny Framework Test Suite">
-            <directory>./src/Webiny/Component/*/Tests</directory>
+            <directory>./src/Webiny/Component/Amazon/Tests</directory>
+            <directory>./src/Webiny/Component/Annotations/Tests</directory>
+            <directory>./src/Webiny/Component/Cache/Tests</directory>
+            <directory>./src/Webiny/Component/ClassLoader/Tests</directory>
+            <directory>./src/Webiny/Component/Config/Tests</directory>
+            <directory>./src/Webiny/Component/Crypt/Tests</directory>
+            <directory>./src/Webiny/Component/Entity/Tests</directory>
+            <directory>./src/Webiny/Component/EventManager/Tests</directory>
+            <directory>./src/Webiny/Component/Http/Tests</directory>
+            <directory>./src/Webiny/Component/Image/Tests</directory>
+            <directory>./src/Webiny/Component/Logger/Tests</directory>
+            <directory>./src/Webiny/Component/Mailer/Tests</directory>
+            <directory>./src/Webiny/Component/Mongo/Tests</directory>
+            <directory>./src/Webiny/Component/OAuth2/Tests</directory>
+            <directory>./src/Webiny/Component/Rest/Tests</directory>
+            <directory>./src/Webiny/Component/Router/Tests</directory>
+            <directory>./src/Webiny/Component/Security/Tests</directory>
+            <directory>./src/Webiny/Component/ServiceManager/Tests</directory>
+            <directory>./src/Webiny/Component/StdLib/Tests</directory>
+            <directory>./src/Webiny/Component/Storage/Tests</directory>
+            <directory>./src/Webiny/Component/TemplateEngine/Tests</directory>
+            <directory>./src/Webiny/Component/TwitterOAuth/Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

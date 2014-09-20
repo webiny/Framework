@@ -36,9 +36,6 @@ class Logger
                     '%Logger.Driver.Class%'
                 ]
             ]
-        ],
-        'ClassLoader' => [
-            'Psr' => '../Psr'
         ]
     ];
 

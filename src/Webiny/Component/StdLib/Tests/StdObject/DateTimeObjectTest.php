@@ -70,7 +70,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
     {
         $dt = new DateTimeObject('14.02.2013');
 
-        $this->assertSame("2013-02-14T00:00:00+01:00", $dt->getDate());
+        $this->assertSame("2013-02-14T00:00:00+00:00", $dt->getDate());
     }
 
     function testGetYear()
@@ -185,14 +185,6 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $dt->sub("5 days");
 
         $this->assertSame('09.02.2013', $dt->format('d.m.Y'));
-    }
-
-    function testOffsetToTimezone()
-    {
-        $dt = new DateTimeObject('14.02.2013 12:00:00');
-        $dt->offsetToTimezone('Europe/London');
-
-        $this->assertSame('11:00:00', $dt->format('H:i:s'));
     }
 
     function testIsLeap()

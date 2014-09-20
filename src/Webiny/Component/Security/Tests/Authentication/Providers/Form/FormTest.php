@@ -10,6 +10,11 @@ namespace Webiny\Component\Security\Tests\Authentication\Providers\Form;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Security\Authentication\Providers\Form\Form;
 
+/**
+ * Class FormTest
+ * @package Webiny\Component\Security\Tests\Authentication\Providers\Form
+ * @runTestsInSeparateProcesses
+ */
 class FormTest extends \PHPUnit_Framework_TestCase
 {
 

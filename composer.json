@@ -23,7 +23,7 @@
 		"aws/aws-sdk-php": "2.6.*",
 		"imagine/imagine": "0.6.*",
 		"minime/annotations": "~1.13",
-		"swiftmailer/swiftmailer": "5.2.*",
+		"swiftmailer/swiftmailer": "5.2.1",
 		"webiny/forked-jamm-memory": "~1.0",
 		"webiny/forked-adoy-php-oauth2": "~1.0",
 		"webiny/forked-abraham-twitteroauth": "~1.0",

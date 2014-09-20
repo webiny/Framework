@@ -118,3 +118,11 @@ This is the list of currently available components:
 ## Unit testing
 All of the components feature unit tests, but some cover more code, while others cover only a small portion. We intend to change that over time and to have as much as possible of our code covered by unit tests.
 
+To run the unit tests, you need to use the following command:
+
+    $ cd path/to/vendor/webiny/framework/
+    $ composer.phar install
+    $ phpunit
+
+Note that some components like, `Amazon`, `Cache`, `Mailer` and `Storage` require that you update their test configuration
+before running the unit tests. Checkout the component readme file for more information.

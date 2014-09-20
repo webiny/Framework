@@ -8,7 +8,6 @@
 namespace Webiny\Component\Image\Bridge\Imagine;
 
 use Imagine\Image\Box;
-use Imagine\Image\Color;
 use Webiny\Component\Image\Bridge\ImageLoaderInterface;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -79,13 +78,16 @@ class Imagine implements ImageLoaderInterface
      *                            - "fff"
      *                            - "ffffff"
      *                            - array(255,255,255)
+     * @param int $alpha Alpha transparency.
      *
      * @return \Webiny\Component\Image\ImageInterface
      */
-    public function create($width, $height, $bgColor = null)
+    public function create($width, $height, $bgColor = null, $alpha = 100)
     {
         $size = new Box($width, $height);
-        $color = new Color($bgColor);
+        $palette = new \Imagine\Image\Palette\RGB();
+        $color = $palette->color($bgColor, $alpha);
+
 
         return new Image($this->_instance->create($size, $color));
     }

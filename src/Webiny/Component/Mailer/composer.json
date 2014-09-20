@@ -21,7 +21,7 @@
 		"webiny/config": "~1.0",
 		"webiny/std-lib": "~1.0",
 		"webiny/class-loader": "~1.0",
-		"swiftmailer/swiftmailer": "5.2.*"
+		"swiftmailer/swiftmailer": "5.2.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.1.*"

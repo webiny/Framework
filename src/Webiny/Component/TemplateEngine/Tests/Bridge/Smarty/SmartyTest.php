@@ -14,6 +14,11 @@ use Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\DemoComponent;
 use Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\DemoComponentPlugin;
 use Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\PluginMock;
 
+/**
+ * Class SmartyTest
+ * @package Webiny\Component\TemplateEngine\Tests\Bridge\Smarty
+ * @runTestsInSeparateProcesses
+ */
 class SmartyTest extends \PHPUnit_Framework_TestCase
 {
 

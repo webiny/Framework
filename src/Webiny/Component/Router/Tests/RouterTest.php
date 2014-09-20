@@ -12,6 +12,11 @@ use Webiny\Component\Cache\Cache;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Router\Router;
 
+/**
+ * Class RouterTest
+ * @package Webiny\Component\Router\Tests
+ * @runTestsInSeparateProcesses
+ */
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
 
