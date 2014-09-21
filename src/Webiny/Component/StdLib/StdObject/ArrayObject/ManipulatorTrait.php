@@ -290,7 +290,7 @@ trait ManipulatorTrait
     }
 
     /**
-     * Use current array as keys and will them with $value.
+     * Use current array as keys and fill them with $value.
      * @link http://php.net/manual/en/function.array-fill-keys.php
      *
      * @param mixed $value Value to use for filling.
