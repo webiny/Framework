@@ -21,7 +21,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\ValidatorTrait;
  *
  * @package         Webiny\Component\StdLib\StdObject\StringObject
  */
-class StringObject extends StdObjectAbstract
+class StringObject extends StdObjectAbstract implements \ArrayAccess
 {
     use ManipulatorTrait, ValidatorTrait;
 
@@ -47,15 +47,15 @@ class StringObject extends StdObjectAbstract
      */
     public function __construct($value)
     {
-        if (!$this->isString($value) && !$this->isNumber($value)) {
-            if ($this->isInstanceOf($value, $this)) {
+        if(!$this->isString($value) && !$this->isNumber($value)) {
+            if($this->isInstanceOf($value, $this)) {
                 return $value;
             }
 
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$value',
-                    'string'
-                ]
+                                                                                      '$value',
+                                                                                      'string'
+                                                                                  ]
             );
         }
         $this->_value = (string)$value;
@@ -84,7 +84,7 @@ class StringObject extends StdObjectAbstract
      */
     public function wordCount($format = 0)
     {
-        if ($format < 1) {
+        if($format < 1) {
             return str_word_count($this->val(), $format);
         } else {
             return new ArrayObject(str_word_count($this->val(), $format));
@@ -114,10 +114,80 @@ class StringObject extends StdObjectAbstract
      */
     public function subStringCount($string, $offset = 0, $length = null)
     {
-        if ($this->isNull($length)) {
+        if($this->isNull($length)) {
             $length = $this->length();
         }
 
         return substr_count($this->val(), $string, $offset, $length);
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param mixed $offset <p>
+     *                      An offset to check for.
+     *                      </p>
+     *
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+        return $this->length() >= $offset;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to retrieve.
+     *                      </p>
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+        return $this->val()[$offset];
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to assign the value to.
+     *                      </p>
+     * @param mixed $value  <p>
+     *                      The value to set.
+     *                      </p>
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->val()[$offset] = $value;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to unset.
+     *                      </p>
+     *
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        // Do nothing
     }
 }
