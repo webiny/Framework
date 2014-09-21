@@ -49,7 +49,8 @@ class Mongo
     ];
 
     public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '',
-                                $options = []) {
+                                $options = [])
+    {
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Driver\Mongo');
         $this->_driver = new $mongoBridge();
         $this->_driver->connect($host, $database, $user, $password, $options);
@@ -63,7 +64,8 @@ class Mongo
      *
      * @return \MongoId
      */
-    public function id($id) {
+    public function id($id)
+    {
         return new \MongoId($id);
     }
 
@@ -75,17 +77,47 @@ class Mongo
      *
      * @return array
      */
-    public function createIndex($collectionName, IndexInterface $index) {
+    public function createIndex($collectionName, IndexInterface $index)
+    {
         $collectionName = $this->_collectionPrefix . $collectionName;
 
         return $this->_driver->ensureIndex($collectionName, $index->getFields(), $index->getOptions());
     }
 
     /**
+     * Delete indexes
+     *
+     * @param string $collectionName Target collection
+     * @param string $index          Index name to delete
+     *
+     * @return array
+     */
+    public function deleteIndex($collectionName, $index)
+    {
+        $collectionName = $this->_collectionPrefix . $collectionName;
+
+        return $this->_driver->deleteIndex($collectionName, $index);
+    }
+
+    /**
+     * Delete all collection indexes
+     *
+     * @param string $collectionName Target collection
+     *
+     * @return array
+     */
+    public function deleteAllIndexes($collectionName)
+    {
+        return $this->_driver->deleteAllIndexes($this->_collectionPrefix . $collectionName);
+    }
+
+    /**
      * Get collection prefix
+     *
      * @return string
      */
-    public function getCollectionPrefix() {
+    public function getCollectionPrefix()
+    {
         return $this->_collectionPrefix;
     }
 
@@ -96,7 +128,8 @@ class Mongo
      *
      * @return array
      */
-    public function getCollectionNames($includeSystemCollections = false) {
+    public function getCollectionNames($includeSystemCollections = false)
+    {
         return $this->_driver->getCollectionNames($includeSystemCollections);
     }
 
@@ -112,7 +145,8 @@ class Mongo
      *
      * @return array|bool
      */
-    public function insert($collectionName, array $data, $options = []) {
+    public function insert($collectionName, array $data, $options = [])
+    {
         return $this->_driver->insert($this->_collectionPrefix . $collectionName, $data, $options);
     }
 
@@ -129,7 +163,8 @@ class Mongo
      *
      * @return array
      */
-    public function group($collectionName, $keys, array $initial, $reduce, array $condition = []) {
+    public function group($collectionName, $keys, array $initial, $reduce, array $condition = [])
+    {
         return $this->_driver->group($this->_collectionPrefix . $collectionName, $keys, $initial, $reduce, $condition);
     }
 
@@ -152,7 +187,8 @@ class Mongo
      *
      * @return array
      */
-    public function ensureIndex($collectionName, $keys, $options = []) {
+    public function ensureIndex($collectionName, $keys, $options = [])
+    {
         return $this->_driver->ensureIndex($this->_collectionPrefix . $collectionName, $keys, $options);
     }
 
@@ -167,7 +203,8 @@ class Mongo
      *
      * @return mixed
      */
-    public function execute($code, array $args = []) {
+    public function execute($code, array $args = [])
+    {
         return $this->_driver->execute($code, $args);
     }
 
@@ -181,7 +218,8 @@ class Mongo
      *
      * @return MongoCursor
      */
-    public function find($collectionName, array $query = [], array $fields = []) {
+    public function find($collectionName, array $query = [], array $fields = [])
+    {
         /* @var $result \MongoCursor */
         $result = $this->_driver->find($this->_collectionPrefix . $collectionName, $query, $fields);
         if($this->isInstanceOf($result, '\MongoCursor')) {
@@ -201,7 +239,8 @@ class Mongo
      *
      * @return array
      */
-    public function createCollection($name, $capped = false, $size = 0, $max = 0) {
+    public function createCollection($name, $capped = false, $size = 0, $max = 0)
+    {
         $collection = $this->_driver->createCollection($this->_collectionPrefix . $name, $capped, $size, $max);
         if($this->isInstanceOf($collection, '\MongoCollection')) {
             return new MongoCollection($collection);
@@ -227,7 +266,8 @@ class Mongo
      *
      * @return array
      */
-    public function dropCollection($collectionName) {
+    public function dropCollection($collectionName)
+    {
         return $this->_driver->dropCollection($this->_collectionPrefix . $collectionName);
     }
 
@@ -240,7 +280,8 @@ class Mongo
      *
      * @return string|null
      */
-    public function command(array $data) {
+    public function command(array $data)
+    {
         return $this->_driver->command($data);
     }
 
@@ -253,7 +294,8 @@ class Mongo
      *
      * @return array|false
      */
-    public function distinct(array $data) {
+    public function distinct(array $data)
+    {
         return $this->_driver->distinct($data);
     }
 
@@ -267,7 +309,8 @@ class Mongo
      *
      * @return array|null
      */
-    public function findOne($collectionName, array $query = [], array $fields = []) {
+    public function findOne($collectionName, array $query = [], array $fields = [])
+    {
         return $this->_driver->findOne($this->_collectionPrefix . $collectionName, $query, $fields);
     }
 
@@ -279,7 +322,8 @@ class Mongo
      *
      * @return int
      */
-    public function count($collectionName, array $query = []) {
+    public function count($collectionName, array $query = [])
+    {
         return $this->_driver->count($this->_collectionPrefix . $collectionName, $query);
     }
 
@@ -304,7 +348,8 @@ class Mongo
      *
      * @return array
      */
-    public function remove($collectionName, array $criteria, $options = []) {
+    public function remove($collectionName, array $criteria, $options = [])
+    {
         return $this->_driver->remove($this->_collectionPrefix . $collectionName, $criteria, $options);
     }
 
@@ -319,7 +364,8 @@ class Mongo
      *
      * @return array|bool
      */
-    public function save($collectionName, array $data, $options = []) {
+    public function save($collectionName, array $data, $options = [])
+    {
         return $this->_driver->save($this->_collectionPrefix . $collectionName, $data, $options);
     }
 
@@ -334,7 +380,8 @@ class Mongo
      *
      * @return array
      */
-    public function aggregate(array $options) {
+    public function aggregate(array $options)
+    {
         return $this->_driver->aggregate($options);
     }
 
@@ -359,7 +406,8 @@ class Mongo
      *
      * @return array
      */
-    public function update($collectionName, array $criteria, array $newObj, $options = []) {
+    public function update($collectionName, array $criteria, array $newObj, $options = [])
+    {
         return $this->_driver->update($this->_collectionPrefix . $collectionName, $criteria, $newObj, $options);
     }
 }

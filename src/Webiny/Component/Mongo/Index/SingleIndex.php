@@ -9,136 +9,64 @@
 
 namespace Webiny\Component\Mongo\Index;
 
-use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\Mongo\MongoException;
 
 /**
  * Single index
  *
  * @package Webiny\Component\Mongo\Index
  */
-class SingleIndex implements IndexInterface
+class SingleIndex extends IndexAbstract
 {
-    use StdLibTrait;
-
-    private $_name = '';
-    private $_fields = [];
-    private $_sparse = false;
-    private $_unique = false;
-    private $_dropDuplicates = false;
-    private $_ttl = false;
-
     /**
-     * @param string $name
-     * @param array  $fields
-     * @param bool   $sparse
-     * @param bool   $unique
-     * @param bool   $ttl
-     * @param bool   $dropDuplicates
-     */
-    public function __construct($name, array $fields, $sparse = false, $unique = false, $ttl = false,
-                                $dropDuplicates = false) {
-        $this->_name = $name;
-        $this->_fields = $fields;
-        $this->_unique = $unique;
-        $this->_sparse = $sparse;
-        $this->_ttl = $ttl;
-        $this->_dropDuplicates = $dropDuplicates;
-    }
-
-    /**
-     * @param string $name
+     * @param string $name           Index name
+     * @param string $field          Index field, ex: title (ascending), -title (descending)
+     * @param bool   $sparse         Is index sparse?
+     * @param bool   $unique         Is index unique?
+     * @param bool   $dropDuplicates Drop duplicate documents (only if $unique is used)
+     * @param bool   $ttl            Document TTL (will only work for date and datetime fields)
      *
-     * @return $this
+     * @throws \Webiny\Component\Mongo\MongoException
      */
-    public function setName($name) {
-        $this->_name = $name;
+    public function __construct($name, $field, $sparse = false, $unique = false, $dropDuplicates = false, $ttl = false)
+    {
+        $fields = $this->isArray($field) ? $field : [$field];
 
-        return $this;
+        if(count($fields) != 1) {
+            throw new MongoException(MongoException::SINGLE_INDEX_TOO_MANY_FIELDS, [count($field)]);
+        }
+
+        parent::__construct($name, $fields, $sparse, $unique, $dropDuplicates);
     }
 
-    /**
-     * @return string
-     */
-    public function getName() {
-        return $this->_name;
-    }
-
-    /**
-     * @param array $fields
-     *
-     * @return $this
-     */
-    public function setFields($fields) {
-        $this->_fields = $fields;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFields() {
-        return $this->_fields;
-    }
-
-    public function setSparse($flag) {
-        $this->_sparse = $flag;
-
-        return $this;
-    }
-
-    public function getSparse() {
-        return $this->_sparse;
-    }
-
-    /**
-     * @param boolean $dropDuplicates
-     *
-     * @return $this
-     */
-    public function setDropDuplicates($dropDuplicates) {
-        $this->_dropDuplicates = $dropDuplicates;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getDropDuplicates() {
-        return $this->_dropDuplicates;
-    }
-
-    /**
-     * @param boolean $unique
-     *
-     * @return $this
-     */
-    public function setUnique($unique) {
-        $this->_unique = $unique;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getUnique() {
-        return $this->_unique;
-    }
-
-    public function getOptions() {
-        $options = [
-            'name'     => $this->_name,
-            'sparse'   => $this->_sparse,
-            'dropDups' => $this->_dropDuplicates,
-            'unique'   => $this->_unique
-        ];
-
+    public function getOptions()
+    {
+        $options = parent::getOptions();
         if($this->isNumber($this->_ttl)) {
             $options['ttl'] = $this->_ttl;
         }
 
         return $options;
+    }
+
+    /**
+     * Set index field
+     *
+     * @param string|array $field String (ex: -title | title) or array (ex: ['title' => -1])
+     *
+     * @throws \Webiny\Component\Mongo\MongoException
+     * @return $this
+     */
+    public function setFields($field)
+    {
+        if($this->isString($field)) {
+            $field = [$field];
+        }
+
+        if($this->isArray($field) && count($field) != 1) {
+            throw new MongoException(MongoException::SINGLE_INDEX_TOO_MANY_FIELDS, [count($field)]);
+        }
+
+        return parent::setFields($field);
     }
 }

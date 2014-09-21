@@ -16,9 +16,11 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
 class MongoException extends ExceptionAbstract
 {
 
-    const SOME_ERROR = 101;
+    const SINGLE_INDEX_TOO_MANY_FIELDS = 101;
+    const COMPOUND_INDEX_NOT_ENOUGH_FIELDS = 102;
 
     static protected $_messages = [
-        101 => 'Some error occured.'
+        101 => 'SingleIndex can only accept one index field. %s fields given.',
+        102 => 'CompoundIndex must contain at least 2 fields.'
     ];
 }

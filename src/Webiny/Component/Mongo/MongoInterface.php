@@ -72,6 +72,43 @@ interface MongoInterface
     public function ensureIndex($collectionName, $keys, $options = []);
 
     /**
+     * Get reference
+     *
+     * @param array $ref ref
+     *
+     * @return \MongoDBRef
+     */
+    public function getReference(array $ref);
+
+    /**
+     * Get collection indexes
+     *
+     * @param string $collectionName Collection name
+     *
+     * @return array
+     */
+    public function getIndexInfo($collectionName);
+
+    /**
+     * Delete index from given collection
+     *
+     * @param string $collectionName Collection name
+     * @param string $index          Index name
+     *
+     * @return mixed
+     */
+    public function deleteIndex($collectionName, $index);
+
+    /**
+     * Delete all indexes from given collection
+     *
+     * @param string $collectionName Collection name
+     *
+     * @return array
+     */
+    public function deleteAllIndexes($collectionName);
+
+    /**
      * Execute JavaScript code on the database server.<br>
      * Returns result of the evaluation.
      *
