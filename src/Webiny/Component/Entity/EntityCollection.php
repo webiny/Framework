@@ -69,6 +69,27 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Convert EntityCollection to array.<br>
+     * Each EntityAbstract wil be converted to array using $fields and $nestedLevel specified.<br>
+     * If no fields are specified, array will contain all simple and Many2One attributes
+     *
+     * @param string $fields      List of fields to extract
+     *
+     * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
+     *
+     * @return array
+     */
+    public function toArray($fields = '', $nestedLevel = 1)
+    {
+        $data = [];
+        foreach ($this->getIterator() as $entity) {
+            $data[] = $entity->toArray($fields, $nestedLevel);
+        }
+
+        return $data;
+    }
+
+    /**
      * Add item to collection
      *
      * @param EntityAbstract $item
@@ -77,19 +98,19 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function add($item)
     {
-        if (!$this->isArray($item)) {
+        if(!$this->isArray($item)) {
             $item = [$item];
         }
 
         foreach ($item as $addItem) {
-            if (!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
+            if(!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
                 $addItem = call_user_func_array([
                                                     $this->_entityClass,
                                                     'findById'
                                                 ], [$addItem]
                 );
             }
-            if (!$this->contains($addItem)) {
+            if(!$this->contains($addItem)) {
                 $this->_value[] = $addItem;
             }
         }
@@ -112,7 +133,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function totalCount()
     {
-        if (!$this->_count) {
+        if(!$this->_count) {
             $this->_count = Entity::getInstance()->getDatabase()->count($this->_collectionName, $this->_conditions);
         }
 
@@ -129,12 +150,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function contains($item)
     {
-        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
             $item = $item->getId()->getValue();
         }
         foreach ($this->getIterator() as $entity) {
             $eId = $entity->getId()->getValue();
-            if (!$this->isNull($eId) && $eId == $item) {
+            if(!$this->isNull($eId) && $eId == $item) {
                 return true;
             }
         }
@@ -164,12 +185,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function removeItem($item)
     {
-        if ($this->_loaded) {
-            if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if($this->_loaded) {
+            if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
                 $item = $item->getId()->getValue();
             }
             foreach ($this->getIterator() as $index => $entity) {
-                if ($entity->getId()->getValue() == $item) {
+                if($entity->getId()->getValue() == $item) {
                     unset($this->_value[$index]);
 
                     return;
@@ -188,7 +209,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function getIterator()
     {
-        if ($this->_loaded) {
+        if($this->_loaded) {
             return new \ArrayIterator($this->_value);
         }
 
@@ -199,7 +220,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */
-            if ($itemInPool = EntityPool::getInstance()->get($this->_entityClass, $instance->getId()->getValue())) {
+            if($itemInPool = EntityPool::getInstance()->get($this->_entityClass, $instance->getId()->getValue())) {
                 $dbItems[] = $itemInPool;
             } else {
                 $dbItems[] = EntityPool::getInstance()->add($instance);

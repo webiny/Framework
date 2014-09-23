@@ -45,23 +45,24 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function __construct($array = null, $values = null)
     {
-        if (!$this->isArray($array) && !$this->isArrayObject($array)) {
-            if ($this->isNull($array)) {
+        if(!$this->isArray($array) && !$this->isArrayObject($array)) {
+            if($this->isNull($array)) {
                 $this->_value = array();
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$array',
-                        'array, ArrayObject'
-                    ]
+                                                                                          '$array',
+                                                                                          'array, ArrayObject'
+                                                                                      ]
                 );
             }
         } else {
-            if ($this->isInstanceOf($array, $this)) {
+            $array = $this->_objectToArray($array);
+            if($this->isInstanceOf($array, $this)) {
                 $this->val($array->val());
             } else {
-                if ($this->isArray($values)) {
+                if($this->isArray($values)) {
                     // check if both arrays have the same number of values
-                    if (count($array) != count($values)) {
+                    if(count($array) != count($values)) {
                         throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_COMBINE_COUNT);
                     }
                     $this->_value = array_combine($array, $values);
@@ -278,5 +279,23 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
         $this->key($name, $value);
     }
 
+    private function _objectToArray($object)
+    {
+        if(is_object($object)) {
+            // Gets the properties of the given object
+            // with get_object_vars function
+            $object = get_object_vars($object);
+        }
 
+        if(is_array($object)) {
+            foreach ($object as $k => $v) {
+                $object[$k] = $this->_objectToArray($v);
+            }
+
+            return $object;
+        } else {
+            // Return array
+            return $object;
+        }
+    }
 }

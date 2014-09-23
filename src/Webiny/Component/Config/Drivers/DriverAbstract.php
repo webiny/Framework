@@ -50,7 +50,8 @@ abstract class DriverAbstract
      *
      * @param null $resource Resource for driver
      */
-    public function __construct($resource = null) {
+    public function __construct($resource = null)
+    {
         $this->_resource = $this->_normalizeResource($resource);
     }
 
@@ -60,7 +61,8 @@ abstract class DriverAbstract
      * @throws ConfigException
      * @return string Formatted config data
      */
-    final public function getString() {
+    final public function getString()
+    {
         $this->_validateResource();
 
         $res = $this->_getString();
@@ -77,7 +79,8 @@ abstract class DriverAbstract
      * @throws ConfigException
      * @return array Parsed resource data array
      */
-    final public function getArray() {
+    final public function getArray()
+    {
 
         try {
             $this->_validateResource();
@@ -97,7 +100,8 @@ abstract class DriverAbstract
      * Get driver resource
      * @return mixed Driver resource (can be: string, array, StringObject, ArrayObject, FileObject)
      */
-    final public function getResource() {
+    final public function getResource()
+    {
         return $this->_resource;
     }
 
@@ -108,7 +112,8 @@ abstract class DriverAbstract
      *
      * @return $this
      */
-    final public function setResource($resource) {
+    final public function setResource($resource)
+    {
         $this->_resource = $this->_normalizeResource($resource);
 
         return $this;
@@ -123,7 +128,8 @@ abstract class DriverAbstract
      * @throws ConfigException
      * @return $this
      */
-    final public function saveToFile($destination = null) {
+    final public function saveToFile($destination = null)
+    {
 
         if($this->isString($destination) || $this->isStringObject($destination)) {
             $destination = StdObjectWrapper::toString($destination);
@@ -151,7 +157,8 @@ abstract class DriverAbstract
      * Validate given config resource and throw ConfigException if it's not valid
      * @throws ConfigException
      */
-    protected function _validateResource() {
+    protected function _validateResource()
+    {
         if(self::isNull($this->_resource)) {
             throw new ConfigException('Config resource can not be NULL! Please provide a valid file path, config string or PHP array.');
         }
@@ -161,13 +168,15 @@ abstract class DriverAbstract
         }
 
         // Check if it's a valid file path
-        if((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
-            throw new ConfigException('Config resource file does not exist!');
+        // Valid file path should not contain any spaces and that is the main difference between string file path and config string
+        if(!$this->str($this->_resource)->trim()->contains(' ')) {
+            if((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
+                throw new ConfigException('Config resource file does not exist!');
+            }
         }
 
         // Perform string checks
-        $this->_resource = $this->str($this->_resource);
-        if($this->_resource->trim()->length() == 0) {
+        if($this->str($this->_resource)->trim()->length() == 0) {
             throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
         }
     }
@@ -179,7 +188,8 @@ abstract class DriverAbstract
      *
      * @return mixed Normalized resource value
      */
-    private function _normalizeResource($resource) {
+    private function _normalizeResource($resource)
+    {
         // Convert resource to native PHP type
         if($this->isStdObject($resource)) {
             return $resource->val();

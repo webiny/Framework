@@ -70,15 +70,15 @@ class Router
      */
     public function match($url)
     {
-        if ($this->isString($url)) {
-            $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val() . '/';
+        if($this->isString($url)) {
+            $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
             $url = $this->url($urlString);
         } else {
             $url = $this->url('');
         }
 
         // get it from cache
-        if (($result = $this->_loadFromCache('match.' . $url->val())) != false) {
+        if(($result = $this->_loadFromCache('match.' . $url->val())) != false) {
             return $this->unserialize($result);
         }
 
@@ -108,9 +108,10 @@ class Router
      *
      * @throws RouterException
      */
-    public function execute(MatchedRoute $route){
+    public function execute(MatchedRoute $route)
+    {
         $callback = $route->getCallback();
-        if($this->isString($callback)){
+        if($this->isString($callback)) {
             throw new RouterException(RouterException::STRING_CALLBACK_NOT_PARSABLE);
         }
 
@@ -119,19 +120,28 @@ class Router
         $handlerMethod = $callback->key('Method', false, true);
         $staticMethod = StdObjectWrapper::toBool($callback->key('Static', false, true));
 
-        if(!class_exists($handlerClass)){
+        if(!class_exists($handlerClass)) {
             throw new RouterException(RouterException::CALLBACK_CLASS_NOT_FOUND, [$handlerClass]);
         }
 
-        if(!method_exists($handlerClass, $handlerMethod)){
-            throw new RouterException(RouterException::CALLBACK_CLASS_METHOD_NOT_FOUND, [$handlerMethod, $handlerClass]);
+        if(!method_exists($handlerClass, $handlerMethod)) {
+            throw new RouterException(RouterException::CALLBACK_CLASS_METHOD_NOT_FOUND, [
+                $handlerMethod,
+                $handlerClass
+            ]);
         }
 
-        if($staticMethod){
-            return forward_static_call_array([$handlerClass, $handlerMethod], $route->getParams());
+        if($staticMethod) {
+            return forward_static_call_array([
+                                                 $handlerClass,
+                                                 $handlerMethod
+                                             ], $route->getParams());
         }
 
-        return call_user_func_array([new $handlerClass, $handlerMethod], $route->getParams());
+        return call_user_func_array([
+                                        new $handlerClass,
+                                        $handlerMethod
+                                    ], $route->getParams());
     }
 
     /**
@@ -147,7 +157,7 @@ class Router
     public function generate($name, $parameters = [], $absolute = true)
     {
         $key = 'generate.' . $name . implode('|', $parameters) . $absolute;
-        if (($url = $this->_loadFromCache($key))) {
+        if(($url = $this->_loadFromCache($key))) {
             return $url;
         }
 
@@ -168,11 +178,11 @@ class Router
     public function setCache($cache)
     {
         $this->_cache = $cache;
-        if ($this->isBool($cache) && $cache === false) {
+        if($this->isBool($cache) && $cache === false) {
             $this->_cache = $cache;
         } else {
-            if (is_object($cache)) {
-                if ($this->isInstanceOf($cache, '\Webiny\Component\Cache\CacheStorage')) {
+            if(is_object($cache)) {
+                if($this->isInstanceOf($cache, '\Webiny\Component\Cache\CacheStorage')) {
                     $this->_cache = $cache;
                 } else {
                     throw new RouterException('$cache must either be a boolean or instance of \Webiny\Component\Cache\CacheStorage.'
@@ -247,12 +257,12 @@ class Router
      */
     private function _saveToCache($path, $value)
     {
-        if ($this->getCache()) {
+        if($this->getCache()) {
             $this->getCache()->save(self::CACHE_KEY . md5($path), $value, null, [
-                    '_wf',
-                    '_component',
-                    '_router'
-                ]
+                                                                    '_wf',
+                                                                    '_component',
+                                                                    '_router'
+                                                                ]
             );
         }
     }
@@ -266,7 +276,7 @@ class Router
      */
     private function _loadFromCache($path)
     {
-        if ($this->getCache()) {
+        if($this->getCache()) {
             return $this->getCache()->read(self::CACHE_KEY . md5($path));
         }
 
@@ -278,7 +288,7 @@ class Router
      */
     protected static function postSetConfig()
     {
-        if (self::getConfig()->get('Cache', false)) {
+        if(self::getConfig()->get('Cache', false)) {
             Router::getInstance()->setCache(self::getConfig()->get('Cache'));
         }
     }
