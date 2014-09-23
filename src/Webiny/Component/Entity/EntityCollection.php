@@ -69,6 +69,25 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Convert EntityCollection to array.<br>
+     * Each EntityAbstract wil be converted to array using $fields and $nestedLevel specified.<br>
+     * If no fields are specified, array will contain all simple and Many2One attributes
+     *
+     * @param string $fields List of fields to extract
+     *
+     * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
+     *
+     * @return array
+     */
+    public function toArray($fields = '', $nestedLevel = 1){
+        $data = [];
+        foreach($this->getIterator() as $entity){
+            $data[] = $entity->toArray($fields, $nestedLevel);
+        }
+        return $data;
+    }
+
+    /**
      * Add item to collection
      *
      * @param EntityAbstract $item
