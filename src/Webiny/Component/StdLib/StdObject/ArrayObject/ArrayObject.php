@@ -43,25 +43,25 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @throws ArrayObjectException
      */
-    public function __construct($array = null, $values = null)
-    {
-        if (!$this->isArray($array) && !$this->isArrayObject($array)) {
-            if ($this->isNull($array)) {
+    public function __construct($array = null, $values = null) {
+        if(!$this->isArray($array) && !$this->isArrayObject($array)) {
+            if($this->isNull($array)) {
                 $this->_value = array();
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$array',
-                        'array, ArrayObject'
-                    ]
+                                                                                          '$array',
+                                                                                          'array, ArrayObject'
+                                                                                      ]
                 );
             }
         } else {
-            if ($this->isInstanceOf($array, $this)) {
+            $array = $this->_objectToArray($array);
+            if($this->isInstanceOf($array, $this)) {
                 $this->val($array->val());
             } else {
-                if ($this->isArray($values)) {
+                if($this->isArray($values)) {
                     // check if both arrays have the same number of values
-                    if (count($array) != count($values)) {
+                    if(count($array) != count($values)) {
                         throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_COMBINE_COUNT);
                     }
                     $this->_value = array_combine($array, $values);
@@ -77,8 +77,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return number The sum of all elements from within the current array.
      */
-    public function sum()
-    {
+    public function sum() {
         return array_sum($this->val());
     }
 
@@ -87,8 +86,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return ArrayObject An ArrayObject containing only the keys of current array.
      */
-    public function keys()
-    {
+    public function keys() {
         return new ArrayObject(array_keys($this->val()));
     }
 
@@ -97,8 +95,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return ArrayObject An ArrayObject containing only the values of current array.
      */
-    public function values()
-    {
+    public function values() {
         return new ArrayObject(array_values($this->val()));
     }
 
@@ -108,8 +105,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return StringObject|ArrayObject|StdObjectWrapper The last element in the array.
      */
-    public function last()
-    {
+    public function last() {
         $arr = $this->val();
         $last = end($arr);
 
@@ -122,8 +118,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return StringObject|ArrayObject|StdObjectWrapper The first element in the array.
      */
-    public function first()
-    {
+    public function first() {
         $arr = $this->val();
         $first = reset($arr);
 
@@ -135,8 +130,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return int Number of elements inside the current array.
      */
-    public function count()
-    {
+    public function count() {
         return count($this->val());
     }
 
@@ -147,8 +141,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * @throws ArrayObjectException
      * @return ArrayObject An ArrayObject containing the array values as keys and number of their occurrences as values.
      */
-    public function countValues()
-    {
+    public function countValues() {
         try {
             /**
              * We must mute errors in this function because it throws a E_WARNING message if array contains something
@@ -168,8 +161,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return mixed String 'Array'.
      */
-    public function __toString()
-    {
+    public function __toString() {
         return 'Array';
     }
 
@@ -180,8 +172,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
      */
-    public function getIterator()
-    {
+    public function getIterator() {
         return new \ArrayIterator($this->_value);
     }
 
@@ -199,8 +190,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
         return $this->keyExists($offset);
     }
 
@@ -215,8 +205,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
         return $this->_value[$offset];
     }
 
@@ -234,8 +223,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
         $this->_value[$offset] = $value;
     }
 
@@ -250,8 +238,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
         unset($this->_value[$offset]);
     }
 
@@ -262,8 +249,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return $this|mixed|StringObject
      */
-    function __get($name)
-    {
+    function __get($name) {
         return $this->key($name);
     }
 
@@ -273,10 +259,26 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * @param $name
      * @param $value
      */
-    function __set($name, $value)
-    {
+    function __set($name, $value) {
         $this->key($name, $value);
     }
 
+    private function _objectToArray($object) {
+        if(is_object($object)) {
+            // Gets the properties of the given object
+            // with get_object_vars function
+            $object = get_object_vars($object);
+        }
 
+        if(is_array($object)) {
+            foreach ($object as $k => $v) {
+                $object[$k] = $this->_objectToArray($v);
+            }
+
+            return $object;
+        } else {
+            // Return array
+            return $object;
+        }
+    }
 }
