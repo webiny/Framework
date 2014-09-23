@@ -70,7 +70,7 @@ class Router
     public function match($url)
     {
         if ($this->isString($url)) {
-            $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val() . '/';
+            $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
             $url = $this->url($urlString);
         } else {
             $url = $this->url('');
