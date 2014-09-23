@@ -26,7 +26,7 @@ Alternatively, you can also do a `git checkout` of the repo.
 
 ## Usage
 
-Defining a route is rather an easy process, you set a route name and underneath you define the path and the callback.
+Defining a route is a rather easy process, you set a route name and underneath you define the path and the callback.
 Here is an example:
 
 ```yaml
@@ -35,6 +35,11 @@ Here is an example:
             BlogTag:
                 Path: blog/tag/{tag}
                 Callback: MyApp\Blog\showTag
+            BlogComments:
+                Path: blog/post/{id}/comments
+                Callback:
+                    Class: MyApp\Blog
+                    Method: showComments
             BlogPost:
                 Path: blog/post/{slug}/{id}
                 Callback: MyApp\Blog\showPost
@@ -52,7 +57,7 @@ Here is an example:
                 Callback: MyApp\Blog\index
 ```
 
-If a route is matched you will get an instance of MatchedRoute. The `getCallback` method returns the value of callback
+If a route is matched you will get an instance of `MatchedRoute`. The `getCallback` method returns the value of callback
 parameter of the matched route. The second method `getParams` returns the values of the parameters defined in the `Path` section.
 
 By registering a default `Router` configuration, `Router` will automatically set the defined routes and cache driver.
@@ -103,6 +108,45 @@ class MyClass
 ```
 
 **NOTE:** `Router` component always returns the **first route** that matches the given path.
+
+## Executing route callback
+
+If you define your callback as string, you will have to parse and execute it on your own. But if you follow the standard
+structure of your callback you will be able to use router's `execute` method and pass your `MatchedRoute` to it.
+Router will then execute the callback for you and do all the checks regarding class and method existence:
+
+```yaml
+BlogComments:
+    Path: blog/post/{id}/comments
+    Callback:
+        Class: MyApp\Blog
+        Method: showComments
+```
+
+```php
+class MyClass
+{
+	use \Webiny\Component\Router\RouterTrait;
+
+	function __construct(){
+		$result = $this->router()->match('blog/post/12/comments');
+		if($result){
+		    $callbackResult = $this->router()->execute($result);
+		}
+	}
+}
+```
+
+If for some reason you need to call the method statically, define your route callback like this:
+
+```yaml
+BlogComments:
+    Path: blog/post/{id}/comments
+    Callback:
+        Class: MyApp\Blog
+        Method: showComments
+        Static: true
+```
 
 ## Generating routes
 
