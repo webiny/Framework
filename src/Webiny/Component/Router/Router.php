@@ -18,6 +18,7 @@ use Webiny\Component\ServiceManager\ServiceManagerTrait;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
 
 /**
@@ -89,6 +90,48 @@ class Router
         $this->_saveToCache('match.' . $url->val(), $cacheResult);
 
         return $result;
+    }
+
+    /**
+     * Execute callback from MatchedRoute and return result.<br>
+     * Required callback structure is:
+     * <code>
+     * Callback:
+     *     Class: \Your\Class
+     *     Method: handle
+     *     Static: true // (Optional, "false" by default)
+     *
+     *</code>
+     * @param MatchedRoute $route
+     *
+     * @return mixed
+     *
+     * @throws RouterException
+     */
+    public function execute(MatchedRoute $route){
+        $callback = $route->getCallback();
+        if($this->isString($callback)){
+            throw new RouterException(RouterException::STRING_CALLBACK_NOT_PARSABLE);
+        }
+
+        $callback = $this->arr($callback);
+        $handlerClass = $callback->key('Class', false, true);
+        $handlerMethod = $callback->key('Method', false, true);
+        $staticMethod = StdObjectWrapper::toBool($callback->key('Static', false, true));
+
+        if(!class_exists($handlerClass)){
+            throw new RouterException(RouterException::CALLBACK_CLASS_NOT_FOUND, [$handlerClass]);
+        }
+
+        if(!method_exists($handlerClass, $handlerMethod)){
+            throw new RouterException(RouterException::CALLBACK_CLASS_METHOD_NOT_FOUND, [$handlerMethod, $handlerClass]);
+        }
+
+        if($staticMethod){
+            return forward_static_call_array([$handlerClass, $handlerMethod], $route->getParams());
+        }
+
+        return call_user_func_array([new $handlerClass, $handlerMethod], $route->getParams());
     }
 
     /**

@@ -69,7 +69,7 @@ class RouteCompiler
                 }
             }
 
-            $regex = '\w+';
+            $regex = '[\w-]+';
             $default = false;
             if ($route->hasOption($var)) {
                 // pattern

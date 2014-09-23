@@ -57,14 +57,14 @@ class Route
     /**
      * Base constructor.
      *
-     * @param string $path     Path with parameter names that identifies the route.
-     * @param string $callback Attached callback for this route.
-     * @param array  $options  List of options, mostly for parameters. Common option keys are 'pattern' and 'default'.
-     *                         Pattern defines the regular expression for the defined parameter. Default sets the default value for the parameter
-     *                         if it's not matched withing the route.
-     * @param string $host     Fully qualified host name that will be added as a filer for matching the url.
-     * @param array  $schemes  An array of supported schemas that the url must match.
-     * @param array  $methods  An array of supported methods that the url must match.
+     * @param string       $path     Path with parameter names that identifies the route.
+     * @param string|array $callback Attached callback for this route.
+     * @param array        $options  List of options, mostly for parameters. Common option keys are 'pattern' and 'default'.
+     *                               Pattern defines the regular expression for the defined parameter. Default sets the default value for the parameter
+     *                               if it's not matched withing the route.
+     * @param string       $host     Fully qualified host name that will be added as a filer for matching the url.
+     * @param array        $schemes  An array of supported schemas that the url must match.
+     * @param array        $methods  An array of supported methods that the url must match.
      */
     public function __construct($path, $callback, $options = [], $host = '', $schemes = [], $methods = [])
     {
@@ -87,7 +87,7 @@ class Route
     {
         $this->_path = '/';
 
-        if (!empty($path)) {
+        if(!empty($path)) {
             $this->_path .= $this->str($path)->trim()->trimLeft('/')->val();
         }
 
@@ -107,8 +107,8 @@ class Route
     /**
      * Set the route callback.
      *
-     * @param string $callback Callback that will be attached to this route.
-     *                         Note that this callback can be overwritten during the routing process.
+     * @param string|array $callback Callback that will be attached to this route.
+     *                               Note that this callback can be overwritten during the routing process.
      *
      * @return $this
      */
@@ -122,7 +122,7 @@ class Route
     /**
      * Get the attached callback name.
      *
-     * @return string
+     * @return string|array
      */
     public function getCallback()
     {
@@ -268,7 +268,7 @@ class Route
      */
     public function compile()
     {
-        if ($this->isNull($this->_compiledRoute)) {
+        if($this->isNull($this->_compiledRoute)) {
             $this->_compiledRoute = RouteCompiler::compile($this);
         }
 

@@ -10,6 +10,7 @@ namespace Webiny\Component\Router\Loader;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Router\Route\Route;
 use Webiny\Component\Router\Route\RouteCollection;
+use Webiny\Component\StdLib\StdLibTrait;
 
 /**
  * ConfigLoader parses the given config file, extracts the routes and builds a RouteCollection object.
@@ -18,6 +19,7 @@ use Webiny\Component\Router\Route\RouteCollection;
  */
 class ConfigLoader
 {
+    use StdLibTrait;
 
     /**
      * @var \Webiny\Component\Config\ConfigObject
@@ -67,7 +69,8 @@ class ConfigLoader
     function processRoute(ConfigObject $routeConfig)
     {
         // base route
-        $route = new Route($routeConfig->Path, $routeConfig->Callback);
+        $callback = $this->isString($routeConfig->Callback) ? $routeConfig->Callback : $routeConfig->Callback->toArray();
+        $route = new Route($routeConfig->Path, $callback);
 
         // route options
         if (($options = $routeConfig->get('Options', false)) != false) {

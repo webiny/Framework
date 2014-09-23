@@ -1,0 +1,32 @@
+#################################
+# Router - example configuration #
+#################################
+
+# These are example definition of Router component.
+# In order to use the component, you first must call Router::setConfig($pathToYourConfig).
+Router:
+    Routes:
+        InvalidCallback:
+            Path: /blog/tag/{tag}
+            Callback: \MyApp\Blog\showTag
+        MissingClass:
+            Path: /no/class
+            Callback:
+                Class: \Webiny\Component\Router\Tests\MissingClass
+                Method: handle
+        MissingClassMethod:
+            Path: /no/class/method
+            Callback:
+                Class: \Webiny\Component\Router\Tests\RouterCallback
+                Method: missingMethod
+        InstanceCall:
+            Path: /blog/post/{slug}
+            Callback:
+                Class: \Webiny\Component\Router\Tests\RouterCallback
+                Method: handle
+        StaticCall:
+            Path: /blog/post/{slug}/{id}
+            Callback:
+                Class: \Webiny\Component\Router\Tests\RouterCallback
+                Method: handleStatic
+                Static: true

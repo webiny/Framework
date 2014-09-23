@@ -36,7 +36,6 @@ class UrlMatcher
      */
     public function match(UrlObject $url)
     {
-
         $pathWithHost = $this->str($url->getHost() . $url->getPath())->trimRight('/')->val();
         $pathWithoutHost = $this->str($url->getPath())->trimRight('/')->val();
 
@@ -79,6 +78,7 @@ class UrlMatcher
                 $fullPath = $pathWithoutHost;
             }
 
+
             // finally let's try to match the full url
             preg_match_all($compiledRoute->getRegex(), $fullPath, $matches);
 
@@ -99,7 +99,7 @@ class UrlMatcher
 
             // if we matched the route, we need to extract the parameters
             $params = $this->_extractParameters($matches, $compiledRoute);
-
+            
             return new MatchedRoute($route->getCallback(), $params);
         }
 

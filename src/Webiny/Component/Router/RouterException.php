@@ -16,4 +16,13 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  */
 class RouterException extends ExceptionAbstract
 {
+    const STRING_CALLBACK_NOT_PARSABLE = 101;
+    const CALLBACK_CLASS_NOT_FOUND = 102;
+    const CALLBACK_CLASS_METHOD_NOT_FOUND = 103;
+
+    static protected $_messages = [
+        101 => 'Router is unable to parse string callbacks.',
+        102 => 'Router callback class `%s` was not found!',
+        103 => 'Router callback method `%s` was not found in class `%s`!'
+    ];
 }
