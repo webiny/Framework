@@ -161,13 +161,15 @@ abstract class DriverAbstract
         }
 
         // Check if it's a valid file path
-        if((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
-            throw new ConfigException('Config resource file does not exist!');
+        // Valid file path should not contain any spaces and that is the main difference between string file path and config string
+        if(!$this->str($this->_resource)->trim()->contains(' ')){
+            if((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
+                throw new ConfigException('Config resource file does not exist!');
+            }
         }
 
         // Perform string checks
-        $this->_resource = $this->str($this->_resource);
-        if($this->_resource->trim()->length() == 0) {
+        if($this->str($this->_resource)->trim()->length() == 0) {
             throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
         }
     }
