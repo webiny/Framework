@@ -124,6 +124,15 @@ class RouterTest extends \PHPUnit_Framework_TestCase
                 ]
             ],
             [
+                'http://www.webiny.com/blog/tag-slash/php/',
+                [
+                    'callback' => 'MyApp\Blog\index',
+                    'params'   => [
+                        'tag' => 'php'
+                    ]
+                ]
+            ],
+            [
                 'http://www.webiny.com/blog/tag/html5',
                 [
                     'callback' => 'MyApp\Blog\showTag',

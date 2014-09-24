@@ -85,10 +85,10 @@ class Route
      */
     public function setPath($path)
     {
-        $this->_path = '/';
+        $this->_path = '';
 
         if(!empty($path)) {
-            $this->_path .= $this->str($path)->trim()->trimLeft('/')->val();
+            $this->_path .= $this->str($path)->trim()->trimLeft('/')->trimRight('/')->val();
         }
 
         return $this;

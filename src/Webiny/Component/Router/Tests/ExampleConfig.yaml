@@ -9,6 +9,9 @@ Router:
         BlogTag:
             Path: blog/tag/{tag}
             Callback: MyApp\Blog\showTag
+        BlogTagSlash:
+            Path: blog/tag-slash/{tag}
+            Callback: MyApp\Blog\index
         BlogPost:
             Path: blog/post/{slug}/{id}
             Callback: MyApp\Blog\showPost

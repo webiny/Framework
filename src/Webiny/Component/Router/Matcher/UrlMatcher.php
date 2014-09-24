@@ -34,8 +34,7 @@ class UrlMatcher
      *
      * @return array|bool
      */
-    public function match(UrlObject $url)
-    {
+    public function match(UrlObject $url) {
         $pathWithHost = $this->str($url->getHost() . $url->getPath())->trimRight('/')->val();
         $pathWithoutHost = $this->str($url->getPath())->trimRight('/')->val();
 
@@ -45,11 +44,14 @@ class UrlMatcher
         foreach (Router::getRouteCollection()->all() as $name => $route) {
             $compiledRoute = $route->compile();
 
-            // first check the static prefix on path because we don't want to use heavy preg_matching if the prefix
-            // doesn't match
-            if($compiledRoute->getStaticPrefix() != '' && strpos($url->getPath(), $compiledRoute->getStaticPrefix()
-                ) !== 0
-            ) {
+
+            // 1. Make sure staticPrefix and path both contain leading slash
+            $staticPrefix = $compiledRoute->getStaticPrefix();
+            $staticPrefix = $staticPrefix != '' && !$this->str($staticPrefix)->startsWith('/') ? '/' . $staticPrefix : $staticPrefix;
+            $urlPath = $this->str($url->getPath())->startsWith('/') ? $url->getPath() : '/' . $url->getPath();
+
+            // 2. First check the static prefix on path because we don't want to use heavy preg_matching if the prefix doesn't match
+            if($staticPrefix != '' && strpos($urlPath, $staticPrefix) !== 0) {
                 continue;
             }
 
@@ -113,8 +115,7 @@ class UrlMatcher
      *
      * @return array
      */
-    private function _extractParameters($matches, CompiledRoute $compiledRoute)
-    {
+    private function _extractParameters($matches, CompiledRoute $compiledRoute) {
         $params = [];
         foreach ($compiledRoute->getVariables() as $index => $var) {
             $params[$var['name']] = $matches[($index + 1)][0];

@@ -40,7 +40,7 @@ class RouteCompiler
         $defaults = [];
 
         // set correct static prefix
-        $prefix = $route->getHost() == '' ? '/' : $route->getHost() . '/';
+        $prefix = $route->getHost() == '' ? '' : $route->getHost() . '/';
 
         // route regex
         $routePatternObject = self::str($route->getPath())->trimLeft('/');
