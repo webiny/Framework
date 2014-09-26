@@ -394,7 +394,8 @@ abstract class EntityAbstract implements \ArrayAccess
         $validation = $this->arr();
         /** @var $entityAttribute AttributeAbstract */
         foreach ($this->_attributes as $attributeName => $entityAttribute) {
-            if (isset($data[$attributeName])) {
+            $canPopulate = !$this->getId()->getValue() || !$entityAttribute->getOnce();
+            if (isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
                 $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);

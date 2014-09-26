@@ -30,6 +30,7 @@ abstract class AttributeAbstract
     protected $_defaultValue = null;
     protected $_value = null;
     protected $_required = false;
+    protected $_once = false;
 
     /**
      * @param string         $attribute
@@ -112,6 +113,34 @@ abstract class AttributeAbstract
     public function getRequired()
     {
         return $this->_required;
+    }
+
+    /**
+     * Set 'once' flag<br>
+     * If true, it tells EntityAbstract to only populate this attribute if it's a new entity<br>
+     * This is useful when you want to protect values from being populate on secondary updates.
+     *
+     * @param boolean $flag
+     *
+     * @return $this
+     */
+    public function setOnce($flag = true)
+    {
+        $this->_once = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Get 'once' flag<br>
+     * This flag tells you whether this attribute should only be populated when it's a new EntityAbstract instance.<br>
+     * By default, attributes are populated each time.
+     *
+     * @return $this
+     */
+    public function getOnce()
+    {
+        return $this->_once;
     }
 
 
