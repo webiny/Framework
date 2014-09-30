@@ -17,15 +17,6 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \ArrayAccess
 {
-    /**
-     * @param string         $attribute
-     * @param EntityAbstract $entity
-     */
-    function __construct($attribute, EntityAbstract $entity)
-    {
-        parent::__construct($attribute, $entity);
-        $this->_value = new ArrayObject();
-    }
 
     /**
      * Perform validation against given value
@@ -49,24 +40,9 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
         return $this;
     }
 
-    public function setValue($value = [])
-    {
-        if ($this->isNull($value)) {
-            $value = [];
-        }
-        $this->_value->val($value);
-
-        return $this;
-    }
-
-    public function getValue()
-    {
-        return $this->_value->val();
-    }
-
     public function getToArrayValue()
     {
-        return $this->_value->val();
+        return $this->_value;
     }
 
 
@@ -81,12 +57,12 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function get($key, $default = null)
     {
-        return $this->_value->keyNested($key, $default, true);
+        return $this->arr($this->_value)->keyNested($key, $default, true);
     }
 
     public function set($key, $value)
     {
-        $this->_value->keyNested($key, $value);
+        $this->_value = $this->arr($this->_value)->keyNested($key, $value)->val();
     }
 
     /**

@@ -105,12 +105,12 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
         /**
          * Get recently saved Page instance and verify values
-         * Must set to self because EntityPool remove method unsets reference
+         * Must set to self because EntityPool 'remove()' method unsets reference
          */
         self::$_page = $page = Page::findById($page->getId()->getValue());
         $this->assertEquals('First blog post', $page->title->getValue());
         $this->assertEquals(2, $page->labels->count());
-        //$this->assertEquals('Pavel Denisjuk', $page->author->name->getValue());
+        $this->assertEquals('Pavel Denisjuk', $page->author->name->getValue());
         $this->assertEquals('Best blog post ever!', $page->comments[0]->text->getValue());
         $this->assertEquals('value1', $page->settings['key1']);
         $this->assertEquals('value3', $page->settings['key2']['key3']);
@@ -158,5 +158,39 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
         $author = Author::findById($authorId);
         $this->assertNull($author);
+    }
+
+    public function testSetOnce()
+    {
+        $page = new Page();
+        $page->title = 'Initial title';
+        $page->save();
+
+        $id = $page->getId()->getValue();
+
+        // Completely remove current instance
+        EntityPool::getInstance()->remove($page);
+
+        // Load fresh instance from database
+        $page = Page::findById($id);
+
+        // Disable update of 'title' attribute
+        $page->title->setOnce()->setValue('New title');
+        $this->assertEquals('Initial title', $page->title->getValue());
+
+        $page->populate(['title' => 'Some title']);
+        $this->assertEquals('Initial title', $page->title->getValue());
+
+        // Try populating a null value attribute
+        $page->settings->setOnce()->setValue([]);
+        $this->assertEquals([], $page->settings->getValue());
+        
+        // Try updating an attribute that has a value already assigned to it
+        $page->settings->setValue([1,2,3]);
+        $this->assertEquals([], $page->settings->getValue());
+
+        // Enable update of 'title' attribute
+        $page->title->setOnce(false)->setValue('New title');
+        $this->assertEquals('New title', $page->title->getValue());
     }
 }

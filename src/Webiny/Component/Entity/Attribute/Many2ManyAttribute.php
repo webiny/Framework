@@ -105,6 +105,10 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function setValue($value = null)
     {
+        if(!$this->_canAssign()){
+            return $this;
+        }
+
         $this->_value = $value;
 
         return $this;
