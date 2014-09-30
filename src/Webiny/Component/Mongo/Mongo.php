@@ -45,7 +45,7 @@ class Mongo
                 ]
             ]
         ],
-        'Driver'   => '\Webiny\Component\Mongo\Bridge\Mongo'
+        'Driver'   => '\Webiny\Component\Mongo\Driver\Mongo'
     ];
 
     public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '',
