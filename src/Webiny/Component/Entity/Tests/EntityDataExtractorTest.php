@@ -96,6 +96,7 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         $page = self::$_page;
         $page->save();
 
+        // Test default toArray()
         $data = $page->toArray();
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('author', $data);
@@ -103,12 +104,22 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('labels', $data);
         $this->assertArrayNotHasKey('comments', $data);
 
+        // Test specific toArray()
         $data = $page->toArray('title,comments.text,comments.id,labels');
         $this->assertArrayHasKey('comments', $data);
         $this->assertArrayHasKey('labels', $data);
         $this->assertArrayHasKey('label', $data['labels'][0]);
         $this->assertArrayNotHasKey('author', $data);
         $this->assertEquals('marketing', $data['labels'][0]['label']);
+
+        // Test EntityCollection toArray()
+        $data = Page::find()->toArray()[0];
+        $this->assertArrayHasKey('title', $data);
+        $this->assertArrayHasKey('author', $data);
+        $this->assertArrayHasKey('name', $data['author']);
+        $this->assertArrayNotHasKey('labels', $data);
+        $this->assertArrayNotHasKey('comments', $data);
+        $this->assertEquals('Pavel Denisjuk', $data['author']['name']);
     }
 
     function testParentEntity()

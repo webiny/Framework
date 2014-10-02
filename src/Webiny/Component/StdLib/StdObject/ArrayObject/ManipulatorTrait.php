@@ -46,7 +46,7 @@ trait ManipulatorTrait
                     $array[$key] = $value;
                     $this->val($array);
 
-                    return $value;
+                    return $this;
                 }
             }
         }
@@ -92,7 +92,7 @@ trait ManipulatorTrait
                     $this->val($array);
                 }
 
-                return $value;
+                return $this;
             }
         }
 

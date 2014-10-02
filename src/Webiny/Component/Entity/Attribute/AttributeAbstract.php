@@ -177,9 +177,13 @@ abstract class AttributeAbstract
      */
     public function setValue($value = null)
     {
+        if(!$this->_canAssign()){
+            return $this;
+        }
+
         $this->validate($value);
         if ($this->_value != $value) {
-            $this->_entity->__dirty(true);
+            $this->_entity->__setDirty(true);
         }
         $this->_value = $value;
 
@@ -211,5 +215,20 @@ abstract class AttributeAbstract
     public function validate($value)
     {
         return $this;
+    }
+
+    /**
+     * Check if value can be assigned to current attribute<br>
+     *
+     * If Entity has an ID and attribute 'once' flag is set and attribute has a value assigned to it
+     * then a new value should not be assigned.
+     *
+     * @return bool
+     */
+    protected function _canAssign(){
+        if($this->_entity->getId()->getValue() && $this->getOnce() && $this->_value !== null){
+            return false;
+        }
+        return true;
     }
 }

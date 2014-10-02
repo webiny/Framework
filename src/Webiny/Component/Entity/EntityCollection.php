@@ -104,12 +104,10 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
         foreach ($item as $addItem) {
             if(!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
-                $addItem = call_user_func_array([
-                                                    $this->_entityClass,
-                                                    'findById'
-                                                ], [$addItem]
-                );
+                $class = $this->_entityClass;
+                $addItem = $class::findById($addItem);
             }
+
             if(!$this->contains($addItem)) {
                 $this->_value[] = $addItem;
             }
@@ -216,7 +214,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         $dbItems = [];
         foreach ($this->_cursor as $data) {
             $instance = new $this->_entityClass;
-            $instance->populate(EntityMongoAdapter::getInstance()->adaptValues($data));
+            $instance->populate(EntityMongoAdapter::getInstance()->adaptValues($data))->__setDirty(false);
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */

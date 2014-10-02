@@ -127,6 +127,10 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function setValue($value = null)
     {
+        if(!$this->_canAssign()){
+            return $this;
+        }
+
         $this->validate($value);
         $this->_value = $value;
 
