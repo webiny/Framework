@@ -19,7 +19,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"symfony/yaml": "2.5.*",
-		"smarty/smarty": "3.1.*",
+		"smarty/smarty": "3.1.17",
 		"aws/aws-sdk-php": "2.6.*",
 		"imagine/imagine": "0.6.*",
 		"minime/annotations": "~1.13",
