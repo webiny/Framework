@@ -74,7 +74,7 @@ class Router
             $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
             $url = $this->url($urlString);
         } else {
-            $url = $this->url('');
+            $url = StdObjectWrapper::isUrlObject($url) ? $url : $this->url('');
         }
 
         // get it from cache
