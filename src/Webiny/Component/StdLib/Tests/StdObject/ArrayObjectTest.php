@@ -349,7 +349,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for filtering
         $callable = function ($item) {
-            if (is_string($item) && strpos($item, 'v') !== false) {
+            if(is_string($item) && strpos($item, 'v') !== false) {
                 return $item;
             }
 
@@ -424,7 +424,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
 
         // callback function used for filtering
         $callable = function ($a, $b) {
-            if ($a == $b) {
+            if($a == $b) {
                 return 0;
             }
 
@@ -467,7 +467,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
 
         // callback function used for filtering
         $callable = function ($a, $b) {
-            if ($a == $b) {
+            if($a == $b) {
                 return 0;
             }
 
@@ -488,7 +488,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for mapping
         $callable = function ($item) {
-            if (is_array($item)) {
+            if(is_array($item)) {
                 $item['new'] = 'value';
             } else {
                 $item = $item . '_appended';
@@ -686,7 +686,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for mapping
         $callable = function ($item) {
-            if (is_array($item)) {
+            if(is_array($item)) {
                 $item['new'] = 'value';
             } else {
                 $item = $item . '_appended';
@@ -822,6 +822,26 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('webiny', $a->key('k2.k3.k4'));
         $this->assertEquals('anotherElement', $a->key('k2.k3.k5'));
     }
+
+    public function testStdClassConversion()
+    {
+        $obj = new \stdClass();
+        $obj->name = 'Webiny';
+        $obj->language = 'PHP';
+
+        $arr = new ArrayObject($obj);
+        $this->assertEquals('Webiny', $arr->key('name'));
+        $this->assertEquals('PHP', $arr->key('language'));
+
+
+        $obj2 = new \stdClass();
+        $obj2->url = 'webiny.com';
+        $obj->nested = [$obj2];
+
+        $arr = new ArrayObject($obj);
+        $this->assertEquals('webiny.com', $arr->keyNested('nested.0.url'));
+    }
+
 
     public function arraySet1()
     {

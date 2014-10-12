@@ -198,16 +198,29 @@ trait ValidatorTrait
     }
 
     /**
-     * Check if $instance if of $type.
+     * Check if $instance is of $type.
      *
-     * @param $instance
-     * @param $type
+     * @param mixed $instance
+     * @param string $type
      *
      * @return bool
      */
     protected static function isInstanceOf($instance, $type)
     {
         return ($instance instanceof $type);
+    }
+
+    /**
+     * Check if $subclass is a subclass of $class.
+     *
+     * @param string|object $subclass
+     * @param string $class
+     *
+     * @return bool
+     */
+    protected static function isSubClassOf($subclass, $class)
+    {
+        return is_subclass_of($subclass, $class);
     }
 
     /**

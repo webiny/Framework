@@ -36,16 +36,16 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * Constructor.
      * Set standard object value.
      *
-     * @param null|array|ArrayObject $array        Array from which to create an ArrayObject.
-     * @param null|array             $values       Array of values that will be combined with $array.
-     *                                             See http://www.php.net/manual/en/function.array-combine.php for more info.
-     *                                             $array param is used as key array.
+     * @param null|array|ArrayObject|stdClass $array  Array or stdClass from which to create an ArrayObject.
+     * @param null|array                      $values Array of values that will be combined with $array.
+     *                                                See http://www.php.net/manual/en/function.array-combine.php for more info.
+     *                                                $array param is used as key array.
      *
      * @throws ArrayObjectException
      */
     public function __construct($array = null, $values = null)
     {
-        if(!$this->isArray($array) && !$this->isArrayObject($array)) {
+        if(!$this->isInstanceOf($array, '\stdClass') && !$this->isArray($array) && !$this->isArrayObject($array)) {
             if($this->isNull($array)) {
                 $this->_value = array();
             } else {
@@ -281,7 +281,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
 
     private function _objectToArray($object)
     {
-        if(is_object($object)) {
+        if($this->isInstanceOf($object, '\stdClass')) {
             // Gets the properties of the given object
             // with get_object_vars function
             $object = get_object_vars($object);
