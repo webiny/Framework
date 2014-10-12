@@ -15,5 +15,5 @@ Mongo:
         Webiny:
             Class: '\Webiny\Component\Mongo\Mongo'
             Arguments: [127.0.0.1:27017, webiny, null, null, WebinyTest]
-    Bridges:
-        Mongo: \Webiny\Component\Mongo\Driver\Mongo
+    Driver: \Webiny\Component\Mongo\Driver\Mongo
+    ResultClass: \Webiny\Component\Mongo\MongoResult

@@ -17,6 +17,14 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \ArrayAccess
 {
+    public function setValue($value = null)
+    {
+        if($this->isNull($value)){
+            $value = [];
+        }
+        return parent::setValue($value);
+    }
+
 
     /**
      * Perform validation against given value
@@ -28,6 +36,10 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function validate($value)
     {
+        if($this->isNull($value)){
+            return $this;
+        }
+
         if (!$this->isArray($value) && !$this->isArrayObject($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->_attribute,

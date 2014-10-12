@@ -258,8 +258,8 @@ abstract class EntityAbstract implements \ArrayAccess
          * Insert or update
          */
         if($this->getId()->getValue() == null) {
-            $savedData = Entity::getInstance()->getDatabase()->insert(static::$_entityCollection, $data);
-            $this->getId()->setValue((string)$savedData['_id']);
+            Entity::getInstance()->getDatabase()->insert(static::$_entityCollection, $data);
+            $this->getId()->setValue((string)$data['_id']);
         } else {
             $id = Entity::getInstance()->getDatabase()->id($this->getId()->getValue());
             Entity::getInstance()
