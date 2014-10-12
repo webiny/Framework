@@ -141,6 +141,10 @@ foreach($page->comments as $comment){
 }
 ```
 
+### setOnce()
+This method allows you to protect an attribute from being updated. You use this method to only allow your attribute to be populated when your new entity instance has no ID set (meaning it's a new instance).
+After you save your new entity instance, all subsequent calls to `populate()` will skip this attribute.
+
 
 ### Referential integrity
 `one2many` attribute provides a way to control whether you want these records to be deleted with parent record, or prevent parent record from being deleted if it contains any child records. You can set it using `onDelete` method, and choose between `cascade` and `restrict`, accordingly. More options will be implemented if required.

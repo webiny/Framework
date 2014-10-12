@@ -74,8 +74,11 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         return parent::setValue($value);
     }
 
-    public function getValue()
+    public function getValue($asDateTimeObject = false)
     {
+        if($asDateTimeObject){
+            return new DateTimeObject(parent::getValue());
+        }
         return $this->_formatValue(parent::getValue());
     }
 

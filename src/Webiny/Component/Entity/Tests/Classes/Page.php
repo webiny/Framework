@@ -17,6 +17,15 @@ class Page extends EntityAbstract
         // Many2One
         $this->attr('author')->many2one()->setEntity('\Webiny\Component\Entity\Tests\Classes\Author');
 
+        // DateTime attribute
+        $this->attr('createdOn')->datetime()->setOnce()->setDefaultValue('now');
+
+        // Date attribute
+        $this->attr('publishOn')->date();
+
+        // Date attribute
+        $this->attr('remindOn')->date();
+
         // Recursive
         $this->attr('parent')->many2one()->setEntity('\Webiny\Component\Entity\Tests\Classes\Page');
 

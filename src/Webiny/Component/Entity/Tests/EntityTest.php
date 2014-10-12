@@ -66,6 +66,8 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $label->getAttribute('label')->setValue('marketing');
         $label2->getAttribute('label')->setValue('seo');
         $page->getAttribute('title')->setValue('First blog post');
+        $page->getAttribute('publishOn')->setValue('2014-11-01');
+        $page->getAttribute('remindOn')->setValue(time());
         $page->getAttribute('author')->setValue($author);
         $page->getAttribute('settings')->setValue([
                                                       'key1' => 'value1',
@@ -115,6 +117,14 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('value1', $page->settings['key1']);
         $this->assertEquals('value3', $page->settings['key2']['key3']);
         $this->assertEquals('seo', $page->labels[1]->label);
+
+        // Test date attributes
+        $createdOn = $page->getAttribute('createdOn')->getValue(true)->format('Y-m-d');
+        $this->assertEquals(date('Y-m-d'), $createdOn);
+        $pubishOn = $page->getAttribute('publishOn')->getValue();
+        $this->assertEquals('2014-11-01', $pubishOn);
+        $remindOn = $page->getAttribute('remindOn')->getValue();
+        $this->assertEquals(date('Y-m-d'), $remindOn);
 
         // Test nested modification
         $page->settings->set('key2.key3', 'changedKey3');
