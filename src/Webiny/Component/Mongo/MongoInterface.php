@@ -244,20 +244,6 @@ interface MongoInterface
     public function save($collectionName, array $data, $options = []);
 
     /**
-     * Aggregate documents<br>
-     * Returns the result of the aggregation as an array.<br>
-     * The ok will be set to 1 on success, 0 on failure.
-     *
-     * @param       $collectionName
-     * @param array $options
-     *
-     * @see http://php.net/manual/en/mongocollection.aggregate.php
-     *
-     * @return array
-     */
-    public function aggregate($collectionName, array $options);
-
-    /**
      * Update document<br>
      * Returns array containing result of update operation.
      * <code>

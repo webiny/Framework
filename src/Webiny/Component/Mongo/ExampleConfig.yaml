@@ -13,5 +13,18 @@ Mongo:
     Services:
         Webiny:
             Class: \Webiny\Component\Mongo\Mongo
-            Arguments: [127.0.0.1:27017, webiny, null, null, '']
+            Arguments:
+                Host: 127.0.0.1:27017
+                Database: webiny
+                Username: null
+                Password: null
+                CollectionPrefix: ''
+                Options:
+                    w: 1
+                    wTimeoutMS: 10000
+                    connectTimeoutMS: 60000
+                    socketTimeoutMS: 30000
+                    fsync: false
+                    journal: false
     Driver: \Webiny\Component\Mongo\Driver\Mongo
+    ResultClass: \Webiny\Component\Mongo\MongoResult

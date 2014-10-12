@@ -16,8 +16,6 @@ use Webiny\Component\StdLib\StdLibTrait;
 /**
  * Mongo
  *
- * @TODO    handle \MongoException properly and wrap it into Webiny MongoException
- *
  * @package Webiny\Component\Mongo
  */
 class Mongo
@@ -31,25 +29,7 @@ class Mongo
 
     private $_collectionPrefix = '';
 
-    private static $_defaultConfig = [
-        'Database' => 'Webiny',
-        'Services' => [
-            'Webiny' => [
-                'Class'     => '\Webiny\Component\Mongo\Mongo',
-                'Arguments' => [
-                    '127.0.0.1:27017',
-                    'webiny',
-                    null,
-                    null,
-                    ''
-                ]
-            ]
-        ],
-        'Driver'   => '\Webiny\Component\Mongo\Driver\Mongo'
-    ];
-
-    public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '',
-                                $options = [])
+    public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '', $options = [])
     {
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Driver\Mongo');
         $this->_driver = new $mongoBridge();
@@ -75,13 +55,15 @@ class Mongo
      * @param string         $collectionName Target collection
      * @param IndexInterface $index          Index object
      *
-     * @return array
+     * @return MongoResult
      */
     public function createIndex($collectionName, IndexInterface $index)
     {
         $collectionName = $this->_collectionPrefix . $collectionName;
 
-        return $this->_driver->ensureIndex($collectionName, $index->getFields(), $index->getOptions());
+        $result = $this->_driver->ensureIndex($collectionName, $index->getFields(), $index->getOptions());
+
+        return $this->_mongoResult('ensureIndex', $result);
     }
 
     /**
@@ -90,13 +72,15 @@ class Mongo
      * @param string $collectionName Target collection
      * @param string $index          Index name to delete
      *
-     * @return array
+     * @return MongoResult
      */
     public function deleteIndex($collectionName, $index)
     {
         $collectionName = $this->_collectionPrefix . $collectionName;
 
-        return $this->_driver->deleteIndex($collectionName, $index);
+        $result = $this->_driver->deleteIndex($collectionName, $index);
+
+        return $this->_mongoResult('deleteIndex', $result);
     }
 
     /**
@@ -104,11 +88,13 @@ class Mongo
      *
      * @param string $collectionName Target collection
      *
-     * @return array
+     * @return MongoResult
      */
     public function deleteAllIndexes($collectionName)
     {
-        return $this->_driver->deleteAllIndexes($this->_collectionPrefix . $collectionName);
+        $result = $this->_driver->deleteAllIndexes($this->_collectionPrefix . $collectionName);
+
+        return $this->_mongoResult('deleteAllIndexes', $result);
     }
 
     /**
@@ -126,28 +112,34 @@ class Mongo
      *
      * @param bool $includeSystemCollections
      *
-     * @return array
+     * @return MongoResult
      */
     public function getCollectionNames($includeSystemCollections = false)
     {
-        return $this->_driver->getCollectionNames($includeSystemCollections);
+        $result = $this->_driver->getCollectionNames($includeSystemCollections);
+
+        return $this->_mongoResult('getCollectionNames', $result);
     }
 
 
     /**
      * Insert data into collection<br>
-     * Returns an array containing the status of the insertion if the "w" option is set.<br>
-     * Otherwise, returns TRUE if the inserted array is not empty (a MongoException will be thrown if the inserted array is empty).
+     * Inserted document <b>_id</b> is added to $data by reference
      *
      * @param string $collectionName
      * @param array  $data
      * @param array  $options options
      *
-     * @return array|bool
+     * @return MongoResult|bool
      */
     public function insert($collectionName, array $data, $options = [])
     {
-        return $this->_driver->insert($this->_collectionPrefix . $collectionName, $data, $options);
+        $result = $this->_driver->insert($this->_collectionPrefix . $collectionName, $data, $options);
+        if($this->isArray($result)) {
+            return $this->_mongoResult('insert', $result);
+        }
+
+        return $result;
     }
 
     /**
@@ -161,35 +153,30 @@ class Mongo
      *
      * @see http://php.net/manual/en/mongocollection.group.php
      *
-     * @return array
+     * @return MongoResult
      */
     public function group($collectionName, $keys, array $initial, $reduce, array $condition = [])
     {
-        return $this->_driver->group($this->_collectionPrefix . $collectionName, $keys, $initial, $reduce, $condition);
+        $result = $this->_driver->group($this->_collectionPrefix . $collectionName, $keys, $initial, $reduce,
+                                        $condition);
+
+        return $this->_mongoResult('group', $result);
     }
 
     /**
-     * Ensure index<br>
-     * Returns an array containing the status of the index creation.
-     * <code>
-     * Array
-     *   (
-     *       [n] => 0
-     *       [connectionId] => 60
-     *       [err] =>
-     *       [ok] => 1
-     *   )
-     * </code>
+     * Ensure index
      *
      * @param string $collectionName Name
      * @param string $keys           Keys
      * @param array  $options        Options
      *
-     * @return array
+     * @return MongoResult
      */
     public function ensureIndex($collectionName, $keys, $options = [])
     {
-        return $this->_driver->ensureIndex($this->_collectionPrefix . $collectionName, $keys, $options);
+        $result = $this->_driver->ensureIndex($this->_collectionPrefix . $collectionName, $keys, $options);
+
+        return $this->_mongoResult('ensureIndex', $result);
     }
 
     /**
@@ -201,11 +188,13 @@ class Mongo
      *
      * @see http://php.net/manual/en/mongodb.execute.php
      *
-     * @return mixed
+     * @return MongoResult
      */
     public function execute($code, array $args = [])
     {
-        return $this->_driver->execute($code, $args);
+        $result = $this->_driver->execute($code, $args);
+
+        return $this->_mongoResult('execute', $result);
     }
 
     /**
@@ -216,7 +205,7 @@ class Mongo
      * @param array  $query          Query
      * @param array  $fields         Fields In form: ['fieldname' => true, 'fieldname2' => true]
      *
-     * @return MongoCursor
+     * @return MongoCursor|MongoResult
      */
     public function find($collectionName, array $query = [], array $fields = [])
     {
@@ -226,7 +215,7 @@ class Mongo
             return new MongoCursor($result);
         }
 
-        return $result;
+        return $this->_mongoResult('find', $result);
     }
 
     /**
@@ -237,38 +226,31 @@ class Mongo
      * @param int    $size   Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
      * @param int    $max    The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
      *
-     * @return array
+     * @return MongoResult|MongoCollection
      */
     public function createCollection($name, $capped = false, $size = 0, $max = 0)
     {
-        $collection = $this->_driver->createCollection($this->_collectionPrefix . $name, $capped, $size, $max);
-        if($this->isInstanceOf($collection, '\MongoCollection')) {
-            return new MongoCollection($collection);
+        /* @var $collection \MongoCollection */
+        $result = $this->_driver->createCollection($this->_collectionPrefix . $name, $capped, $size, $max);
+        if($this->isInstanceOf($result, '\MongoCollection')) {
+            return new MongoCollection($result);
         }
 
-        return $collection;
+        return $this->_mongoResult('createCollection', $result);
     }
 
     /**
-     * Drop collection<br>
-     * Returns the database response.
-     * <code>
-     * Array
-     *   (
-     *       [nIndexesWas] => 1
-     *       [msg] => all indexes deleted for collection
-     *       [ns] => my_db.articles
-     *       [ok] => 1
-     *   )
-     * </code>
+     * Drop collection
      *
      * @param $collectionName
      *
-     * @return array
+     * @return MongoResult
      */
     public function dropCollection($collectionName)
     {
-        return $this->_driver->dropCollection($this->_collectionPrefix . $collectionName);
+        $result = $this->_driver->dropCollection($this->_collectionPrefix . $collectionName);
+
+        return $this->_mongoResult('dropCollection', $result);
     }
 
     /**
@@ -278,11 +260,13 @@ class Mongo
      *
      * @see http://php.net/manual/en/mongodb.command.php
      *
-     * @return string|null
+     * @return MongoResult
      */
     public function command(array $data)
     {
-        return $this->_driver->command($data);
+        $result = $this->_driver->command($data);
+
+        return $this->_mongoResult('command', $result);
     }
 
     /**
@@ -296,7 +280,12 @@ class Mongo
      */
     public function distinct(array $data)
     {
-        return $this->_driver->distinct($data);
+        $result = $this->_driver->distinct($data);
+        if($result) {
+            return $this->_mongoResult('distinct', $result);
+        }
+
+        return false;
     }
 
     /**
@@ -311,7 +300,12 @@ class Mongo
      */
     public function findOne($collectionName, array $query = [], array $fields = [])
     {
-        return $this->_driver->findOne($this->_collectionPrefix . $collectionName, $query, $fields);
+        $result = $this->_driver->findOne($this->_collectionPrefix . $collectionName, $query, $fields);
+        if($result) {
+            return $this->_mongoResult('findOne', $result);
+        }
+
+        return null;
     }
 
     /**
@@ -331,17 +325,6 @@ class Mongo
      * Remove documents from collection by given criteria.<br>
      * Returns array containing result of remove operation.
      *
-     * <code>
-     * Array
-     *   (
-     *       [n] => 1
-     *       [connectionId] => 61
-     *       [err] =>
-     *       [ok] => 1
-     *   )
-     *
-     * </code>
-     *
      * @param string $collectionName Collection name
      * @param array  $criteria       Criteria
      * @param array  $options        Options
@@ -350,7 +333,9 @@ class Mongo
      */
     public function remove($collectionName, array $criteria, $options = [])
     {
-        return $this->_driver->remove($this->_collectionPrefix . $collectionName, $criteria, $options);
+        $result = $this->_driver->remove($this->_collectionPrefix . $collectionName, $criteria, $options);
+
+        return $this->_mongoResult('remove', $result);
     }
 
     /**
@@ -362,42 +347,21 @@ class Mongo
      * @param array  $data           Data
      * @param array  $options        Options
      *
-     * @return array|bool
+     * @return MongoResult|bool
      */
     public function save($collectionName, array $data, $options = [])
     {
-        return $this->_driver->save($this->_collectionPrefix . $collectionName, $data, $options);
-    }
+        $result = $this->_driver->save($this->_collectionPrefix . $collectionName, $data, $options);
+        if($this->isArray($result)) {
+            return $this->_mongoResult('save', $result);
+        }
 
-    /**
-     * Aggregate documents<br>
-     * Returns the result of the aggregation as an array.<br>
-     * The ok will be set to 1 on success, 0 on failure.
-     *
-     * @param array $options
-     *
-     * @see http://php.net/manual/en/mongocollection.aggregate.php
-     *
-     * @return array
-     */
-    public function aggregate(array $options)
-    {
-        return $this->_driver->aggregate($options);
+        return $result;
     }
 
     /**
      * Update document<br>
      * Returns array containing result of update operation.
-     * <code>
-     * Array
-     *   (
-     *       [updatedExisting] => 1
-     *       [n] => 1
-     *       [connectionId] => 67
-     *       [err] =>
-     *       [ok] => 1
-     *   )
-     * </code>
      *
      * @param string $collectionName Collection name
      * @param array  $criteria       Criteria
@@ -408,6 +372,30 @@ class Mongo
      */
     public function update($collectionName, array $criteria, array $newObj, $options = [])
     {
-        return $this->_driver->update($this->_collectionPrefix . $collectionName, $criteria, $newObj, $options);
+        $result = $this->_driver->update($this->_collectionPrefix . $collectionName, $criteria, $newObj, $options);
+
+        return $this->_mongoResult('update', $result);
+    }
+
+    /**
+     * Create MongoResult
+     *
+     * @param array $data
+     *
+     * @param string $method
+     *
+     * @throws MongoException
+     * @return MongoResult
+     */
+    private function _mongoResult($method, $data)
+    {
+        $baseResultClass = '\Webiny\Component\Mongo\MongoResult';
+        $resultClass = $this->getConfig()->get('ResultClass');
+
+        if($resultClass != $baseResultClass && !$this->isSubClassOf($resultClass, $baseResultClass)) {
+            throw new MongoException(MongoException::INVALID_RESULT_CLASS_PROVIDED);
+        }
+
+        return new $resultClass($method, $data);
     }
 }

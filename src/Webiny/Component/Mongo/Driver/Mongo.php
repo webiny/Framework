@@ -9,6 +9,7 @@ namespace Webiny\Component\Mongo\Driver;
 
 use MongoClient;
 use MongoDB;
+use Webiny\Component\Mongo\MongoException;
 use Webiny\Component\Mongo\MongoInterface;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -49,7 +50,7 @@ class Mongo implements MongoInterface
             $this->_connection = new MongoClient($server, $config);
             $this->_db = $this->_connection->selectDB($database);
         } catch (\MongoException $e) {
-
+            throw new MongoException($e->getMessage());
         }
 
     }
@@ -78,7 +79,8 @@ class Mongo implements MongoInterface
     }
 
     /**
-     * Insert data into collection
+     * Insert data into collection<br>
+     * Inserted document <b>_id</b> is added to $data by reference.
      *
      * @param string $collectionName
      * @param array  $data
@@ -88,9 +90,7 @@ class Mongo implements MongoInterface
      */
     public function insert($collectionName, array $data, $options = [])
     {
-        $this->_getCollection($collectionName)->insert($data, $options);
-
-        return $data;
+        return $this->_getCollection($collectionName)->insert($data, $options);
     }
 
     /**
@@ -304,27 +304,6 @@ class Mongo implements MongoInterface
     public function save($collectionName, array $data, $options = [])
     {
         return $this->_getCollection($collectionName)->save($data, $options);
-    }
-
-    /**
-     * Aggregate
-     *
-     * @param array $collectionName
-     * @param array $options
-     *
-     * @see http://php.net/manual/en/mongocollection.aggregate.php
-     *
-     * @return array
-     */
-    public function aggregate($collectionName, array $options = [])
-    {
-        $collection = $this->_getCollection($collectionName);
-
-        return call_user_func_array([
-                                        $collection,
-                                        'aggregate'
-                                    ], $options
-        );
     }
 
     /**

@@ -18,6 +18,8 @@ use Webiny\Component\Mongo\MongoException;
  */
 class SingleIndex extends IndexAbstract
 {
+    protected $_ttl = false;
+
     /**
      * @param string $name           Index name
      * @param string $field          Index field, ex: title (ascending), -title (descending)
@@ -30,6 +32,7 @@ class SingleIndex extends IndexAbstract
      */
     public function __construct($name, $field, $sparse = false, $unique = false, $dropDuplicates = false, $ttl = false)
     {
+        $this->_ttl = $ttl;
         $fields = $this->isArray($field) ? $field : [$field];
 
         if(count($fields) != 1) {

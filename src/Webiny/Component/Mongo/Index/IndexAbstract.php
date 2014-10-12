@@ -25,7 +25,6 @@ abstract class IndexAbstract implements IndexInterface
     protected $_sparse = false;
     protected $_unique = false;
     protected $_dropDuplicates = false;
-    protected $_ttl = false;
 
     /**
      * @param string $name           Index name

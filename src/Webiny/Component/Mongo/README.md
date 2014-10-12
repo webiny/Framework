@@ -33,13 +33,28 @@ Mongo:
     Services:
         Webiny:
             Class: \Webiny\Component\Mongo\Mongo
-            Arguments: [127.0.0.1:27017, webiny, null, null, 'MyDatabase_']
+            Arguments:
+                Host: 127.0.0.1:27017
+                Database: webiny
+                Username: null
+                Password: null
+                CollectionPrefix: 'MyDatabase_'
+                Options:
+                    w: 1
+                    wTimeoutMS: 10000
+                    connectTimeoutMS: 60000
+                    socketTimeoutMS: 30000
+                    fsync: false
+                    journal: false
     Driver: \Webiny\Component\Mongo\Driver\Mongo
+    ResultClass: \Webiny\Component\Mongo\MongoResult
 
 ```
 
-Constructor arguments are in the following order: `host`, `database`, `username`, `password`, `collectionPrefix`.
 Collection prefix will be automatically prepended for you to all database queries.
+`Options` do not need to be specified if you want to use default Mongo settings.
+
+For more information see: [MongoClient options](http://php.net/manual/en/mongoclient.construct.php)
 
 After you have defined your Mongo services (in most cases you will only need one, but you can have as many as you like), you can access your Mongo services by using `MongoTrait`:
 
@@ -56,6 +71,9 @@ class MyClass {
     }
 }
 ```
+
+`ResultClass` is used to wrap all Mongo command results. This allows us to have a compatibility layer in case something changes in Mongo response structures in the future
+and also allows any developer to extend this class and add custom methods to handle mongo response flags.
 
 Resources
 ---------
