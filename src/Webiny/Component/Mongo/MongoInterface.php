@@ -53,15 +53,6 @@ interface MongoInterface
     /**
      * Ensure index<br>
      * Returns an array containing the status of the index creation.
-     * <code>
-     * Array
-     *   (
-     *       [n] => 0
-     *       [connectionId] => 60
-     *       [err] =>
-     *       [ok] => 1
-     *   )
-     * </code>
      *
      * @param string $collectionName name
      * @param string $keys           keys

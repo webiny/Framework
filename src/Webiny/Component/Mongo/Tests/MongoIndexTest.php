@@ -9,7 +9,9 @@ namespace Webiny\Component\Mongo\Tests;
 
 
 use PHPUnit_Framework_TestCase;
+use Webiny\Component\Mongo\Index\CompoundIndex;
 use Webiny\Component\Mongo\Index\SingleIndex;
+use Webiny\Component\Mongo\Index\TextIndex;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 
@@ -28,9 +30,16 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $mongo->dropCollection($collection);
 
         $index = new SingleIndex('Name', 'name', false, true);
-        $res = $mongo->createIndex($collection, $index);
+        $mongo->createIndex($collection, $index);
 
-        $this->assertEquals(1, $res['numIndexesAfter'] - $res['numIndexesBefore']);
+        $index = new CompoundIndex('TitleCategory', ['title', 'category']);
+        $mongo->createIndex($collection, $index);
+
+        $index = new TextIndex('Title', ['title', 'category']);
+        $mongo->createIndex($collection, $index);
+
+        $indexes = $mongo->getIndexInfo($collection);
+        $this->assertEquals(4, count($indexes));
     }
 
     function driverSet()

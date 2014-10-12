@@ -98,6 +98,18 @@ class Mongo
     }
 
     /**
+     * Get collection indexes
+     *
+     * @param string $collectionName Collection name
+     *
+     * @return array
+     */
+    public function getIndexInfo($collectionName){
+        $result = $this->_driver->getIndexInfo($this->_collectionPrefix.$collectionName);
+        return $this->_mongoResult('getIndexInfo', $result);
+    }
+
+    /**
      * Get collection prefix
      *
      * @return string

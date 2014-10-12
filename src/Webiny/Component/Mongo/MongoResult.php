@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  *
  * @package Webiny\Component\Mongo
  */
-class MongoResult implements \ArrayAccess, \IteratorAggregate
+class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
 {
 
     /**
@@ -130,5 +130,19 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate
     public function offsetUnset($offset)
     {
         $this->_data->removeKey($offset);
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     */
+    public function count()
+    {
+        return $this->_data->count();
     }
 }

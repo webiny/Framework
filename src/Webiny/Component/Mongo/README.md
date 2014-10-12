@@ -72,8 +72,24 @@ class MyClass {
 }
 ```
 
+### ResultClass
 `ResultClass` is used to wrap all Mongo command results. This allows us to have a compatibility layer in case something changes in Mongo response structures in the future
 and also allows any developer to extend this class and add custom methods to handle mongo response flags.
+
+### Indexes
+Currently Mongo component supports 3 types of indexes:
+- SingleIndex
+- CompoundIndex
+- TextIndex
+
+To create an index on your collection:
+```php
+// Create a unique single index object
+$index = new SingleIndex('Name', 'name', false, true);
+
+// Use mongo trait to create index on your collection
+$this->mongo()->createIndex('MyCollection', $index);
+```
 
 Resources
 ---------
