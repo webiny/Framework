@@ -147,7 +147,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
             'title'  => 12,
             'author' => false
         ];
-        $this->setExpectedException('\Webiny\Component\Entity\Attribute\ValidationException');
+        $this->setExpectedException('\Webiny\Component\Entity\EntityException');
         $page->populate($data);
     }
 
