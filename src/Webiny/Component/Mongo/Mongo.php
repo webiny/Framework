@@ -29,6 +29,27 @@ class Mongo
 
     private $_collectionPrefix = '';
 
+    /**
+     * Check if given string is a potentially valid MongoId string
+     *
+     * @param $string
+     *
+     * @return bool
+     */
+    public static function isMongoId($string){
+        if(!self::isString($string)){
+            return false;
+        }
+        $match = self::str($string)->match('[0-9a-f]{24}', false);
+
+        if(!$match){
+            return false;
+        }
+
+        $mongoId = new \MongoId($match[0]);
+        return $mongoId->getTimestamp() > 0;
+    }
+
     public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '', $options = [])
     {
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Driver\Mongo');
