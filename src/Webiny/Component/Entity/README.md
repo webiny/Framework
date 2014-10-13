@@ -56,7 +56,7 @@ class Page extends EntityAbstract
 {
     protected static $_entityCollection = "Page";
 
-	protected function _entityStructure() {
+    protected function _entityStructure() {
 
 		// Create attributes
 		$this->attr('title')
@@ -129,29 +129,9 @@ $page->title->setValue('New title');
 $page->title = 'New title';
 ```
 
-## Mass populating
-There are different ways to populate One2Many attributes from, say, POST request:
-
-```php
-$data = [
-    'title'    => 'My shiny title',
-    'comments' => [
-        ['id' => '543c0fb76803fa76058b4569'],
-        ['id' => '543c0fda6803fa76058b456f']
-    ]
-];
-
-// or
-
-$data = [
-    'title'    => 'My shiny title',
-    'comments' => [
-        '543c0fb76803fa76058b4569',
-        '543c0fda6803fa76058b456f'
-    ]
-];
-
-```
+### setOnce()
+This method allows you to protect an attribute from being updated. You use this method to only allow your attribute to be populated when your new entity instance has no ID set (meaning it's a new instance).
+After you save your new entity instance, all subsequent calls to `populate()` will skip this attribute.
 
 ## One2Many Attribute
 This attribute's value is an instance of `EntityCollection`. You can you is in `foreach` loops, access values by numeric indexes and also call `count()` method to find out the total number of items in the data set.
@@ -165,9 +145,53 @@ foreach($page->comments as $comment){
 }
 ```
 
-### setOnce()
-This method allows you to protect an attribute from being updated. You use this method to only allow your attribute to be populated when your new entity instance has no ID set (meaning it's a new instance).
-After you save your new entity instance, all subsequent calls to `populate()` will skip this attribute.
+### Mass populating One2ManyAttribute
+There are different ways to populate One2Many attributes from, say, POST request.
+
+1) Structure data as simple array of Entity IDs:
+```php
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => [
+        '543c0fb76803fa76058b4569',
+        '543c0fda6803fa76058b456f'
+    ]
+];
+```
+
+2) Structure data as array of arrays with Entity data. If array contains `id`, an existing instance will be loaded, and populated with any data specified in the array (useful for updating existing Entities):
+```php
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => [
+        ['id' => '543c0fb76803fa76058b4569', 'someAttribute' => 'newValue'],
+        ['id' => '543c0fda6803fa76058b456f']
+    ]
+];
+```
+
+3) Structure data as `array` or `EntityCollection` of `EntityAbstract` instances. Using `find` method:
+
+```php
+$entityCollection = Comment::find(['status' => 'approved']);
+
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => $entityCollection
+];
+```
+
+Or if you build your array manually...
+```php
+$instance1 = Comment::findById($id1);
+$instance2 = Comment::findById($id2);
+$array = [$instance1, $instance2];
+
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => $array
+];
+```
 
 
 ### Referential integrity
@@ -182,7 +206,7 @@ This attribute also provides a way for create `aliases` for your data by linking
         ->setEntity('Comment')
         ->setFilter(['status' => 'approved']);
 ```
-### Linking with entities
+## Linking with other entities
 Say you posted a new comment, and you need to link it with the `Page` entity, you can do it using 2 approaches:
 
 First one is to load a Page instance, and use `add()` method on the `one2many` attribute:
@@ -216,7 +240,7 @@ $comment->save();
 
 Next time you load `Page` comments - the new `Comment` will be in the data set.
 
-### ArrayAttribute
+## ArrayAttribute
 This attribute is mostly used for some extra data you want to store with your entity that is not shown to users in forms or grids (some settings, etc.).
 The cool thing about this attribute is it's "set" and "get" methods, which allows you to get and set nested keys and get default value if some part of your key does not exist.
 
@@ -231,7 +255,33 @@ $page->settings->set('level1.level2.level3', 'My new value');
 $page->settings->get('level1.level4', 'Default value');
 ```
 
-### Convert EntityAbstract to array ###
+## Default value for Many2OneAttribute
+Default value for `Many2OneAttribute` can be specified in several ways:
+```php
+// Provide a default entity ID (can be fetched from logged in user, or retrieved from database or whatever)
+$defaultId = '53712ed46803fa4e058b456b';
+$this->attr('author')->many2one()->setEntity('Author')->setDefaultValue($defaultId);
+```
+
+```php
+// Provide a default entity instance
+$defaultInstance = Author::find(['some' => 'condition']);
+// or
+$defaultInstance = Author::findById('53712ed46803fa4e058b456b');
+$this->attr('author')->many2one()->setEntity('Author')->setDefaultValue($defaultInstance);
+```
+
+```php
+// Provide data which will be used to populate new entity instance
+// (will create a new record with new ID each time a default value is used)
+$defaultData = [
+    'firstName' => 'Pavel', 
+    'lastName' => 'Denisjuk'
+];
+$this->attr('author')->many2one()->setEntity('Author')->setDefaultValue($defaultData);
+```
+
+## Convert EntityAbstract to array
 You can get and array representation of current `EntityAbstract` instance by calling `toArray()` method.
 By default, only simple and Many2One attributes will be included in the resulting array.
 If you want to control which attributes to include, pass a string containing names of attributes. You can also control attributes of nested attributes:
