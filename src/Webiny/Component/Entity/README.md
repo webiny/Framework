@@ -129,6 +129,30 @@ $page->title->setValue('New title');
 $page->title = 'New title';
 ```
 
+## Mass populating
+There are different ways to populate One2Many attributes from, say, POST request:
+
+```php
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => [
+        ['id' => '543c0fb76803fa76058b4569'],
+        ['id' => '543c0fda6803fa76058b456f']
+    ]
+];
+
+// or
+
+$data = [
+    'title'    => 'My shiny title',
+    'comments' => [
+        '543c0fb76803fa76058b4569',
+        '543c0fda6803fa76058b456f'
+    ]
+];
+
+```
+
 ## One2Many Attribute
 This attribute's value is an instance of `EntityCollection`. You can you is in `foreach` loops, access values by numeric indexes and also call `count()` method to find out the total number of items in the data set.
 

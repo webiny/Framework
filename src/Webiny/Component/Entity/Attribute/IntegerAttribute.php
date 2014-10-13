@@ -16,6 +16,10 @@ class IntegerAttribute extends AttributeAbstract
 
     public function getDbValue()
     {
+        $value = $this->getValue();
+        if($this->isNull($this->_value)){
+            $this->_value = $value;
+        }
         return new \MongoInt32($this->_value);
     }
 

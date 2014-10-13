@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
+use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Entity\EntityException;
@@ -49,7 +50,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
          * Validate items
          */
         foreach ($item as $i) {
-            if (!$this->isInstanceOf($i, $this->getEntity()) && strlen($i) != 24) {
+            if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isMongoId($i)) {
                 throw new EntityException(EntityException::INVALID_MANY2MANY_VALUE, [
                         $this->_attribute,
                         'entity ID or instance of ' . $this->getEntity() . ' or null',

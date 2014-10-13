@@ -12,6 +12,7 @@ use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
+use Webiny\Component\Entity\Attribute\ValidationException;
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -235,7 +236,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
-        if(!$this->__getDirty()) {
+        if(!$this->__getDirty() && !$this->isNull($this->getId()->getValue())) {
             return true;
         }
         $one2manyClass = '\Webiny\Component\Entity\Attribute\One2ManyAttribute';
@@ -402,8 +403,15 @@ abstract class EntityAbstract implements \ArrayAccess
     public function populate($data)
     {
         $validation = $this->arr();
-        /** @var $entityAttribute AttributeAbstract */
+        /* @var $entityAttribute AttributeAbstract */
         foreach ($this->_attributes as $attributeName => $entityAttribute) {
+            // Check if attribute is required and it's value is set
+            if($entityAttribute->getRequired() && !isset($data[$attributeName])) {
+                $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING, [$attributeName]);
+                continue;
+            }
+
+            // If 'required' check is passed, continue with other checks
             $canPopulate = !$this->getId()->getValue() || !$entityAttribute->getOnce();
             if(isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
@@ -412,18 +420,46 @@ abstract class EntityAbstract implements \ArrayAccess
                 $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
 
                 if($isMany2One) {
-                    $entityAttribute->validate($dataValue)->setValue($dataValue);
+                    try{
+                        $entityAttribute->validate($dataValue)->setValue($dataValue);
+                    } catch(ValidationException $e){
+                        $validation[$attributeName] = $e;
+                        continue;
+                    }
                 } elseif($isOne2Many) {
                     $entityClass = $entityAttribute->getEntity();
+
+                    // Validate One2Many attribute value
+                    if(!$this->isArray($dataValue) && !$this->isArrayObject($dataValue)) {
+                        $validation[$attributeName] = new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
+                            $attributeName,
+                            'array or ArrayObject',
+                            gettype($dataValue)
+                        ]);
+                        continue;
+                    }
                     /* @var $entityAttribute One2ManyAttribute */
                     foreach ($dataValue as $item) {
-                        $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+                        $itemEntity = false;
 
+                        // $item can be an array of data or a simple MongoId string
+                        if($this->isArray($item) || $this->isArrayObject($item)) {
+                            $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+                        } elseif($this->isString($item) && Entity::getInstance()->getDatabase()->isMongoId($item)) {
+                            $itemEntity = $entityClass::findById($item);
+                        }
+
+                        // If instance was not found, create a new entity instance
                         if(!$itemEntity) {
                             $itemEntity = new $entityClass;
                         }
 
-                        $itemEntity->populate($item);
+                        // If $item is an array - use it to populate the entity instance
+                        if($this->isArray($item) || $this->isArrayObject($item)) {
+                            $itemEntity->populate($item);
+                        }
+
+                        // Add One2Many entity instance to current entity's attribute
                         $entityAttribute->add($itemEntity);
                     }
                 } elseif($isMany2Many) {

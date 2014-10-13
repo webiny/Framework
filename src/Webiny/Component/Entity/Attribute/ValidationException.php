@@ -17,12 +17,13 @@ class ValidationException extends ExceptionAbstract
 {
 
     const ATTRIBUTE_VALIDATION_FAILED = 101;
-
+    const REQUIRED_ATTRIBUTE_IS_MISSING = 102;
 
     protected $_errorMessages = [];
 
     protected static $_messages = [
         101 => "Invalid data provided for attribute '%s'. Expecting '%s', got '%s'.",
+        102 => "Missing required attribute value for attribute'%s'."
     ];
 
     public function setErrorMessages($messages)

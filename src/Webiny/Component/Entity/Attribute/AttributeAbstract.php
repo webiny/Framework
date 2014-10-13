@@ -57,13 +57,19 @@ abstract class AttributeAbstract
     }
 
     /**
-     * Get value that will be stored to database
+     * Get value that will be stored to database<br>
+     *
+     * If no value is set, default value will be used, and that value will also be assigned as a new attribute value.
      *
      * @return string
      */
     public function getDbValue()
     {
-        return $this->getValue();
+        $value = $this->getValue();
+        if($this->isNull($this->_value)){
+            $this->_value = $value;
+        }
+        return $value;
     }
 
     /**
