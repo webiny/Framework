@@ -73,6 +73,16 @@ class MongoTest extends PHPUnit_Framework_TestCase
         // Test drop collection
         $mongo->dropCollection($collection);
         $this->assertFalse(in_array($collection, $mongo->getCollectionNames()->toArray()));
+
+        // Test isMongoId()
+        $id = '12345678absdfgrtuierwe12';
+        $this->assertFalse($mongo->isMongoId($id));
+
+        $id = 'aaaabbbbcccc 11122223333';
+        $this->assertFalse($mongo->isMongoId($id));
+
+        $id = '543c1d846803fa76058b458b';
+        $this->assertTrue($mongo->isMongoId($id));
     }
 
     function driverSet()

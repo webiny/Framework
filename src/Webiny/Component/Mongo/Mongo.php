@@ -30,7 +30,9 @@ class Mongo
     private $_collectionPrefix = '';
 
     /**
-     * Check if given string is a potentially valid MongoId string
+     * Check if given string is a potentially valid MongoId string<br>
+     *
+     * NOTE: This check is not bullet proof but is useful in most situations.
      *
      * @param $string
      *
