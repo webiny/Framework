@@ -1,6 +1,6 @@
 Entity Component
 =====================
-`Entity` component is an ORM layer for MongoDB. Entity classes created using this component will serve as the main building blocks for modules, forms, tables, etc.
+`Entity` component is an ODM layer for MongoDB. Entity classes created using this component will serve as the main building blocks for modules, forms, tables, etc.
 Every entity attribute is a complex data type. There are no simple strings or integers. Even `boolean` is a complex data type and has a separate class. This allows us to
 generate a lot of code and interface elements automatically.
 
