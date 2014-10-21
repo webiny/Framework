@@ -120,7 +120,7 @@ class Many2OneAttribute extends AttributeAbstract
             );
         }
 
-        if (!$this->_value && $this->_defaultValue) {
+        if (!$this->_value && !$this->isNull($this->_defaultValue)) {
             return $this->_defaultValue;
         }
 

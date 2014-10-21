@@ -203,7 +203,7 @@ abstract class AttributeAbstract
      */
     public function getValue()
     {
-        if ($this->isNull($this->_value) && $this->_defaultValue) {
+        if ($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
             return $this->_defaultValue;
         }
 
