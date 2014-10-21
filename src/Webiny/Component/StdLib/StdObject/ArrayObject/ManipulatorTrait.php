@@ -72,7 +72,7 @@ trait ManipulatorTrait
             if (strpos($key, '.') !== false) {
                 $keys = explode('.', trim($key, '.'), 2);
                 $targetArray = new ArrayObject($array[$keys[0]]);
-                $targetArray->keyNested($keys[1], $value, true);
+                $value = $targetArray->keyNested($keys[1], $value, true);
                 $this->keyNested($keys[0], $targetArray->val());
             } else {
                 $array[$key] = $value;
