@@ -46,7 +46,7 @@ class OAuth2 implements UserProviderInterface
             $eventClass = new OAuth2Event($oauth2User, $oauth2);
             $this->eventManager()->fire(OAuth2Event::OAUTH2_AUTH_SUCCESS, $eventClass);
         } catch (\Exception $e) {
-            $this->request()->session()->delete('oauth_token');
+            $this->httpSession()->delete('oauth_token');
             throw new UserNotFoundException($e->getMessage());
         }
 

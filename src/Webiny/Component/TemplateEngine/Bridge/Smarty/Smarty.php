@@ -177,7 +177,9 @@ class Smarty implements TemplateEngineInterface
     public function fetch($template, $parameters = [])
     {
         try {
-            $this->_smarty->assign($parameters);
+            if(count($parameters)>0){
+                $this->_smarty->assign($parameters);
+            }
 
             return $this->_smarty->fetch($template);
         } catch (\Exception $e) {
@@ -195,6 +197,9 @@ class Smarty implements TemplateEngineInterface
      */
     public function render($template, $parameters = [])
     {
+        if(count($parameters)<1){
+            $parameters = null;
+        }
         echo $this->_smarty->fetch($template, $parameters);
     }
 
