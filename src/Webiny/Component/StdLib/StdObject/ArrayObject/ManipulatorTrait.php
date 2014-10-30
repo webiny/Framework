@@ -84,6 +84,9 @@ trait ManipulatorTrait
             if (!$setOnlyIfDoesntExist && !$this->isNull($value)) {
                 if (strpos($key, '.') !== false) {
                     $keys = explode('.', trim($key, '.'), 2);
+                    if(!isset($array[$keys[0]])) {
+                        $array[$keys[0]] = [];
+                    }
                     $targetArray = new ArrayObject($array[$keys[0]]);
                     $targetArray->keyNested($keys[1], $value);
                     $this->keyNested($keys[0], $targetArray->val());

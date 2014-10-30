@@ -32,14 +32,14 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      * Constructor
      *
      * @param string  $directory           Directory of the storage
-     * @param         $publicUrl           Public storage URL
+     * @param string $publicUrl            Public storage URL
      * @param bool    $dateFolderStructure If true, will append Y/m/d to the key
      * @param boolean $create              Whether to create the directory if it does not
      *                                     exist (default FALSE)
      *
      * @throws StorageException
      */
-    public function __construct($directory, $publicUrl, $dateFolderStructure = false, $create = false)
+    public function __construct($directory, $publicUrl = '', $dateFolderStructure = false, $create = false)
     {
         $this->_helper = LocalHelper::getInstance();
         $this->_directory = $this->_helper->normalizeDirectoryPath($directory);
@@ -56,7 +56,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     {
         $this->_recentKey = $key;
 
-        if ($this->keyExists($key)) {
+        if($this->keyExists($key)) {
             return filemtime($this->_buildPath($key));
         }
 
@@ -69,7 +69,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     public function getSize($key)
     {
         $this->_recentKey = $key;
-        if ($this->keyExists($key)) {
+        if($this->keyExists($key)) {
             return filesize($this->_buildPath($key));
         }
 
@@ -92,7 +92,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     public function renameKey($sourceKey, $targetKey)
     {
         $this->_recentKey = $sourceKey;
-        if ($this->keyExists($sourceKey)) {
+        if($this->keyExists($sourceKey)) {
             $targetPath = $this->_buildPath($targetKey);
             $this->_helper->ensureDirectoryExists(dirname($targetPath), true);
 
@@ -108,7 +108,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     {
         $this->_recentKey = $key;
         $data = file_get_contents($this->_buildPath($key));
-        if (!$data) {
+        if(!$data) {
             throw new StorageException(StorageException::FAILED_TO_READ);
         }
 
@@ -120,8 +120,8 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function setContents($key, $contents)
     {
-        if ($this->_dateFolderStructure) {
-            if (!$this->keyExists($key)) {
+        if($this->_dateFolderStructure) {
+            if(!$this->keyExists($key)) {
                 $key = new StringObject($key);
                 $key = date('Y' . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'd'
                     ) . DIRECTORY_SEPARATOR . $key->trimLeft(DIRECTORY_SEPARATOR);
@@ -157,7 +157,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getKeys($key = '', $recursive = false)
     {
-        if ($key != '') {
+        if($key != '') {
             $key = ltrim($key, DIRECTORY_SEPARATOR);
             $key = rtrim($key, DIRECTORY_SEPARATOR);
             $path = $this->_directory . DIRECTORY_SEPARATOR . $key;
@@ -167,13 +167,13 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
 
         $this->_helper->ensureDirectoryExists($path, $this->_create);
 
-        if ($recursive) {
+        if($recursive) {
             try {
                 $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path,
                                                                                            \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS
                                                            )
                 );
-                if ($recursive > -1) {
+                if($recursive > -1) {
                     $iterator->setMaxDepth($recursive);
                 }
             } catch (\Exception $e) {
@@ -185,7 +185,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
             $iterator = new \DirectoryIterator($path);
             foreach ($iterator as $fileinfo) {
                 $name = $fileinfo->getFilename();
-                if ($name == '.' || $name == '..') {
+                if($name == '.' || $name == '..') {
                     continue;
                 }
                 $files[] = $fileinfo->getPathname();
@@ -212,7 +212,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
         $this->_recentKey = $key;
         $path = $this->_buildPath($key);
 
-        if ($this->isDirectory($key)) {
+        if($this->isDirectory($key)) {
             return @rmdir($path);
         }
 
@@ -259,7 +259,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     private function _buildPath($key)
     {
         $path = $this->_helper->buildPath($key, $this->_directory, $this->_create);
-        if (strpos($path, $this->_directory) !== 0) {
+        if(strpos($path, $this->_directory) !== 0) {
             throw new StorageException(StorageException::PATH_IS_OUT_OF_STORAGE_ROOT, [
                     $path,
                     $this->_directory
