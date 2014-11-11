@@ -94,6 +94,23 @@ class Rest
     }
 
     /**
+     * Processes the current request and returns an instance of CallbackResult.
+     *
+     * @return bool|Response\CallbackResult
+     * @throws RestException
+     */
+    public function processRequest()
+    {
+        try {
+            $router = new Router($this->_api, $this->_class);
+
+            return $router->processRequest();
+        } catch (\Exception $e) {
+            throw new RestException('Unable to process request for class "' . $this->_class . '". ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Returns true if current environment is 'development'.
      *
      * @return bool
@@ -120,23 +137,6 @@ class Rest
             }
         } catch (\Exception $e) {
             throw new RestException('Unable to register class "' . $this->_class . '". ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Processes the current request and returns an instance of CallbackResult.
-     *
-     * @return bool|Response\CallbackResult
-     * @throws RestException
-     */
-    public function processRequest()
-    {
-        try {
-            $router = new Router($this->_api, $this->_class);
-
-            return $router->processRequest();
-        } catch (\Exception $e) {
-            throw new RestException('Unable to process request for class "' . $this->_class . '". ' . $e->getMessage());
         }
     }
 

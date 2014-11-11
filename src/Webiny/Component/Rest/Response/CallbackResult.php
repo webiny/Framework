@@ -160,6 +160,16 @@ class CallbackResult
     }
 
     /**
+     * If there are errors, error report array is returned, otherwise false.
+     *
+     * @return bool|array
+     */
+    public function getError()
+    {
+        return empty($this->_outputArray['errorReport']) ? false : $this->_outputArray['errorReport'];
+    }
+
+    /**
      * Adds a debug message to the debug output section.
      *
      * @param string|array $message Debug message.
@@ -174,17 +184,27 @@ class CallbackResult
     }
 
     /**
-     * Sets the callback content.
+     * Sets the callback content data.
      *
-     * @param mixed $content Content that will be set into output 'data' field.
+     * @param mixed $data Data that will be set into output 'data' field.
      *
      * @return $this
      */
-    public function setCallbackContent($content)
+    public function setData($data)
     {
-        $this->_outputArray['data'] = $content;
+        $this->_outputArray['data'] = $data;
 
         return $this;
+    }
+
+    /**
+     * Returns the data from the service response.
+     *
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->_outputArray['data'];
     }
 
     /**

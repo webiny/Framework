@@ -108,7 +108,7 @@ class Callback
 
         // finalize output
         if ($cachedResult) {
-            $cr->setCallbackContent($cachedResult);
+            $cr->setData($cachedResult);
             $cr->attachDebugHeader('Cache', 'HIT');
         } else {
             try {
@@ -123,7 +123,7 @@ class Callback
                 $cr->attachDebugHeader('Cache', 'MISS');
 
                 // add result to output
-                $cr->setCallbackContent($result);
+                $cr->setData($result);
 
                 // check if we need to attach the cache headers
                 if ($this->_requestBag->getMethodData()['header']['cache']['expires'] > 0) {
