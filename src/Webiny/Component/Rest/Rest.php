@@ -7,11 +7,17 @@
 
 namespace Webiny\Component\Rest;
 
+use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Rest\Compiler\Cache;
 use Webiny\Component\Rest\Compiler\Compiler;
 use Webiny\Component\Rest\Parser\Parser;
 use Webiny\Component\Rest\Response\Router;
+use Webiny\Component\Router\Matcher\MatchedRoute;
+use Webiny\Component\Router\Route\Route;
+use Webiny\Component\Router\RouterTrait;
 use Webiny\Component\StdLib\ComponentTrait;
+use Webiny\Component\StdLib\StdObjectTrait;
 
 /**
  * Rest class provides the main methods for registering and building API requests.
@@ -20,7 +26,13 @@ use Webiny\Component\StdLib\ComponentTrait;
  */
 class Rest
 {
-    use ComponentTrait;
+    use ComponentTrait, RouterTrait, HttpTrait, StdObjectTrait;
+
+    /**
+     * Environment constants
+     */
+    const ENV_DEVELOPMENT = 'development';
+    const ENV_PRODUCTION = 'production';
 
     /**
      * @var string Name of the api configuration.
@@ -42,6 +54,94 @@ class Rest
      */
     private $_class;
 
+
+    /**
+     * Initializes the current Rest configuration, tries to match the current URL with the defined Path.
+     * If match was successful, an instance of Rest class is returned, otherwise false.
+     *
+     * @param string $api Api configuration Name
+     * @param string $url Url on which the to match. Leave blank to use the current url.
+     *
+     * @return bool|Rest
+     * @throws RestException
+     * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
+     */
+    static public function initRest($api, $url = '')
+    {
+        $config = self::getConfig()->get($api, false);
+
+        if (!$config) {
+            throw new RestException('Configuration for "' . $api . '" not found.');
+        }
+
+        // check if we have the Path defined
+        $path = $config->get('Services.Path', false);
+        if (!$path) {
+            throw new RestException('Services.Path is not defined for "' . $api . '" api.');
+        }
+
+        // create the route for Router component
+        $route = [
+            'WebinyRest' . $api => [
+                'Path'     => self::str($path)->trimRight('/')->append('/{webiny_rest_params}')->val(),
+                'Callback' => 'null',
+                'Options'  => [
+                    'webiny_rest_params' => [
+                        'Pattern' => '.*?'
+                    ]
+                ]
+            ]
+        ];
+
+        // call the router and match the request
+        // we must append some dummy content at the end of the url, because in case of a default API method, and since
+        // we have added an additional pattern to the url, the url will not match
+        self::router()->appendRoutes(new ConfigObject($route));
+        if ($url == '') {
+            $result = self::router()->match(self::str(self::httpRequest()->getCurrentUrl())
+                                                ->trimRight('/')
+                                                ->append('/_w_rest/_foo')
+                                                ->val()
+            );
+        } else {
+            $result = self::router()->match(self::str($url)->trimRight('/')->append('/_w_rest/_foo')->val());
+        }
+
+        if (!$result) {
+            return false;
+        }
+
+        return self::_processRouterResponse($result, $config, $api);
+    }
+
+    /**
+     * Internal static method that is called when initRest method matches a URL agains the Path.
+     * This method then processes that matched response and then creates and returns a Rest instance back to iniRest.
+     *
+     * @param MatchedRoute $matchedRoute The matched route.
+     * @param ConfigObject $config       Current api config.
+     * @param string       $api          Current api name.
+     *
+     * @return Rest
+     * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
+     */
+    static private function _processRouterResponse(MatchedRoute $matchedRoute, ConfigObject $config, $api)
+    {
+        // based on the matched route create the class name
+        $className = self::str($config->get('Services.Class'))->trimLeft('\\')->prepend('\\');
+        $normalize = $config->get('Services.Normalize', false);
+        $matchedParams = $matchedRoute->getParams();
+        foreach ($matchedParams as $mpName => $mpParam) {
+            if ($normalize) {
+                $mpParam = self::str($mpParam)->replace('-', ' ')->caseWordUpper()->replace(' ', '');
+            }
+
+            $className->replace('{' . $mpName . '}', $mpParam);
+        }
+
+        // return the new rest instance
+        return new self($api, $className->val());
+    }
 
     /**
      * Base constructor.
@@ -74,9 +174,9 @@ class Rest
      *
      * @throws RestException
      */
-    public function setEnvironment($env)
+    public function setEnvironment($env = self::ENV_PRODUCTION)
     {
-        if ($env != 'production' && $env != 'development') {
+        if ($env != self::ENV_DEVELOPMENT && $env != self::ENV_PRODUCTION) {
             throw new RestException('Unknown environment "' . $env . '".');
         }
 

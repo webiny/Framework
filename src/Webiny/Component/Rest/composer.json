@@ -23,7 +23,8 @@
 		"webiny/config": "~1.0",
 		"webiny/http": "~1.0",
 		"webiny/security": "~1.0",
-		"webiny/annotations": "~1.0"
+		"webiny/annotations": "~1.0",
+		"webiny/router": "~1.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.1.*"
