@@ -272,6 +272,7 @@ under "normalize" we consider transforming parameter value like this one `some-a
 Let's say you have the upper configuration example in place. The following url will produce the example class name.
 
 Url: `http://www.hats.com/services/my-app/some-longer-name/test/pac-man`
+
 Class: `\Foo\Bar\MyServices\SomeLongerName\PacMan`
 
 #### Some pre-requirements
