@@ -256,29 +256,28 @@ Rest:
 
 The config takes the following parameters:
 
-### Class
+#### Class
 This parameter tells to the `Router` how it should implement the matching parameters from the url and the `Path` to get
  the class name used for the called Rest service.
  
-### Path
+#### Path
 Path is a url pattern that the component tries to match agains the current url. If a match is made, the matched parameters are used to create 
 the `Class` name. All the patterns are inside curly brackets `{foo}` and `([\w-]+)` regex pattern is used for matching.
 
-### Normalize 
+#### Normalize 
 This is an optional feature. It tells to the component if the matched parameters should be normalized. In this case 
 under "normalize" we consider transforming parameter value like this one `some-application` into this `SomeApplication`.
 
-### Examples
+#### Example
 Let's say you have the upper configuration example in place. The following url will produce the example class name.
 
 Url: `http://www.hats.com/services/my-app/some-longer-name/test/pac-man`
 Class: `\Foo\Bar\MyServices\SomeLongerName\PacMan`
 
-### Some pre-requirements
+#### Some pre-requirements
 All you need to do is set on your web server that all requests should be routed to a single file, for example `rest.php`
- On that file call the static `iniRest` method with the API name. That method return a new Rest instance where
- you can call the `processRequest` method that triggers the service call. If the url is not matched with the defined `Path`
-  a boolean `false` is returned.
+ On that file call the static `iniRest` method with the API name. That method returns a new Rest instance where
+ you can call the `processRequest` method that triggers the service call. If the url is not matched boolean `false` is returned.
  
 ```php
 try{
