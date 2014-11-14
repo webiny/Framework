@@ -96,7 +96,7 @@ class Rest
         // call the router and match the request
         // we must append some dummy content at the end of the url, because in case of a default API method, and since
         // we have added an additional pattern to the url, the url will not match
-        self::router()->appendRoutes(new ConfigObject($route));
+        self::router()->prependRoutes(new ConfigObject($route));
         if ($url == '') {
             $result = self::router()->match(self::str(self::httpRequest()->getCurrentUrl())
                                                 ->trimRight('/')
