@@ -75,9 +75,9 @@ class Rest
         }
 
         // check if we have the Path defined
-        $path = $config->get('Services.Path', false);
+        $path = $config->get('Router.Path', false);
         if (!$path) {
-            throw new RestException('Services.Path is not defined for "' . $api . '" api.');
+            throw new RestException('Router.Path is not defined for "' . $api . '" api.');
         }
 
         // create the route for Router component
@@ -128,8 +128,8 @@ class Rest
     static private function _processRouterResponse(MatchedRoute $matchedRoute, ConfigObject $config, $api)
     {
         // based on the matched route create the class name
-        $className = self::str($config->get('Services.Class'))->trimLeft('\\')->prepend('\\');
-        $normalize = $config->get('Services.Normalize', false);
+        $className = self::str($config->get('Router.Class'))->trimLeft('\\')->prepend('\\');
+        $normalize = $config->get('Router.Normalize', false);
         $matchedParams = $matchedRoute->getParams();
         foreach ($matchedParams as $mpName => $mpParam) {
             if ($normalize) {
