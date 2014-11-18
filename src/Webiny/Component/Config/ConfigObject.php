@@ -501,7 +501,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
             foreach ($config as $key => $value) {
                 if ($this->_data->keyExists($key)) {
                     if ($this->isNumber($key)) {
-                        $this->_data[$key] = $value;
+                        $this->_data[] = $value;
                     } elseif ($this->isInstanceOf($value, $this) && $this->isInstanceOf($this->_data[$key], $this)) {
                         $this->_data[$key]->mergeWith($value);
                     } else {
