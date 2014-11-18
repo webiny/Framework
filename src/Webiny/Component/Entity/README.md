@@ -34,7 +34,7 @@ Alternatively, you can also do a `git checkout` of the repo.
 - `datetime`
 - `date`
 - `select`
-- `array`
+- `arr`
 - `many2one`
 - `one2many`
 - `many2many`
@@ -253,6 +253,15 @@ $page->settings->set('level1.level2.level3', 'My new value');
 
 // Get value from key that may not exist
 $page->settings->get('level1.level4', 'Default value');
+
+// You can also append values like this
+$page->settings[] = 'New value';
+
+// Or using an 'append' method
+$page->settings->append('New value');
+
+// And you can also prepend values
+$page->settings->prepend('New value');
 ```
 
 ## Default value for Many2OneAttribute
