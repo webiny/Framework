@@ -16,7 +16,7 @@ namespace Webiny\Component\Annotations\Bridge\Minime;
 
 class Parser extends \Minime\Annotations\Parser
 {
-    public function parseValue($value, $key)
+    public function parseValue($value, $key = null)
     {
         return $value;
     }
