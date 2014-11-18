@@ -71,6 +71,9 @@ trait ValidatorTrait
 
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
+            if(!isset($this->val()[$keys[0]])){
+                return $default;
+            }
             $sourceArray = new ArrayObject($this->val()[$keys[0]]);
 
             return $sourceArray->keyExists($keys[1], $default);
