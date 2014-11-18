@@ -21,8 +21,13 @@ class FloatAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
+        if($this->str($value)->contains(',')){
+            $value = $this->str($value)->replace(',', '.')->val();
+        }
+        $value = floatval($value);
+
         if (!$this->isNumber($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->_attribute,

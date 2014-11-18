@@ -49,11 +49,11 @@ abstract class AttributeAbstract
      */
     public function __toString()
     {
-        if ($this->isNull($this->_value)) {
-            return '';
+        if($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
+            return (string)$this->_defaultValue;
         }
 
-        return (string)$this->_value;
+        return $this->isNull($this->_value) ? '' : (string)$this->_value;
     }
 
     /**
@@ -66,9 +66,10 @@ abstract class AttributeAbstract
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($this->isNull($this->_value)){
+        if($this->isNull($this->_value)) {
             $this->_value = $value;
         }
+
         return $value;
     }
 
@@ -90,7 +91,7 @@ abstract class AttributeAbstract
      */
     public function attr($attribute = null)
     {
-        if ($this->isNull($attribute)) {
+        if($this->isNull($attribute)) {
             return $this->_attribute;
         }
 
@@ -183,12 +184,12 @@ abstract class AttributeAbstract
      */
     public function setValue($value = null)
     {
-        if(!$this->_canAssign()){
+        if(!$this->_canAssign()) {
             return $this;
         }
 
         $this->validate($value);
-        if ($this->_value != $value) {
+        if($this->_value != $value) {
             $this->_entity->__setDirty(true);
         }
         $this->_value = $value;
@@ -203,7 +204,7 @@ abstract class AttributeAbstract
      */
     public function getValue()
     {
-        if ($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
+        if($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
             return $this->_defaultValue;
         }
 
@@ -231,10 +232,12 @@ abstract class AttributeAbstract
      *
      * @return bool
      */
-    protected function _canAssign(){
-        if($this->_entity->getId()->getValue() && $this->getOnce() && $this->_value !== null){
+    protected function _canAssign()
+    {
+        if($this->_entity->getId()->getValue() && $this->getOnce() && $this->_value !== null) {
             return false;
         }
+
         return true;
     }
 }

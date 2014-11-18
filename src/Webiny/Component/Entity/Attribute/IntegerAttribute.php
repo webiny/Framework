@@ -31,8 +31,14 @@ class IntegerAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
+        if($this->isString($value) && $this->isNumber($value)){
+            if(!$this->str($value)->contains('.') && !$this->str($value)->contains(',')){
+                $value = intval($value);
+            }
+        }
+
         if (!$this->isInteger($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->_attribute,

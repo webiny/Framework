@@ -41,6 +41,16 @@ class EntityException extends ExceptionAbstract
         return $this;
     }
 
+    /**
+     * Get array of invalid attributes and validation exceptions
+     * Array structure:
+     *
+     * <code>
+     * ['attrName' => ValidationException]
+     * </code>
+     *
+     * @return array
+     */
     public function getInvalidAttributes()
     {
         return $this->_invalidAttributes;
