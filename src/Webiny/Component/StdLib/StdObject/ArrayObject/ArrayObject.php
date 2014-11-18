@@ -237,7 +237,11 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function offsetSet($offset, $value)
     {
-        $this->_value[$offset] = $value;
+        if($this->isNull($offset)){
+            $this->_value[] = $value;
+        } else {
+            $this->_value[$offset] = $value;
+        }
     }
 
     /**
