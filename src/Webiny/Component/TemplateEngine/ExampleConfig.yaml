@@ -12,6 +12,7 @@ TemplateEngine:
             CompileDir: '/var/tmp/smarty/compile'
             TemplateDir: '/var/www/theme/templates'
             AutoEscapeOutput: false
+            MergeCompiledIncludes: true
     # You can overwrite the default driver by providing your own.
     # How to create a new driver, read in the Readme.md file.
     # If you don't wish to change the default driver,
