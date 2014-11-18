@@ -79,7 +79,7 @@ The `Options` attribute under the route provides you two additional options that
 
 #### `Pattern`
 
-The default regex pattern for matching a variable is `\{\w+\}`. Using the `Pattern` attribute you can set your own rule.
+The default regex pattern for matching a variable is `{[\w-]+}`. Using the `Pattern` attribute you can set your own rule.
 
 #### `Default`
 

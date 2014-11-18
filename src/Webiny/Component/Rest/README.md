@@ -33,6 +33,7 @@ Some of the built-in features:
 - services are configured using annotations
 - built in Cache using [Webiny Framework Cache component](../Cache/)
 - built in ACL using [Webiny Framework Security component](../Security/)
+- built in routing using [Webiny Framework Router component](../Router/)
 - nice debug options
 - pretty formatted JSON output (only in development mode)
 - CRUD support
@@ -56,6 +57,10 @@ This is an example configuration:
 Rest:
     ExampleApi:
 		CompilePath: /var/tmp
+		Router:
+            Class: \Foo\Bar\MyServices\{foo}\{bar}
+            Path: /services/{test}/{foo}/{mock}/{bar}
+            Normalize: true
 	SomeOtherApi:
 	    CompilePath: /var/www/Cache/Rest
         Cache: someCacheService
@@ -77,10 +82,16 @@ definition of `CompilePath`.
 #### **CompilePath**
 This is the absolute path to a folder where the REST component will store the compiled files.
 
-*I you want to know more:*
+*If you want to know more:*
 When you register a class, or in API naming, a "service", the component will parse through that class and all its
 methods and their annotations, which would be then evaluated based on different rules, to define the service behaviour.
 All this is then saved an array that is actually stored in a file, that we call the compile cache file.
+
+#### **Router**
+This is an optional setting, it tells to the Rest component how it should transform the current url to get the service
+ class name. However to trigger that mechanism, the url must match the `Path` parameter. Variables in brackets will act
+ as patterns to match certain parts of the url. Those matches can then be used to create the `Class` name.
+ You will find more about routing in the [Routing and accessing the APIs](#routing-and-accessing-the-apis) section.
 
 #### **Cache**
 As stated before, the component uses the [Cache component](../Cache/) from Webiny Framework. The value of the `Cache`
@@ -232,40 +243,54 @@ This flag marks that rate control will not be applied to that method.
 
 ## Routing and accessing the APIs
 
-It's important to note that component doesn't provide any routing mechanisms, that is up to you. For example you can use [Webiny Framework Router](../Router).
-The only requirement is that method name must be present, and if the method takes parameters, they need to be defined after the method name.
+This is an example `Router` config. 
 
-For example, if you have a class like this:
+```yaml
+Rest:
+    ExampleApi:
+        Router:
+            Class: \Foo\Bar\MyServices\{foo}\{bar}
+            Path: /services/{test}/{foo}/{mock}/{bar}
+            Normalize: true
+```
+
+The config takes the following parameters:
+
+#### Class
+This parameter tells to the `Router` how it should implement the matching parameters from the url and the `Path` to get
+ the class name used for the called Rest service.
+ 
+#### Path
+Path is a url pattern that the component tries to match agains the current url. If a match is made, the matched parameters are used to create 
+the `Class` name. All the patterns are inside curly brackets `{foo}` and `([\w-]+)` regex pattern is used for matching.
+
+#### Normalize 
+This is an optional feature. It tells to the component if the matched parameters should be normalized. In this case 
+under "normalize" we consider transforming parameter value like this one `some-application` into this `SomeApplication`.
+
+#### Example
+Let's say you have the upper configuration example in place. The following url will produce the example class name.
+
+Url: `http://www.hats.com/services/my-app/some-longer-name/test/pac-man`
+
+Class: `\Foo\Bar\MyServices\SomeLongerName\PacMan`
+
+#### Some pre-requirements
+All you need to do is set on your web server that all requests should be routed to a single file, for example `rest.php`
+ On that file call the static `iniRest` method with the API name. That method returns a new Rest instance where
+ you can call the `processRequest` method that triggers the service call. If the url is not matched boolean `false` is returned.
+ 
 ```php
-class FooService
-{
-
-    /**
-     * @param integer $param1 Some param.
-     * @param string $param2 Other param.
-     */
-    function fooMethod($param1, $param2 = "default")
-    {
-        ...
-    }
+try{
+    $rest = Rest::initRest('ExampleApi');
+    if($rest){
+        $rest->processRequest();
+    }    
+}catch (RestException $e){
+    // handle the exception
 }
 ```
 
-To access it, you would have a url looking something like this: `http://api.example.com/foo-service/foo-method/1/test/`.
-The component does the detection from **foo-service/foo-method/** onwards, everything before that is ignored. (query parameters are also ignored)
-Note that if you have a class name with a namespace, for example `MyApp\Cms\Page`, it's only required that you use the class name in the url `Page`,
-namespace is optional.
-
-As you can see, the class name and the method name were translated to `foo-service/foo-method`.
-**The rule is that class name and method name must be lowercase with a dash '-', as the word separator.**
-
-Also, the component can detect default parameters, so you don't need to define them in the url, meaning that, for the
-upper example, you can also access it with this url `http://api.example.com/foo-service/foo-method/1/`.
-The value of `$param2` would be `default`.
-
-Be careful, if you define in the annotations, that a parameter is an integer, like in the upper example, in case of
-`$param1`, you will not be able to access that method with a url looking like this: `http://api.example.com/my-service/foo-method/asd/`
-because the component detects strings, integers and booleans.
 
 ## Interfaces
 
@@ -331,7 +356,7 @@ X-Webiny-Rest-Version: 2.1
 If you wish to implement your own security layer, you can implement the `Webiny\Component\Rest\Interfaces\SecurityInterface`.
 
 ```php
-class FooService implements \Webiny\Component\Rest\Interfaces\VersionInterface
+class FooService implements \Webiny\Component\Rest\Interfaces\SecurityInterface
 {
 
     public function hasAccess($role)

@@ -215,15 +215,35 @@ class Router
     }
 
     /**
-     * Append a route to current route collection.
+     * Adds a route to the end of the current route collection.
      *
+     * @param ConfigObject $routes An instance of ConfigObject holding the routes.
      *
+     * @return $this
      */
     public function appendRoutes(ConfigObject $routes)
     {
         foreach ($routes as $name => &$routeConfig) {
             self::$_routeCollection->add($name, $this->_loader->processRoute($routeConfig));
         }
+
+        return $this;
+    }
+
+    /**
+     * Adds a route to the beginning of the current route collection.
+     *
+     * @param ConfigObject $routes An instance of ConfigObject holding the routes.
+     *
+     * @return $this
+     */
+    public function prependRoutes(ConfigObject $routes)
+    {
+        foreach ($routes as $name => &$routeConfig) {
+            self::$_routeCollection->prepend($name, $this->_loader->processRoute($routeConfig));
+        }
+
+        return $this;
     }
 
     /**

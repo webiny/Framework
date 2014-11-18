@@ -1,6 +1,10 @@
 Rest:
     ExampleApi:
         CompilePath: /var/www/projects/webiny/Vendors/Webiny/Component/Rest/Tests/TempCache
+        Router:
+            Class: \Webiny\Component\Rest\{test}\{mock}\{class}
+            Path: /services/{test}/{mock}/{class}
+            Normalize: true
     CacheTest:
         CompilePath: /var/www/projects/webiny/Vendors/Webiny/Component/Rest/Tests/TempCache
         Cache: TestCache

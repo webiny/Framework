@@ -34,7 +34,7 @@ class RouteCollection
     }
 
     /**
-     * Adds a Route to current collection.
+     * Adds a Route to the end of current collection.
      *
      * @param string $name  Route name.
      * @param Route  $route Instance of Route.
@@ -42,6 +42,17 @@ class RouteCollection
     function add($name, Route $route)
     {
         $this->_routes[$name] = $route;
+    }
+
+    /**
+     * Adds a Route to the beginning of current collection.
+     *
+     * @param string $name  Route name.
+     * @param Route  $route Instance of Route.
+     */
+    function prepend($name, Route $route)
+    {
+        $this->_routes->prepend($name, $route);
     }
 
     /**
