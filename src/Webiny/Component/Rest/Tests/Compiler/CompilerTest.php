@@ -24,16 +24,16 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $instance = new Compiler('ExampleApi');
+        $instance = new Compiler('ExampleApi', true);
         $this->assertInstanceOf('Webiny\Component\Rest\Compiler\Compiler', $instance);
     }
 
     public function testWriteCacheFiles()
     {
         $parser = new Parser();
-        $parserApi = $parser->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass');
+        $parserApi = $parser->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
 
-        $instance = new Compiler('ExampleApi');
+        $instance = new Compiler('ExampleApi', true);
         $instance->writeCacheFiles($parserApi);
 
         // now let's validate what was written

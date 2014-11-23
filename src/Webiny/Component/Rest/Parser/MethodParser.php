@@ -34,17 +34,24 @@ class MethodParser
      */
     private $_classDefaults;
 
+    /**
+     * @var bool Should the class name and the method name be normalized.
+     */
+    private $_normalize;
+
 
     /**
      * Base constructor.
      *
-     * @param string            $class  Fully qualified class name.
-     * @param \ReflectionMethod $method Method that should be parsed.
+     * @param string            $class     Fully qualified class name.
+     * @param \ReflectionMethod $method    Method that should be parsed.
+     * @param bool              $normalize Should the class name and the method name be normalized.
      */
-    public function __construct($class, \ReflectionMethod $method)
+    public function __construct($class, \ReflectionMethod $method, $normalize)
     {
         $this->_class = $class;
         $this->_method = $method;
+        $this->_normalize = $normalize;
     }
 
     /**
@@ -103,7 +110,11 @@ class MethodParser
      */
     private function _getUrl()
     {
-        return PathTransformations::methodNameToUrl($this->_method->name);
+        if($this->_normalize){
+            return PathTransformations::methodNameToUrl($this->_method->name);
+        }
+
+        return $this->_method->name;
     }
 
     /**

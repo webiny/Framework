@@ -54,6 +54,11 @@ class Rest
      */
     private $_class;
 
+    /**
+     * @var bool Should the url parts be normalized.
+     */
+    private $_normalize;
+
 
     /**
      * Initializes the current Rest configuration, tries to match the current URL with the defined Path.
@@ -162,6 +167,7 @@ class Rest
 
         $this->_api = $api;
         $this->_class = $class;
+        $this->_normalize = $this->_config->get('Router.Normalize', false);
 
         $this->_registerClass();
     }
@@ -202,7 +208,7 @@ class Rest
     public function processRequest()
     {
         try {
-            $router = new Router($this->_api, $this->_class);
+            $router = new Router($this->_api, $this->_class, $this->_normalize);
 
             return $router->processRequest();
         } catch (\Exception $e) {
@@ -247,10 +253,10 @@ class Rest
     private function _parseClass()
     {
         $parser = new Parser();
-        $parsedApi = $parser->parseApi($this->_class);
+        $parsedApi = $parser->parseApi($this->_class, $this->_normalize);
 
         // in development we always write cache
-        $writer = new Compiler($this->_api);
+        $writer = new Compiler($this->_api, $this->_normalize);
         $writer->writeCacheFiles($parsedApi);
     }
 }

@@ -12,18 +12,6 @@ use Webiny\Component\Rest\Parser\PathTransformations;
 class PathTransformationsTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @dataProvider apiUrlProvider
-     *
-     * @param $class
-     * @param $method
-     * @param $expected
-     */
-    public function testApiUrl($class, $method, $expected)
-    {
-        $this->assertSame($expected, PathTransformations::apiUrl($class, $method));
-    }
-
     public function apiUrlProvider()
     {
         return [
@@ -166,7 +154,16 @@ class PathTransformationsTest extends \PHPUnit_Framework_TestCase
      */
     public function testClassNameToUrl($class, $expected)
     {
-        $this->assertSame($expected, PathTransformations::classNameToUrl($class));
+        $this->assertSame($expected, PathTransformations::classNameToUrl($class, true));
+
+        $classData = explode('\\', $class);
+
+        $className = end($classData);
+        if($className=='\\'){
+            $className = $class;
+        }
+
+        $this->assertSame($className, PathTransformations::classNameToUrl($class, false));
     }
 
     public function classNameToUrlProvider()

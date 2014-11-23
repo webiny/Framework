@@ -10,6 +10,7 @@ namespace Webiny\Component\Rest\Response;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Rest\Compiler\Cache as CompilerCache; // alias set due to problems with phpunit
 use Webiny\Component\Rest\Parser\PathTransformations;
+use Webiny\Component\Rest\Rest;
 use Webiny\Component\Rest\RestException;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -64,17 +65,24 @@ class Router
      */
     private $_method;
 
+    /**
+     * @var string Should we normalize the url parts, or leave them as they are
+     */
+    private $_normalize;
+
 
     /**
      * Base constructor.
      *
      * @param string $api   Name of the rest api configuration.
      * @param string $class Name of the rest api class.
+     * @param bool $normalize Should the url parts be normalized or not.
      */
-    public function __construct($api, $class)
+    public function __construct($api, $class, $normalize)
     {
         $this->_api = $api;
         $this->_class = $class;
+        $this->_normalize = $normalize;
     }
 
     /**
@@ -196,7 +204,8 @@ class Router
             'matchedParameters' => false,
             'methodNameMatched' => false
         ];
-        $classUrl = PathTransformations::classNameToUrl($this->_class);
+
+        $classUrl = PathTransformations::classNameToUrl($this->_class, $this->_normalize);
         if (strpos($url, '/' . $classUrl . '/') !== false) {
             $matchedMethod = $this->_matchMethod($callbacks, $url, $classUrl);
 
@@ -363,7 +372,11 @@ class Router
         }
 
         // get parameters that we already have in the url
-        $methodUrlName = PathTransformations::methodNameToUrl($data['method']);
+        $methodUrlName = $data['method'];
+        if($this->_normalize){
+            $methodUrlName = PathTransformations::methodNameToUrl($methodUrlName);
+        }
+
         $urlParts = explode('/', $url);
         $numIncludedParams = count($urlParts) - (array_search($methodUrlName, $urlParts) + 2);
         $numAddedParams = 0;

@@ -7,8 +7,6 @@
 
 namespace Webiny\Component\Rest\Parser;
 
-use Webiny\Component\Annotations\AnnotationsTrait;
-
 /**
  * This is the main parser class.
  * This class takes a class name and parses its methods and parameters.
@@ -22,16 +20,17 @@ class Parser
      * Parses the api class and all its versions.
      *
      * @param string $class Fully qualified name of the api class.
+     * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @return ParsedApi
      */
-    public function parseApi($class)
+    public function parseApi($class, $normalize)
     {
         $versions = $this->_getVersions($class);
 
         $parsedApi = new ParsedApi($class);
         foreach ($versions['versions'] as $v => $versionClass) {
-            $classParser = new ClassParser($versionClass);
+            $classParser = new ClassParser($versionClass, $normalize);
             $parsedApi->addVersion($classParser->getParsedClass(), $v);
         }
 

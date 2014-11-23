@@ -29,7 +29,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testParseApi()
     {
         $instance = new Parser();
-        $parsedApi = $instance->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass');
+        $parsedApi = $instance->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
 
         $this->assertCount(2, $parsedApi->versions);
         $this->assertSame('1.0', $parsedApi->currentVersion);

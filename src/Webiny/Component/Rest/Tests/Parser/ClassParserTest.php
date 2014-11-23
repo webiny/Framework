@@ -22,7 +22,7 @@ class ClassParserTest extends \PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass');
+        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
         $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ClassParser', $instance);
     }
 
@@ -32,7 +32,7 @@ class ClassParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructException()
     {
-        $instance = new ClassParser('FooClass');
+        $instance = new ClassParser('FooClass', true);
     }
 
     /**
@@ -41,12 +41,12 @@ class ClassParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoMethods()
     {
-        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockEmptyClass');
+        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockEmptyClass', true);
     }
 
     public function testGetParsedClass()
     {
-        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass');
+        $instance = new ClassParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
         $parsedClass = $instance->getParsedClass();
         $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedClass', $parsedClass);
 

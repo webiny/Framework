@@ -18,21 +18,6 @@ class PathTransformations
 {
     use StdLibTrait;
 
-    /**
-     * Transforms the class name and method name as a part of the api path.
-     *
-     * @param string $className  Class name.
-     * @param string $methodName Method name.
-     *
-     * @return string
-     */
-    public static function apiUrl($className, $methodName)
-    {
-        $className = self::classNameToUrl($className);
-        $methodName = self::methodNameToUrl($methodName);
-
-        return $className . '/' . $methodName;
-    }
 
     /**
      * Creates a name for the cache class file based on the class name and the version.
@@ -83,12 +68,16 @@ class PathTransformations
      * Transforms the class name to url path.
      *
      * @param string $className Class name.
+     * @param bool $normalize Should the name be normalized or not
      *
      * @return string
      */
-    public static function classNameToUrl($className)
+    public static function classNameToUrl($className, $normalize)
     {
         $className = self::str($className)->explode('\\')->last()->val();
+        if(!$normalize){
+            return $className;
+        }
         $url = preg_replace('/([A-Z])/', ' $1', $className);
         $url = self::str($url)->trim()->replace(' ', '-')->caseLower()->val();
 

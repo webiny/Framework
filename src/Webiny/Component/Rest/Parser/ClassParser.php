@@ -31,15 +31,21 @@ class ClassParser
      */
     private $_parsedClass;
 
+    /**
+     * @var bool Should the class name and the method name be normalized.
+     */
+    private $_normalize;
+
 
     /**
      * Base constructor.
      *
      * @param string $class Fully qualified name of the api class.
+     * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @throws RestException
      */
-    public function __construct($class)
+    public function __construct($class, $normalize)
     {
         // first we check how many version the api has
         try {
@@ -48,6 +54,7 @@ class ClassParser
             throw new RestException('Parser: Unable to parse class "' . $class . '". ' . $e->getMessage());
         }
 
+        $this->_normalize = $normalize;
         $this->_class = $class;
         $this->_parsedClass = new ParsedClass($class);
 
@@ -102,7 +109,7 @@ class ClassParser
         }
 
         foreach ($methods as &$m) {
-            $methodParser = new MethodParser($this->_class, $m);
+            $methodParser = new MethodParser($this->_class, $m, $this->_normalize);
             $parsedMethod = $methodParser->parse();
             if ($parsedMethod) {
                 $this->_parsedClass->addApiMethod($methodParser->parse());

@@ -10,6 +10,7 @@ namespace Webiny\Component\Rest\Compiler;
 use Webiny\Component\Rest\Parser\ParsedApi;
 use Webiny\Component\Rest\Parser\ParsedClass;
 use Webiny\Component\Rest\Parser\PathTransformations;
+use Webiny\Component\Rest\Rest;
 
 /**
  * Compiler transforms ParsedClass instances into a special array.
@@ -24,15 +25,22 @@ class Compiler
      */
     private $_api;
 
+    /**
+     * @var bool Should the class name and the method name be normalized.
+     */
+    private $_normalize;
+
 
     /**
      * Base constructor.
      *
-     * @param string $api Name of the api configuration.
+     * @param string $api       Name of the api configuration.
+     * @param bool   $normalize Should the class name and the method name be normalized.
      */
-    public function __construct($api)
+    public function __construct($api, $normalize)
     {
         $this->_api = $api;
+        $this->_normalize = $normalize;
     }
 
     /**
@@ -195,7 +203,11 @@ class Compiler
      */
     private function _buildUrlMatchPattern($methodName, array $parameters)
     {
-        $url = PathTransformations::methodNameToUrl($methodName);
+        $url = $methodName;
+        if ($this->_normalize) {
+            $url = PathTransformations::methodNameToUrl($methodName);
+        }
+
         foreach ($parameters as $p) {
             $matchType = $this->_getParamMatchType($p->type);
             $url = $url . '/' . $matchType;

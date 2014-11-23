@@ -37,6 +37,7 @@ class Cache
     {
         // get modified time of the cached file (we look at "current" version)
         $cacheFilename = self::getCacheFilename($api, $class, 'current');
+
         if (!file_exists($cacheFilename)) {
             return false;
         }
