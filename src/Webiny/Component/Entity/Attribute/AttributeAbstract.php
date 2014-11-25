@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use JsonSerializable;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityAttributeBuilder;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -17,7 +18,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  * @package Webiny\Component\Entity\AttributeType
  *
  */
-abstract class AttributeAbstract
+abstract class AttributeAbstract implements JsonSerializable
 {
     use StdLibTrait;
 
@@ -222,6 +223,18 @@ abstract class AttributeAbstract
     public function validate($value)
     {
         return $this;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.4.0)<br/>
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     */
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 
     /**
