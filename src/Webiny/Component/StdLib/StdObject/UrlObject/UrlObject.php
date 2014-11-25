@@ -11,6 +11,7 @@
 namespace Webiny\Component\StdLib\StdObject\UrlObject;
 
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
+use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 use Webiny\Component\StdLib\StdObjectTrait;
 use Webiny\Component\StdLib\ValidatorTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
@@ -44,7 +45,7 @@ class UrlObject extends StdObjectAbstract
      */
     public function __construct($value)
     {
-        if ($this->isInstanceOf($value, $this)) {
+        if($this->isInstanceOf($value, $this)) {
             return $value;
         }
 
@@ -88,14 +89,14 @@ class UrlObject extends StdObjectAbstract
 
         // parse query string
         $query = '';
-        if ($parts->keyExists('query')) {
-            if (self::isString($parts->key('query'))) {
+        if($parts->keyExists('query')) {
+            if(self::isString($parts->key('query'))) {
                 parse_str($parts->key('query'), $queryData);
             } else {
                 $queryData = $parts->key('query');
             }
 
-            if (self::isArray($queryData)) {
+            if(self::isArray($queryData)) {
                 $query = $queryData;
             }
         }
@@ -107,29 +108,29 @@ class UrlObject extends StdObjectAbstract
         $url = '';
 
         // scheme
-        if ($scheme && $scheme != '') {
+        if($scheme && $scheme != '') {
             $url .= $scheme . '://';
         }
 
         // host
-        if ($host && $host != '') {
+        if($host && $host != '') {
             $url .= $host;
         }
 
         // port
-        if ($port != '') {
+        if($port != '') {
             $url .= ':' . $port;
         }
 
         // path
-        if ($path != '') {
+        if($path != '') {
             $url .= $path;
         }
 
         // query
-        if (self::isArray($query)) {
+        if(self::isArray($query)) {
             $query = http_build_query($query);
-            if ($query != "") {
+            if($query != "") {
                 $url .= '?' . $query;
             }
         }
@@ -150,10 +151,10 @@ class UrlObject extends StdObjectAbstract
     {
 
         // is some additional header being set
-        if (!$this->isNull($header)) {
+        if(!$this->isNull($header)) {
 
             // if it's numeric, we want to get the header text for that header code
-            if ($this->isNumber($header)) {
+            if($this->isNumber($header)) {
                 // get header string for the given code
                 $code = $header;
                 $text = $this->_getHeaderResponseString($header);
@@ -164,7 +165,7 @@ class UrlObject extends StdObjectAbstract
                 // issue the first header
                 header($protocol . ' ' . $code . ' ' . $text);
             } else {
-                if ($this->isArray($header)) {
+                if($this->isArray($header)) {
                     foreach ($header as $h) {
                         header($h);
                     }
@@ -227,7 +228,7 @@ class UrlObject extends StdObjectAbstract
      */
     public function getDomain()
     {
-        if ($this->getScheme() && $this->getHost()) {
+        if($this->getScheme() && $this->getHost()) {
             return $this->getScheme() . '://' . $this->getHost();
         }
 
@@ -237,10 +238,16 @@ class UrlObject extends StdObjectAbstract
     /**
      * Get the path from the current url.
      *
-     * @return string Path from the current instance.
+     * @param bool $asStringObject Return instance of StringObject
+     *
+     * @return string|StringObject Path from the current instance.
      */
-    public function getPath()
+    public function getPath($asStringObject = false)
     {
+        if($asStringObject) {
+            return $this->str($this->_path);
+        }
+
         return $this->_path;
     }
 
@@ -253,7 +260,7 @@ class UrlObject extends StdObjectAbstract
      */
     public function val($url = null)
     {
-        if ($this->isNull($url)) {
+        if($this->isNull($url)) {
             return $this->_value;
         }
 
@@ -282,7 +289,7 @@ class UrlObject extends StdObjectAbstract
     {
         $urlData = parse_url($this->val());
 
-        if (!$urlData || !$this->isArray($urlData)) {
+        if(!$urlData || !$this->isArray($urlData)) {
             throw new UrlObjectException(UrlObjectException::MSG_INVALID_URL, [$this->val()]);
         }
 
@@ -299,9 +306,9 @@ class UrlObject extends StdObjectAbstract
         $this->_path = $urlData->key('path', '', true);
 
         // parse query string
-        if ($urlData->keyExists('query')) {
+        if($urlData->keyExists('query')) {
             parse_str($urlData->key('query'), $queryData);
-            if ($this->isArray($queryData)) {
+            if($this->isArray($queryData)) {
                 $this->_query = $queryData;
             }
         }

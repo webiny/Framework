@@ -21,7 +21,7 @@ trait RouterTrait
      *
      * @return Router
      */
-    function router()
+    protected static function router()
     {
         return Router::getInstance();
     }
