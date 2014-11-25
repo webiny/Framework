@@ -273,7 +273,7 @@ class UrlObject extends StdObjectAbstract
     /**
      * To string implementation.
      *
-     * @return mixed
+     * @return string
      */
     public function __toString()
     {
