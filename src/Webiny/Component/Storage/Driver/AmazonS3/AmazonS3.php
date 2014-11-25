@@ -35,6 +35,7 @@ class AmazonS3 implements DriverInterface
     protected $_recentKey = null;
     protected $_bucket;
     protected $_recentFiles = [];
+    protected $_cdnDomain = false;
 
     /**
      * Constructor
@@ -46,12 +47,13 @@ class AmazonS3 implements DriverInterface
      *
      * @internal param $config
      */
-    public function __construct($accessKeyId, $secretAccessKey, $bucket, $dateFolderStructure = false)
+    public function __construct($accessKeyId, $secretAccessKey, $bucket, $dateFolderStructure = false, $cdnDomain = false)
     {
         $this->_s3Client = new \Webiny\Component\Amazon\S3($accessKeyId, $secretAccessKey);
 
         $this->_bucket = $bucket;
         $this->_dateFolderStructure = $dateFolderStructure;
+        $this->_cdnDomain = $cdnDomain;
     }
 
 
@@ -164,6 +166,13 @@ class AmazonS3 implements DriverInterface
             $this->_recentFiles[$key]['ObjectURL'] = $this->_s3Client->getObjectUrl($this->_bucket, $key);
         }
 
+        if($this->_cdnDomain){
+            $objectUrl = $this->url($this->_recentFiles[$key]['ObjectURL']);
+            $cdnDomain = $this->urAmazonl($this->_cdnDomain);
+
+            $objectUrl->setHost($cdnDomain->getHost())->setScheme($cdnDomain->getScheme());
+            return $objectUrl->val();
+        }
         return $this->_recentFiles[$key]['ObjectURL'];
     }
 

@@ -14,6 +14,7 @@ Storage:
             - /FOO
             - foo # Bucket name
             - false # DateFolderStructure
+            - http://d35gcc3uej2xar.cloudfront.net # CDN domain
     Services:
         CloudStorage:
             Class: %Storage.Class%
