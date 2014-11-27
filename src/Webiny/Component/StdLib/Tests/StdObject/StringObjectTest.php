@@ -131,6 +131,14 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Šah mat', $s->val());
     }
 
+    public function testCharFirstUpper()
+    {
+        $s = new StringObject('šAH Mat');
+        $s->charFirstUpper();
+
+        $this->assertSame('ŠAH Mat', $s->val());
+    }
+
     public function testCaseWordUpper()
     {
         $s = new StringObject('šah mat');

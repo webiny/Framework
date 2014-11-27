@@ -30,7 +30,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function append($str) {
+    public function append($str)
+    {
         $value = $this->val();
         $this->val($value . $str);
 
@@ -44,7 +45,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function prepend($str) {
+    public function prepend($str)
+    {
         $value = $this->val();
         $this->val($str . $value);
 
@@ -59,15 +61,17 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function trim($char = null) {
-        if($this->isNull($char)) {
+    public function trim($char = null)
+    {
+        if ($this->isNull($char)) {
             $value = trim($this->val());
         } else {
-            if(!$this->isString($char)) {
+            if (!$this->isString($char)) {
                 throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$char',
-                    'string'
-                ]);
+                        '$char',
+                        'string'
+                    ]
+                );
             }
 
             $value = trim($this->val(), $char);
@@ -83,7 +87,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function caseLower() {
+    public function caseLower()
+    {
         $this->val(mb_strtolower($this->val(), self::DEF_ENCODING));
 
         return $this;
@@ -94,18 +99,21 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function caseUpper() {
+    public function caseUpper()
+    {
         $this->val(mb_strtoupper($this->val(), self::DEF_ENCODING));
 
         return $this;
     }
 
     /**
-     * Make the first string character upper.
+     * Transforms the whole string to lower case, but the first char will be upper case.
+     * See also: charFirstUpper
      *
      * @return $this
      */
-    public function caseFirstUpper() {
+    public function caseFirstUpper()
+    {
         $string = clone $this;
         $string->subString(0, 1)->caseUpper()->val();
         $this->subString(1, $this->length() - 1)->caseLower();
@@ -120,19 +128,38 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function caseWordUpper() {
+    public function caseWordUpper()
+    {
         $this->val(mb_convert_case($this->val(), MB_CASE_TITLE, self::DEF_ENCODING));
 
         return $this;
     }
 
     /**
-     * Make a string's first character lowercase.
+     * Make the first character lowercase.
      *
      * @return $this
      */
-    public function caseFirstLower() {
+    public function caseFirstLower()
+    {
         $this->val(lcfirst($this->val()));
+
+        return $this;
+    }
+
+    /**
+     * Make the first character uppercase.
+     * See also: caseFirstUpper
+     *
+     * @return $this
+     */
+    public function charFirstUpper()
+    {
+        $str = $this->val();
+        $upper = mb_convert_case($str, MB_CASE_UPPER, self::DEF_ENCODING);
+        $firstChar = mb_substr($upper, 0, 1, self::DEF_ENCODING);
+        $str = $firstChar.mb_substr($str, 1, null, self::DEF_ENCODING);
+        $this->val($str);
 
         return $this;
     }
@@ -142,7 +169,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function nl2br() {
+    public function nl2br()
+    {
         $this->val(nl2br($this->val()));
 
         return $this;
@@ -153,7 +181,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function br2nl() {
+    public function br2nl()
+    {
         $search = array(
             '<br>',
             '<br/>',
@@ -172,7 +201,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function stripTrailingSlash() {
+    public function stripTrailingSlash()
+    {
         $this->val(rtrim($this->val(), '/'));
 
         return $this;
@@ -184,7 +214,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function stripStartingSlash() {
+    public function stripStartingSlash()
+    {
         $this->val(ltrim($this->val(), '/'));
 
         return $this;
@@ -198,12 +229,14 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function trimLeft($char) {
-        if(!$this->isString($char)) {
+    public function trimLeft($char)
+    {
+        if (!$this->isString($char)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$char',
-                'string'
-            ]);
+                    '$char',
+                    'string'
+                ]
+            );
         }
         $this->val(ltrim($this->val(), $char));
 
@@ -218,12 +251,14 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function trimRight($char) {
-        if(!$this->isString($char)) {
+    public function trimRight($char)
+    {
+        if (!$this->isString($char)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$char',
-                'string'
-            ]);
+                    '$char',
+                    'string'
+                ]
+            );
         }
 
         $this->val(rtrim($this->val(), $char));
@@ -240,22 +275,25 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function subString($startPosition, $length) {
-        if(!$this->isNumber($startPosition)) {
+    public function subString($startPosition, $length)
+    {
+        if (!$this->isNumber($startPosition)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$startPosition',
-                'integer'
-            ]);
+                    '$startPosition',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isNumber($length)) {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if($length == 0) {
+        if ($length == 0) {
             $length = null;
         }
         $value = mb_substr($this->val(), $startPosition, $length, self::DEF_ENCODING);
@@ -274,7 +312,8 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function replace($search, $replace) {
+    public function replace($search, $replace)
+    {
         try {
             $value = str_ireplace($search, $replace, $this->val(), $count);
             $this->val($value);
@@ -294,28 +333,31 @@ trait ManipulatorTrait
      * @return ArrayObject ArrayObject object containing exploded values.
      * @throws StringObjectException
      */
-    public function explode($delimiter, $limit = null) {
-        if(!$this->isString($delimiter)) {
+    public function explode($delimiter, $limit = null)
+    {
+        if (!$this->isString($delimiter)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$delimiter',
-                'string'
-            ]);
+                    '$delimiter',
+                    'string'
+                ]
+            );
         }
 
-        if($this->isNull($limit)) {
+        if ($this->isNull($limit)) {
             $arr = explode($delimiter, $this->val());
         } else {
-            if(!$this->isNumber($limit)) {
+            if (!$this->isNumber($limit)) {
                 throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$limit',
-                    'integer'
-                ]);
+                        '$limit',
+                        'integer'
+                    ]
+                );
             }
 
             $arr = explode($delimiter, $this->val(), $limit);
         }
 
-        if(!$arr) {
+        if (!$arr) {
             throw new StringObjectException(StringObjectException::MSG_UNABLE_TO_EXPLODE, [$delimiter]);
         }
 
@@ -330,12 +372,14 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return ArrayObject ArrayObject containing string chunks.
      */
-    public function split($chunkSize = 1) {
-        if(!$this->isNumber($chunkSize)) {
+    public function split($chunkSize = 1)
+    {
+        if (!$this->isNumber($chunkSize)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$chunkSize',
-                'integer'
-            ]);
+                    '$chunkSize',
+                    'integer'
+                ]
+            );
         }
 
         $arr = str_split($this->val(), $chunkSize);
@@ -351,9 +395,10 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function hash($algo = 'sha1') {
+    public function hash($algo = 'sha1')
+    {
         $algos = new ArrayObject(hash_algos());
-        if(!$algos->inArray($algo)) {
+        if (!$algos->inArray($algo)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_HASH_ALGO, [$algo]);
         }
 
@@ -367,7 +412,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function htmlEntityDecode() {
+    public function htmlEntityDecode()
+    {
         $this->val(html_entity_decode($this->val()));
 
         return $this;
@@ -383,9 +429,10 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function htmlEntityEncode($flags = null, $encoding = 'UTF-8') {
+    public function htmlEntityEncode($flags = null, $encoding = 'UTF-8')
+    {
         try {
-            if($this->isNull($flags)) {
+            if ($this->isNull($flags)) {
                 $this->val(htmlentities($this->val(), ENT_COMPAT | ENT_HTML401, $encoding));
             } else {
                 $this->val(htmlentities($this->val(), $flags, $encoding));
@@ -404,7 +451,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function addSlashes() {
+    public function addSlashes()
+    {
         $this->val(addslashes($this->val()));
 
         return $this;
@@ -415,7 +463,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function stripSlashes() {
+    public function stripSlashes()
+    {
         $this->val(stripslashes($this->val()));
 
         return $this;
@@ -431,19 +480,22 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function chunkSplit($chunkSize = 76, $endChar = "\n") {
-        if(!$this->isNumber($chunkSize)) {
+    public function chunkSplit($chunkSize = 76, $endChar = "\n")
+    {
+        if (!$this->isNumber($chunkSize)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$chunkSize',
-                'integer'
-            ]);
+                    '$chunkSize',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($endChar)) {
+        if (!$this->isString($endChar)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$endChar',
-                'string'
-            ]);
+                    '$endChar',
+                    'string'
+                ]
+            );
         }
 
         $tmp = array_chunk(preg_split("//u", $this->val(), -1, PREG_SPLIT_NO_EMPTY), $chunkSize);
@@ -462,7 +514,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function md5() {
+    public function md5()
+    {
         $this->hash('md5');
 
         return $this;
@@ -473,7 +526,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function crc32() {
+    public function crc32()
+    {
         $this->val(crc32($this->val()));
 
         return $this;
@@ -484,7 +538,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function sha1() {
+    public function sha1()
+    {
         $this->hash('sha1');
 
         return $this;
@@ -495,7 +550,8 @@ trait ManipulatorTrait
      *
      * @return ArrayObject ArrayObject from the parsed string.
      */
-    public function parseString() {
+    public function parseString()
+    {
         parse_str($this->val(), $arr);
 
         return new ArrayObject($arr);
@@ -507,7 +563,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function quoteMeta() {
+    public function quoteMeta()
+    {
         $this->val(quotemeta($this->val()));
 
         return $this;
@@ -521,11 +578,12 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function format($args) {
-        if($this->isArray($args)) {
+    public function format($args)
+    {
+        if ($this->isArray($args)) {
             $value = vsprintf($this->val(), $args);
         } else {
-            if($this->isInstanceOf($args, new ArrayObject([]))) {
+            if ($this->isInstanceOf($args, new ArrayObject([]))) {
                 $value = vsprintf($this->val(), $args->val());
             } else {
                 $value = sprintf($this->val(), $args);
@@ -545,19 +603,22 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function padLeft($length, $padString) {
-        if(!$this->isNumber($length)) {
+    public function padLeft($length, $padString)
+    {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($padString)) {
+        if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$padString',
-                'string'
-            ]);
+                    '$padString',
+                    'string'
+                ]
+            );
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_LEFT));
@@ -574,19 +635,22 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function padRight($length, $padString) {
-        if(!$this->isNumber($length)) {
+    public function padRight($length, $padString)
+    {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($padString)) {
+        if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$padString',
-                'string'
-            ]);
+                    '$padString',
+                    'string'
+                ]
+            );
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_RIGHT));
@@ -603,19 +667,22 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function padBoth($length, $padString) {
-        if(!$this->isNumber($length)) {
+    public function padBoth($length, $padString)
+    {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($padString)) {
+        if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$padString',
-                'string'
-            ]);
+                    '$padString',
+                    'string'
+                ]
+            );
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_BOTH));
@@ -631,12 +698,14 @@ trait ManipulatorTrait
      * @return $this
      * @throws StringObjectException
      */
-    public function repeat($multiplier) {
-        if(!$this->isNumber($multiplier)) {
+    public function repeat($multiplier)
+    {
+        if (!$this->isNumber($multiplier)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$multiplier',
-                'integer'
-            ]);
+                    '$multiplier',
+                    'integer'
+                ]
+            );
         }
         $this->val(str_repeat($this->val(), $multiplier));
 
@@ -648,7 +717,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function shuffle() {
+    public function shuffle()
+    {
         $this->val(str_shuffle($this->val()));
 
         return $this;
@@ -662,12 +732,14 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function stripTags($whiteList = '') {
-        if(!$this->isString($whiteList)) {
+    public function stripTags($whiteList = '')
+    {
+        if (!$this->isString($whiteList)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$whiteList',
-                'integer'
-            ]);
+                    '$whiteList',
+                    'integer'
+                ]
+            );
         }
 
         $this->val(strip_tags($this->val(), $whiteList));
@@ -680,7 +752,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function reverse() {
+    public function reverse()
+    {
         $this->val(strrev($this->val()));
 
         return $this;
@@ -697,26 +770,30 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function wordWrap($length, $break = "\n", $cut = false) {
-        if(!$this->isNumber($length)) {
+    public function wordWrap($length, $break = "\n", $cut = false)
+    {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($break)) {
+        if (!$this->isString($break)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$break',
-                'string'
-            ]);
+                    '$break',
+                    'string'
+                ]
+            );
         }
 
-        if(!$this->isBool($cut)) {
+        if (!$this->isBool($cut)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$cut',
-                'boolean'
-            ]);
+                    '$cut',
+                    'boolean'
+                ]
+            );
         }
         $this->val(wordwrap($this->val(), $length, $break, $cut));
 
@@ -732,26 +809,29 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return $this
      */
-    public function truncate($length, $ellipsis = '') {
-        if(!$this->isNumber($length)) {
+    public function truncate($length, $ellipsis = '')
+    {
+        if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$length',
-                'integer'
-            ]);
+                    '$length',
+                    'integer'
+                ]
+            );
         }
 
-        if(!$this->isString($ellipsis)) {
+        if (!$this->isString($ellipsis)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                '$ellipsis',
-                'string'
-            ]);
+                    '$ellipsis',
+                    'string'
+                ]
+            );
         }
 
-        if($this->length() <= $length) {
+        if ($this->length() <= $length) {
             return $this;
         }
 
-        if($ellipsis != '') {
+        if ($ellipsis != '') {
             $length = $length - strlen($ellipsis);
         }
 
@@ -772,7 +852,8 @@ trait ManipulatorTrait
      * @throws StringObjectException
      * @return ArrayObject|bool    If there are matches, an ArrayObject with the the $matches is returned, else, false is returned.
      */
-    public function match($regEx, $matchAll = true) {
+    public function match($regEx, $matchAll = true)
+    {
         // validate regex delimiters
         $delimiter = substr($regEx, 0, 1);
         $validDelimiters = [
@@ -785,23 +866,24 @@ trait ManipulatorTrait
         ];
         // if we cannot match a delimiter, try to add them
 
-        if(!in_array($delimiter, $validDelimiters)) {
+        if (!in_array($delimiter, $validDelimiters)) {
             $regEx = '/' . str_replace([
                                            '\/',
                                            '/'
-                                       ], '\/', $regEx) . '/';
+                                       ], '\/', $regEx
+                ) . '/';
         }
 
-        if($matchAll) {
+        if ($matchAll) {
             preg_match_all($regEx, $this->val(), $matches);
 
-            if(count($matches[0]) > 0) {
+            if (count($matches[0]) > 0) {
                 return new ArrayObject($matches);
             }
         } else {
             preg_match($regEx, $this->val(), $matches);
 
-            if(count($matches) > 0) {
+            if (count($matches) > 0) {
                 return new ArrayObject($matches);
             }
         }
@@ -814,7 +896,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    function urlEncode() {
+    function urlEncode()
+    {
         $this->val(urlencode($this->val()));
 
         return $this;
@@ -825,7 +908,8 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    function urlDecode() {
+    function urlDecode()
+    {
         $this->val(urldecode($this->val()));
 
         return $this;
@@ -838,10 +922,11 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function base64Encode($webSafe = false) {
+    public function base64Encode($webSafe = false)
+    {
         $this->val(base64_encode($this->val()));
 
-        if($webSafe){
+        if ($webSafe) {
             $this->replace('+', '-')->replace('/', '_');
         }
 
@@ -855,29 +940,33 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    public function base64Decode($webSafe = false) {
+    public function base64Decode($webSafe = false)
+    {
         $this->val(base64_decode($this->val()));
 
-        if($webSafe){
+        if ($webSafe) {
             $this->replace('-', '+')->replace('_', '/');
         }
 
         return $this;
     }
 
-    public function cryptEncode($key, $salt = '') {
+    public function cryptEncode($key, $salt = '')
+    {
         /**
          * @TODO: implement me
          */
     }
 
-    public function cryptDecode($key, $salt = '') {
+    public function cryptDecode($key, $salt = '')
+    {
         /**
          * @TODO: implement me
          */
     }
 
-    public function baseConvert() {
+    public function baseConvert()
+    {
         // @TODO
     }
 }
