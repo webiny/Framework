@@ -22,16 +22,19 @@ class CharAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
-        if (!$this->isString($value)) {
+        if(!$this->isString($value) && !$this->isNumber($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->_attribute,
-                    'string',
+                    'string or number',
                     gettype($value)
                 ]
             );
         }
+
+        // Make sure it's a string even if it is a number (convert to numeric string)
+        $value = '' . $value;
 
         return $this;
     }
