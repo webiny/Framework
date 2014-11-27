@@ -437,7 +437,7 @@ abstract class EntityAbstract implements \ArrayAccess
                         $itemEntity = false;
 
                         // $item can be an array of data, EntityAbstract or a simple MongoId string
-                        if($this->instanceOf($item, '\Webiny\Component\Entity\EntityAbstract')){
+                        if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')){
                             $itemEntity = $item;
                         } elseif($this->isArray($item) || $this->isArrayObject($item)) {
                             $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
