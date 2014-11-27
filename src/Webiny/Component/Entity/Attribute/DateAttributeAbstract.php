@@ -90,7 +90,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
             $value = $value->format($this->_attributeFormat);

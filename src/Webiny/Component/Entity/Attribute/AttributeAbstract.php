@@ -220,7 +220,7 @@ abstract class AttributeAbstract implements JsonSerializable
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         return $this;
     }

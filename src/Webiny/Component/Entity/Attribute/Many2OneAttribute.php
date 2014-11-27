@@ -190,7 +190,7 @@ class Many2OneAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         if(!$this->isNull($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract'
             ) && !Entity::getInstance()->getDatabase()->isMongoId($value)

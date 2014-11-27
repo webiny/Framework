@@ -35,7 +35,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         if($this->isNull($value)) {
             return $this;

@@ -24,7 +24,7 @@ class TextAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         if (!$this->isString($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
