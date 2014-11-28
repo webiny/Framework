@@ -10,12 +10,6 @@ composer.json file.
 
 ```json
 {
-    "repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/ircmaxell/PHP-CryptLib"
-		}
-	],
     "require": {
         "webiny/crypt": "1.0.*"
     }
