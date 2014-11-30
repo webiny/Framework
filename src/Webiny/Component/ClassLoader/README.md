@@ -13,7 +13,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/class-loader": "1.0.*"
+        "webiny/class-loader": "1.1.*"
     }
 }
 ```

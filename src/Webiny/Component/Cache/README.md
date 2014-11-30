@@ -9,7 +9,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/cache": "1.0.*"
+        "webiny/cache": "1.1.*"
     }
 }
 ```

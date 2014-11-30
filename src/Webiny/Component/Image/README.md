@@ -10,7 +10,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/image": "1.0.*"
+        "webiny/image": "1.1.*"
     }
 }
 ```

@@ -10,7 +10,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/event-manager": "1.0.*"
+        "webiny/event-manager": "1.1.*"
     }
 }
 ```

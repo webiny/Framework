@@ -10,7 +10,7 @@ The best way to install the framework is using Composer.
 ```json
 {
     "require": {
-        "webiny/framework": "1.0.*"
+        "webiny/framework": "1.1.*"
     }
 }
 ```
@@ -38,11 +38,7 @@ So if you have something to tell us, please email us at **info{at}webiny.com**.
 Webiny Framework is released under MIT license.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## Safe for production
-
-For the time being, most of the components are still in testing phase and are **not considered to be safe for production**. This is an early developer release where we want to present our code to others and maybe get some help and feedback. Also, if you are interested in joining our small team, please send an email to sven@webiny.com. In the meantime, you can always track us on GitHub.
-
+ 
 ## Some notes on coding:
 - before writing any code, make sure you have read PSR-1 coding standard (http://www.php-fig.org/psr/psr-1/)
 - each package should have its own exception handler
@@ -79,7 +75,7 @@ This is the list of currently available components:
 - [Crypt](src/Webiny/Component/Crypt)
     - library for encoding, decoding and validating hashes
 - [Entity](src/Webiny/Component/Entity)
-    - an ORM layer (currently only supports MongoDB)
+    - MongoDb ODM layer
 - [EventManager](src/Webiny/Component/EventManager)
     - want to do event-based development, this is a library for you
 - [Http](src/Webiny/Component/Http)

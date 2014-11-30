@@ -11,7 +11,7 @@ composer.json file.
 ```json
 {
     "require": {
-        "webiny/crypt": "1.0.*"
+        "webiny/crypt": "1.1.*"
     }
 }
 ```

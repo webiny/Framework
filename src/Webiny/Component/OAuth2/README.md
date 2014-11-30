@@ -11,7 +11,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/oauth2": "1.0.*"
+        "webiny/oauth2": "1.1.*"
     }
 }
 ```
