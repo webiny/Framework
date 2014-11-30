@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Security;
 
+use Webiny\Component\Security\Authentication\Firewall;
+
 /**
  * SecurityTrait provides you a simplified access to security context.
  *
@@ -17,12 +19,12 @@ trait SecurityTrait
 {
 
     /**
-     * Returns the current security instance or firewall for given firewall key
+     * Returns the current security instance or firewall if firewall key is given
      *
      * @param null|string $firewall Firewall key
      *
      * @throws SecurityException
-     * @return Security
+     * @return Security|Firewall
      */
     protected static function security($firewall = null)
     {
