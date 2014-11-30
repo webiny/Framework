@@ -40,6 +40,20 @@ If you what to know more:
 
 # Usage
 
+NOTE: There are 2 ways of accessing your firewalls.
+
+The long way:
+```php
+$firewall = $this->security()->firewall('admin');
+```
+
+And the short way:
+```php
+$firewall = $this->security('admin');
+```
+
+Both
+
 The usage of the component is fairly simple:
 
 First you process the user login:
@@ -50,7 +64,7 @@ class MyClass
 
     function loginUser()
     {
-        $loginSuccessful = $this->security()->firewall('admin')->processLogin();
+        $loginSuccessful = $this->security('admin')->processLogin();
     }
 }
 ```
@@ -63,7 +77,7 @@ class MyClass
 
     function myMethod(){
         // get authenticated user
-        $user = $this->security()->firewall('admin')->getUser();
+        $user = $this->security('admin')->getUser();
 
         // check if user has a role
         if($user->hasRole('ROLE_EDITOR')) {
@@ -71,7 +85,7 @@ class MyClass
         }
 
         // check if current user can access the current url
-        if($this->security()->firewall('admin')->isUserAllowedAccess()){
+        if($this->security('admin')->isUserAllowedAccess()){
             // user can access the current url based on the defined access rules
         }
     }
@@ -86,7 +100,7 @@ class MyClass
 
     function logoutUser()
     {
-        $logoutSuccessful = $this->security()->firewall('admin')->processLogout();
+        $logoutSuccessful = $this->security('admin')->processLogout();
     }
 }
 ```

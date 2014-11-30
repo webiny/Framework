@@ -17,12 +17,19 @@ trait SecurityTrait
 {
 
     /**
-     * Returns the current security instance.
+     * Returns the current security instance or firewall for given firewall key
      *
+     * @param null|string $firewall Firewall key
+     *
+     * @throws SecurityException
      * @return Security
      */
-    protected static function security()
+    protected static function security($firewall = null)
     {
+        if($firewall) {
+            return Security::getInstance()->firewall($firewall);
+        }
+
         return Security::getInstance();
     }
 }

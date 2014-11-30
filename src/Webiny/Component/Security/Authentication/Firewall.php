@@ -280,6 +280,29 @@ class Firewall
     }
 
     /**
+     * Create a hash for the given password.
+     *
+     * @param string $password
+     *
+     * @return string Password hash.
+     */
+    public function createPasswordHash($password){
+        return $this->_encoder->createPasswordHash($password);
+    }
+
+    /**
+     * Verify if the $password matches the $hash.
+     *
+     * @param string $password
+     * @param string $hash
+     *
+     * @return bool True if $password matches $hash. Otherwise false is returned.
+     */
+    public function verifyPasswordHash($password, $hash){
+        return $this->_encoder->verifyPasswordHash($password, $hash);
+    }
+
+    /**
      * Returns the config of current auth provider based on current url.
      *
      * @param string $authProvider Name of the auth provider you wish to use to process the login.
