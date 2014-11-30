@@ -14,7 +14,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/logger": "1.0.*"
+        "webiny/logger": "1.1.*"
     }
 }
 ```

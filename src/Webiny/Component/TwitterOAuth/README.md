@@ -10,7 +10,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/twitter-oauth": "1.0.*"
+        "webiny/twitter-oauth": "1.1.*"
     }
 }
 ```

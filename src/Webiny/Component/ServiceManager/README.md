@@ -8,7 +8,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/service-manager": "1.0.*"
+        "webiny/service-manager": "1.1.*"
     }
 }
 ```

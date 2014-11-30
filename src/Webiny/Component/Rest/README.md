@@ -10,7 +10,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/rest": "1.0.*"
+        "webiny/rest": "1.1.*"
     }
 }
 ```

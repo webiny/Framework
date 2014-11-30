@@ -9,7 +9,7 @@ The best way to install the component is using Composer.
 ```json
 {
     "require": {
-        "webiny/std-lib": "1.0.*"
+        "webiny/std-lib": "1.1.*"
     }
 }
 ```
