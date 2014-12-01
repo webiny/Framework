@@ -369,6 +369,19 @@ class FooService implements \Webiny\Component\Rest\Interfaces\AccessInterface
 The interface will ask you to define `hasAccess` method. This method takes only one parameter `$role`. This parameter
 contains the value defined in `@rest.role` annotation. The method should return either `true` or `false`, allowing or denying access to the user.
 
+Note that you still need to define the `Security` section in your REST configuration. The configuration should only contain the default required role. Don't define the `Firewall` attribute.
+
+```yaml
+Rest
+    SomeOtherApi:
+        CompilePath: /var/www/Cache/Rest
+        Security:
+            Role: ROLE_ANONYMOUS
+```
+
+`ROLE_ANONYMOUS` allows non authenticated users to call the service. 
+You can overwrite the required role with the `@rest.role` annotation on a per-class and per-method basis.
+
 
 ### CacheKeyInterface
 
