@@ -356,7 +356,7 @@ X-Webiny-Rest-Version: 2.1
 If you wish to implement your own security layer, you can implement the `Webiny\Component\Rest\Interfaces\SecurityInterface`.
 
 ```php
-class FooService implements \Webiny\Component\Rest\Interfaces\SecurityInterface
+class FooService implements \Webiny\Component\Rest\Interfaces\AccessInterface
 {
 
     public function hasAccess($role)
