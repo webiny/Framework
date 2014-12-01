@@ -6,5 +6,3 @@ OAuth2:
         Scope: email
         RedirectUri: http://www.webiny.com/security/login-fb/
     Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2
-    ClassLoader:
-        OAuth2: /var/www/projects/webiny/Vendors/OAuth2

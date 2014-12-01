@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Security\User;
 
+use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\Encoder\Encoder;
 use Webiny\Component\Security\Role\Role;
 use Webiny\Component\Security\Token\TokenData;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -53,12 +53,12 @@ abstract class UserAbstract implements UserInterface
     /**
      * This method verifies the credentials of current user with the credentials provided from the Login object.
      *
-     * @param Login   $login
-     * @param Encoder $encoder
+     * @param Login    $login
+     * @param Firewall $firewall
      *
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    abstract function authenticate(Login $login, Encoder $encoder);
+    abstract function authenticate(Login $login, Firewall $firewall);
 
     /**
      * Populate the user object.
@@ -77,7 +77,7 @@ abstract class UserAbstract implements UserInterface
 
         $this->_roles = $this->arr([]);
         foreach ($roles as $r) {
-            if ($this->isInstanceOf($r, '\Webiny\Component\Security\Role\Role')) {
+            if($this->isInstanceOf($r, '\Webiny\Component\Security\Role\Role')) {
                 $this->_roles->append($r);
             } else {
                 $this->_roles->append(new Role($r));

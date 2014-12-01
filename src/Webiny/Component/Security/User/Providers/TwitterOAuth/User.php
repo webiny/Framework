@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Security\User\Providers\TwitterOAuth;
 
+use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\Encoder\Encoder;
 use Webiny\Component\Security\User\UserAbstract;
 
 /**
@@ -23,11 +23,11 @@ class User extends UserAbstract
      * This method verifies the credentials of current user with the credentials provided from the Login object.
      *
      * @param Login   $login
-     * @param Encoder $encoder
+     * @param Firewall $firewall
      *
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Encoder $encoder)
+    function authenticate(Login $login, Firewall $firewall)
     {
         return true; // twitter oauth users are always authenticated
     }

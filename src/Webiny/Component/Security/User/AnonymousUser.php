@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Security\User;
 
+use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\Encoder\Encoder;
 
 /**
  * Anonymous user class.
@@ -31,11 +31,11 @@ class AnonymousUser extends UserAbstract
      * This method verifies the credentials of current user with the credentials provided from the Login object.
      *
      * @param Login   $login
-     * @param Encoder $encoder
+     * @param Firewall $firewall
      *
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Encoder $encoder)
+    function authenticate(Login $login, Firewall $firewall)
     {
         return true;
     }

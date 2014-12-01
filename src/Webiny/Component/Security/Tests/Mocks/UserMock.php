@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Security\Tests\Mocks;
 
+use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\Encoder\Encoder;
 use Webiny\Component\Security\User\UserAbstract;
 
 /**
@@ -22,16 +22,16 @@ class UserMock extends UserAbstract
     /**
      * This method verifies the credentials of current user with the credentials provided from the Login object.
      *
-     * @param Login   $login
-     * @param Encoder $encoder
+     * @param Login    $login
+     * @param Firewall $firewall
      *
      * @throws \Exception
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    public function authenticate(Login $login, Encoder $encoder)
+    public function authenticate(Login $login, Firewall $firewall)
     {
         try {
-            $result = $encoder->verifyPasswordHash($login->getPassword(), $this->getPassword());
+            $result = $firewall->verifyPasswordHash($login->getPassword(), $this->getPassword());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

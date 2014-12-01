@@ -354,7 +354,7 @@ class Firewall
         }
 
         if ($user) {
-            if ($user->authenticate($login, $this->_encoder)) {
+            if ($user->authenticate($login, $this)) {
                 // save info about current auth provider into user instance
                 $user->setAuthProviderName($login->getAuthProviderName());
 
