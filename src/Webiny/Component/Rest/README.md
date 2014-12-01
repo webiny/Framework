@@ -372,7 +372,7 @@ contains the value defined in `@rest.role` annotation. The method should return 
 Note that you still need to define the `Security` section in your REST configuration. The configuration should only contain the default required role. Don't define the `Firewall` attribute.
 
 ```yaml
-Rest
+Rest:
     SomeOtherApi:
         CompilePath: /var/www/Cache/Rest
         Security:
