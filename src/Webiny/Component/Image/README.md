@@ -1,7 +1,8 @@
 Image Component
 ===============
 
-The `Image` component provides basic functions for manipulating images.
+The `Image` component provides basic functions for manipulating images. Component also fixes the incorrect rotation 
+on pictures taken by a smartphone like iPhone or Android.
 
 Install the component
 ---------------------

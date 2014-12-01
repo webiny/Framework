@@ -58,7 +58,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
                      ->getMock();
 
         // getAbsolutePath mock
-        $file->expects($this->once())->method('getAbsolutePath')->will($this->returnValue(__DIR__ . '/../../image.gif')
+        $file->expects($this->any())->method('getAbsolutePath')->will($this->returnValue(__DIR__ . '/../../image.gif')
         );
 
         // getKey mock

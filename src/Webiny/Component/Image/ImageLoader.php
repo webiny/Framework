@@ -102,6 +102,48 @@ class ImageLoader
         $format = self::str($image->getKey())->explode('.')->last()->caseLower()->val();
         $img->setFormat($format);
 
+        // fix image orientation (iPhone/Android issue)
+        self::_fixImageOrientation($image, $img);
+
         return $img;
+    }
+
+    /**
+     * Android and Iphone images are sometimes rotated "incorrectly".
+     * This method fixes that.
+     * Method is called automatically on the `open` method.
+     *
+     * @param LocalFile      $imageFile
+     * @param ImageInterface $image
+     */
+    private static function _fixImageOrientation(LocalFile $imageFile, ImageInterface $image)
+    {
+        $format = $image->getFormat();
+
+        // exif data is available only on jpeg and tiff
+        // tiff is ignored, because smartphones don't produce tiff images
+        if ($format == 'jpg' || $format == 'jpeg') {
+            $exifData = exif_read_data($imageFile->getAbsolutePath(), 'IFDO');
+            if (isset($exifData['Orientation'])) {
+                switch ($exifData['Orientation']) {
+                    case 3:
+                        $rotation = 180;
+                        break;
+                    case 6:
+                        $rotation = 90;
+                        break;
+                    case 8:
+                        $rotation = -90;
+                        break;
+                    default:
+                        $rotation = 0;
+                        break;
+                }
+
+                if($rotation!=0){
+                    $image->rotate($rotation);
+                }
+            }
+        }
     }
 }
