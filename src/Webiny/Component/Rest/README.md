@@ -351,9 +351,9 @@ number, or an alias. All requests that have this header will be mapped to that c
 X-Webiny-Rest-Version: 2.1
 ```
 
-### SecurityInterface
+### AccessInterface
 
-If you wish to implement your own security layer, you can implement the `Webiny\Component\Rest\Interfaces\SecurityInterface`.
+If you wish to implement your own security layer, you can implement the `Webiny\Component\Rest\Interfaces\AccessInterface`.
 
 ```php
 class FooService implements \Webiny\Component\Rest\Interfaces\AccessInterface
