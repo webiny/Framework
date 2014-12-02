@@ -103,7 +103,7 @@ class Rest
         // we have added an additional pattern to the url, the url will not match
         self::router()->prependRoutes(new ConfigObject($route));
         if ($url == '') {
-            $result = self::router()->match(self::str(self::httpRequest()->getCurrentUrl())
+            $result = self::router()->match(self::str(self::httpRequest()->getCurrentUrl(true)->getPath())
                                                 ->trimRight('/')
                                                 ->append('/_w_rest/_foo')
                                                 ->val()

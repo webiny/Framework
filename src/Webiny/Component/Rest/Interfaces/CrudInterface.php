@@ -81,8 +81,8 @@ interface CrudInterface
      *
      * @link http://tools.ietf.org/html/rfc5789
      *
-     * @rest .default
-     * @rest .method put
+     * @rest.default
+     * @rest.method put
      *
      * @param string $id Id of the record that should be replaced.
      *
@@ -99,8 +99,8 @@ interface CrudInterface
      *
      * @link http://tools.ietf.org/html/rfc5789
      *
-     * @rest .default
-     * @rest .method patch
+     * @rest.default
+     * @rest.method patch
      *
      * @param string $id Id of the record that should be replaced.
      *
