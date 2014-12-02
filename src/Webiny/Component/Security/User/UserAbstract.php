@@ -122,7 +122,12 @@ abstract class UserAbstract implements UserInterface
      */
     public function hasRole($role)
     {
-        return $this->_roles->keyExists($role, false);
+        foreach ($this->_roles as $roleObj) {
+            if($role == $roleObj->getRole()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
