@@ -62,7 +62,7 @@ class MethodParser
     public function parse()
     {
         $annotations = $this->annotationsFromClass($this->_class);
-        $this->_classDefaults = $annotations;
+        $this->_classDefaults = $annotations->get('rest', new ConfigObject([]));
 
         // get method annotations
         $annotations = $this->annotationsFromMethod($this->_class, $this->_method->name);
