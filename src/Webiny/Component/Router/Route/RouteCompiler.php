@@ -46,7 +46,7 @@ class RouteCompiler
         $routePatternObject = self::str($route->getPath())->trimLeft('/');
         $routePattern = $prefix . $routePatternObject->val() . '$';
         // we append the regex to match the string from beginning only if the path starts with http
-        if($routePatternObject->startsWith('http')) {
+        if ($routePatternObject->startsWith('http')) {
             $routePattern = '^' . $routePattern;
         }
         // set regex delimiters
@@ -54,15 +54,16 @@ class RouteCompiler
 
         // extract all variables
         preg_match_all('#\{\w+\}#', $route->getPath(), $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
-        foreach ($matches as $m) {
+        foreach ($matches as $i => $m) {
             $var = substr($m[0][0], 1, -1);
 
             // get all the text before the variable
-            if(!$staticPrefix) {
+            // only in case if the route doesn't actually start with a variable
+            if (!$staticPrefix && ($i == 0 && $m[0][1] > 0)) {
                 $prefix = substr($route->getPath(), $pos, ($m[0][1] - $pos));
                 $pos = $m[0][1] + strlen($m[0][0]);
                 $precedingChar = strlen($prefix) > 0 ? substr($prefix, -1) : '';
-                if(strlen($precedingChar) === 1 && strpos(self::SEPARATORS, $precedingChar) !== false) {
+                if (strlen($precedingChar) === 1 && strpos(self::SEPARATORS, $precedingChar) !== false) {
                     $staticPrefix .= substr($prefix, 0, -1);
                 } else {
                     $staticPrefix .= $prefix;
@@ -71,14 +72,14 @@ class RouteCompiler
 
             $regex = '[\w-]+';
             $default = false;
-            if($route->hasOption($var)) {
+            if ($route->hasOption($var)) {
                 // pattern
-                if($route->getOptions()[$var]->hasAttribute('Pattern')) {
+                if ($route->getOptions()[$var]->hasAttribute('Pattern')) {
                     $regex = $route->getOptions()[$var]->getAttribute('Pattern');
                 }
 
                 // default
-                if($route->getOptions()[$var]->hasAttribute('Default')) {
+                if ($route->getOptions()[$var]->hasAttribute('Default')) {
                     $default = $route->getOptions()[$var]->getAttribute('Default');
                 }
             }
@@ -91,8 +92,12 @@ class RouteCompiler
 
         // build the default route
         $defaultRoute = false;
-        if(count($defaults) > 0) {
+        if (count($defaults) > 0) {
             $defaultRoute = str_replace(array_keys($defaults), array_values($defaults), $route->getPath());
+        }
+
+        if(!$staticPrefix){
+            $staticPrefix = '';
         }
 
         return new CompiledRoute($staticPrefix, $routePattern, $variables, $extractedRegexes, $defaultRoute);
