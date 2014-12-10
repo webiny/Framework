@@ -21,7 +21,7 @@ trait HttpTrait
      *
      * @return Request
      */
-    public static function httpRequest()
+    protected static function httpRequest()
     {
         return Request::getInstance();
     }
@@ -31,7 +31,7 @@ trait HttpTrait
      *
      * @return Cookie
      */
-    public static function httpCookie()
+    protected static function httpCookie()
     {
         return Cookie::getInstance();
     }
@@ -41,7 +41,7 @@ trait HttpTrait
      *
      * @return Session
      */
-    public static function httpSession()
+    protected static function httpSession()
     {
         return Session::getInstance();
     }
@@ -55,7 +55,7 @@ trait HttpTrait
      *
      * @return Response
      */
-    public static function httpResponse($content = '', $statusCode = 200, $headers = [])
+    protected static function httpResponse($content = '', $statusCode = 200, $headers = [])
     {
         return new Response($content, $statusCode, $headers);
     }
