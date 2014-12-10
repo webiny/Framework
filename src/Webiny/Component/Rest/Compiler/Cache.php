@@ -68,6 +68,7 @@ class Cache
      */
     public static function getCacheContent($cacheFile)
     {
+        clearstatcache(true, $cacheFile);
         if (!file_exists($cacheFile)) {
             throw new RestException('Cache file doesn\'t exist: ' . $cacheFile);
         }
