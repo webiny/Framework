@@ -25,7 +25,7 @@ Security:
             RememberMe: false
             Encoder: MockEncoder # what encoder to use to hash and validate user passwords
             Token: MockToken # what token crypt to use to store user login session and cookie data
-            UserProviders: [MockProvider] # what providers to use to get the user accound
+            UserProviders: [MockProvider] # what providers to use to get the user account
             AuthenticationProviders: [MockProvider] # what providers to use for authentication
             AccessControl:
                 Rules:
