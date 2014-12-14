@@ -52,8 +52,6 @@ And the short way:
 $firewall = $this->security('admin');
 ```
 
-Both
-
 The usage of the component is fairly simple:
 
 First you process the user login:
@@ -130,6 +128,13 @@ Security:
         SomeBuiltInMemoryProvider:
             john: {password: secret, roles: 'ROLE_USER'}
             admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
+        FromDatabase:
+            Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
+            Params:
+                Entity: 'My\App\Entities\User'
+                Username: username
+                Password: password
+                Role: ROLE_USER
     AuthenticationProviders:
         Http:
             Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
@@ -273,6 +278,26 @@ Security:
         TwitterOAuthProvider:
             Driver: '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
 ```
+
+### Entity provider
+
+This provider uses the Entity component which is tied to your database. 
+ 
+```yaml
+FromDatabase:
+    Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
+    Params:
+        Entity: 'My\App\Entities\User'
+        Username: username
+        Password: password
+        Role: ROLE_USER
+```
+
+**Entity** parameter points your entity class.
+**Username** defines the field name in the collection that holds the username.
+**Password** same as the username, just points to the password field.
+**Role** points either to the collection field holding the users role, or will be used as the role name, if the field doesn't exist.
+
 
 ### Custom user providers
 

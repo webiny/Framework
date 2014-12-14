@@ -115,10 +115,10 @@ class Security
             if (is_object($provider)) {
                 if (isset($provider->Driver)) {
                     try {
-                        $params = $provider->get('Params', []);
+                        $params = $provider->get('Params', [], true);
                         $this->_userProviders[$pk] = $this->factory($provider->Driver,
                                                                     '\Webiny\Component\Security\User\UserProviderInterface',
-                                                                    $params
+                                                                    [$params]
                         );
                     } catch (\Exception $e) {
                         throw new SecurityException($e->getMessage());

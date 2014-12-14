@@ -23,6 +23,13 @@ Security:
         SomeBuiltInMemoryProvider:
             john: {password: secret, roles: 'ROLE_USER'}
             admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
+        FromDatabase:
+            Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
+            Params:
+                Entity: 'My\App\Entities\User'
+                Username: username
+                Password: password
+                Role: ROLE_USER
     AuthenticationProviders:
         Http:
             Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
