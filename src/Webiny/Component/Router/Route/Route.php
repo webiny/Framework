@@ -24,6 +24,11 @@ class Route
     private $_path = '/';
 
     /**
+     * @var string The raw path defined in config
+     */
+    private $_realPath = '';
+
+    /**
      * @var string
      */
     private $_callback;
@@ -86,6 +91,7 @@ class Route
     public function setPath($path)
     {
         $this->_path = '';
+        $this->_realPath = $path;
 
         if(!empty($path)) {
             $this->_path .= $this->str($path)->trim()->trimLeft('/')->trimRight('/')->val();
@@ -102,6 +108,16 @@ class Route
     public function getPath()
     {
         return $this->_path;
+    }
+
+    /**
+     * Get the real path.
+     *
+     * @return string
+     */
+    public function getRealPath()
+    {
+        return $this->_realPath;
     }
 
     /**

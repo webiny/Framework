@@ -41,7 +41,7 @@ class UrlGenerator
 
         $count = 0;
         $unknownParams = [];
-        $path = $route->getPath();
+        $path = $route->getRealPath();
 
         // replace provided parameters
         foreach ($parameters as $pk => $pv) {
