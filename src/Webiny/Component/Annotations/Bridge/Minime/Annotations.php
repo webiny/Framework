@@ -25,8 +25,6 @@ class Annotations implements AnnotationsInterface
         $annotations = (new Parser($reflector->getDocComment(), $rules))->parse();
 
         return $annotations;
-
-        return new AnnotationsBag($annotations, $rules);
     }
 
     /**
