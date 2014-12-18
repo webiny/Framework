@@ -284,7 +284,7 @@ All you need to do is set on your web server that all requests should be routed 
 try{
     $rest = Rest::initRest('ExampleApi');
     if($rest){
-        $rest->processRequest();
+        $rest->processRequest()->sendOutput();
     }    
 }catch (RestException $e){
     // handle the exception
