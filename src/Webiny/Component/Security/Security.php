@@ -89,7 +89,7 @@ class Security
             }
 
             $fw = new Firewall($firewallKey, $firewall, $this->_getFirewallUserProviders($firewallKey
-                ), $this->_getFirewallEncoder($firewallKey)
+            ), $this->_getFirewallEncoder($firewallKey)
             );
 
             $this->_firewalls[$firewallKey] = $fw;
@@ -115,10 +115,10 @@ class Security
             if (is_object($provider)) {
                 if (isset($provider->Driver)) {
                     try {
-                        $params = $provider->get('Params', [], true);
+                        $params = $provider->get('Params', null, true);
                         $this->_userProviders[$pk] = $this->factory($provider->Driver,
                                                                     '\Webiny\Component\Security\User\UserProviderInterface',
-                                                                    [$params]
+                                                                    is_null($params) ? null : [$params]
                         );
                     } catch (\Exception $e) {
                         throw new SecurityException($e->getMessage());
