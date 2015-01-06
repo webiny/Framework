@@ -335,7 +335,8 @@ class Router
                 return [];
             };
         } else {
-            preg_match('|' . $pattern . '$|', $url, $matches);
+            $pattern = str_replace('/', '\/', $pattern);
+            preg_match('/' . $pattern . '$/', $url, $matches);
 
             if (isset($matches[0])) {
                 array_shift($matches);

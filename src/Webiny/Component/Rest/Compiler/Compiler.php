@@ -230,7 +230,7 @@ class Compiler
                 return '([\w-]+)';
                 break;
             case 'bool':
-                return '([0|1|true|false])';
+                return '(0|1|true|false)';
                 break;
             case 'integer':
                 return '([\d]+)';

@@ -82,11 +82,14 @@ class ParameterParser
             $param->type = $this->_getType($p->name, $this->_paramAnnotations);
             try {
                 $param->default = $p->getDefaultValue();
+                if (is_bool($param->default)) {
+                    $param->default = ($param->default===false) ? '0' : '1';
+                }
+                $param->required = false;
             } catch (\Exception $e) {
                 $param->default = null;
+                $param->required = true;
             }
-
-            $param->required = (empty($param->default)) ? true : false;
 
             $parsedParams[] = $param;
         }

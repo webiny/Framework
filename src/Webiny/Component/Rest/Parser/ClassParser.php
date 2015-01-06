@@ -40,7 +40,7 @@ class ClassParser
     /**
      * Base constructor.
      *
-     * @param string $class     Fully qualified name of the api class.
+     * @param string $class Fully qualified name of the api class.
      * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @throws RestException
@@ -113,7 +113,7 @@ class ClassParser
                 $methodParser = new MethodParser($this->_class, $m, $this->_normalize);
                 $parsedMethod = $methodParser->parse();
                 if ($parsedMethod) {
-                    $this->_parsedClass->addApiMethod($methodParser->parse());
+                    $this->_parsedClass->addApiMethod($parsedMethod);
                 }
             }
         }
