@@ -23,7 +23,7 @@ class Router
     use SingletonTrait, StdObjectTrait, HttpTrait, RouterTrait;
 
     /**
-     * This is the request entry point, once the Boostrap has been initialized.
+     * This is the request entry point, once the Bootstrap has been initialized.
      * The method initializes router and tries to call the callback assigned to the current url.
      * Method is call automatically from the Bootstrap class.
      *
@@ -36,20 +36,12 @@ class Router
 
         // init the router
         try {
+            // try matching a custom route
             $result = $this->router()->match($currentUrl);
 
-            if (!$result) {
-                throw new BootstrapException('Current url did not match any route.');
-            }
-
-            // based on callback, route the request
-            $callback = $result->getCallback();
-
-            if ($callback['Class'] == 'Webiny\Component\Bootstrap\Router' && $callback['Method'] == 'mvcRouter') {
-                // if bootstrap router is the assigned callback class, we do the standard MVC routing
-                $this->router()->execute($result);
-            } else {
-                // custom callback -> not the internal mvcRouter
+            if ($result) { // custom route matched
+                // based on callback, route the request
+                $callback = $result->getCallback();
 
                 // extract callback parts
                 $callbackData = $this->str($callback['Class'])->trimLeft('\\')->explode('\\')->val();
@@ -61,6 +53,8 @@ class Router
                     // custom route and custom callback (non MVC)
                     $this->_dispatchCustom($callback['Class'], $callback['Method'], $result->getParams());
                 }
+            } else { // fallback to the mvc router
+                $this->mvcRouter($this->httpRequest()->getCurrentUrl(true)->getPath());
             }
         } catch (\Exception $e) {
             throw $e;
@@ -79,7 +73,7 @@ class Router
     public function mvcRouter($request)
     {
         // parse the request
-        $request = $this->str($request)->explode('/');
+        $request = $this->str($request)->trimLeft('/')->trimRight('/')->explode('/');
         if ($request->count() < 2) {
             throw new BootstrapException('Unable to route this request.');
         }
@@ -90,7 +84,7 @@ class Router
         $action = isset($request[2]) ? $this->str($request[2]) : $this->str('index');
         $params = [];
         if ($request->count() >= 4) {
-            $params = $request->slice(3, null);
+            $params = $request->slice(3, $request->count())->val();
         }
 
         // check if we need to normalize the request parts
@@ -109,7 +103,7 @@ class Router
         }
 
         // call the dispatcher
-        $this->_dispatchMvc($module, $controller, $action, $params);
+        $this->_dispatchMvc($module->val(), $controller->val(), $action->val(), $params);
     }
 
     /**

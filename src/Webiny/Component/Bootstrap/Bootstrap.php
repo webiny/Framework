@@ -60,7 +60,6 @@ class Bootstrap
         }catch (BootstrapException $e){
             throw $e;
         }
-
     }
 
     /**

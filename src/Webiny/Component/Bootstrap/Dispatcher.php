@@ -8,6 +8,7 @@
 namespace Webiny\Component\Bootstrap;
 
 use Webiny\Component\Bootstrap\ApplicationClasses\Application;
+use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\StdLib\StdObjectTrait;
 
 /**
@@ -181,10 +182,22 @@ class Dispatcher
      * Sets the class name. Note, this will overwrite the current class name, also valid in case of MVC callback.
      *
      * @param string $className Fully qualified class name.
+     *
+     * @throws \Exception | BootstrapException
      */
     public function setClassName($className)
     {
-        $this->_className = $className;
+        try{
+            $classFilename = ClassLoader::getInstance()->findClass($className);
+            if(!file_exists($classFilename)){
+                throw new BootstrapException('The provided callback class "'.$className.'" does not exist.');
+            }else{
+                $this->_className = $className;
+            }
+        }catch (\Exception $e){
+            throw $e;
+        }
+
     }
 
     /**
