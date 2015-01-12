@@ -64,8 +64,8 @@ class Application
     public function getWebPath()
     {
         $webPath = Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentConfig()->get('Domain', false);
-        if(!$webPath){
-            $webPath = $this->httpRequest()->getCurrentUrl(true)->getDomain().'/';
+        if (!$webPath) {
+            $webPath = $this->httpRequest()->getCurrentUrl(true)->getDomain() . '/';
         }
 
         return $webPath;
@@ -77,9 +77,34 @@ class Application
      * @return string
      * @throws \Webiny\Component\Bootstrap\BootstrapException
      */
-    public function getEnvironment()
+    public function getEnvironmentName()
     {
         return Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentName();
+    }
+
+    /**
+     * Checks if current environment is Production.
+     *
+     * @return bool
+     */
+    public function isProductionEnvironment()
+    {
+        return ($this->getEnvironmentName() == 'Production');
+    }
+
+    /**
+     * Based on the current environment configuration, should system errors be shown or not.
+     *
+     * @return bool
+     */
+    public function showErrors()
+    {
+        $reporting = $this->getEnvironmentConfig('ErrorReporting', false);
+        if (!$reporting || strtolower($reporting) == 'on') {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -164,7 +189,7 @@ class Application
         $viewData['App'] = [
             'Config'       => $this->getEnvironmentConfig(),
             'Components'   => Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()->toArray(),
-            'Environment'  => $this->getEnvironment(),
+            'Environment'  => $this->getEnvironmentName(),
             'AbsolutePath' => $this->getAbsolutePath(),
             'WebPath'      => $this->getWebPath()
         ];
