@@ -29,6 +29,8 @@ class Mongo
 
     private $_collectionPrefix = '';
 
+    private $_resultClass = '';
+
     /**
      * Check if given string is a potentially valid MongoId string<br>
      *
@@ -38,17 +40,19 @@ class Mongo
      *
      * @return bool
      */
-    public static function isMongoId($string){
-        if(!self::isString($string)){
+    public static function isMongoId($string)
+    {
+        if (!self::isString($string)) {
             return false;
         }
         $match = self::str($string)->match('[0-9a-f]{24}', false);
 
-        if(!$match){
+        if (!$match) {
             return false;
         }
 
         $mongoId = new \MongoId($match[0]);
+
         return $mongoId->getTimestamp() > 0;
     }
 
@@ -58,6 +62,14 @@ class Mongo
         $this->_driver = new $mongoBridge();
         $this->_driver->connect($host, $database, $user, $password, $options);
         $this->_collectionPrefix = $collectionPrefix;
+
+        // Result class
+        $baseResultClass = '\Webiny\Component\Mongo\MongoResult';
+        $this->_resultClass = $this->getConfig()->get('ResultClass', $baseResultClass);
+
+        if ($this->_resultClass != $baseResultClass && !$this->isSubClassOf($this->_resultClass, $baseResultClass)) {
+            throw new MongoException(MongoException::INVALID_RESULT_CLASS_PROVIDED);
+        }
     }
 
     /**
@@ -127,8 +139,10 @@ class Mongo
      *
      * @return array
      */
-    public function getIndexInfo($collectionName){
-        $result = $this->_driver->getIndexInfo($this->_collectionPrefix.$collectionName);
+    public function getIndexInfo($collectionName)
+    {
+        $result = $this->_driver->getIndexInfo($this->_collectionPrefix . $collectionName);
+
         return $this->_mongoResult('getIndexInfo', $result);
     }
 
@@ -170,7 +184,7 @@ class Mongo
     public function insert($collectionName, array $data, $options = [])
     {
         $result = $this->_driver->insert($this->_collectionPrefix . $collectionName, $data, $options);
-        if($this->isArray($result)) {
+        if ($this->isArray($result)) {
             return $this->_mongoResult('insert', $result);
         }
 
@@ -246,7 +260,7 @@ class Mongo
     {
         /* @var $result \MongoCursor */
         $result = $this->_driver->find($this->_collectionPrefix . $collectionName, $query, $fields);
-        if($this->isInstanceOf($result, '\MongoCursor')) {
+        if ($this->isInstanceOf($result, '\MongoCursor')) {
             return new MongoCursor($result);
         }
 
@@ -267,7 +281,7 @@ class Mongo
     {
         /* @var $collection \MongoCollection */
         $result = $this->_driver->createCollection($this->_collectionPrefix . $name, $capped, $size, $max);
-        if($this->isInstanceOf($result, '\MongoCollection')) {
+        if ($this->isInstanceOf($result, '\MongoCollection')) {
             return new MongoCollection($result);
         }
 
@@ -316,7 +330,7 @@ class Mongo
     public function distinct(array $data)
     {
         $result = $this->_driver->distinct($data);
-        if($result) {
+        if ($result) {
             return $this->_mongoResult('distinct', $result);
         }
 
@@ -336,7 +350,7 @@ class Mongo
     public function findOne($collectionName, array $query = [], array $fields = [])
     {
         $result = $this->_driver->findOne($this->_collectionPrefix . $collectionName, $query, $fields);
-        if($result) {
+        if ($result) {
             return $this->_mongoResult('findOne', $result);
         }
 
@@ -387,7 +401,7 @@ class Mongo
     public function save($collectionName, array $data, $options = [])
     {
         $result = $this->_driver->save($this->_collectionPrefix . $collectionName, $data, $options);
-        if($this->isArray($result)) {
+        if ($this->isArray($result)) {
             return $this->_mongoResult('save', $result);
         }
 
@@ -415,7 +429,7 @@ class Mongo
     /**
      * Create MongoResult
      *
-     * @param array $data
+     * @param array  $data
      *
      * @param string $method
      *
@@ -424,13 +438,6 @@ class Mongo
      */
     private function _mongoResult($method, $data)
     {
-        $baseResultClass = '\Webiny\Component\Mongo\MongoResult';
-        $resultClass = $this->getConfig()->get('ResultClass');
-
-        if($resultClass != $baseResultClass && !$this->isSubClassOf($resultClass, $baseResultClass)) {
-            throw new MongoException(MongoException::INVALID_RESULT_CLASS_PROVIDED);
-        }
-
-        return new $resultClass($method, $data);
+        return new $this->_resultClass($method, $data);
     }
 }
