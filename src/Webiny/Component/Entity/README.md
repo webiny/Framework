@@ -58,7 +58,7 @@ class Page extends EntityAbstract
 
     protected function _entityStructure() {
 
-		// Create attributes
+    	// Create attributes
 		$this->attr('title')
 				->char()
 			->attr('author')
@@ -290,8 +290,56 @@ $defaultData = [
 $this->attr('author')->many2one()->setEntity('Author')->setDefaultValue($defaultData);
 ```
 
+## Finding entities
+There are 3 methods that allow you to find your entities: `find`, `findById` and `findOne`.
+
+### find(array $conditions = [], array $order = [], $limit = 0, $page = 0) `EntityCollection`
+- $conditions - is a key => value array of attributes and their values
+- $order - is an array of sorters defined as `['-name', '+title', 'lastName']` 
+  ('-' equals to DESCENDING, '+' or no prefix equals to ASCENDING)
+- $limit - number of entities to return
+- $page - this will be used to calculate offset for you. NOTE: $page values start with 1. Ex: $limit=10, $page=2 will skip the first 10 records and return the next 10.
+
+This method returns an instance of [EntityCollection](#entitycollection-class).
+
+```php
+// Load Pages
+$pages = Page::find(['active' => true], ['-title'], 5, 2);
+$count = $pages->count();
+foreach($pages as $page){
+...
+}
+```
+
+### findById($id) `EntityAbstract`
+Returns an instance of `EntityAbstract` by given $id. If no entity is found, `null` is returned.
+
+```php
+// Load Page
+$page = Page::findById("53712ed46803fa4e058b456b");
+```
+
+### findOne(array $conditions = []) `EntityAbstract`
+Returns an instance of `EntityAbstract` by given $conditions. If no entity is found, `null` is returned.
+
+```php
+// Load Page
+$page = Page::findOne(['title' => 'First blog post']);
+```
+
+## EntityCollection class
+This class is used to return results of find() method. It implements `IteratorAggregate` and `ArrayAccess` interfaces so it behaves exactly as an ordinary array would, and it also contains some utility methods to help you work with the data:
+
+- `toArray($fields = '')` - returns an array representation of all entities in the resultset ([see this for more details](#convert-entityabstract-to-array))
+- `add($item)` - adds $item to resultset (used with One2Many and Many2Many attributes to add new items to the attribute value)
+- `count()` - returns number of items in the resultset
+- `totalCount()` - returns total number of items without $limit and $page parameters
+- `contains($item)` - checks if given $item already exists in the resultset
+- `delete()` - deletes all items in the resultset (removes them from database)
+- `removeItem($item)` - removes item from the resultset (without removing them from database. This method is used with Many2Many attributes, to remove links between entities)
+
 ## Convert EntityAbstract to array
-You can get and array representation of current `EntityAbstract` instance by calling `toArray()` method.
+You can get an array representation of current `EntityAbstract` instance by calling `toArray()` method.
 By default, only simple and Many2One attributes will be included in the resulting array.
 If you want to control which attributes to include, pass a string containing names of attributes. You can also control attributes of nested attributes:
 
@@ -350,7 +398,7 @@ This will results in:
 ```php
 Array
 (
-    [author] => Array
+    [author] => Arrayf
         (
             [id] => 53dee8d26803fafe098c4769
             [name] => John Doe
