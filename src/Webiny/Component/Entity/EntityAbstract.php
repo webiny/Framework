@@ -43,7 +43,7 @@ abstract class EntityAbstract implements \ArrayAccess
     protected static $_entityMask = '{id}';
 
     private $_dirty = false;
-    
+
     /**
      * This method is called during instantiation to build entity structure
      * @return void
@@ -59,17 +59,44 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public static function findById($id)
     {
-        if(!$id || strlen($id) != 24) {
+        if (!$id || strlen($id) != 24) {
             return null;
         }
         $instance = EntityPool::getInstance()->get(get_called_class(), $id);
-        if($instance) {
+        if ($instance) {
             return $instance;
         }
         $data = Entity::getInstance()
                       ->getDatabase()
                       ->findOne(static::$_entityCollection, ["_id" => Entity::getInstance()->getDatabase()->id($id)]);
-        if(!$data) {
+        if (!$data) {
+            return null;
+        }
+        $data = EntityMongoAdapter::getInstance()->adaptValues($data);
+        $instance = new static;
+        $instance->populate($data)->__setDirty(false);
+
+        return EntityPool::getInstance()->add($instance);
+    }
+
+    /**
+     * Find entity by array of conditions
+     *
+     * @param array $conditions
+     *
+     * @return null|EntityAbstract
+     * @throws EntityException
+     */
+    public static function findOne(array $conditions = [])
+    {
+        if (array_key_exists('id', $conditions)) {
+            return self::findById($conditions['id']);
+        }
+
+        $data = Entity::getInstance()
+                      ->getDatabase()
+                      ->findOne(static::$_entityCollection, $conditions);
+        if (!$data) {
             return null;
         }
         $data = EntityMongoAdapter::getInstance()->adaptValues($data);
@@ -84,7 +111,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @param mixed $conditions
      *
-     * @param array $order
+     * @param array $order Example: ['-name', '+title']
      * @param int   $limit
      * @param int   $page
      *
@@ -130,7 +157,7 @@ abstract class EntityAbstract implements \ArrayAccess
      * Convert EntityAbstract to array with specified fields.
      * If no fields are specified, array will contain all simple and Many2One attributes
      *
-     * @param string $fields      List of fields to extract
+     * @param string $fields List of fields to extract
      *
      * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
      *
@@ -189,7 +216,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function getAttribute($attribute)
     {
-        if(!$this->_attributes->keyExists($attribute)) {
+        if (!$this->_attributes->keyExists($attribute)) {
             throw new EntityException(EntityException::ATTRIBUTE_NOT_FOUND, [
                                                                               $attribute,
                                                                               get_class($this)
@@ -236,13 +263,15 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
-        if(!$this->__getDirty() && !$this->isNull($this->getId()->getValue())) {
+        if (!$this->__getDirty() && !$this->isNull($this->getId()->getValue())) {
             return true;
         }
 
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
-            if(!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
+            if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr,
+                                                                                             AttributeType::MANY2MANY)
+            ) {
                 $data[$key] = $attr->getDbValue();
             }
         }
@@ -255,7 +284,7 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Insert or update
          */
-        if($this->getId()->getValue() == null) {
+        if ($this->getId()->getValue() == null) {
             Entity::getInstance()->getDatabase()->insert(static::$_entityCollection, $data);
             $this->getId()->setValue((string)$data['_id']);
         } else {
@@ -272,7 +301,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr One2ManyAttribute */
-            if($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
                 foreach ($attr->getValue() as $item) {
                     $item->{$attr->getRelatedAttribute()}->setValue($this);
                     $item->save();
@@ -291,7 +320,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr Many2ManyAttribute */
-            if($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 Many2ManyStorage::getInstance()->save($attr);
             }
         }
@@ -314,18 +343,19 @@ abstract class EntityAbstract implements \ArrayAccess
         /* @var $attr Many2ManyAttribute */
         $thisClass = '\\' . get_class($this);
         foreach ($this->getAttributes() as $attrName => $attr) {
-            if($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $foundMatch = false;
                 $relatedClass = $attr->getEntity();
                 $relatedEntity = new $relatedClass;
                 /* @var $relAttr Many2ManyAttribute */
                 foreach ($relatedEntity->getAttributes() as $relAttr) {
-                    if($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $relAttr->getEntity() == $thisClass) {
+                    if ($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $relAttr->getEntity() == $thisClass
+                    ) {
                         $foundMatch = true;
                     }
                 }
 
-                if(!$foundMatch) {
+                if (!$foundMatch) {
                     throw new EntityException(EntityException::NO_MATCHING_MANY2MANY_ATTRIBUTE_FOUND, [
                                                                                                         $thisClass,
                                                                                                         $relatedClass,
@@ -341,9 +371,9 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         $deleteAttributes = [];
         foreach ($this->getAttributes() as $key => $attr) {
-            if($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
                 /* @var $attr One2ManyAttribute */
-                if($attr->getOnDelete() == 'restrict' && $this->getAttribute($key)->getValue()->count() > 0) {
+                if ($attr->getOnDelete() == 'restrict' && $this->getAttribute($key)->getValue()->count() > 0) {
                     throw new EntityException(EntityException::ENTITY_DELETION_RESTRICTED, [$key]);
                 }
                 $deleteAttributes[] = $key;
@@ -355,7 +385,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr Many2ManyAttribute */
-            if($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $firstClassName = $this->_extractClassName($attr->getParentEntity());
                 $query = [$firstClassName => $this->getId()->getValue()];
                 Entity::getInstance()->getDatabase()->remove($attr->getIntermediateCollection(), $query);
@@ -378,7 +408,7 @@ abstract class EntityAbstract implements \ArrayAccess
               ->getDatabase()
               ->remove(static::$_entityCollection,
                        ['_id' => Entity::getInstance()->getDatabase()->id($this->getId()->getValue())]
-            );
+              );
 
         EntityPool::getInstance()->remove($this);
 
@@ -400,36 +430,40 @@ abstract class EntityAbstract implements \ArrayAccess
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->_attributes as $attributeName => $entityAttribute) {
             // Check if attribute is required and it's value is set
-            if($entityAttribute->getRequired() && !isset($data[$attributeName])) {
-                $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING, [$attributeName]);
+            if ($entityAttribute->getRequired() && !isset($data[$attributeName])) {
+                $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING,
+                                                                      [$attributeName]);
                 continue;
             }
 
             // If 'required' check is passed, continue with other checks
             $canPopulate = !$this->getId()->getValue() || !$entityAttribute->getOnce();
-            if(isset($data[$attributeName]) && $canPopulate) {
+            if (isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
                 $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
                 $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
 
-                if($isMany2One) {
-                    try{
+                if ($isMany2One) {
+                    try {
                         $entityAttribute->validate($dataValue)->setValue($dataValue);
-                    } catch(ValidationException $e){
+                    } catch (ValidationException $e) {
                         $validation[$attributeName] = $e;
                         continue;
                     }
-                } elseif($isOne2Many) {
+                } elseif ($isOne2Many) {
                     $entityClass = $entityAttribute->getEntity();
 
                     // Validate One2Many attribute value
-                    if(!$this->isArray($dataValue) && !$this->isArrayObject($dataValue) && !$this->isInstanceOf($dataValue, $entityCollectionClass)) {
-                        $validation[$attributeName] = new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                            $attributeName,
-                            'array, ArrayObject or EntityCollection',
-                            gettype($dataValue)
-                        ]);
+                    if (!$this->isArray($dataValue) && !$this->isArrayObject($dataValue) && !$this->isInstanceOf($dataValue,
+                                                                                                                 $entityCollectionClass)
+                    ) {
+                        $validation[$attributeName] = new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED,
+                                                                              [
+                                                                                  $attributeName,
+                                                                                  'array, ArrayObject or EntityCollection',
+                                                                                  gettype($dataValue)
+                                                                              ]);
                         continue;
                     }
                     /* @var $entityAttribute One2ManyAttribute */
@@ -437,28 +471,28 @@ abstract class EntityAbstract implements \ArrayAccess
                         $itemEntity = false;
 
                         // $item can be an array of data, EntityAbstract or a simple MongoId string
-                        if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')){
+                        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
                             $itemEntity = $item;
-                        } elseif($this->isArray($item) || $this->isArrayObject($item)) {
+                        } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
                             $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
-                        } elseif($this->isString($item) && Entity::getInstance()->getDatabase()->isMongoId($item)) {
+                        } elseif ($this->isString($item) && Entity::getInstance()->getDatabase()->isMongoId($item)) {
                             $itemEntity = $entityClass::findById($item);
                         }
 
                         // If instance was not found, create a new entity instance
-                        if(!$itemEntity) {
+                        if (!$itemEntity) {
                             $itemEntity = new $entityClass;
                         }
 
                         // If $item is an array - use it to populate the entity instance
-                        if($this->isArray($item) || $this->isArrayObject($item)) {
+                        if ($this->isArray($item) || $this->isArrayObject($item)) {
                             $itemEntity->populate($item);
                         }
 
                         // Add One2Many entity instance to current entity's attribute
                         $entityAttribute->add($itemEntity);
                     }
-                } elseif($isMany2Many) {
+                } elseif ($isMany2Many) {
                     $entityAttribute->add($dataValue);
                 } else {
                     try {
@@ -470,7 +504,7 @@ abstract class EntityAbstract implements \ArrayAccess
             }
         }
 
-        if($validation->count() > 0) {
+        if ($validation->count() > 0) {
             $ex = new EntityException(EntityException::VALIDATION_FAILED, [$validation->count()]);
             $ex->setInvalidAttributes($validation);
             throw $ex;
@@ -585,12 +619,12 @@ abstract class EntityAbstract implements \ArrayAccess
     private static function _parseOrderParameters($order)
     {
         $parsedOrder = [];
-        if(count($order) > 0) {
+        if (count($order) > 0) {
             foreach ($order as $o) {
                 $o = self::str($o);
-                if($o->startsWith('-')) {
+                if ($o->startsWith('-')) {
                     $parsedOrder[$o->subString(1, 0)->val()] = -1;
-                } elseif($o->startsWith('+')) {
+                } elseif ($o->startsWith('+')) {
                     $parsedOrder[$o->subString(1, 0)->val()] = 1;
                 } else {
                     $parsedOrder[$o->val()] = 1;
@@ -610,7 +644,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     private function _extractClassName($class)
     {
-        if(!$this->isString($class)) {
+        if (!$this->isString($class)) {
             $class = get_class($class);
         }
 
