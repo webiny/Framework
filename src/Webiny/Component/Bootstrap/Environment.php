@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Bootstrap;
 
+use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Config\ConfigTrait;
 use Webiny\Component\Http\HttpTrait;
@@ -84,6 +85,7 @@ class Environment
         $this->_applicationAbsolutePath = $applicationAbsolutePath;
 
         $this->_loadApplicationConfig();
+        $this->_registerAppNamespace();
         $this->_initializeEnvironment();
         $this->_initializeComponentConfigurations();
         $this->_setErrorReporting();
@@ -132,21 +134,22 @@ class Environment
         }
 
         // get current environments
-        $environments = $this->_applicationConfig->get('Application.Environments');
+        $environments = $this->_applicationConfig->get('Application.Environments', false);
 
-        // get current url
-        $currentUrl = $this->str($this->httpRequest()->getCurrentUrl());
+        if($environments){
+            // get current url
+            $currentUrl = $this->str($this->httpRequest()->getCurrentUrl());
 
-        // loop over all registered environments in the config, and try to match the current based on the domain
-        foreach ($environments as $eName => $e) {
-            if ($currentUrl->contains($e->Domain)) {
-                $this->_currentEnvironmentName = $eName;
+            // loop over all registered environments in the config, and try to match the current based on the domain
+            foreach ($environments as $eName => $e) {
+                if ($currentUrl->contains($e->Domain)) {
+                    $this->_currentEnvironmentName = $eName;
+                }
             }
         }
 
         if (empty($this->_currentEnvironmentName)) {
             $this->_currentEnvironmentName = 'Production';
-            //throw new BootstrapException('Unable to bootstrap your application. None of the environments matched your domain name in App/Config/App.yaml');
         }
 
         return $this->_currentEnvironmentName;
@@ -160,7 +163,7 @@ class Environment
      */
     public function getCurrentEnvironmentConfig()
     {
-        return $this->_applicationConfig->get('Application.Environments.'.$this->getCurrentEnvironmentName());
+        return $this->_applicationConfig->get('Application.Environments.' . $this->getCurrentEnvironmentName(), new ConfigObject([]));
     }
 
     /**
@@ -182,12 +185,14 @@ class Environment
     private function _initializeEnvironment()
     {
         // validate the environment
-        $environments = $this->_applicationConfig->get('Application.Environments');
+        $environments = $this->_applicationConfig->get('Application.Environments', false);
 
-        // get the production environment
-        $productionEnv = $environments->get('Production', false);
-        if (!$productionEnv) {
-            throw new BootstrapException('Production environment must always be defined in App/Config/App.yaml');
+        if($environments){
+            // get the production environment
+            $productionEnv = $environments->get('Production', false);
+            if (!$productionEnv) {
+                throw new BootstrapException('Production environment must always be defined in App/Config/App.yaml');
+            }
         }
 
         // get the name of the current environment
@@ -224,6 +229,28 @@ class Environment
     }
 
     /**
+     * Registers the application namespace with the ClassLoader component.
+     *
+     * @throws BootstrapException
+     */
+    private function _registerAppNamespace()
+    {
+        // get app namespace
+        $namespace = $this->_applicationConfig->get('Application.Namespace', false);
+        if (!$namespace) {
+            throw new BootstrapException('Unable to register application namespace. You must define the application namespace in your App.yaml config file.');
+        }
+
+        try{
+            // register the namespace
+            ClassLoader::getInstance()->registerMap([$namespace => $this->_applicationAbsolutePath.'App']);
+        }catch (\Exception $e){
+            throw new BootstrapException('Unable to register application ('.$namespace.' => '.$this->_applicationAbsolutePath.'App'.') namespace with ClassLoader.');
+        }
+
+    }
+
+    /**
      * Initializes component configurations.
      * Component configurations are all the configurations inside the specific environment.
      * If configuration name matches a Webiny Framework component, then the configuration is automatically assigned
@@ -233,7 +260,7 @@ class Environment
     {
         foreach ($this->_webinyComponents as $c) {
             $componentConfig = $this->_componentConfigs->get($c, false);
-            if($componentConfig){
+            if ($componentConfig) {
                 $class = 'Webiny\Component\\' . $c . '\\' . $c;
                 $method = 'setConfig';
                 try {

@@ -38,13 +38,13 @@ class Bootstrap
      * Initializes the environment and the router.
      * Router takes the process from there.
      *
-     * @param string $rootPath Application root path.
-     *
      * @throws BootstrapException
      * @throws \Exception
      */
-    public function runApplication($rootPath)
+    public function runApplication()
     {
+        $rootPath = realpath(dirname(debug_backtrace()[0]['file']).'/../');
+
         // save the root path
         $this->_absolutePath = realpath($rootPath) . DIRECTORY_SEPARATOR;
 
