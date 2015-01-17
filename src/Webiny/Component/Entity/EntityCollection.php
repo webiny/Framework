@@ -92,7 +92,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     /**
      * Add item to collection
      *
-     * @param EntityAbstract $item
+     * @param array|EntityAbstract $item
      *
      * @return $this
      */

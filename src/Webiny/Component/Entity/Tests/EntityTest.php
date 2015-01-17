@@ -137,6 +137,17 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $page->comments->count());
     }
 
+    public function testFindOne(){
+        $page = Page::findOne(['id' => self::$_page->getId()->getValue()]);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
+
+        $page = Page::findOne(['title' => 'First blog post']);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
+
+        $page = Page::findOne(['title' => 'NO TITLE']);
+        $this->assertNull($page);
+    }
+
     /**
      * This should cause 2 validation errors
      */
