@@ -11,7 +11,8 @@ use Webiny\Component\Bootstrap\Bootstrap;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Http\Response;
-use Webiny\Component\TemplateEngine\Bridge\TemplateEngine;
+use Webiny\Component\TemplateEngine\TemplateEngine;
+use Webiny\Component\TemplateEngine\TemplateEngineLoader;
 
 /**
  * Application class holds all the application data and sends the response back to the browser.
@@ -158,7 +159,13 @@ class Application
         if ($query == '') {
             return Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()[$component];
         } else {
-            return Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()[$component]->get($query, $default);
+            $componentConfig = Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()->get($component, false
+            );
+            if (!$componentConfig) {
+                return $default;
+            }
+
+            return $componentConfig->get($query, $default);
         }
     }
 
@@ -194,15 +201,46 @@ class Application
             'WebPath'      => $this->getWebPath()
         ];
 
-        // initialize the template engine
+        // render the view and assign it to the response object
+        return new Response($this->_getTemplateEngineInstance()->fetch($this->view()->getTemplate(), $viewData));
+    }
+
+    /**
+     * Returns template engine instance, based on current configuration.
+     * If a template engine is not defined, a default template engine instance will be created.
+     *
+     * @return \Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface
+     * @throws \Exception
+     * @throws \Webiny\Component\StdLib\Exception\Exception
+     * @throws \Webiny\Component\TemplateEngine\TemplateEngineException
+     */
+    private function _getTemplateEngineInstance()
+    {
+        $teConfig = $this->getComponentConfig('TemplateEngine', 'Engines', false);
+
+        // fallback to default template engine
+        if (!$teConfig) {
+            $defaultTemplateEngineConfig = [
+                    'Engines' => [
+                        'Smarty' => [
+                            'ForceCompile'     => false,
+                            'CacheDir'         => $this->getAbsolutePath() . 'App/Cache/Smarty/Cache',
+                            'CompileDir'       => $this->getAbsolutePath() . 'App/Cache/Smarty/Compile',
+                            'TemplateDir'      => $this->getAbsolutePath() . 'App/Layouts',
+                            'AutoEscapeOutput' => false,
+                        ]
+                    ]
+            ];
+
+            TemplateEngine::setConfig(new ConfigObject($defaultTemplateEngineConfig));
+
+            return TemplateEngineLoader::getInstance('Smarty');
+        }
+
         $teConfig = $this->getComponentConfig('TemplateEngine', 'Engines')->toArray();
         reset($teConfig);
         $teName = key($teConfig);
-        $teInstance = TemplateEngine::getInstance($teName,
-                                                  $this->getComponentConfig('TemplateEngine', 'Engines.' . $teName)
-        );
 
-        // render the view and assign it to the response object
-        return new Response($teInstance->fetch($this->view()->getTemplate(), $viewData));
+        return TemplateEngineLoader::getInstance($teName);
     }
 }
