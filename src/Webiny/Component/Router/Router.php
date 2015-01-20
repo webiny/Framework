@@ -71,8 +71,8 @@ class Router
     public function match($url)
     {
         if($this->isString($url)) {
-            $urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
-            $url = $this->url($urlString);
+            #$urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
+            $url = $this->url($url);
         } else {
             $url = StdObjectWrapper::isUrlObject($url) ? $url : $this->url('');
         }
@@ -84,7 +84,7 @@ class Router
 
         // try to match the url
         $result = $this->_urlMatcher->match($url);
-
+        
         // cache it
         $cacheResult = $this->isArray($result) ? $this->serialize($result) : $result;
         $this->_saveToCache('match.' . $url->val(), $cacheResult);
