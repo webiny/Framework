@@ -135,7 +135,7 @@ abstract class DriverAbstract
             $destination = StdObjectWrapper::toString($destination);
         }
 
-        if(!$this->isNull($destination)) {
+        /*if(!$this->isNull($destination)) {
             if(!file_exists($destination)) {
                 throw new ConfigException(ConfigException::CONFIG_FILE_DOES_NOT_EXIST);
             }
@@ -144,7 +144,7 @@ abstract class DriverAbstract
                 throw new ConfigException('No valid resource was found to use as config target file! Specify a $destination argument or load your Config using a file resource!');
             }
             $destination = $this->_resource;
-        }
+        }*/
 
         if(file_put_contents($destination, $this->_getString())) {
             return $this;

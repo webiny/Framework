@@ -54,9 +54,9 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
 
     function testGetOffset()
     {
-        $dt = new DateTimeObject("now", 'Europe/Zagreb');
+        $ny = $dt = new DateTimeObject("now", 'America/New_York');
 
-        $this->assertSame(7200, $dt->getOffset());
+        $this->assertSame(-18000, $ny->getOffset());
     }
 
     function testGetTimezone()

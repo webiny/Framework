@@ -7,14 +7,14 @@
 Mailer:
     Default:
         Sender:
-            Email: nikola@tesla.com
+            Email: nikola@localhost
             Name: Nikola Tesla
         Transport:
             Type: mail
         AntiFlood:
             Threshold: 99
             Sleep: 1
-        DisableDelivery: false
+        DisableDelivery: true
     Gmail:
         Sender:
             Email: 'larry@gmail.com'

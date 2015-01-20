@@ -40,15 +40,6 @@ class MailerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Mailer\MessageInterface', $mailer->getMessage());
     }
 
-    /**
-     * @expectedException \Swift_TransportException
-     */
-    public function testSendWithoutRecipient()
-    {
-        $mailer = new Mailer();
-        $mailer->send($mailer->getMessage());
-    }
-
     public function testSend()
     {
         $mailer = new Mailer();
@@ -66,7 +57,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
 
     public function testConfigContent()
     {
-        $this->assertSame('nikola@tesla.com', Mailer::getConfig()->Default->Sender->Email);
+        $this->assertSame('nikola@localhost', Mailer::getConfig()->Default->Sender->Email);
         $this->assertSame('\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer', Mailer::getConfig()->Bridge);
     }
 }
