@@ -63,7 +63,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $phpConfig = realpath(__DIR__ . '/Configs/config.php');
         $yamlConfig = __DIR__ . '/Configs/savedConfig.yaml';
-        $config = Config::getInstance()->php($phpConfig);//tu je negdje error
+        $config = Config::getInstance()->php($phpConfig);
         $config->saveAsYaml($yamlConfig);
         $this->assertFileExists($yamlConfig);
         $config = Config::getInstance()->yaml($yamlConfig);
