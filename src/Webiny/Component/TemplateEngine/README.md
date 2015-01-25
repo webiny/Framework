@@ -65,6 +65,7 @@ The default configuration looks like this:
                 CompileDir: '/var/tmp/smarty/compile'
                 TemplateDir: '/var/www/theme/templates'
                 AutoEscapeOutput: false
+                MuteExpectedErrors: true
 ```
 
 ## Usage
