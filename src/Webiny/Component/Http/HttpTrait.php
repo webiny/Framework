@@ -7,6 +7,9 @@
 
 namespace Webiny\Component\Http;
 
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
+use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
+
 /**
  * HttpTrait give you access to Http components such as Request, Server, Session, Cookie, etc.
  *
@@ -58,5 +61,20 @@ trait HttpTrait
     protected static function httpResponse($content = '', $statusCode = 200, $headers = [])
     {
         return new Response($content, $statusCode, $headers);
+    }
+
+    /**
+     * Redirect the request to the given url.
+     *
+     * @param string|UrlObject $url
+     * @param string|int|array $headers Headers that you wish to send with your request.
+     */
+    protected static function httpRedirect($url, $headers = null)
+    {
+        if (!StdObjectWrapper::isStdObject($url)) {
+            $url = new UrlObject($url);
+        }
+
+        $url->goToUrl($headers); // this method dies when it's executed
     }
 }

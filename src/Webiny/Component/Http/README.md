@@ -43,7 +43,10 @@ The preferred way of accessing those classes is by using the `HttpTrait`.
             $this->httpSession();
 
             // create new `Response` instance
-             $this->httpResponse('output content');
+            $this->httpResponse('output content');
+             
+            // redirect
+            $this->httpRedirect('http://youtube.com/');
         }
     }
 ```
