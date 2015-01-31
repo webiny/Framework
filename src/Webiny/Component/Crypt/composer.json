@@ -24,7 +24,8 @@
 		"webiny/forked-ircmaxell-php-crypt-lib": "~1.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "4.1.*"
+		"phpunit/phpunit": "~4",
+		"mybuilder/phpunit-accelerator": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
