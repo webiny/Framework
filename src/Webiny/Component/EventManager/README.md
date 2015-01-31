@@ -12,14 +12,6 @@ composer require webiny/event-manager
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/event-manager).
 
-Once you have your `composer.json` file in place, just run the install command.
-
-    $ php composer.phar install
-
-To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
-Alternatively, you can also do a `git checkout` of the repo.
-
 ## Usage
 
 Accessing `EventManager` can be done in 2 ways. The preferable way is using `EventManagerTrait`, but you can also access it directly, using `EventManager::getInstance()`. Let's see a simple example of subscribing to an event called `some.event` with an instance of `YourHandler`:

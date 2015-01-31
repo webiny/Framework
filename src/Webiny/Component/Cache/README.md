@@ -11,14 +11,6 @@ composer require webiny/cache
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/cache).
 
-Once you have your `composer.json` file in place, just run the install command.
-
-    $ php composer.phar install
-
-To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
-Alternatively, you can also do a `git checkout` of the repo.
-
 ## Supported drivers
 
 The cache component supports following cache drivers:
