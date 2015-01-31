@@ -7,12 +7,8 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/config": "1.1.*"
-    }
-}
+```bash
+composer require webiny/config
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/config).
 

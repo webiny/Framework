@@ -11,12 +11,8 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/logger": "1.1.*"
-    }
-}
+```bash
+composer require webiny/logger
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/logger).
 

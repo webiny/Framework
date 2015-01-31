@@ -7,12 +7,8 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/event-manager": "1.1.*"
-    }
-}
+```bash
+composer require webiny/event-manager
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/event-manager).
 

@@ -7,12 +7,8 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
- "require": {
-     "webiny/template-engine": "1.1.*"
- }
-}
+```bash
+composer require webiny/template-engine
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/template-engine).
 

@@ -7,12 +7,8 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/twitter-oauth": "1.1.*"
-    }
-}
+```bash
+composer require webiny/twitter-oauth
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/twitter-oauth).
 

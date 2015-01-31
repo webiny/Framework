@@ -28,7 +28,9 @@
 		"webiny/forked-adoy-php-oauth2": "~1.0",
 		"webiny/forked-abraham-twitteroauth": "~1.0",
 		"webiny/forked-ircmaxell-php-crypt-lib": "~1.0",
-		"psr/log": "~1.0"
+		"psr/log": "~1.0",
+	    "ext-mongo": "*",
+	    "ext-memcache": "*"
 	},
 	"replace": {
 		"webiny/amazon": "self.version",
