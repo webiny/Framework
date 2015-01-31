@@ -25,7 +25,8 @@
 		"webiny/forked-adoy-php-oauth2": "~1.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "4.1.*"
+		"phpunit/phpunit": "~4",
+		"mybuilder/phpunit-accelerator": "dev-master"
 	},
 	"suggest":{
 		"webiny/twitter-oauth": "Use Webiny TwitterOAuth component for OAuth v1.1."

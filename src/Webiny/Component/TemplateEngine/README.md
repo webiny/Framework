@@ -7,22 +7,10 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
- "require": {
-     "webiny/template-engine": "1.1.*"
- }
-}
+```bash
+composer require webiny/template-engine
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/template-engine).
-
-Once you have your `composer.json` file in place, just run the install command.
-
- $ php composer.phar install
-
-To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
-Alternatively, you can also do a `git checkout` of the repo.
 
 ### Installation error
 
@@ -65,6 +53,7 @@ The default configuration looks like this:
                 CompileDir: '/var/tmp/smarty/compile'
                 TemplateDir: '/var/www/theme/templates'
                 AutoEscapeOutput: false
+                MuteExpectedErrors: true
 ```
 
 ## Usage
@@ -109,7 +98,7 @@ supports these plugin types:
 - **resources** - http://www.smarty.net/docs/en/plugins.resources.tpl
 - **inserts** - http://www.smarty.net/docs/en/plugins.inserts.tpl
 
-To create a smarty extension, create a class that extends `\Webiny\Components\TemplateEngine\Drivers\Smarty\SmartyExtension`
+To create a smarty extension, create a class that extends `\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionAbstract`
 and then overwrite the methods, based on the plugin type your wish to create.
 
 For example, let's say we want to register a modifier called 'customUpper'. First we create our extension class like this:

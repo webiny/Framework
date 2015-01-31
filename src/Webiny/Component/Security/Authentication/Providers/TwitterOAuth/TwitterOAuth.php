@@ -105,7 +105,7 @@ class TwitterOAuth implements AuthenticationInterface
                 $this->httpSession()->delete('tw_oauth_token_secret');
 
                 // redirect back to login
-                $this->httpRequest()->redirect($this->httpRequest()->getCurrentUrl());
+                $this->httpRedirect($this->httpRequest()->getCurrentUrl());
             }
 
             // error check

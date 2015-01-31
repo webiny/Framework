@@ -111,4 +111,18 @@ trait RestTrait
     {
         return Request::getInstance()->query('_fields', $default);
     }
+
+    /**
+     * Return a query filter.
+     * Filters are all the parameters in the url query.
+     *
+     * @param string $name    Filter name.
+     * @param mixed  $default Default filter value, if filter is not defined.
+     *
+     * @return mixed
+     */
+    protected static function restGetFilter($name, $default = null)
+    {
+        return Request::getInstance()->query($name, $default);
+    }
 }

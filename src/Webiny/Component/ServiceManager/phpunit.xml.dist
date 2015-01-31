@@ -11,6 +11,9 @@
          syntaxCheck="false"
          bootstrap="vendor/autoload.php"
         >
+    <listeners>
+        <listener class="\MyBuilder\PhpunitAccelerator\TestListener"/>
+    </listeners>
     <testsuites>
         <testsuite name="Webiny Service Manager Component Test Suite">
             <directory>./Tests</directory>

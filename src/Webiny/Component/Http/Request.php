@@ -114,6 +114,16 @@ class Request
     }
 
     /**
+     * Returns an array object with all GET parameters.
+     *
+     * @return Query
+     */
+    public function getQuery()
+    {
+        return $this->_query;
+    }
+
+    /**
      * Get a value from $_POST param for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
@@ -128,7 +138,7 @@ class Request
     }
 
     /**
-     * Returns an array object with all post parameters.
+     * Returns an array object with all POST parameters.
      *
      * @return Post
      */
@@ -150,7 +160,6 @@ class Request
     {
         return $this->isNull($key) ? $this->_headers->getAll() : $this->_headers->get($key, $value);
     }
-
 
     /**
      * Get a value from request payload param for the given $key.
@@ -400,21 +409,6 @@ class Request
         }
 
         return strtolower($host);
-    }
-
-    /**
-     * Redirect the request to the given url.
-     *
-     * @param string|UrlObject $url
-     * @param string|int|array $headers Headers that you wish to send with your request.
-     */
-    public function redirect($url, $headers = null)
-    {
-        if (!$this->isStdObject($url)) {
-            $url = $this->url($url);
-        }
-
-        $url->goToUrl($headers);
     }
 
     /**

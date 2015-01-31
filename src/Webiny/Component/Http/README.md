@@ -7,22 +7,10 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/http": "1.1.*"
-    }
-}
+```bash
+composer require webiny/http
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/http).
-
-Once you have your `composer.json` file in place, just run the install command.
-
-    $ php composer.phar install
-
-To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
-Alternatively, you can also do a `git checkout` of the repo.
 
 ## Usage
 
@@ -43,7 +31,10 @@ The preferred way of accessing those classes is by using the `HttpTrait`.
             $this->httpSession();
 
             // create new `Response` instance
-             $this->httpResponse('output content');
+            $this->httpResponse('output content');
+             
+            // redirect
+            $this->httpRedirect('http://youtube.com/');
         }
     }
 ```

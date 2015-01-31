@@ -11,6 +11,9 @@
          syntaxCheck="false"
          bootstrap="vendor/autoload.php"
         >
+    <listeners>
+        <listener class="\MyBuilder\PhpunitAccelerator\TestListener"/>
+    </listeners>
     <php>
         <ini name="intl.default_locale" value="en"/>
         <ini name="intl.error_level" value="0"/>

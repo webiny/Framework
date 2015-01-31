@@ -70,6 +70,13 @@ class Smarty implements TemplateEngineInterface
             $this->setMergeCompiledIncludes(false);
         }
 
+        // mute expected errors
+        if ($config->get('MuteExpectedErrors', false)) {
+            $this->_smarty->muteExpectedErrors();
+        }else{
+            $this->_smarty->unmuteExpectedErrors();
+        }
+
         // register extensions
         $this->registerExtensions();
     }
