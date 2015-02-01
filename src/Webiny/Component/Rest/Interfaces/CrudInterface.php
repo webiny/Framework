@@ -76,7 +76,7 @@ interface CrudInterface
      * Replace a single record.
      *
      * Note that the difference between crudUpdate and crudReplace is that in crudReplace, all current record attributes
-     * should be removed and the new attributes should be added, while in crudUpdate the records would only be added
+     * should be removed and the new attributes should be added, while in crudUpdate the attributes would only be added
      * or deleted. In crudUpdate, if the record doesn't exist, it can be created.
      *
      * @link http://tools.ietf.org/html/rfc5789
@@ -94,7 +94,7 @@ interface CrudInterface
      * Update a single record.
      *
      * Note that the difference between crudUpdate and crudReplace is that in crudReplace, all current record attributes
-     * should be removed and the new attributes should be added, while in crudUpdate the records would only be added
+     * should be removed and the new attributes should be added, while in crudUpdate the attributes would only be added
      * or deleted. In crudUpdate, if the record doesn't exist, it can be created.
      *
      * @link http://tools.ietf.org/html/rfc5789
