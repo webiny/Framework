@@ -17,15 +17,32 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \ArrayAccess
 {
+    public function __construct($attribute, EntityAbstract $entity)
+    {
+        parent::__construct($attribute, $entity);
+        $this->_value = new ArrayObject();
+        $this->_defaultValue = new ArrayObject();
+    }
+
+    public function getDbValue()
+    {
+        $value = $this->getToArrayValue();
+        if($this->_value->count() == 0){
+            $this->_value = $this->arr($value);
+        }
+        return $value;
+    }
+
     public function setValue($value = null)
     {
         if($this->isNull($value)) {
-            $value = [];
+            $value = new ArrayObject();
         }
+
+        $value = $this->arr($value);
 
         return parent::setValue($value);
     }
-
 
     /**
      * Perform validation against given value
@@ -55,11 +72,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
     public function getToArrayValue()
     {
-        if($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
-            return $this->_defaultValue;
+        if($this->_value->count() == 0) {
+            return $this->_defaultValue->val();
         }
 
-        return $this->_value;
+        return $this->_value->val();
     }
 
 
@@ -74,7 +91,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function get($key, $default = null)
     {
-        return $this->arr($this->_value)->keyNested($key, $default, true);
+        return $this->_value->keyNested($key, $default, true);
     }
 
     /**
@@ -85,7 +102,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function set($key, $value)
     {
-        $this->_value = $this->arr($this->_value)->keyNested($key, $value)->val();
+        $this->_value->keyNested($key, $value);
     }
 
     /**
@@ -97,7 +114,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function prepend($value)
     {
-        $this->_value = $this->arr($this->_value)->prepend($value)->val();
+        $this->_value->prepend($value);
 
         return $this;
     }
@@ -111,14 +128,14 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function append($value)
     {
-        $this->_value = $this->arr($this->_value)->append($value)->val();
+        $this->_value->append($value);
 
         return $this;
     }
 
     function __set($name, $value)
     {
-        die($name . ' - ' . $value);
+        $this->offsetSet($name, $value);
     }
 
 

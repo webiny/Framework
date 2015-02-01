@@ -303,7 +303,7 @@ abstract class EntityAbstract implements \ArrayAccess
             /* @var $attr One2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
                 foreach ($attr->getValue() as $item) {
-                    $item->{$attr->getRelatedAttribute()}->setValue($this);
+                    $item->getAttribute($attr->getRelatedAttribute())->setValue($this);
                     $item->save();
                 }
                 /**
@@ -523,7 +523,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function __get($name)
     {
-        return $this->getAttribute($name);
+        return $this->getAttribute($name)->getValue();
     }
 
     /**
