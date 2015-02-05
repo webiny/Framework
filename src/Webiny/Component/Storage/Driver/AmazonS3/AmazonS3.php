@@ -11,6 +11,7 @@ use Aws\S3\Exception\NoSuchKeyException;
 use Webiny\Component\Amazon\S3;
 use Webiny\Component\StdLib\StdObjectTrait;
 use Webiny\Component\Storage\Driver\DriverInterface;
+use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageException;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
@@ -44,12 +45,14 @@ class AmazonS3 implements DriverInterface
      * @param      $secretAccessKey
      * @param      $bucket
      * @param bool $dateFolderStructure If true, will append Y/m/d to the key
+     * @param bool $cdnDomain
      *
      * @internal param $config
      */
     public function __construct($accessKeyId, $secretAccessKey, $bucket, $dateFolderStructure = false, $cdnDomain = false)
     {
-        $this->_s3Client = new \Webiny\Component\Amazon\S3($accessKeyId, $secretAccessKey);
+        $bridge = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
+        $this->_s3Client = new $bridge($accessKeyId, $secretAccessKey);
 
         $this->_bucket = $bucket;
         $this->_dateFolderStructure = $dateFolderStructure;
@@ -168,7 +171,7 @@ class AmazonS3 implements DriverInterface
 
         if($this->_cdnDomain){
             $objectUrl = $this->url($this->_recentFiles[$key]['ObjectURL']);
-            $cdnDomain = $this->urAmazonl($this->_cdnDomain);
+            $cdnDomain = $this->url($this->_cdnDomain);
 
             $objectUrl->setHost($cdnDomain->getHost())->setScheme($cdnDomain->getScheme());
             return $objectUrl->val();

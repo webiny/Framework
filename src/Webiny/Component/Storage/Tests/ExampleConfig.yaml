@@ -38,4 +38,4 @@ Storage:
     # If you don't want to change the default driver,
     # just ommit this definition in your config file.
     Bridges:
-        AmazonS3: \Webiny\Component\Amazon\S3
+        AmazonS3: \Webiny\Component\Storage\Tests\Mocks\S3Mock

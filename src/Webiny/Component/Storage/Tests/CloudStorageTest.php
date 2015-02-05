@@ -29,27 +29,15 @@ class CloudStorageTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider driverSet
      */
-    public function testSave(Storage $storage)
+    public function testStorage(Storage $storage)
     {
         $storage->setContents($this->_key, 'Test contents');
-    }
+        $this->assertTrue($storage->keyExists($this->_key));
 
-    /**
-     * @dataProvider driverSet
-     */
-    public function testRead(Storage $storage)
-    {
         $this->assertSame('Test contents', $storage->getContents($this->_key));
-    }
 
-    /**
-     * @dataProvider driverSet
-     */
-    public function testDelete(Storage $storage)
-    {
         $storage->deleteKey($this->_key);
         $this->assertFalse($storage->keyExists($this->_key));
-
     }
 
     public function driverSet()
