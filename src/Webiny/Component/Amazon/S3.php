@@ -22,13 +22,21 @@ class S3 implements S3ClientInterface
     use ComponentTrait;
 
     /**
+     * @var array Default configuration params.
+     */
+    private static $_defaultConfig = [
+        'Bridge' => '\Webiny\Component\Amazon\Bridge\S3\S3'
+    ];
+
+    /**
      * @var Bridge\S3\S3
      */
     private $_instance;
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
-        $this->_instance = new Bridge\S3\S3($accessKeyId, $secretAccessKey);
+        $bridgeClass = $this->getConfig()->get('Bridge');
+        $this->_instance = new $bridgeClass($accessKeyId, $secretAccessKey);
     }
 
     /**

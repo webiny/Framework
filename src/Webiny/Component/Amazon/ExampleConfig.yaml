@@ -2,9 +2,10 @@
 # Amazon - example configuration #
 ##################################
 
-# Amazon component configuraition just requires the registraion of dependant libraries with ClassLoader.
+# Amazon component configuration requires the registraion of dependant libraries with ClassLoader.
 # If you use Composer, then you don't need to register the libraries with ClassLoader.
+# Currently only S3 cloud storage is supported within this component, and we need to define our S3 bridge
+# that communicates with Amazon S3
 Amazon:
-    ClassLoader:
-        Aws: /var/www/Vendors/Aws
-        Guzzle: /var/www/Vendors/Guzzle
+    S3:
+        Bridge:  \Webiny\Component\Amazon\Bridge\S3\S3

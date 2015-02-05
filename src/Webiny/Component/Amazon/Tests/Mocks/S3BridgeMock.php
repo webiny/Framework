@@ -5,30 +5,27 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Amazon\Bridge\S3;
+namespace Webiny\Component\Amazon\Tests\Mocks;
 
-use Aws\S3\S3Client;
+use Webiny\Component\Amazon\S3\RuntimeException;
+use Webiny\Component\Amazon\S3\S3ClientInterface;
 
 /**
  * Amazon S3 Client Bridge
  *
- * @package Webiny\Component\Amazon
+ * @package Webiny\Component\Amazon\Tests\Mocks
  */
-class S3 implements S3ClientInterface
+class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterface
 {
-
-    /**
-     * @var \Aws\S3\S3Client
-     */
     private $_instance;
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
-        $this->_instance = S3Client::factory([
-                                                 'key'    => $accessKeyId,
-                                                 'secret' => $secretAccessKey,
-                                             ]
-        );
+        $this->_instance = $this->getMockBuilder('\Aws\S3\S3Client')
+                     ->disableOriginalConstructor()
+                     ->getMock();
+        $this->_instance->expects($this->any())->method('doesObjectExist')->will($this->onConsecutiveCalls(true, false));
+        $this->_instance->expects($this->any())->method('doesBucketExist')->will($this->onConsecutiveCalls(true, false));
     }
 
 
@@ -43,24 +40,7 @@ class S3 implements S3ClientInterface
      */
     public function getObject($bucket, $key, array $params = [])
     {
-        $params['Bucket'] = $bucket;
-        $params['Key'] = $key;
-
-        return $this->_instance->getObject($params);
-    }
-
-    /**
-     * Get access control policy for the bucket
-     *
-     * @param string $bucket
-     *
-     * @return mixed
-     */
-    public function getBucketAcl($bucket)
-    {
-        $params['Bucket'] = $bucket;
-
-        return $this->_instance->getBucketAcl($params);
+        return ['Body' => 'Component test'];
     }
 
     /**
@@ -73,9 +53,7 @@ class S3 implements S3ClientInterface
      */
     public function deleteBucket($bucket)
     {
-        $params['Bucket'] = $bucket;
-
-        return $this->_instance->deleteBucket($params);
+        return;
     }
 
     /**
@@ -89,7 +67,76 @@ class S3 implements S3ClientInterface
      */
     public function doesBucketExist($bucket, $accept403 = true, array $params = [])
     {
-        return $this->_instance->doesBucketExist($bucket, $accept403, $params);
+        return $this->_instance->doesBucketExist($bucket);
+    }
+
+    /**
+     * Removes the null version (if there is one) of an object and inserts a delete marker, which becomes the latest version of the object.
+     * If there isn't a null version, Amazon S3 does not remove any objects.
+     *
+     * @param string $bucket
+     * @param string $key
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function deleteObject($bucket, $key, array $params = [])
+    {
+        return;
+    }
+
+    /**
+     * Adds an object to a bucket.
+     *
+     * @param string $bucket
+     * @param string $key
+     * @param string $content
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function putObject($bucket, $key, $content, array $params = [])
+    {
+        return;
+    }
+
+    /**
+     * Creates a new bucket.
+     *
+     * @param string $bucket
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function createBucket($bucket, array $params = [])
+    {
+        return;
+    }
+
+    /**
+     * Determines whether or not an object exists by name
+     *
+     * @param string $bucket The name of the bucket
+     * @param string $key    The key of the object
+     * @param array  $params Additional options to add to the executed command
+     *
+     * @return bool
+     */
+    public function doesObjectExist($bucket, $key, array $params = [])
+    {
+        return $this->_instance->doesObjectExist($bucket, $key);
+    }
+
+    /**
+     * Get access control policy for the bucket
+     *
+     * @param string $bucket
+     *
+     * @return mixed
+     */
+    public function getBucketAcl($bucket)
+    {
+        // TODO: Implement getBucketAcl() method.
     }
 
     /**
@@ -102,25 +149,18 @@ class S3 implements S3ClientInterface
      */
     public function putBucketAcl($bucket, $acl)
     {
-        $params = [
-            'Bucket' => $bucket,
-            'Acl'    => $acl
-        ];
-
-        return $this->_instance->putBucketAcl($params);
+        // TODO: Implement putBucketAcl() method.
     }
 
     /**
      * Get array of buckets
      * Available keys: Name, CreationDate
      *
-     * @param array $params
-     *
      * @return mixed
      */
-    public function getListBucketsIterator(array $params = [])
+    public function getListBucketsIterator()
     {
-        return $this->_instance->getListBucketsIterator($params);
+        // TODO: Implement getListBucketsIterator() method.
     }
 
     /**
@@ -134,13 +174,7 @@ class S3 implements S3ClientInterface
      */
     public function putObjectAcl($bucket, $key, $acl)
     {
-        $params = [
-            'Bucket' => $bucket,
-            'Key'    => $key,
-            'Acl'    => $acl
-        ];
-
-        return $this->_instance->putObjectAcl($params);
+        // TODO: Implement putObjectAcl() method.
     }
 
     /**
@@ -157,11 +191,11 @@ class S3 implements S3ClientInterface
      * @see Aws\S3\S3Client::listObjects
      * @see Aws\S3\Model\ClearBucket For more options or customization
      * @return int Returns the number of deleted keys
-     * @throws \RuntimeException if no prefix and no regex is given
+     * @throws RuntimeException if no prefix and no regex is given
      */
     public function deleteMatchingObjects($bucket, $prefix = '', $regex = '', array $options = [])
     {
-        return $this->_instance->deleteMatchingObjects($bucket, $prefix, $regex, $options);
+        // TODO: Implement deleteMatchingObjects() method.
     }
 
     /**
@@ -173,11 +207,7 @@ class S3 implements S3ClientInterface
      */
     public function getBucketLocation($bucket)
     {
-        $params = [
-            'Bucket' => $bucket
-        ];
-
-        return $this->_instance->getBucketLocation($params);
+        // TODO: Implement getBucketLocation() method.
     }
 
     /**
@@ -193,13 +223,7 @@ class S3 implements S3ClientInterface
      */
     public function restoreObject($bucket, $key, $days)
     {
-        $params = [
-            'Bucket' => $bucket,
-            'Key'    => $key,
-            'Days'   => $days
-        ];
-
-        return $this->_instance->restoreObject($params);
+        // TODO: Implement restoreObject() method.
     }
 
     /**
@@ -213,9 +237,7 @@ class S3 implements S3ClientInterface
      */
     public function getListObjectsIterator($bucket, array $params = [])
     {
-        $params['Bucket'] = $bucket;
-
-        return $this->_instance->getListObjectsIterator($params);
+        // TODO: Implement getListObjectsIterator() method.
     }
 
     /**
@@ -230,9 +252,7 @@ class S3 implements S3ClientInterface
      */
     public function listObjects($bucket, array $params = [])
     {
-        $params['Bucket'] = $bucket;
-
-        return $this->_instance->listObjects($params);
+        // TODO: Implement listObjects() method.
     }
 
     /**
@@ -245,59 +265,7 @@ class S3 implements S3ClientInterface
      */
     public function clearBucket($bucket)
     {
-        return $this->_instance->clearBucket($bucket);
-    }
-
-    /**
-     * Removes the null version (if there is one) of an object and inserts a delete marker, which becomes the latest version of the object.
-     * If there isn't a null version, Amazon S3 does not remove any objects.
-     *
-     * @param string $bucket
-     * @param string $key
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function deleteObject($bucket, $key, array $params = [])
-    {
-        $params['Bucket'] = $bucket;
-        $params['Key'] = $key;
-
-        return $this->_instance->deleteObject($params);
-    }
-
-    /**
-     * Adds an object to a bucket.
-     *
-     * @param string $bucket
-     * @param string $key
-     * @param string $content
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function putObject($bucket, $key, $content, array $params = [])
-    {
-        $params['Bucket'] = $bucket;
-        $params['Key'] = $key;
-        $params['Body'] = $content;
-
-        return $this->_instance->putObject($params);
-    }
-
-    /**
-     * Creates a new bucket.
-     *
-     * @param string $bucket
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function createBucket($bucket, array $params = [])
-    {
-        $params['Bucket'] = $bucket;
-
-        return $this->_instance->createBucket($params);
+        // TODO: Implement clearBucket() method.
     }
 
     /**
@@ -319,7 +287,7 @@ class S3 implements S3ClientInterface
      */
     public function uploadDirectory($directory, $bucket, $keyPrefix = null, array $options = [])
     {
-        return $this->_instance->uploadDirectory($directory, $bucket, $keyPrefix, $options);
+        // TODO: Implement uploadDirectory() method.
     }
 
     /**
@@ -335,25 +303,7 @@ class S3 implements S3ClientInterface
      */
     public function copyObject($sourceBucket, $sourceKey, $targetBucket, $targetKey, array $params = [])
     {
-        $params['Bucket'] = $targetBucket;
-        $params['Key'] = $targetKey;
-        $params['CopySource'] = urlencode($sourceBucket . '/' . $sourceKey);
-
-        return $this->_instance->copyObject($params);
-    }
-
-    /**
-     * Determines whether or not an object exists by name
-     *
-     * @param string $bucket The name of the bucket
-     * @param string $key    The key of the object
-     * @param array  $params Additional options to add to the executed command
-     *
-     * @return bool
-     */
-    public function doesObjectExist($bucket, $key, array $params = [])
-    {
-        return $this->_instance->doesObjectExist($bucket, $key, $params);
+        // TODO: Implement copyObject() method.
     }
 
     /**
@@ -365,11 +315,7 @@ class S3 implements S3ClientInterface
      */
     public function getBucketPolicy($bucket)
     {
-        $params = [
-            'Bucket' => $bucket
-        ];
-
-        return $this->_instance->getBucketPolicy($params);
+        // TODO: Implement getBucketPolicy() method.
     }
 
     /**
@@ -382,12 +328,7 @@ class S3 implements S3ClientInterface
      */
     public function getObjectAcl($bucket, $key)
     {
-        $params = [
-            'Bucket' => $bucket,
-            'Key'    => $key
-        ];
-
-        return $this->_instance->getObjectAcl($params);
+        // TODO: Implement getObjectAcl() method.
     }
 
     /**
@@ -401,17 +342,7 @@ class S3 implements S3ClientInterface
      */
     public function deleteObjects($bucket, array $objects)
     {
-        $params = [
-            'Bucket'  => $bucket,
-            'Objects' => []
-        ];
-        foreach ($objects as $object) {
-            $objects[] = [
-                'Key' => $object
-            ];
-        }
-
-        return $this->_instance->deleteObjects($params);
+        // TODO: Implement deleteObjects() method.
     }
 
     /**
@@ -421,7 +352,7 @@ class S3 implements S3ClientInterface
      */
     public function listBuckets()
     {
-        return $this->_instance->listBuckets();
+        // TODO: Implement listBuckets() method.
     }
 
     /**
@@ -438,7 +369,7 @@ class S3 implements S3ClientInterface
      */
     public function getObjectUrl($bucket, $key, $expires = null, array $args = [])
     {
-        return $this->_instance->getObjectUrl($bucket, $key, $expires, $args);
+        // TODO: Implement getObjectUrl() method.
     }
 
     /**
@@ -458,6 +389,6 @@ class S3 implements S3ClientInterface
      */
     public function downloadBucket($directory, $bucket, $keyPrefix = '', array $options = [])
     {
-        return $this->_instance->downloadBucket($directory, $bucket, $keyPrefix, $options);
+        // TODO: Implement downloadBucket() method.
     }
 }
