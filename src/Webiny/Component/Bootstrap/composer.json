@@ -2,7 +2,7 @@
 	"name": "webiny/bootstrap",
 	"type": "library",
 	"description": "Webiny Bootstrap Component",
-	"keywords": ["bootstrap"],
+	"keywords": ["bootstrap", "mvc"],
 	"homepage": "http://www.webiny.com/",
 	"license": "MIT",
 	"authors": [
@@ -34,7 +34,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Webiny\\Component\\Router\\": ""
+			"Webiny\\Component\\Bootstrap\\": ""
 		}
 	},
 	"extras": {
