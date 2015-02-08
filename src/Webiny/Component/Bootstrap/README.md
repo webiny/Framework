@@ -1,8 +1,8 @@
 Bootstrap Component
 ===================
 
-Bootstrap is the first piece of code your web application runs. It loads all other components, and runs your application.
-This bootstrap component uses MVC application architecture. **Note** that Webiny Framework is not an MVC framework, rather it's a set
+Bootstrap is the first piece of code your web application runs. It loads all system components, and then runs your application.
+The component uses MVC application architecture. **Note** that Webiny Framework is not an MVC framework, rather it's a set
 of modular components that you can use in various different application architectures, for example like HMVC and others.
 
 However, we decided to create this component, so that it helps other developers, that are mostly familiar with MVC, to
@@ -22,41 +22,44 @@ For additional versions of the package, visit the [Packagist page](https://packa
 
 ## Requirements 
 
-The component requires that you follow a specific file-folder structure. 
-A skeleton app can be found here [Bootstrap Skeleton App](http://github.com/Webiny/Bootstrap-SkeletonApp). 
+The component requires that you follow a specific file-folder structure.
+ 
+A skeleton app can be found here [Bootstrap Skeleton App](http://github.com/Webiny/Bootstrap-SkeletonApp).
+
 A more advanced demo application can be found here [Bootstrap Todo Demo App](https://github.com/Webiny/Tutorial-TodoApp/).
 
 
 ### Application Namespace
 
-Once you have your structure in place, you need to set the application namespace inside the `Config/App.yaml` file.
+Once you have your structure in place, you need to set your desired application namespace inside the `Config/App.yaml` file.
 
 ```yaml
 Application:
     Namespace: MySuperApp
 ```
 
-The namespace defines the class root namespace for your module.
+The `Namespace` defines the class root namespace for your module.
 
 
 ### Modules
 
-Every module is placed inside the `Modules` folder. The module name should be written in CamelCase, eg "MySuperAwesomeModule".
+Every module is placed inside the `Modules` folder inside the skeleton app. The module name should be written in CamelCase, e.g. "MySuperAwesomeModule".
 
 ```
-Modules
-    |- MySuperAwesomeModule
-        |- Controllers
-        |- Views
+Modules/
+    |- MySuperAwesomeModule/
+        |- Controllers/
+        |- Views/
 ```
 
 
 ### Controllers
 
-The `Controllers` folder, which is inside your module folder, holds your controller classes. Controller name must also be  
-written in CamelCase. Every controller class must `use` the `Webiny\Component\Bootstrap\ApplicationTraits\AppTrait` trait. 
+The `Controllers` folder, which is inside your module folder, holds your controller classes. Controller name must also be written in CamelCase. Every controller class must `use` the `Webiny\Component\Bootstrap\ApplicationTraits\AppTrait` trait. 
 
 ```php
+<?php
+
 namespace MySuperApp\Modules\MySuperAwesomeModule\Controllers;
 
 class Homepage
@@ -128,7 +131,7 @@ class Homepage
         $this->app()->view()->getTitle();
         
         // outputs '<title>Webiny Todo App</title>' 
-        $this->app()->view()->getTitleHtml()
+        $this->app()->view()->getTitleHtml();
         
         // outputs an array of scripts
         $this->app()->view()->getScripts();
@@ -144,21 +147,22 @@ class Homepage
 #### Controller Actions
 
 Every controller exposes certain public method that can be accessed over url. The method name of these methods must end
-with `Action` keyword. Eg `doSomething**Action**`.
+with `Action` keyword. Eg `doSomethingAction`.
 
 
 ### Views
 
-Every controller has it's own view folder, that holds the view templates for controller actions:
+Every controller has it's own view folder, that holds the view templates for controller actions. The view folder name,
+must match the controller class name.
 
 ```
-Modules
-    |- MySuperAwesomeModule
-        |- Controllers
+Modules/
+    |- MySuperAwesomeModule/
+        |- Controllers/
             |- Homepage.php
             |- ProductSearch.php
-        |- Views
-            |- Homepage
+        |- Views/
+            |- Homepage/
                 |- DoSomething.tpl
 ```
 
@@ -166,9 +170,9 @@ The requirements for the view template name are:
 - written in CamelCase
 - must match the action name of the controller
 - should not contain `Action` at the end
-- example `Homepage/DoSomething.tpl` matched the `doSomethingAction` method on the `Homepage` controller.
+- example `Homepage/DoSomething.tpl` matches the `doSomethingAction` method on the `Homepage` controller.
 
-By default, the Bootstrap component uses the `TemplateEngine` component, which uses `Smarty` template engine.
+By default, the Bootstrap component uses the [TemplateEngine](../TemplateEngine/) component, which uses `Smarty` template engine.
 
 
 ## Environments and Configuration Files
@@ -176,9 +180,9 @@ By default, the Bootstrap component uses the `TemplateEngine` component, which u
 Within the `Config` folder, you have the `Production` folder, which must always exist. This is the location from where 
 the component reads the configuration files. However, you can have additional folders, alongside the production one, that 
  hold environment-specific configurations. The `Production` config files are **always** loaded, the additional env-specific
- config files, they just overwrite the production config variables. 
+ config files, just overwrite the production config variables. 
 
-To create an environment, you need to define it inside the `Config/App.yaml` config file:
+To create an environment, you need to first define it inside the `Config/App.yaml` config file:
 
 ```yaml
 Application:
@@ -196,15 +200,15 @@ The `Domain` parameter defines when a certain environment will be loaded. The en
 will hold the configuration files. You can have as many environments as you want. 
 
 If the `Domain`, for the upper example, matches the current hostname, the component will first load all the config files,
-from the `Production` folder, and then all the files from the `Development` folder, and then it will merge both configuration
+from the `Production` folder, and then all the files from the `Development` folder, and then it will merge both configurations
 into one. 
 
 ```
-Config
-    |- Production
+Config/
+    |- Production/
         |- Router.yaml
         |- Mongo.yaml
-    |- Development
+    |- Development/
         |- Mongo.yaml 
 ```
 
@@ -214,7 +218,7 @@ Config
 Almost every component within Webiny Framework, takes a configuration file. That file defines the initial component data,
 and how the component should be constructed. 
 
-The `Bootstrap` component handles this initialization process automatically. If you place a configuration file, with a 
+The `Bootstrap` component handles this initialization process automatically. If you create a configuration file, with a 
 name matching a Webiny Framework component, the component will be initialized upon the application boot time and will
  be immediately available for usage in your application code. 
 
@@ -272,3 +276,12 @@ or like this: `www.myapp.com/hello-world/foo/say-hi/Jack/Hawaii`, which would ou
 
 `Hi Jack, from Hawaii`
 
+
+Resources
+---------
+
+To run unit tests, you need to use the following command:
+
+    $ cd path/to/Webiny/Component/Bootstrap/
+    $ composer.phar install
+    $ phpunit
