@@ -47,7 +47,7 @@ class Router
                 $callbackData = $this->str($callback['Class'])->trimLeft('\\')->explode('\\')->val();
 
                 if ($callbackData[1] == 'Modules' && $callbackData[3] == 'Controllers') {
-                    // custom route, but still a MVC application
+                    // custom route, but still an MVC application
                     $this->_dispatchMvc($callbackData[2], $callbackData[4], $callback['Method'], $result->getParams());
                 } else {
                     // custom route and custom callback (non MVC)
