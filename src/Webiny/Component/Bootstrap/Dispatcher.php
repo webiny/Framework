@@ -70,7 +70,7 @@ class Dispatcher
         $applicationConfig = Bootstrap::getInstance()->getEnvironment()->getApplicationConfig();
 
         // build the class name
-        $className = '\\' . $applicationConfig->Application->Namespace . '\Modules\\' . $dispatcher->getModule(
+        $className = '\\' . $applicationConfig->Namespace . '\Modules\\' . $dispatcher->getModule(
             ) . '\Controllers\\' . $dispatcher->getController();
         $dispatcher->setClassName($className);
 
@@ -205,7 +205,7 @@ class Dispatcher
      *
      * @return string
      */
-    private function getClassName()
+    public function getClassName()
     {
         return $this->_className;
     }
@@ -226,7 +226,7 @@ class Dispatcher
                              ], $this->getParams()
         );
 
-        $instance->app()->htmlResponse()->send();
+        $instance->app()->httpResponse()->send();
     }
 
     /**
@@ -279,16 +279,20 @@ class Dispatcher
         if (!empty($this->getModule()) && $instance->app()->view()->getAutoload()) {
             $templateDir = Bootstrap::getInstance()->getEnvironment()->getApplicationAbsolutePath(
                 ) . 'App/Modules/' . $this->getModule() . '/Views/' . $this->getController();
-            $templates = @scandir($templateDir);
+
+            $templates = scandir($templateDir);
             if ($templates) {
                 $tplFilename = '';
+
                 $tplActionName = $this->str($this->getAction())->charFirstUpper()->val();
+
                 foreach ($templates as $tpl) {
                     if (strpos($tpl, $tplActionName . '.') !== false) {
                         $tplFilename = $tpl;
                         break;
                     }
                 }
+
                 if ($tplFilename != '') {
                     $instance->app()->view()->setTemplate('../Modules/' . $this->getModule(
                                                           ) . '/Views/' . $this->getController() . '/' . $tplFilename
@@ -307,12 +311,8 @@ class Dispatcher
      */
     private function _getApplicationInstance()
     {
-        // current environment
-        $currentEnv = Bootstrap::getInstance()->getEnvironment();
         // create the app instance
-        $app = new Application($currentEnv->getApplicationConfig(), $currentEnv->getComponentConfigs(),
-                               $currentEnv->getCurrentEnvironmentName()
-        );
+        $app = new Application(Bootstrap::getInstance()->getEnvironment());
 
         return $app;
     }

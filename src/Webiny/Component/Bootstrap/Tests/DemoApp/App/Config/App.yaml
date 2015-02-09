@@ -1,0 +1,5 @@
+Application:
+    Namespace: Webiny\Component\Bootstrap\Tests\DemoApp
+    Environments:
+        Production:
+            SomeVar: Value

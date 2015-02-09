@@ -27,12 +27,16 @@ class Router
      * The method initializes router and tries to call the callback assigned to the current url.
      * Method is call automatically from the Bootstrap class.
      *
+     * @param string $url Url to route. If not set, the current url is used.
+     *
      * @throws \Exception
+     *
+     * @return Dispatcher
      */
-    public function initializeRouter()
+    public function initializeRouter($url = null)
     {
         // current url
-        $currentUrl = $this->httpRequest()->getCurrentUrl();
+        $currentUrl = is_null($url) ? $this->httpRequest()->getCurrentUrl() : $url;
 
         // init the router
         try {
@@ -43,28 +47,35 @@ class Router
                 // based on callback, route the request
                 $callback = $result->getCallback();
 
+                // namespace
+                $ns = Bootstrap::getInstance()->getEnvironment()->getApplicationConfig()->get('Namespace', false);
+
                 // extract callback parts
-                $callbackData = $this->str($callback['Class'])->trimLeft('\\')->explode('\\')->val();
+                $callbackData = $this->str($callback['Class'])->trimLeft('\\')->replace($ns, '')->explode('\\')->val();
 
                 if ($callbackData[1] == 'Modules' && $callbackData[3] == 'Controllers') {
                     // custom route, but still an MVC application
-                    $this->_dispatchMvc($callbackData[2], $callbackData[4], $callback['Method'], $result->getParams());
+                    return $this->_dispatchMvc($callbackData[2], $callbackData[4], $callback['Method'], $result->getParams());
                 } else {
                     // custom route and custom callback (non MVC)
-                    $this->_dispatchCustom($callback['Class'], $callback['Method'], $result->getParams());
+                    return $this->_dispatchCustom($callback['Class'], $callback['Method'], $result->getParams());
                 }
             } else { // fallback to the mvc router
-                $this->mvcRouter($this->httpRequest()->getCurrentUrl(true)->getPath());
+                return $this->mvcRouter($this->httpRequest()->getCurrentUrl(true)->getPath());
             }
         } catch (\Exception $e) {
             throw $e;
         }
+
+        throw new BootstrapException('No router matched the request.');
     }
 
     /**
      * This is the optional router that routes the MVC requests.
      *
      * @param string $request Current url path.
+     *
+     * @return Dispatcher
      *
      * @throws BootstrapException
      * @throws \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObjectException
@@ -103,7 +114,7 @@ class Router
         }
 
         // call the dispatcher
-        $this->_dispatchMvc($module->val(), $controller->val(), $action->val(), $params);
+        return $this->_dispatchMvc($module->val(), $controller->val(), $action->val(), $params);
     }
 
     /**
@@ -113,10 +124,12 @@ class Router
      * @param string $controller Controller name.
      * @param string $action     Action name.
      * @param array  $params     Parameter list.
+     *
+     * @return Dispatcher
      */
     private function _dispatchMvc($module, $controller, $action, $params)
     {
-        Dispatcher::mvcDispatcher($module, $controller, $action, $params)->issueCallback();
+        return Dispatcher::mvcDispatcher($module, $controller, $action, $params);
     }
 
     /**
@@ -125,9 +138,11 @@ class Router
      * @param string $className Fully qualified callback class name.
      * @param string $action    Class method name.
      * @param array  $params    Parameter list.
+     *
+     * @return Dispatcher
      */
     private function _dispatchCustom($className, $action, $params)
     {
-        Dispatcher::customDispatcher($className, $action, $params)->issueCallback();
+        return Dispatcher::customDispatcher($className, $action, $params);
     }
 }

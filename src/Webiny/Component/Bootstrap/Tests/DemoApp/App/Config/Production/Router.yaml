@@ -1,0 +1,7 @@
+Router:
+    Routes:
+        StartPage:
+            Path: /
+            Callback:
+                Class: Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl
+                Method: MyActAction
