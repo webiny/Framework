@@ -27,11 +27,42 @@ Mailer:
             Password: iRuleGoogle
             Encryption: ssl
             AuthMode: login
+    Mandrill:
+        ApiKey: yourApiKey
+        DisableDelivery: false
+        Message:
+            FromEmail: ''
+            FromName: ''
+            Headers: []
+            Important: false
+            TrackOpens: null
+            TrackClicks: null
+            AutoText: null
+            AutoHtml: null
+            InlineCss: null
+            UrlStripQs: null
+            PreserveRecipients: null
+            ViewContentLink: null
+            BccAddress: ''
+            TrackingDomain: null
+            SigningDomain: null
+            ReturnPathDomain: null
+            Merge: true
+            MergeLanguage: mailchimp
+            Tags: []
+            Subaccount: ''
+            GoogleAnalyticsDomains: []
+            GoogleAnalyticsCampaign: ''
+            Metadata: []
+            RecipientMetadata: []
+            Attachments: []
+            Images: []
     # You can overwrite the default driver by providing your own.
     # How to create a new driver, read in the Readme.md file.
-    # If you don't wish to change the default driver,
+    # If you don't wish to change the default (SwiftMailer) driver,
     # just ommit this definition in your config file.
-    Bridge: \Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer
+    Bridge:
+        Mandrill: \Webiny\Component\Mailer\Bridge\Mandrill\Mandrill
     # Entries under ClassLoader are automatically registered
     # with ClassLoader. You don't need this part if you are using Composer autoload.
     ClassLoader:

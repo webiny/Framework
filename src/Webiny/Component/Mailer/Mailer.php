@@ -7,9 +7,11 @@
 
 namespace Webiny\Component\Mailer;
 
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Mailer\Bridge\Loader;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 /**
  * This is the Mailer component class.
@@ -43,17 +45,23 @@ class Mailer
     public function __construct($mailer = 'Default')
     {
         $this->_mailerName = $mailer;
-        $this->_transport = Loader::getTransport($this->_getMailerConfig());
+        $this->_transport = Loader::getTransport($mailer);
     }
 
     /**
      * Creates a new message.
      *
+     * @param array|ArrayObject|ConfigObject $config (Optional)
+     *
      * @return MessageInterface
+     * @throws Bridge\MailerException
      */
-    public function getMessage()
+    public function getMessage($config = null)
     {
-        return Loader::getMessage($this->_getMailerConfig());
+        if($config && !$config instanceof ConfigObject){
+            $config = new ConfigObject($config);
+        }
+        return Loader::getMessage($this->_mailerName, $config);
     }
 
     /**

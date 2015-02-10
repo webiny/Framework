@@ -36,7 +36,7 @@ interface MessageInterface
      * Specifies the address of the person who the message is from.
      * Can be multiple persons/addresses.
      *
-     * @param string|array $from Person that sent the message.
+     * @param string|array $from From name and email: ['from@domain.org' => 'From Name']
      *
      * @return $this
      */
@@ -53,7 +53,7 @@ interface MessageInterface
      * Specifies the address of the person who physically sent the message.
      * Higher precedence than "from".
      *
-     * @param string|array $sender Sender name and email.
+     * @param string|array $sender Sender name and email: ['sender@domain.org' => 'Sender Name']
      *
      * @return $this
      */
@@ -149,6 +149,8 @@ interface MessageInterface
      * Define the reply-to address.
      *
      * @param string|array $replyTo
+     *
+     * @return $this
      */
     function setReplyTo($replyTo);
 
@@ -171,30 +173,11 @@ interface MessageInterface
     function setBody($content, $type = 'text/html', $charset = 'utf-8');
 
     /**
-     * Uses a template file as body content.
-     *
-     * @param string $pathToTemplate Absolute path to the template.
-     *
-     * @return $this
-     */
-    function setBodyFromTemplate($pathToTemplate);
-
-    /**
      * Returns the body of the message.
      *
      * @return string
      */
     function getBody();
-
-    /**
-     * Adds a message part with the defined $content and $type.
-     *
-     * @param string $content
-     * @param string $type
-     *
-     * @return $this
-     */
-    function addPart($content, $type);
 
     /**
      * Attach a file to your message.
@@ -222,16 +205,6 @@ interface MessageInterface
      * @return string
      */
     function getReturnPath();
-
-    /**
-     * Sets the email priority.
-     * The priority level is defined as a number scaling from 1 to 5, where one is the highest priority, and 5 is the lowest.
-     *
-     * @param int $priority
-     *
-     * @return $this
-     */
-    function setPriority($priority);
 
     /**
      * Specifies the format of the message (usually text/plain or text/html).
@@ -264,16 +237,6 @@ interface MessageInterface
      * @return string
      */
     function getContentTransferEncoding();
-
-    /**
-     * Sets the max line length.
-     * This is done for historical reasons and so that the message can be easily viewed in plain-text mode.
-     *
-     * @param int $length Length of the single line. It should never exceed 1000 chars, as defined by RFC 2822.
-     *
-     * @return $this
-     */
-    function setMaxLineLength($length);
 
     /**
      * Adds a header to the message.
