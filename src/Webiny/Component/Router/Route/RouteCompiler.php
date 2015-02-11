@@ -44,6 +44,13 @@ class RouteCompiler
 
         // route regex
         $routePatternObject = self::str($route->getPath())->trimLeft('/');
+
+        // if path is empty
+        // e.g. the path is empty if you are matching a start page
+        if($routePatternObject->val()==''){
+            return new CompiledRoute(false, false, [], [], false);
+        }
+
         $routePattern = $prefix . $routePatternObject->val() . '$';
 
         // we append the regex to match the string from beginning only if the path starts with http or '/'

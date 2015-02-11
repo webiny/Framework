@@ -7,9 +7,10 @@
 
 namespace Webiny\Component\Bootstrap\ApplicationClasses;
 
-use Webiny\Component\Bootstrap\Bootstrap;
+use Webiny\Component\Bootstrap\Environment;
 use Webiny\Component\Config\ConfigObject;
-use Webiny\Component\Http\HttpTrait;
+use Webiny\Component\Http\Http;
+use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Response;
 use Webiny\Component\TemplateEngine\TemplateEngine;
 use Webiny\Component\TemplateEngine\TemplateEngineLoader;
@@ -21,20 +22,24 @@ use Webiny\Component\TemplateEngine\TemplateEngineLoader;
  */
 class Application
 {
-    use HttpTrait;
-
     /**
      * @var View View instance.
      */
     private $_view;
 
 
+    private $_environment;
+
     /**
      * Base constructor.
+     *
+     * @param Environment $environment Current application environment.
+     *
      */
-    public function __construct()
+    public function __construct(Environment $environment)
     {
         $this->_view = new View();
+        $this->_environment = $environment;
     }
 
     /**
@@ -44,7 +49,7 @@ class Application
      */
     public function getNamespace()
     {
-        return Bootstrap::getInstance()->getEnvironment()->getApplicationConfig()->get('Application.Namespace');
+        return $this->_environment->getApplicationConfig()->get('Namespace');
     }
 
     /**
@@ -54,7 +59,7 @@ class Application
      */
     public function getAbsolutePath()
     {
-        return Bootstrap::getInstance()->getEnvironment()->getApplicationAbsolutePath();
+        return $this->_environment->getApplicationAbsolutePath();
     }
 
     /**
@@ -64,9 +69,9 @@ class Application
      */
     public function getWebPath()
     {
-        $webPath = Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentConfig()->get('Domain', false);
+        $webPath = $this->_environment->getCurrentEnvironmentConfig()->get('Domain', false);
         if (!$webPath) {
-            $webPath = $this->httpRequest()->getCurrentUrl(true)->getDomain() . '/';
+            $webPath = Request::getInstance()->getCurrentUrl(true)->getDomain() . '/';
         }
 
         return $webPath;
@@ -80,7 +85,7 @@ class Application
      */
     public function getEnvironmentName()
     {
-        return Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentName();
+        return $this->_environment->getCurrentEnvironmentName();
     }
 
     /**
@@ -101,7 +106,7 @@ class Application
     public function showErrors()
     {
         $reporting = $this->getEnvironmentConfig('ErrorReporting', false);
-        if (!$reporting || strtolower($reporting) == 'on') {
+        if ($reporting && strtolower($reporting) == 'on') {
             return true;
         }
 
@@ -119,12 +124,9 @@ class Application
     public function getApplicationConfig($query = '', $default = null)
     {
         if ($query == '') {
-            return Bootstrap::getInstance()->getEnvironment()->getApplicationConfig()->get('Application', $default);
+            return $this->_environment->getApplicationConfig();
         } else {
-            return Bootstrap::getInstance()
-                            ->getEnvironment()
-                            ->getApplicationConfig()
-                            ->get('Application.' . $query, $default);
+            return $this->_environment->getApplicationConfig()->get($query, $default);
         }
     }
 
@@ -139,9 +141,9 @@ class Application
     public function getEnvironmentConfig($query = '', $default = null)
     {
         if ($query == '') {
-            return Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentConfig();
+            return $this->_environment->getCurrentEnvironmentConfig();
         } else {
-            return Bootstrap::getInstance()->getEnvironment()->getCurrentEnvironmentConfig()->get($query, $default);
+            return $this->_environment->getCurrentEnvironmentConfig()->get($query, $default);
         }
     }
 
@@ -156,17 +158,17 @@ class Application
      */
     public function getComponentConfig($component, $query = '', $default = null)
     {
-        if ($query == '') {
-            return Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()[$component];
-        } else {
-            $componentConfig = Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()->get($component, false
-            );
-            if (!$componentConfig) {
-                return $default;
-            }
+        $componentConfig = $this->_environment->getComponentConfigs()->get($component, false);
 
-            return $componentConfig->get($query, $default);
+        if (!$componentConfig) {
+            return $default;
         }
+
+        if($query==''){
+            return $componentConfig;
+        }
+
+        return $componentConfig->get($query, $default);
     }
 
     /**
@@ -180,22 +182,30 @@ class Application
     }
 
     /**
-     * Send the html response to the browser.
-     * This method is automatically called.
+     * Send the http response to the browser.
+     * This method is called automatically by the Dispatcher.
      *
-     * @return Response
+     * @return Response|bool
      * @throws \Exception
      * @throws \Webiny\Component\TemplateEngine\Bridge\TemplateEngineException
      */
-    public function htmlResponse()
+    public function httpResponse()
     {
+        // get the template
+        $template = $this->view()->getTemplate();
+
+        // if there is no template, then we return false
+        if(empty($template)) {
+            return false;
+        }
+
         // get view data
         $viewData = $this->view()->getAssignedData();
 
         // assign application data to view
         $viewData['App'] = [
             'Config'       => $this->getEnvironmentConfig(),
-            'Components'   => Bootstrap::getInstance()->getEnvironment()->getComponentConfigs()->toArray(),
+            'Components'   => $this->_environment->getComponentConfigs()->toArray(),
             'Environment'  => $this->getEnvironmentName(),
             'AbsolutePath' => $this->getAbsolutePath(),
             'WebPath'      => $this->getWebPath()
@@ -221,15 +231,15 @@ class Application
         // fallback to default template engine
         if (!$teConfig) {
             $defaultTemplateEngineConfig = [
-                    'Engines' => [
-                        'Smarty' => [
-                            'ForceCompile'     => false,
-                            'CacheDir'         => $this->getAbsolutePath() . 'App/Cache/Smarty/Cache',
-                            'CompileDir'       => $this->getAbsolutePath() . 'App/Cache/Smarty/Compile',
-                            'TemplateDir'      => $this->getAbsolutePath() . 'App/Layouts',
-                            'AutoEscapeOutput' => false,
-                        ]
+                'Engines' => [
+                    'Smarty' => [
+                        'ForceCompile'     => false,
+                        'CacheDir'         => $this->getAbsolutePath() . 'App/Cache/Smarty/Cache',
+                        'CompileDir'       => $this->getAbsolutePath() . 'App/Cache/Smarty/Compile',
+                        'TemplateDir'      => $this->getAbsolutePath() . 'App/Layouts',
+                        'AutoEscapeOutput' => false,
                     ]
+                ]
             ];
 
             TemplateEngine::setConfig(new ConfigObject($defaultTemplateEngineConfig));

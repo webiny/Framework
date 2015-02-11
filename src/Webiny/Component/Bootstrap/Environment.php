@@ -98,7 +98,7 @@ class Environment
      */
     public function getApplicationConfig()
     {
-        return $this->_applicationConfig;
+        return $this->_applicationConfig->Application;
     }
 
     /**
@@ -172,7 +172,12 @@ class Environment
     private function _loadApplicationConfig()
     {
         // load the config
-        $this->_applicationConfig = $this->config()->yaml($this->_applicationAbsolutePath . 'App/Config/App.yaml');
+        try{
+            $this->_applicationConfig = $this->config()->yaml($this->_applicationAbsolutePath . 'App/Config/App.yaml');
+        }catch (\Exception $e){
+            throw new BootstrapException('Unable to read app config file: '.$this->_applicationAbsolutePath . 'App/Config/App.yaml');
+        }
+
     }
 
     /**
@@ -222,7 +227,7 @@ class Environment
         if (strtolower($errorReporting) == 'on') {
             error_reporting(E_ALL);
         } else {
-            error_reporting(0);
+            error_reporting(E_ALL);
         }
     }
 

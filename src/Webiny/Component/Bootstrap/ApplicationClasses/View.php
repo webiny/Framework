@@ -21,29 +21,29 @@ class View
     private $_title;
 
     /**
-     * @var array List of script files.
-     */
-    private $_scripts;
-
-    /**
-     * @var array List of stylesheets.
-     */
-    private $_styles;
-
-    /**
-     * @var array List of html meta data.
-     */
-    private $_meta;
-
-    /**
      * @var string Path to the template file.
      */
     private $_template;
 
     /**
+     * @var array List of script files.
+     */
+    private $_scripts = [];
+
+    /**
+     * @var array List of stylesheets.
+     */
+    private $_styles = [];
+
+    /**
+     * @var array List of html meta data.
+     */
+    private $_meta = [];
+
+    /**
      * @var array Assigned view data.
      */
-    private $_viewData;
+    private $_viewData = [];
 
     /**
      * @var bool Should the view file be auto loaded or not.
@@ -93,7 +93,7 @@ class View
      */
     public function prependScript($path, $type = 'text/javascript')
     {
-        array_unshift($type->_scripts, [
+        array_unshift($this->_scripts, [
                                          'path' => $path,
                                          'type' => $type
                                      ]
@@ -125,7 +125,7 @@ class View
      */
     public function prependStyleSheet($path)
     {
-        array_unshift($this->_styles[], $path);
+        array_unshift($this->_styles, $path);
 
         return $this;
     }
