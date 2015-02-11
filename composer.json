@@ -24,6 +24,8 @@
 		"imagine/imagine": "0.6.*",
 		"minime/annotations": "~1.13",
 		"swiftmailer/swiftmailer": "5.2.1",
+		"mandrill/mandrill": "~1.0",
+		"sendgrid/sendgrid": "~2.2",
 		"webiny/forked-jamm-memory": "~1.0",
 		"webiny/forked-adoy-php-oauth2": "~1.0",
 		"webiny/forked-abraham-twitteroauth": "~1.0",
