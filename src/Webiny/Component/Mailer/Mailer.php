@@ -81,7 +81,7 @@ class Mailer
      * Decorators are arrays that contain keys and values. The message body and subject will be scanned for the keys,
      * and, where found, the key will be replaced with the value.
      *
-     * @param array $replacements Array [key1=>value1, key2=>value2].
+     * @param array $replacements Array [email=> [key1=>value1, key2=>value2], email2=>[...]].
      *
      * @return $this
      */

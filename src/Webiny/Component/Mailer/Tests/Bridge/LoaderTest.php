@@ -23,15 +23,11 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMessage()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\MessageInterface',
-                                Loader::getMessage(Mailer::getConfig()->Default)
-        );
+        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\MessageInterface', Loader::getMessage('Default'));
     }
 
     public function testGetTransport()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\TransportInterface',
-                                Loader::getTransport(Mailer::getConfig()->Default)
-        );
+        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\TransportInterface', Loader::getTransport('Default'));
     }
 }

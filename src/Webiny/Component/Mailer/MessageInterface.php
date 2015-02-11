@@ -7,15 +7,22 @@
 
 namespace Webiny\Component\Mailer;
 
+use Webiny\Component\Storage\File\LocalFile;
+
 /**
  * This interface defines the structure of the message object.
  * The object itself is provided by the Mailer bridge.
  *
  * @package         Webiny\Component\Mailer
  */
-
 interface MessageInterface
 {
+    /**
+     * @return mixed Message formatted for the mailer being implemented
+     * Example: array for Mandrill, \Swift_Message for SwiftMailer, etc.
+     */
+    public function __invoke();
+
     /**
      * Set the message subject.
      *
@@ -23,143 +30,140 @@ interface MessageInterface
      *
      * @return $this
      */
-    function setSubject($subject);
+    public function setSubject($subject);
 
     /**
      * Get the current message subject.
      *
      * @return string Message subject.
      */
-    function getSubject();
+    public function getSubject();
 
     /**
      * Specifies the address of the person who the message is from.
      * Can be multiple persons/addresses.
      *
-     * @param string|array $from From name and email: ['from@domain.org' => 'From Name']
+     * @param Email $from
      *
      * @return $this
      */
-    function setFrom($from);
+    public function setFrom(Email $from);
 
     /**
      * Returns the person who sent the message.
      *
-     * @return array
+     * @return Email
      */
-    function getFrom();
+    public function getFrom();
 
     /**
      * Specifies the address of the person who physically sent the message.
      * Higher precedence than "from".
      *
-     * @param string|array $sender Sender name and email: ['sender@domain.org' => 'Sender Name']
+     * @param Email $sender
      *
      * @return $this
      */
-    function setSender($sender);
+    public function setSender(Email $sender);
 
     /**
      * Return the person who sent the message.
      *
-     * @return array
+     * @return Email
      */
-    function getSender();
+    public function getSender();
 
     /**
-     * Specifies the addresses of the intended recipients.
+     * Specifies the emails of the intended recipients.
      *
-     * @param string|array $to A list of recipients.
+     * @param array|Email $to A list of recipients (instances of Email).
      *
      * @return $this
      */
-    function setTo($to);
+    public function setTo($to);
 
     /**
      * Returns a list of defined recipients.
      *
      * @return array
      */
-    function getTo();
+    public function getTo();
 
     /**
      * Appends one more recipient to the list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addTo($email, $name = '');
+    public function addTo(Email $email);
 
     /**
      * Specifies the addresses of recipients who will be copied in on the message.
      *
-     * @param string $cc
+     * @param array|Email $cc
      *
      * @return $this
      */
-    function setCc($cc);
+    public function setCc($cc);
 
     /**
      * Returns a list of addresses to whom the message will be copied to.
      *
      * @return array
      */
-    function getCc();
+    public function getCc();
 
     /**
      * Appends one more address to the copied list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addCc($email, $name = '');
+    public function addCc(Email $email);
 
     /**
      * Specifies the addresses of recipients who the message will be blind-copied to.
      * Other recipients will not be aware of these copies.
      *
-     * @param string|array $bcc
+     * @param array|Email $bcc
      *
      * @return $this
      */
-    function setBcc($bcc);
+    public function setBcc($bcc);
 
     /**
      * Returns a list of defined bcc recipients.
      *
      * @return array
      */
-    function getBcc();
+    public function getBcc();
 
     /**
      * Appends one more address to the blind-copied list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addBcc($email, $name = '');
+    public function addBcc(Email $email);
 
     /**
      * Define the reply-to address.
      *
-     * @param string|array $replyTo
+     * @param Email $replyTo
      *
      * @return $this
      */
-    function setReplyTo($replyTo);
+    public function setReplyTo(Email $replyTo);
 
     /**
      * Returns the reply-to address.
      *
-     * @return string|array
+     * @return Email
      */
-    function getReplyTo();
+    public function getReplyTo();
 
     /**
      * Set the message body.
@@ -170,24 +174,25 @@ interface MessageInterface
      *
      * @return MessageInterface
      */
-    function setBody($content, $type = 'text/html', $charset = 'utf-8');
+    public function setBody($content, $type = 'text/html', $charset = 'utf-8');
 
     /**
      * Returns the body of the message.
      *
      * @return string
      */
-    function getBody();
+    public function getBody();
 
     /**
      * Attach a file to your message.
      *
-     * @param string $pathToFile Absolute path to the file.
-     * @param string $fileName   Optional name that will be set for the attachment.
+     * @param LocalFile $file     File instance
+     * @param string    $fileName Optional name that will be set for the attachment.
+     * @param string    $type     Optional MIME type of the attachment
      *
      * @return $this
      */
-    function addAttachment($pathToFile, $fileName = '');
+    public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text');
 
     /**
      * Defines the return path for the email.
@@ -197,14 +202,14 @@ interface MessageInterface
      *
      * @return $this
      */
-    function setReturnPath($returnPath);
+    public function setReturnPath($returnPath);
 
     /**
      * Returns the defined return-path.
      *
      * @return string
      */
-    function getReturnPath();
+    public function getReturnPath();
 
     /**
      * Specifies the format of the message (usually text/plain or text/html).
@@ -213,14 +218,14 @@ interface MessageInterface
      *
      * @return $this
      */
-    function setContentType($contentType);
+    public function setContentType($contentType);
 
     /**
      * Returns the defined content type of the message.
      *
      * @return string
      */
-    function getContentType();
+    public function getContentType();
 
     /**
      * Specifies the encoding scheme in the message.
@@ -229,14 +234,14 @@ interface MessageInterface
      *
      * @return $this
      */
-    function setContentTransferEncoding($encoding);
+    public function setContentTransferEncoding($encoding);
 
     /**
      * Get the defined encoding scheme.
      *
      * @return string
      */
-    function getContentTransferEncoding();
+    public function getContentTransferEncoding();
 
     /**
      * Adds a header to the message.
@@ -247,5 +252,5 @@ interface MessageInterface
      *
      * @return $this
      */
-    function addHeader($name, $value, $params = null);
+    public function addHeader($name, $value, $params = null);
 }

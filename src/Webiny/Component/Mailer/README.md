@@ -19,6 +19,7 @@ Current supported protocols are:
 * SMTP
 * PHPs' `mail()` function
 * Sendmail
+* Mandrill
 
 To use the component, you first need to configuration set inside the component config file.
 If you open the `ExampleConfig.yaml` you can see two example configuration sets, `Demo` and `Gmail`.
@@ -47,6 +48,36 @@ Here is an example configuration:
                 Threshold: 99
                 Sleep: 1
             DisableDelivery: false
+        Mandrill:
+            Mode: template # template or html
+            ApiKey: yourApiKey
+            DisableDelivery: false
+            Message:    # these are all optional
+                FromEmail: ''
+                FromName: ''
+                Headers: []
+                Important: false
+                TrackOpens: null
+                TrackClicks: null
+                AutoText: null
+                AutoHtml: null
+                InlineCss: null
+                UrlStripQs: null
+                PreserveRecipients: null
+                ViewContentLink: null
+                BccAddress: ''
+                TrackingDomain: null
+                SigningDomain: null
+                ReturnPathDomain: null
+                Merge: true
+                MergeLanguage: mailchimp
+                Tags: []
+                Subaccount: null
+                GoogleAnalyticsDomains: []
+                GoogleAnalyticsCampaign: ''
+                Metadata: []
+                RecipientMetadata: []
+                Attachments: []
 ```
 
 You can have unlimited configuration sets.
@@ -66,25 +97,6 @@ The `Mailer` configuration consists of several parameters that are explained in 
 This is the default character set that will be used in encoding your email content.
 By default the character set is set to `utf-8` which supports most language characters.
 You might need to change this for some languages, for example, like Japanese.
-
-### Max line length (`MaxLineLength`)
-
-This parameter is used to make your email more compliant for reading on older email readers.
-The `MaxLineLength` defines how long a single line can be. This parameter should be kept under 1000 characters, as defined by RFC 2822.
-
-### Priority (`Priority`)
-
-The priority parameter defines the priority level of your message. 
-
-The following priorities can be set:
-
-- `1` - highest
-- `2` - high
-- `3` - normal
-- `4` - low
-- `5` - lowest
-
-This parameter optional.
 
 ### Sender (`Sender`)
 
@@ -151,7 +163,7 @@ class MyClass
 		$msg = $mailer->getMessage();
 		$msg->setSubject('Hello email')
 			->setBody('This is my test email body')
-			->setTo(['me@gmail.com'=>'Jack']);
+			->setTo(new Email('me@gmail.com', 'Jack'));
 
 		// send it
 		$mailer->send($msg);
@@ -178,8 +190,8 @@ class MyClass
 			 ->setBody('Hi {name},
 						   This is your new password: <strong>{password}</strong>.')
 			 ->setTo([
-					'jack@gmail.com',
-					'sara@gmail.com'
+					new Email('jack@gmail.com'),
+					new Email('sara@gmail.com')
 					]);
 
 		// before sending, let's define the decorator replacements

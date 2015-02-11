@@ -60,7 +60,7 @@ class Transport implements TransportInterface
         }
 
         $template = $message->getBody();
-        $message = $message->toArray();
+        $message = $message();
         foreach ($this->_decorators as $email => $vars) {
             $data = [];
             foreach ($vars as $name => $content) {

@@ -9,7 +9,10 @@ namespace Webiny\Component\Mailer\Bridge\Mandrill;
 
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Mailer\Bridge\MessageInterface;
+use Webiny\Component\Mailer\MailerException;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Mailer\Email;
 
 /**
  * Bridge to Mandrill message data
@@ -68,8 +71,7 @@ class Message implements MessageInterface
         }
     }
 
-    function toArray()
-    {
+    public function __invoke(){
         return $this->_message;
     }
 
@@ -101,21 +103,14 @@ class Message implements MessageInterface
      * Specifies the address of the person who the message is from.
      * Can be multiple persons/addresses.
      *
-     * @param string|array $from From name and email: ['from@domain.org' => 'From Name']
+     * @param Email $from
      *
      * @return $this
      */
-    function setFrom($from)
+    function setFrom(Email $from)
     {
-        if (is_string($from)) {
-            $fromName = $fromEmail = $from;
-        } else {
-            $fromEmail = array_keys($from)[0];
-            $fromName = $from[$fromEmail];
-        }
-
-        $this->_message['from_name'] = $fromName;
-        $this->_message['from_email'] = $fromEmail;
+        $this->_message['from_name'] = $from->name;
+        $this->_message['from_email'] = $from->email;
 
         return $this;
     }
@@ -127,18 +122,18 @@ class Message implements MessageInterface
      */
     function getFrom()
     {
-        return [$this->_message['from_email'] => $this->_message['from_name']];
+        return new Email($this->_message['from_email'], $this->_message['from_name']);
     }
 
     /**
      * Specifies the address of the person who physically sent the message.
      * Higher precedence than "from".
      *
-     * @param string|array $sender Sender name and email: ['sender@domain.org' => 'Sender Name']
+     * @param Email $sender
      *
      * @return $this
      */
-    function setSender($sender)
+    function setSender(Email $sender)
     {
         return $this->setFrom($sender);
     }
@@ -156,18 +151,21 @@ class Message implements MessageInterface
     /**
      * Specifies the addresses of the intended recipients.
      *
-     * @param string|array $to A list of recipients.
+     * @param array|Email $to A list of recipients.
      *
      * @return $this
      */
     function setTo($to)
     {
-        if (is_string($to)) {
-            $to = [$to => $to];
+        if($to instanceof Email){
+            $to = [$to];
         }
 
-        foreach ($to as $email => $name) {
-            $this->addTo($email, $name);
+        foreach ($to as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addTo($email);
         }
 
         return $this;
@@ -186,16 +184,15 @@ class Message implements MessageInterface
     /**
      * Appends one more recipient to the list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addTo($email, $name = '')
+    function addTo(Email $email)
     {
         $this->_message ['to'][] = [
-            'email' => $email,
-            'name'  => $name,
+            'email' => $email->email,
+            'name'  => $email->name,
             'type'  => 'to'
         ];
 
@@ -205,18 +202,21 @@ class Message implements MessageInterface
     /**
      * Specifies the addresses of recipients who will be copied in on the message.
      *
-     * @param string $cc
+     * @param array|Email $cc
      *
      * @return $this
      */
     function setCc($cc)
     {
-        if (is_string($cc)) {
-            $cc = [$cc => $cc];
+        if($cc instanceof Email){
+            $cc = [$cc];
         }
 
-        foreach ($cc as $email => $name) {
-            $this->addCc($email, $name);
+        foreach ($cc as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addCc($email);
         }
 
         return $this;
@@ -235,16 +235,15 @@ class Message implements MessageInterface
     /**
      * Appends one more address to the copied list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addCc($email, $name = '')
+    function addCc(Email $email)
     {
-        $this->_message ['to'][] = [
-            'email' => $email,
-            'name'  => $name,
+        $this->_message['to'][] = [
+            'email' => $email->email,
+            'name'  => $email->name,
             'type'  => 'cc'
         ];
 
@@ -255,18 +254,21 @@ class Message implements MessageInterface
      * Specifies the addresses of recipients who the message will be blind-copied to.
      * Other recipients will not be aware of these copies.
      *
-     * @param string|array $bcc
+     * @param array|Email $bcc
      *
      * @return $this
      */
     function setBcc($bcc)
     {
-        if (is_string($bcc)) {
-            $bcc = [$bcc => $bcc];
+        if($bcc instanceof Email){
+            $bcc = [$bcc];
         }
 
-        foreach ($bcc as $email => $name) {
-            $this->addBcc($email, $name);
+        foreach ($bcc as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addBcc($email);
         }
 
         return $this;
@@ -285,16 +287,15 @@ class Message implements MessageInterface
     /**
      * Appends one more address to the blind-copied list.
      *
-     * @param string $email
-     * @param string $name
+     * @param Email $email
      *
      * @return $this
      */
-    function addBcc($email, $name = '')
+    function addBcc(Email $email)
     {
         $this->_message ['to'][] = [
-            'email' => $email,
-            'name'  => $name,
+            'email' => $email->email,
+            'name'  => $email->name,
             'type'  => 'bcc'
         ];
 
@@ -304,17 +305,13 @@ class Message implements MessageInterface
     /**
      * Define the reply-to address.
      *
-     * @param string|array $replyTo Example: ['replyto@domain.org' => 'Reply Name']
+     * @param Email $replyTo
      *
      * @return $this
      */
-    function setReplyTo($replyTo)
+    function setReplyTo(Email $replyTo)
     {
-        if (is_string($replyTo)) {
-            $this->addHeader('Reply-To', $replyTo);
-        } else {
-            $this->addHeader('Reply-To', array_keys($replyTo));
-        }
+        $this->addHeader('Reply-To', $replyTo->email);
 
         return $this;
     }
@@ -322,11 +319,11 @@ class Message implements MessageInterface
     /**
      * Returns the reply-to address.
      *
-     * @return string|array
+     * @return Email|null
      */
     function getReplyTo()
     {
-        return isset($this->_message['headers']['Reply-To']) ? $this->_message['headers']['Reply-To'] : null;
+        return isset($this->_message['headers']['Reply-To']) ? new Email($this->_message['headers']['Reply-To']) : null;
     }
 
     /**
@@ -358,19 +355,18 @@ class Message implements MessageInterface
     /**
      * Attach a file to your message.
      *
-     * @param string      $pathToFile  Absolute path to the file.
-     * @param string      $fileName    Optional name that will be set for the attachment.
-     * @param string|null $contentType Attachment header content type.
+     * @param LocalFile $file     File instance
+     * @param string    $fileName Optional name that will be set for the attachment.
+     * @param string    $type     Optional MIME type of the attachment
      *
      * @return $this
      */
-    public function addAttachment($pathToFile, $fileName = null, $contentType = null)
+    public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
     {
-        $fileName != '' ? $fileName : $this->str($pathToFile)->explode(DIRECTORY_SEPARATOR)->last()->val();
         $this->_message['attachments'][] = [
             'type'    => $contentType,
             'name'    => $fileName,
-            'content' => base64_encode(file_get_contents($pathToFile))
+            'content' => base64_encode($file->getContents())
         ];
 
         return $this;
@@ -466,7 +462,7 @@ class Message implements MessageInterface
         $recipients = [];
         foreach ($this->_message['to'] as $rcpt) {
             if ($rcpt['type'] == $type) {
-                $recipients[] = $rcpt;
+                $recipients[] = new Email($rcpt['email'], $rcpt['name']);
             }
         }
 

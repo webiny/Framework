@@ -91,7 +91,7 @@ class Transport implements TransportInterface
      */
     public function send(MessageInterface $message, &$failures = null)
     {
-        return $this->_mailer->send($message, $failures);
+        return $this->_mailer->send($message(), $failures);
     }
 
     /**

@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Mailer\Tests;
 
+use Webiny\Component\Mailer\Email;
 use Webiny\Component\Mailer\Mailer;
 
 class MailerTest extends \PHPUnit_Framework_TestCase
@@ -44,7 +45,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     {
         $mailer = new Mailer();
         $message = $mailer->getMessage();
-        $message->setTo(['info@webiny.com' => 'Webiny'])->setBody('Testing')->setSubject('PHPUnit test');
+        $message->setTo(new Email('info@webiny.com', 'Webiny'))->setBody('Testing')->setSubject('PHPUnit test');
 
         $result = $mailer->send($message);
         $this->assertNotFalse($result); // this test might fail if sendmail is not configured

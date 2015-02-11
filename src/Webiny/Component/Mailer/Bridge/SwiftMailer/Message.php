@@ -8,30 +8,203 @@
 namespace Webiny\Component\Mailer\Bridge\SwiftMailer;
 
 use Webiny\Component\Mailer\Bridge\MessageInterface;
+use Webiny\Component\Mailer\MailerException;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Mailer\Email;
 
 /**
  * Bridge to SwiftMailer Message class.
  *
  * @package         Webiny\Component\Mailer\Bridge\SwiftMailer
  */
-class Message extends \Swift_Message implements MessageInterface
+class Message implements MessageInterface
 {
     use StdLibTrait;
 
     /**
-     * Attach a file to your message.
+     * @var \Swift_Message
+     */
+    private $_message;
+
+    public function __construct(){
+        $this->_message = new \Swift_Message();
+    }
+
+    public function __invoke(){
+        return $this->_message;
+    }
+
+    /**
+     * Set the message subject.
      *
-     * @param string      $pathToFile  Absolute path to the file.
-     * @param string      $fileName    Optional name that will be set for the attachment.
-     * @param string|null $contentType Attachment header content type.
+     * @param string $subject Message subject.
      *
      * @return $this
      */
-    public function addAttachment($pathToFile, $fileName = null, $contentType = null)
+    public function setSubject($subject)
     {
-        $attachment = new \Swift_Attachment($pathToFile, $fileName, $contentType);
-        $this->attach($attachment);
+        $this->_message->setSubject($subject);
+    }
+
+    /**
+     * Get the current message subject.
+     *
+     * @return string Message subject.
+     */
+    public function getSubject()
+    {
+        return $this->_message->getSubject();
+    }
+
+    /**
+     * Returns the person who sent the message.
+     *
+     * @return Email
+     */
+    public function getFrom()
+    {
+        return $this->_message->getFrom();
+    }
+
+    /**
+     * Return the person who sent the message.
+     *
+     * @return Email
+     */
+    public function getSender()
+    {
+        // TODO: Implement getSender() method.
+    }
+
+    /**
+     * Returns a list of defined recipients.
+     *
+     * @return array
+     */
+    public function getTo()
+    {
+        // TODO: Implement getTo() method.
+    }
+
+    /**
+     * Returns a list of addresses to whom the message will be copied to.
+     *
+     * @return array
+     */
+    public function getCc()
+    {
+        // TODO: Implement getCc() method.
+    }
+
+    /**
+     * Returns a list of defined bcc recipients.
+     *
+     * @return array
+     */
+    public function getBcc()
+    {
+        // TODO: Implement getBcc() method.
+    }
+
+    /**
+     * Returns the reply-to address.
+     *
+     * @return Email
+     */
+    public function getReplyTo()
+    {
+        // TODO: Implement getReplyTo() method.
+    }
+
+    /**
+     * Set the message body.
+     *
+     * @param string $content The content of the body.
+     * @param string $type    Content type. Default 'text/html'.
+     * @param string $charset Content body charset. Default 'utf-8'.
+     *
+     * @return \Webiny\Component\Mailer\MessageInterface
+     */
+    public function setBody($content, $type = 'text/html', $charset = 'utf-8')
+    {
+        $this->_message->setBody($content, $type, $charset);
+
+        return $this;
+    }
+
+    /**
+     * Returns the body of the message.
+     *
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->_message->getBody();
+    }
+
+    /**
+     * Defines the return path for the email.
+     * By default it should be set to the sender.
+     *
+     * @param string $returnPath
+     *
+     * @return $this
+     */
+    public function setReturnPath($returnPath)
+    {
+        $this->_message->setReturnPath($returnPath);
+
+        return $this;
+    }
+
+    /**
+     * Returns the defined return-path.
+     *
+     * @return string
+     */
+    public function getReturnPath()
+    {
+        return $this->_message->getReturnPath();
+    }
+
+    /**
+     * Specifies the format of the message (usually text/plain or text/html).
+     *
+     * @param string $contentType
+     *
+     * @return $this
+     */
+    public function setContentType($contentType)
+    {
+        $this->_message->setContentType($contentType);
+
+        return $this;
+    }
+
+    /**
+     * Returns the defined content type of the message.
+     *
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->_message->getContentType();
+    }
+
+    /**
+     * Attach a file to your message.
+     *
+     * @param LocalFile $file     File instance
+     * @param string    $fileName Optional name that will be set for the attachment.
+     * @param string    $type     Optional MIME type of the attachment
+     *
+     * @return $this
+     */
+    public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
+    {
+        $attachment = new \Swift_Attachment($file->getContents(), $fileName, $type);
+        $this->_message->attach($attachment);
 
         return $this;
     }
@@ -46,7 +219,6 @@ class Message extends \Swift_Message implements MessageInterface
      */
     public function setContentTransferEncoding($encoding)
     {
-
         switch ($encoding) {
             case '7bit':
                 $encoder = \Swift_Encoding::get7BitEncoding();
@@ -71,7 +243,7 @@ class Message extends \Swift_Message implements MessageInterface
                 break;
         }
 
-        $this->setEncoder($encoder);
+        $this->_message->setEncoder($encoder);
 
         return $this;
     }
@@ -83,7 +255,7 @@ class Message extends \Swift_Message implements MessageInterface
      */
     public function getContentTransferEncoding()
     {
-        return $this->getEncoder()->getName();
+        return $this->_message->getEncoder()->getName();
     }
 
     /**
@@ -98,26 +270,110 @@ class Message extends \Swift_Message implements MessageInterface
     public function addHeader($name, $value, $params = null)
     {
         if (is_array($params)) {
-            $this->getHeaders()->addParameterizedHeader($name, $value, $params);
+            $this->_message->getHeaders()->addParameterizedHeader($name, $value, $params);
         } else {
-            $this->getHeaders()->addTextHeader($name, $value);
+            $this->_message->getHeaders()->addTextHeader($name, $value);
         }
 
         return $this;
     }
 
-    /**
-     * Uses a template file as body content.
-     *
-     * @param string $pathToTemplate Absolute path to the template.
-     *
-     * @return $this
-     */
-    public function setBodyFromTemplate($pathToTemplate)
+    public function setSender(Email $sender)
     {
-        $file = $this->file($pathToTemplate);
-        $this->setBody($file->getFileContent());
+        $this->_message->setSender($sender->email, $sender->name);
 
         return $this;
     }
+
+    public function setFrom(Email $from)
+    {
+        $this->_message->setFrom($from->email, $from->name);
+
+        return $this;
+    }
+
+    public function setReplyTo(Email $replyTo)
+    {
+        $this->_message->setReplyTo($replyTo->email, $replyTo->name);
+
+        return $this;
+    }
+
+    public function setTo($to)
+    {
+        if($to instanceof Email){
+            $to = [$to];
+        }
+
+        foreach ($to as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addTo($email);
+        }
+
+        return $this;
+    }
+
+    public function setCc($cc)
+    {
+        if($cc instanceof Email){
+            $cc = [$cc];
+        }
+
+        foreach ($cc as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addCc($email);
+        }
+
+        return $this;
+    }
+
+    public function setBcc($bcc)
+    {
+        if($bcc instanceof Email){
+            $bcc = [$bcc];
+        }
+
+        foreach ($bcc as $email) {
+            if (!$email instanceof Email) {
+                throw new MailerException('Email must be an instance of \Webiny\Component\Mailer\Email.');
+            }
+            $this->addBcc($email);
+        }
+
+        return $this;
+    }
+
+    public function addTo(Email $email)
+    {
+        $this->_message->addTo($email->email, $email->name);
+
+        return $this;
+    }
+
+    public function addFrom(Email $email)
+    {
+        $this->_message->addFrom($email->email, $email->name);
+
+        return $this;
+    }
+
+    public function addCc(Email $email)
+    {
+        $this->_message->addCc($email->email, $email->name);
+
+        return $this;
+    }
+
+    public function addBcc(Email $email)
+    {
+        $this->_message->addBcc($email->email, $email->name);
+
+        return $this;
+    }
+
+
 }
