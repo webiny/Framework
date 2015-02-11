@@ -28,6 +28,7 @@ Mailer:
             Encryption: ssl
             AuthMode: login
     Mandrill:
+        Mode: template # template or html
         ApiKey: yourApiKey
         DisableDelivery: false
         Message:
@@ -50,13 +51,12 @@ Mailer:
             Merge: true
             MergeLanguage: mailchimp
             Tags: []
-            Subaccount: ''
+            Subaccount: null
             GoogleAnalyticsDomains: []
             GoogleAnalyticsCampaign: ''
             Metadata: []
             RecipientMetadata: []
             Attachments: []
-            Images: []
     # You can overwrite the default driver by providing your own.
     # How to create a new driver, read in the Readme.md file.
     # If you don't wish to change the default (SwiftMailer) driver,

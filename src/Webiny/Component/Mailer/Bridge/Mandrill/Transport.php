@@ -22,6 +22,7 @@ class Transport implements TransportInterface
     private $_mailer = null;
     private $_disableDelivery = false;
     private $_decorators = [];
+    private $_config;
 
     /**
      * Base constructor.
@@ -33,6 +34,7 @@ class Transport implements TransportInterface
      */
     public function __construct($config)
     {
+        $this->_config = $config;
         $this->_disableDelivery = $config->get('DisableDelivery', false);
 
         $apiKey = $config->get('ApiKey', false);
@@ -72,8 +74,14 @@ class Transport implements TransportInterface
                 'vars' => $data
             ];
         }
-        
-        $res = $this->_mailer->messages->sendTemplate($template, [], $message);
+
+        if($this->_config->get('Mode', 'template') == 'template'){
+            unset($message['html']);
+            $res = $this->_mailer->messages->sendTemplate($template, [], $message);
+        } else {
+            $res = $this->_mailer->messages->send($message);
+        }
+
 
         // Count successful sends and store failed emails
         $success = 0;

@@ -20,8 +20,8 @@ class Message implements MessageInterface
 {
     use StdLibTrait;
 
-    private $_template;
     private $_message = [
+        'html'                      => '',
         'subject'                   => '',
         'from_email'                => '',
         'from_name'                 => '',
@@ -50,8 +50,7 @@ class Message implements MessageInterface
         'google_analytics_campaign' => '',
         'metadata'                  => [],
         'recipient_metadata'        => [],
-        'attachments'               => [],
-        'images'                    => []
+        'attachments'               => []
     ];
 
     function __construct(ConfigObject $config)
@@ -60,8 +59,8 @@ class Message implements MessageInterface
         foreach ($this->_message as $param => $value) {
             $cParam = $this->str($param)->replace('_', ' ')->caseWordUpper()->replace(' ', '')->val();
             $cValue = $config->get('Message.' . $cParam);
-            if ($cValue) {
-                if($cValue instanceof ConfigObject){
+            if ($cValue !== null) {
+                if ($cValue instanceof ConfigObject) {
                     $cValue = $cValue->toArray();
                 }
                 $this->_message[$param] = $cValue;
@@ -305,7 +304,7 @@ class Message implements MessageInterface
     /**
      * Define the reply-to address.
      *
-     * @param string|array $replyTo
+     * @param string|array $replyTo Example: ['replyto@domain.org' => 'Reply Name']
      *
      * @return $this
      */
@@ -341,7 +340,7 @@ class Message implements MessageInterface
      */
     function setBody($content, $type = 'text/html', $charset = 'utf-8')
     {
-        $this->_template = $content;
+        $this->_message['html'] = $content;
 
         return $this;
     }
@@ -353,24 +352,25 @@ class Message implements MessageInterface
      */
     function getBody()
     {
-        return $this->_template;
+        return $this->_message['html'];
     }
 
     /**
      * Attach a file to your message.
      *
-     * @param string $pathToFile Absolute path to the file.
-     * @param string $fileName   Optional name that will be set for the attachment.
+     * @param string      $pathToFile  Absolute path to the file.
+     * @param string      $fileName    Optional name that will be set for the attachment.
+     * @param string|null $contentType Attachment header content type.
      *
      * @return $this
      */
-    function addAttachment($pathToFile, $fileName = '')
+    public function addAttachment($pathToFile, $fileName = null, $contentType = null)
     {
+        $fileName != '' ? $fileName : $this->str($pathToFile)->explode(DIRECTORY_SEPARATOR)->last()->val();
         $this->_message['attachments'][] = [
-            'type'    => 'text/plain',
-            'name'    => 'myfile.txt',
-            'content' => 'ZXhhbXBsZSBmaWxl'
-            // base64 encoded string
+            'type'    => $contentType,
+            'name'    => $fileName,
+            'content' => base64_encode(file_get_contents($pathToFile))
         ];
 
         return $this;
