@@ -58,6 +58,8 @@ class Message implements MessageInterface
     public function setSubject($subject)
     {
         $this->_message->setSubject($subject);
+
+        return $this;
     }
 
     /**

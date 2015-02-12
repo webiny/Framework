@@ -20,6 +20,8 @@ class Transport implements TransportInterface
 {
 
     private $_mailer = null;
+    private $_decorators = [];
+    private $_config;
 
     /**
      * Base constructor.
@@ -31,7 +33,7 @@ class Transport implements TransportInterface
      */
     public function __construct($config)
     {
-
+        $this->_config = $config;
         $transportType = strtolower($config->get('Transport.Type', 'mail'));
         $disableDelivery = $config->get('DisableDelivery', false);
         if ($disableDelivery) {
@@ -58,7 +60,7 @@ class Transport implements TransportInterface
             case 'sendmail':
                 $transport = \Swift_SendmailTransport::newInstance($config->get('Transport.Command',
                                                                                 '/usr/sbin/sendmail -bs'
-                    )
+                )
                 );
                 break;
 
@@ -95,22 +97,6 @@ class Transport implements TransportInterface
     }
 
     /**
-     * Registers SwiftMailer plugins based on the provided $config.
-     *
-     * @param ConfigObject $config
-     */
-    private function _registerPlugins(ConfigObject $config)
-    {
-        // antiflood
-        if ($config->get('AntiFlood', false)) {
-            $antiflood = new \Swift_Plugins_AntiFloodPlugin($config->get('AntiFlood.Threshold', 99
-                ), $config->get('AntiFlood.Sleep', 1)
-            );
-            $this->_mailer->registerPlugin($antiflood);
-        }
-    }
-
-    /**
      * Decorators are arrays that contain keys and values. The message body and subject will be scanned for the keys,
      * and, where found, the key will be replaced with the value.
      *
@@ -120,6 +106,18 @@ class Transport implements TransportInterface
      */
     public function setDecorators(array $replacements)
     {
+        $wrapper = $this->_config->get('Decorators.Wrapper');
+        if ($wrapper) {
+            foreach ($replacements as $email => $vars) {
+                $decorators = [];
+                foreach ($vars as $key => $value) {
+                    $key = $wrapper[0] . $key . $wrapper[1];
+                    $decorators[$key] = $value;
+                }
+                $replacements[$email] = $decorators;
+            }
+        }
+
         $decoratorPlugin = new \Swift_Plugins_DecoratorPlugin($replacements);
         $this->_mailer->registerPlugin($decoratorPlugin);
 
@@ -134,5 +132,21 @@ class Transport implements TransportInterface
     public function getTransportInstance()
     {
         return $this->_mailer->getTransport();
+    }
+
+    /**
+     * Registers SwiftMailer plugins based on the provided $config.
+     *
+     * @param ConfigObject $config
+     */
+    private function _registerPlugins(ConfigObject $config)
+    {
+        // antiflood
+        if ($config->get('AntiFlood', false)) {
+            $antiflood = new \Swift_Plugins_AntiFloodPlugin($config->get('AntiFlood.Threshold', 99
+            ), $config->get('AntiFlood.Sleep', 1)
+            );
+            $this->_mailer->registerPlugin($antiflood);
+        }
     }
 }

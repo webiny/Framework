@@ -372,7 +372,7 @@ class Message implements MessageInterface
     public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
     {
         $this->_message['attachments'][] = [
-            'type'    => $contentType,
+            'type'    => $type,
             'name'    => $fileName,
             'content' => base64_encode($file->getContents())
         ];
