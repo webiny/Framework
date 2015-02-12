@@ -105,4 +105,34 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($html, $view->getMetaHtml());
     }
 
+    public function testSetGetTemplate()
+    {
+        $view = new View();
+
+        $view->setTemplate('layout/template.tpl');
+        $this->assertSame('layout/template.tpl', $view->getTemplate());
+    }
+
+    public function testAssignments()
+    {
+        $view = new View();
+
+        $view->assign(['name'=>'john']);
+        $data = ['name'=>'john'];
+        $this->assertSame($data, $view->getAssignedData()['Ctrl']);
+
+        $view->assign(['new'=>'data']);
+        $data['new']='data';
+        $this->assertSame($data, $view->getAssignedData()['Ctrl']);
+    }
+
+    public function testSetGetAutload()
+    {
+        $view = new View();
+
+        $this->assertTrue($view->getAutoload());
+        $view->setAutoload(false);
+        $this->assertFalse($view->getAutoload());
+    }
+
 }

@@ -14,7 +14,7 @@ For additional versions of the package, visit the [Packagist page](https://packa
 
 ## Requirements
 
-Webiny Framework requires PHP 5.4 or later, PHP 5.5 is recommended.
+Webiny Framework requires PHP 5.5 or later.
 
 ## Feedback
 
@@ -54,6 +54,8 @@ This is the list of currently available components:
     - currently supports implementation of Amazon S3
 - [Annotations](src/Webiny/Component/Annotations)
     - component for parsing annotations from a `class`, `method` or a `property`
+- [Bootstrap](src/Webiny/Component/Bootstrap)
+    - MVC bootstrap component
 - [Cache](src/Webiny/Component/Cache)
     - provides several caching libraries like Apc, Couchbase, Memcache and Redis
 - [ClassLoader](src/Webiny/Component/ClassLoader)
@@ -108,5 +110,5 @@ To run the unit tests, you need to use the following command:
     $ composer.phar install
     $ phpunit
 
-Note that some components like, `Amazon`, `Cache`, `Mailer` and `Storage` require that you update their test configuration
+Note that some components like, `Cache`, `Mailer` and `Storage` might require that you update their test configuration
 before running the unit tests. Checkout the component readme file for more information.
