@@ -11,6 +11,8 @@ use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Mailer\Bridge\MessageInterface;
 use Webiny\Component\Mailer\MailerException;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\Storage\File\LocalFile;
 use Webiny\Component\Mailer\Email;
 
@@ -56,22 +58,25 @@ class Message implements MessageInterface
         'attachments'               => []
     ];
 
-    function __construct(ConfigObject $config)
+    public function __construct(ConfigObject $config = null)
     {
-        // Overwrite default message params with those in config
-        foreach ($this->_message as $param => $value) {
-            $cParam = $this->str($param)->replace('_', ' ')->caseWordUpper()->replace(' ', '')->val();
-            $cValue = $config->get('Message.' . $cParam);
-            if ($cValue !== null) {
-                if ($cValue instanceof ConfigObject) {
-                    $cValue = $cValue->toArray();
+        if ($config) {
+            // Overwrite default message params with those in config
+            foreach ($this->_message as $param => $value) {
+                $cParam = $this->str($param)->replace('_', ' ')->caseWordUpper()->replace(' ', '')->val();
+                $cValue = $config->get('Message.' . $cParam);
+                if ($cValue !== null) {
+                    if ($cValue instanceof ConfigObject) {
+                        $cValue = $cValue->toArray();
+                    }
+                    $this->_message[$param] = $cValue;
                 }
-                $this->_message[$param] = $cValue;
             }
         }
     }
 
-    public function __invoke(){
+    public function __invoke()
+    {
         return $this->_message;
     }
 
@@ -82,7 +87,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setSubject($subject)
+    public function setSubject($subject)
     {
         $this->_message['subject'] = $subject;
 
@@ -94,7 +99,7 @@ class Message implements MessageInterface
      *
      * @return string Message subject.
      */
-    function getSubject()
+    public function getSubject()
     {
         return $this->_message['subject'];
     }
@@ -107,7 +112,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setFrom(Email $from)
+    public function setFrom(Email $from)
     {
         $this->_message['from_name'] = $from->name;
         $this->_message['from_email'] = $from->email;
@@ -120,7 +125,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    function getFrom()
+    public function getFrom()
     {
         return new Email($this->_message['from_email'], $this->_message['from_name']);
     }
@@ -133,7 +138,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setSender(Email $sender)
+    public function setSender(Email $sender)
     {
         return $this->setFrom($sender);
     }
@@ -143,7 +148,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    function getSender()
+    public function getSender()
     {
         return $this->getFrom();
     }
@@ -154,10 +159,11 @@ class Message implements MessageInterface
      * @param array|Email $to A list of recipients.
      *
      * @return $this
+     * @throws MailerException
      */
-    function setTo($to)
+    public function setTo($to)
     {
-        if($to instanceof Email){
+        if ($to instanceof Email) {
             $to = [$to];
         }
 
@@ -176,7 +182,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    function getTo()
+    public function getTo()
     {
         return $this->_getRecipients('to');
     }
@@ -188,7 +194,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function addTo(Email $email)
+    public function addTo(Email $email)
     {
         $this->_message ['to'][] = [
             'email' => $email->email,
@@ -205,10 +211,11 @@ class Message implements MessageInterface
      * @param array|Email $cc
      *
      * @return $this
+     * @throws MailerException
      */
-    function setCc($cc)
+    public function setCc($cc)
     {
-        if($cc instanceof Email){
+        if ($cc instanceof Email) {
             $cc = [$cc];
         }
 
@@ -227,7 +234,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    function getCc()
+    public function getCc()
     {
         return $this->_getRecipients('cc');
     }
@@ -239,7 +246,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function addCc(Email $email)
+    public function addCc(Email $email)
     {
         $this->_message['to'][] = [
             'email' => $email->email,
@@ -257,10 +264,11 @@ class Message implements MessageInterface
      * @param array|Email $bcc
      *
      * @return $this
+     * @throws MailerException
      */
-    function setBcc($bcc)
+    public function setBcc($bcc)
     {
-        if($bcc instanceof Email){
+        if ($bcc instanceof Email) {
             $bcc = [$bcc];
         }
 
@@ -279,7 +287,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    function getBcc()
+    public function getBcc()
     {
         return $this->_getRecipients('bcc');
     }
@@ -291,7 +299,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function addBcc(Email $email)
+    public function addBcc(Email $email)
     {
         $this->_message ['to'][] = [
             'email' => $email->email,
@@ -309,7 +317,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setReplyTo(Email $replyTo)
+    public function setReplyTo(Email $replyTo)
     {
         $this->addHeader('Reply-To', $replyTo->email);
 
@@ -321,7 +329,7 @@ class Message implements MessageInterface
      *
      * @return Email|null
      */
-    function getReplyTo()
+    public function getReplyTo()
     {
         return isset($this->_message['headers']['Reply-To']) ? new Email($this->_message['headers']['Reply-To']) : null;
     }
@@ -335,7 +343,7 @@ class Message implements MessageInterface
      *
      * @return \Webiny\Component\Mailer\MessageInterface
      */
-    function setBody($content, $type = 'text/html', $charset = 'utf-8')
+    public function setBody($content, $type = 'text/html', $charset = 'utf-8')
     {
         $this->_message['html'] = $content;
 
@@ -347,7 +355,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    function getBody()
+    public function getBody()
     {
         return $this->_message['html'];
     }
@@ -380,7 +388,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setReturnPath($returnPath)
+    public function setReturnPath($returnPath)
     {
         $this->_message['return_path_domain'] = $returnPath;
 
@@ -392,7 +400,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    function getReturnPath()
+    public function getReturnPath()
     {
         return $this->_message['return_path_domain'];
     }
@@ -404,7 +412,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setContentType($contentType)
+    public function setContentType($contentType)
     {
         return $this;
     }
@@ -414,7 +422,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    function getContentType()
+    public function getContentType()
     {
         return null;
     }
@@ -426,7 +434,7 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function setContentTransferEncoding($encoding)
+    public function setContentTransferEncoding($encoding)
     {
         return $this;
     }
@@ -436,7 +444,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    function getContentTransferEncoding()
+    public function getContentTransferEncoding()
     {
         return null;
     }
@@ -450,11 +458,48 @@ class Message implements MessageInterface
      *
      * @return $this
      */
-    function addHeader($name, $value, $params = null)
+    public function addHeader($name, $value, $params = null)
     {
         $this->_message['headers'][$name] = $value;
 
         return $this;
+    }
+
+    /**
+     * Set multiple headers
+     *
+     * @param array|ArrayObject $headers
+     *
+     * @return $this
+     */
+    public function setHeaders($headers)
+    {
+        $headers = StdObjectWrapper::toArray($headers);
+        $this->_message['headers'] = $headers;
+
+        return $this;
+    }
+
+    /**
+     * Get a header from the message.
+     *
+     * @param string $name Header name.
+     *
+     * @return mixed
+     */
+    public function getHeader($name)
+    {
+        return isset($this->_message['headers'][$name]) ? $this->_message['headers'][$name] : null;
+    }
+
+    /**
+     * Get all headers from the message.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->_message['headers'];
     }
 
     private function _getRecipients($type)

@@ -92,10 +92,9 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     public function testAddHeader($message)
     {
         $message->addHeader('test', 'value');
-        $this->assertSame('test', $message->getHeaders()->get('test')->getFieldName());
-        $this->assertSame('value', $message->getHeaders()->get('test')->getFieldBody());
+        $this->assertSame('value', $message->getHeader('test'));
+        $this->assertArrayHasKey('test', $message->getHeaders());
     }
-
 
     public function messageProvider()
     {

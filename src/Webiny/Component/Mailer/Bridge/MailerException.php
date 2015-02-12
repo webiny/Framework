@@ -16,4 +16,5 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  */
 class MailerException extends ExceptionAbstract
 {
+
 }

@@ -7,9 +7,11 @@
 
 namespace Webiny\Component\Mailer\Bridge\SwiftMailer;
 
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Mailer\Bridge\MessageInterface;
 use Webiny\Component\Mailer\MailerException;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\Storage\File\LocalFile;
 use Webiny\Component\Mailer\Email;
 
@@ -27,11 +29,22 @@ class Message implements MessageInterface
      */
     private $_message;
 
-    public function __construct(){
+    public function __construct(ConfigObject $config = null)
+    {
         $this->_message = new \Swift_Message();
+
+        if ($config) {
+            $this->_message->setCharset($config->get('CharacterSet', 'utf-8'));
+            $this->_message->setMaxLineLength($config->get('MaxLineLength', 78));
+
+            if ($config->get('Priority', false)) {
+                $this->_message->setPriority($config->get('Priority', 3));
+            }
+        }
     }
 
-    public function __invoke(){
+    public function __invoke()
+    {
         return $this->_message;
     }
 
@@ -74,7 +87,7 @@ class Message implements MessageInterface
      */
     public function getSender()
     {
-        // TODO: Implement getSender() method.
+        return new Email($this->_message->getSender());
     }
 
     /**
@@ -84,7 +97,12 @@ class Message implements MessageInterface
      */
     public function getTo()
     {
-        // TODO: Implement getTo() method.
+        $recipients = [];
+        foreach ($this->_message->getTo() as $email => $name) {
+            $recipients[] = new Email($email, $name);
+        }
+
+        return $recipients;
     }
 
     /**
@@ -94,7 +112,12 @@ class Message implements MessageInterface
      */
     public function getCc()
     {
-        // TODO: Implement getCc() method.
+        $recipients = [];
+        foreach ($this->_message->getCc() as $email => $name) {
+            $recipients[] = new Email($email, $name);
+        }
+
+        return $recipients;
     }
 
     /**
@@ -104,7 +127,12 @@ class Message implements MessageInterface
      */
     public function getBcc()
     {
-        // TODO: Implement getBcc() method.
+        $recipients = [];
+        foreach ($this->_message->getBcc() as $email => $name) {
+            $recipients[] = new Email($email, $name);
+        }
+
+        return $recipients;
     }
 
     /**
@@ -114,7 +142,9 @@ class Message implements MessageInterface
      */
     public function getReplyTo()
     {
-        // TODO: Implement getReplyTo() method.
+        $replyTo = $this->_message->getReplyTo();
+
+        return new Email($replyTo);
     }
 
     /**
@@ -258,26 +288,6 @@ class Message implements MessageInterface
         return $this->_message->getEncoder()->getName();
     }
 
-    /**
-     * Adds a header to the message.
-     *
-     * @param string     $name   Header name.
-     * @param string     $value  Header value.
-     * @param null|array $params Optional array of parameters.
-     *
-     * @return $this
-     */
-    public function addHeader($name, $value, $params = null)
-    {
-        if (is_array($params)) {
-            $this->_message->getHeaders()->addParameterizedHeader($name, $value, $params);
-        } else {
-            $this->_message->getHeaders()->addTextHeader($name, $value);
-        }
-
-        return $this;
-    }
-
     public function setSender(Email $sender)
     {
         $this->_message->setSender($sender->email, $sender->name);
@@ -301,7 +311,7 @@ class Message implements MessageInterface
 
     public function setTo($to)
     {
-        if($to instanceof Email){
+        if ($to instanceof Email) {
             $to = [$to];
         }
 
@@ -317,7 +327,7 @@ class Message implements MessageInterface
 
     public function setCc($cc)
     {
-        if($cc instanceof Email){
+        if ($cc instanceof Email) {
             $cc = [$cc];
         }
 
@@ -333,7 +343,7 @@ class Message implements MessageInterface
 
     public function setBcc($bcc)
     {
-        if($bcc instanceof Email){
+        if ($bcc instanceof Email) {
             $bcc = [$bcc];
         }
 
@@ -375,5 +385,72 @@ class Message implements MessageInterface
         return $this;
     }
 
+    /**
+     * Set multiple headers
+     *
+     * @param array|ArrayObject $headers
+     *
+     * @return $this
+     */
+    public function setHeaders($headers)
+    {
+        foreach ($headers as $key => $value) {
+            $this->addHeader($key, $value);
+        }
 
+        return $this;
+    }
+
+    /**
+     * Adds a header to the message.
+     *
+     * @param string     $name   Header name.
+     * @param string     $value  Header value.
+     * @param null|array $params Optional array of parameters.
+     *
+     * @return $this
+     */
+    public function addHeader($name, $value, $params = null)
+    {
+        if (is_array($params)) {
+            $this->_message->getHeaders()->addParameterizedHeader($name, $value, $params);
+        } else {
+            $this->_message->getHeaders()->addTextHeader($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get a header from the message.
+     *
+     * @param string $name Header name.
+     *
+     * @return mixed
+     */
+    public function getHeader($name)
+    {
+        return $this->_message->getHeaders()->get($name)->getFieldBody();
+    }
+
+    /**
+     * Get all headers from the message.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        $swiftHeaders = $this->_message->getHeaders()->listAll();
+        $headers = [];
+        foreach ($swiftHeaders as $headerName) {
+            $headers[$headerName] = $this->getHeader($headerName);
+        }
+
+        return $headers;
+    }
+
+    public function getChildren()
+    {
+        return $this->_message->getChildren();
+    }
 }

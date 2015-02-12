@@ -9,6 +9,7 @@ namespace Webiny\Component\Mailer\Bridge\SwiftMailer;
 
 use Webiny\Component\Mailer\Bridge\MailerInterface;
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Mailer\Email;
 use Webiny\Component\Mailer\MessageInterface;
 use Webiny\Component\Mailer\TransportInterface;
 
@@ -40,20 +41,14 @@ class SwiftMailer implements MailerInterface
      */
     public static function getMessage(ConfigObject $config)
     {
-        $message = new Message();
-
-        $message->setCharset($config->get('CharacterSet', 'utf-8'));
-        $message->setMaxLineLength($config->get('MaxLineLength', 78));
-
-        if ($config->get('Priority', false)) {
-            $message->setPriority($config->get('Priority', 3));
-        }
+        $message = new Message($config);
 
         if ($config->get('Sender', false)) {
-            $message->setSender($config->get('Sender.Email', 'me@localhost'), $config->get('Sender.Name', null));
+            $sender = new Email($config->get('Sender.Email', 'me@localhost'), $config->get('Sender.Name', null));
+            $message->setSender($sender);
 
             // Fix/Hack (wasn't in headers before)
-            $message->setFrom($config->get('Sender.Email', 'me@localhost'), $config->get('Sender.Name', null));
+            $message->setFrom($sender);
         }
 
         return $message;

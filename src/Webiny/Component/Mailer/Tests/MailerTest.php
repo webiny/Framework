@@ -59,6 +59,6 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     public function testConfigContent()
     {
         $this->assertSame('nikola@localhost', Mailer::getConfig()->Default->Sender->Email);
-        $this->assertSame('\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer', Mailer::getConfig()->Bridge);
+        $this->assertSame('\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer', Mailer::getConfig()->Bridge->Default);
     }
 }

@@ -91,21 +91,4 @@ class Mailer
 
         return $this;
     }
-
-    /**
-     * Returns the config for current mailer.
-     *
-     * @return mixed|\Webiny\Component\Config\ConfigObject
-     * @throws MailerException
-     */
-    private function _getMailerConfig()
-    {
-        $config = $this->getConfig()->get($this->_mailerName, false);
-
-        if (!$config) {
-            throw new MailerException('Unable to load the configuration for "' . $this->_mailerName . '" mailer.');
-        }
-
-        return $config;
-    }
 }

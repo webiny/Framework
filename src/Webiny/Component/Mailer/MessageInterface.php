@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Mailer;
 
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\Storage\File\LocalFile;
 
 /**
@@ -244,6 +245,15 @@ interface MessageInterface
     public function getContentTransferEncoding();
 
     /**
+     * Set multiple headers
+     *
+     * @param array|ArrayObject $headers
+     *
+     * @return $this
+     */
+    public function setHeaders($headers);
+
+    /**
      * Adds a header to the message.
      *
      * @param string     $name   Header name.
@@ -253,4 +263,20 @@ interface MessageInterface
      * @return $this
      */
     public function addHeader($name, $value, $params = null);
+
+    /**
+     * Get a header from the message.
+     *
+     * @param string     $name   Header name.
+     *
+     * @return mixed
+     */
+    public function getHeader($name);
+
+    /**
+     * Get all headers from the message.
+     *
+     * @return array
+     */
+    public function getHeaders();
 }
