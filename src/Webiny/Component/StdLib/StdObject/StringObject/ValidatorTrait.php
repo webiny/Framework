@@ -10,6 +10,7 @@
 
 namespace Webiny\Component\StdLib\StdObject\StringObject;
 
+use ArrayObject;
 use Webiny\Component\StdLib\StdObject\StdObjectValidatorTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
@@ -39,6 +40,27 @@ trait ValidatorTrait
         // can cause unwanted mismatches if it's not strictly casted to string
         if (stripos($this->val(), (string)$needle) !== false) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a string contains any of the given $char.
+     * If any of given $char is present, true is returned.
+     *
+     * @param array|ArrayObject $needle Array of characters you wish to check
+     *
+     * @return bool True if current string contains the $needle. Otherwise false is returned.
+     */
+    public function containsAny($needle)
+    {
+        $needle = StdObjectWrapper::toArray($needle);
+
+        foreach($needle as $char){
+            if($this->contains($char)){
+                return true;
+            }
         }
 
         return false;
