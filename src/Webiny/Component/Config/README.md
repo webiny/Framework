@@ -48,23 +48,6 @@ If you don't want to use INI sections, or set custom nest delimiter, specify the
     $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini', false, false, '_');
 ```
 
-You can save your config in any format using the following methods:
-```php
-    $config->saveAsJson($pathToFile);
-    $config->saveAsPhp($pathToFile);
-    $config->saveAsIni($pathToFile, $useSections = true, $nestDelimiter = '.');
-    $config->saveAsYaml($pathToFile, $indent = 4);
-
-    // This will save your config object to the file used when loading config
-    $config->save();
-```
-
-And you can also use custom driver:
-```php
-    $driverInstance = new MyCustomDriver();
-    $config->saveAs($driverInstance, $destination);
-```
-
 You can get your config as string in any format using the following methods:
 ```php
     $string = $config->getAsJson();

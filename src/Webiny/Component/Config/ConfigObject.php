@@ -37,9 +37,9 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     /**
      * Config data
      *
-     * @var array
+     * @var ArrayObject
      */
-    protected $_data = array();
+    protected $_data;
 
     /**
      * Cache key used to store this object to ConfigCache
@@ -105,87 +105,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     public function getAs(DriverAbstract $driver)
     {
         return $driver->getString();
-    }
-
-    /**
-     * SAVE METHODS
-     */
-
-    /**
-     * Save config as Yaml
-     *
-     * @param     $destination
-     * @param int $indent
-     *
-     * @internal param bool $wordWrap
-     *
-     * @return $this
-     */
-
-    public function saveAsYaml($destination, $indent = 4)
-    {
-        $driver = new YamlDriver($this->toArray());
-        $driver->setIndent($indent)->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsPhp($destination)
-    {
-        $driver = new PhpDriver($this->toArray());
-        $driver->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsJson($destination)
-    {
-        $driver = new JsonDriver($this->toArray());
-        $driver->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsIni($destination, $useSections = true, $nestDelimiter = '.')
-    {
-        $driver = new IniDriver($this->toArray());
-        $driver->useSections($useSections)->setDelimiter($nestDelimiter)->saveToFile($destination);
-
-        return $this;
-    }
-
-    /**
-     * Save config using given DriverAbstract instance
-     *
-     * @param DriverAbstract                 $driver
-     * @param string|StringObject|FileObject $destination
-     *
-     * @return $this
-     */
-    public function saveAs(DriverAbstract $driver, $destination)
-    {
-        $driver->setResource($this->toArray())->saveToFile($destination);
-
-        return $this;
-    }
-
-    /**
-     * Save current config
-     * @throws ConfigException
-     * @return $this
-     */
-    public function save()
-    {
-        if ($this->_resourceType != ConfigObject::FILE_RESOURCE) {
-            throw new ConfigException('ConfigObject was not created from a file resource and thus can not be saved directly!'
-            );
-        }
-
-        $driver = new $this->_driverClass($this->toArray());
-        $driver->saveToFile($this->_fileResource);
-
-        return $this;
-
     }
 
     /**

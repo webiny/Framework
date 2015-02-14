@@ -12,10 +12,9 @@ namespace Webiny\Component\Config\Drivers;
 use Webiny\Component\Config\ConfigException;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\FileObject\FileObject;
+use Webiny\Component\StdLib\StdObject\StdObjectException;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * Abstract Driver class
@@ -120,29 +119,6 @@ abstract class DriverAbstract
     }
 
     /**
-     * Write config to destination
-     *
-     * @param string|StringObject|FileObject $destination
-     *
-     * @throws \InvalidArgumentException
-     * @throws ConfigException
-     * @return $this
-     */
-    final public function saveToFile($destination)
-    {
-
-        if ($this->isString($destination) || $this->isStringObject($destination)) {
-            $destination = StdObjectWrapper::toString($destination);
-        }
-
-        if (file_put_contents($destination, $this->_getString())) {
-            return $this;
-        }
-
-        throw new ConfigException(ConfigException::COULD_NOT_SAVE_CONFIG_FILE);
-    }
-
-    /**
      * Validate given config resource and throw ConfigException if it's not valid
      * @throws ConfigException
      */
@@ -156,17 +132,28 @@ abstract class DriverAbstract
             return true;
         }
 
-        // Check if it's a valid file path
-        // Valid file path should not contain any spaces and that is the main difference between string file path and config string
-        if (!$this->str($this->_resource)->trim()->contains(' ')) {
-            if ((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
-                throw new ConfigException('Config resource file does not exist!');
-            }
-        }
-
-        // Perform string checks
+        /**
+         * Perform string checks
+         */
         if ($this->str($this->_resource)->trim()->length() == 0) {
             throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
+        }
+
+        /**
+         * A very weak attempt to check if it's a valid file path
+         * Valid file path should not contain any spaces
+         *
+         * NOTE: Not a very reliable check. No regex can reliably match it either, so for now we stick with this.
+         * The point here is to determine if it's a file without doing is_file() or is_readable(), because what we want to
+         * do is provide the best possible exception messages to the developer. Config resource can also be just a string
+         * which is perfectly fine so we need a string-based check.
+         *
+         * If you have better ideas - let us know or contribute directly to the source at github.
+         */
+        if (!$this->str($this->_resource)->trim()->containsAny([' '])) {
+            if (dirname($this->_resource) == '.' || !file_exists($this->_resource)) {
+                throw new ConfigException('Config resource file does not exist!');
+            }
         }
     }
 

@@ -23,15 +23,6 @@ interface YamlInterface
 {
 
     /**
-     * Write current Yaml data to file
-     *
-     * @param string|StringObject|FileObject $destination
-     *
-     * @return bool
-     */
-    function writeToFile($destination);
-
-    /**
      * Get current Yaml value as string
      *
      * @param int $indent

@@ -28,10 +28,21 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Webiny', $config->get('website.name'));
     }
 
+    /**
+     * @expectedException \Webiny\Component\Config\ConfigException
+     */
     function testMissingFile()
     {
-        $this->setExpectedException('\Webiny\Component\Config\ConfigException');
         $jsonConfig = realpath(__DIR__ . '/Configs/configMissing.json');
+        Config::getInstance()->json($jsonConfig);
+    }
+
+    /**
+     * @expectedException \Webiny\Component\Config\ConfigException
+     */
+    function testInvalidFilePath()
+    {
+        $jsonConfig = realpath(__DIR__ . '/Configs');
         Config::getInstance()->json($jsonConfig);
     }
 
@@ -57,53 +68,5 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config = Config::getInstance()->parseResource($resource);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('development', $config->application);
-    }
-
-    function testSaveAsYaml()
-    {
-        $phpConfig = realpath(__DIR__ . '/Configs/config.php');
-        $yamlConfig = __DIR__ . '/Configs/savedConfig.yaml';
-        $config = Config::getInstance()->php($phpConfig);
-        $config->saveAsYaml($yamlConfig);
-        $this->assertFileExists($yamlConfig);
-        $config = Config::getInstance()->yaml($yamlConfig);
-        $this->assertEquals('www.webiny.com', $config->get('default.url'));
-        unlink($yamlConfig);
-    }
-
-    function testSaveAsIni()
-    {
-        $phpConfig = realpath(__DIR__ . '/Configs/config.php');
-        $iniConfig = __DIR__ . '/Configs/savedConfig.ini';
-        $config = Config::getInstance()->php($phpConfig);
-        $config->saveAsIni($iniConfig);
-        $this->assertFileExists($iniConfig);
-        $config = Config::getInstance()->ini($iniConfig);
-        $this->assertEquals('www.webiny.com', $config->get('default.url'));
-        unlink($iniConfig);
-    }
-
-    function testSaveAsJson()
-    {
-        $phpConfig = realpath(__DIR__ . '/Configs/config.php');
-        $jsonConfig = __DIR__ . '/Configs/savedConfig.json';
-        $config = Config::getInstance()->php($phpConfig);
-        $config->saveAsJson($jsonConfig);
-        $this->assertFileExists($jsonConfig);
-        $config = Config::getInstance()->json($jsonConfig);
-        $this->assertEquals('www.webiny.com', $config->get('default.url'));
-        unlink($jsonConfig);
-    }
-
-    function testSaveAsPhp()
-    {
-        $yamlConfig = realpath(__DIR__ . '/Configs/config.yaml');
-        $phpConfig = __DIR__ . '/Configs/savedConfig.php';
-        $config = Config::getInstance()->yaml($yamlConfig);
-        $config->saveAsPhp($phpConfig);
-        $this->assertFileExists($phpConfig);
-        $config = Config::getInstance()->php($phpConfig);
-        $this->assertEquals('Royal Oak', $config->get('bill-to.address.city'));
-        unlink($phpConfig);
     }
 }

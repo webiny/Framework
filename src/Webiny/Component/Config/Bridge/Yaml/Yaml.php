@@ -89,24 +89,6 @@ class Yaml implements YamlInterface
     }
 
     /**
-     * Write current Yaml data to file
-     *
-     * @param string|StringObject|FileObject $destination
-     *
-     * @throws YamlException
-     * @return bool
-     */
-    function writeToFile($destination)
-    {
-        $res = $this->_driverInstance->writeToFile($destination);
-        if (!$this->isBoolean($res)) {
-            throw new YamlException('YamlInterface method writeToFile() must return a boolean.');
-        }
-
-        return $res;
-    }
-
-    /**
      * Get current Yaml value as string
      *
      * @param int  $indent
@@ -135,7 +117,7 @@ class Yaml implements YamlInterface
     {
         $res = $this->_driverInstance->getArray();
         if (!$this->isArray($res) && !$this->isArrayObject($res)) {
-            throw new YamlException('YamlInterface method writeToFile() must return an array or ArrayObject.');
+            throw new YamlException('YamlInterface method getArray() must return an array or ArrayObject.');
         }
 
         return StdObjectWrapper::toArray($res);
@@ -167,8 +149,8 @@ class Yaml implements YamlInterface
     private function __construct($resource = null)
     {
         if ($this->isInstanceOf(self::$_customDriver, self::$_driverInterface)) {
-            // If custom driver was set, we need to return a copy of it and set it's resource
-            $this->_driverInstance = clone self::$_driverInstance->setResource($resource);
+            // If custom driver instance was set, we need to use a copy of it and set it's resource
+            $this->_driverInstance = clone $this->_driverInstance->setResource($resource);
         } else {
             $this->_driverInstance = new self::$_driverClass();
             $this->_driverInstance->setResource($resource);

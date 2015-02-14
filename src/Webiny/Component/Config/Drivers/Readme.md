@@ -55,9 +55,6 @@ After that you can use your custom driver in your calls to `Config` and `ConfigO
 $myCustomDriver = new MyCustomDriver($pathToFile);
 $config = Config::getInstance()->parseResource($myCustomDriver, $flushCache = false);
 
-// Write ConfigObject to file
-$config->saveAs($myCustomDriver, $destinationFile);
-
 // Get ConfigObject as string
 $configString = $config->getAs($myCustomDriver);
 ```

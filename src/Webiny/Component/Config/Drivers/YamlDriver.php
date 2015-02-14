@@ -8,10 +8,8 @@
 namespace Webiny\Component\Config\Drivers;
 
 use Webiny\Component\Config\Bridge\Yaml\Yaml;
-use Webiny\Component\Config\Bridge\Yaml\YamlAbstract;
 use Webiny\Component\Config\Bridge\Yaml\YamlInterface;
 use Webiny\Component\Config\ConfigException;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * YamlDriver is responsible for parsing Yaml config files and returning a config array.

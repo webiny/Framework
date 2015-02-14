@@ -19,5 +19,9 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  */
 class SymfonyYamlException extends YamlException
 {
+    const UNABLE_TO_PARSE = 101;
 
+    protected static $_messages = [
+        101 => 'SymfonyYaml Bridge - Unable to parse given resource of type %s'
+    ];
 }
