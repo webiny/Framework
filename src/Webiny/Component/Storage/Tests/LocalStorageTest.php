@@ -33,14 +33,11 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
     public function testSave(Storage $storage)
     {
         $storage->setContents($this->_key, 'Test contents');
-    }
-
-    /**
-     * @dataProvider driverSet
-     */
-    public function testRead(Storage $storage)
-    {
         $this->assertSame('Test contents', $storage->getContents($this->_key));
+        $storage->setContents($this->_key, 'Appended contents', true);
+        $contents = $storage->getContents($this->_key);
+        $this->assertTrue(strpos($contents, 'Test contents') === 0);
+        $this->assertTrue(strpos($contents, 'Appended contents') > 0);
     }
 
     /**
@@ -66,7 +63,7 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
     public function driverSet()
     {
         Storage::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
-
+        
         return [
             [$this->storage('LocalStorage')]
         ];

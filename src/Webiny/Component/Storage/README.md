@@ -30,6 +30,7 @@ The following driver interfaces are available:
 ## Configuring a storage service
 
 The recommended way of using a storage is by defining a storage service. Here is an example of defining a service using `Local` and `AmazonS3` storage driver:
+NOTE: you can use __DIR__ to have your file paths built dynamicallyd. __DIR__ will be replaced with the directory path containing current config file.
 
 ```yaml
 Storage:
@@ -49,7 +50,7 @@ Storage:
                 Driver:
                     Object: \Webiny\Component\Storage\Driver\Local\Local
                     ObjectArguments:
-                        - /var/www/projects/webiny/Public/Uploads # Absolute root path
+                        - __DIR__/../../Public/Uploads # Absolute root path
                         - http://admin.w3.com/Uploads # Web root path
                         - false # DateFolderStructure
                         - true # Create folder if it doesn't exist

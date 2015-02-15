@@ -62,11 +62,13 @@ class Storage
      * @param string $key
      * @param string $contents
      *
-     * @return integer|bool The number of bytes that were written into the file
+     * @param bool   $append
+     *
+     * @return bool|int The number of bytes that were written into the file
      */
-    public function setContents($key, $contents)
+    public function setContents($key, $contents, $append = false)
     {
-        return $this->_driver->setContents($key, $contents);
+        return $this->_driver->setContents($key, $contents, $append);
     }
 
     /**

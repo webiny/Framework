@@ -104,7 +104,7 @@ class AmazonS3 implements DriverInterface
     /**
      * @inheritdoc
      */
-    public function setContents($key, $contents)
+    public function setContents($key, $contents, $append = false)
     {
         if ($this->_dateFolderStructure) {
             if (!$this->keyExists($key)) {

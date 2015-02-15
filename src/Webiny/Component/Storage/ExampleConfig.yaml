@@ -29,7 +29,7 @@ Storage:
                 Driver:
                     Object: \Webiny\Component\Storage\Driver\Local\Local
                     ObjectArguments:
-                        - /var/www/projects/webiny/Public/Uploads # Absolute root path
+                        - __DIR__/../../Public/Uploads # Absolute root path
                         - http://admin.w3.com/Uploads # Web root path
                         - false # DateFolderStructure
                         - true # Create folder if it doesn't exist

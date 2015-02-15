@@ -78,10 +78,10 @@ class File implements FileInterface
     /**
      * @inheritdoc
      */
-    public function setContents($contents)
+    public function setContents($contents, $append = false)
     {
         $this->_contents = $contents;
-        if ($this->_storage->setContents($this->_key, $this->_contents) !== false) {
+        if ($this->_storage->setContents($this->_key, $this->_contents, $append) !== false) {
             $this->_key = $this->_storage->getRecentKey();
             $this->eventManager()->fire(StorageEvent::FILE_SAVED, new StorageEvent($this));
 

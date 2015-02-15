@@ -71,9 +71,11 @@ interface FileInterface
      *
      * @param mixed $contents
      *
+     * @param bool  $append
+     *
      * @return $this
      */
-    public function setContents($contents);
+    public function setContents($contents, $append = false);
 
     /**
      * Rename a file<br />

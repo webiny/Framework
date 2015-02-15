@@ -15,7 +15,7 @@ class StorageSetupTest extends \PHPUnit_Framework_TestCase
 
     public function testSetConfig()
     {
-        Storage::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
+        Storage::setConfig(realpath(__DIR__). self::CONFIG);
     }
 
     public function testGetConfig()

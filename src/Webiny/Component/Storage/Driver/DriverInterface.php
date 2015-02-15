@@ -27,12 +27,14 @@ interface DriverInterface
     /**
      * Writes the given File
      *
-     * @param $key
-     * @param $contents
+     * @param      $key
+     * @param      $contents
      *
-     * @return integer|boolean The number of bytes that were written into the file
+     * @param bool $append
+     *
+     * @return bool|int The number of bytes that were written into the file
      */
-    public function setContents($key, $contents);
+    public function setContents($key, $contents, $append = false);
 
     /**
      * Checks whether the file exists
