@@ -16,10 +16,11 @@ For additional versions of the package, visit the [Packagist page](https://packa
 
 Current supported protocols are:
 
-* SMTP
+* SMTP (you can also use Mandrill and Sendgrid's via their SMTP API)
 * PHPs' `mail()` function
 * Sendmail
-* Mandrill
+* Mandrill ([Mandrill API Docs](https://mandrillapp.com/api/docs/messages.php.html#method=send))
+* Sendgrid ([Sendgrid API Docs](https://sendgrid.com/docs/API_Reference/Web_API/mail.html))
 
 To use the component, you first need to configuration set inside the component config file.
 If you open the `ExampleConfig.yaml` you can see two example configuration sets, `Demo` and `Gmail`.
@@ -78,6 +79,12 @@ Here is an example configuration:
                 Metadata: []
                 RecipientMetadata: []
                 Attachments: []
+        Sendgrid:
+            ApiUser: yourApiUser
+            ApiKey: yourApiKey
+            DisableDelivery: false
+            Decorators:
+                Wrapper: ['*|', '|*']
 ```
 
 You can have unlimited configuration sets.
@@ -197,13 +204,13 @@ class MyClass
 		// before sending, let's define the decorator replacements
 		$replacements = [
 			'jack@gmail.com' => [
-				'{name}'     => 'Jack',
-				'{password}' => 'seCre!'
+				'name'     => 'Jack',
+				'password' => 'seCre!'
 			],
 
 			'sara@gmail.com' => [
-				'{name}'     => 'Sara',
-				'{password}' => 'Log!n'
+				'name'     => 'Sara',
+				'password' => 'Log!n'
 			]
 		];
 		$mailer->setDecorators($replacements);

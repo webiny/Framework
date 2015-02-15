@@ -6,6 +6,8 @@
 # In order to use the component, you first must call Mailer::setConfig($pathToYourConfig).
 Mailer:
     Default:
+        Decorators:
+            Wrapper: ['*|', '|*']
         Sender:
             Email: nikola@tesla.com
             Name: Nikola Tesla
@@ -16,6 +18,8 @@ Mailer:
             Sleep: 1
         DisableDelivery: false
     Gmail:
+        Decorators:
+            Wrapper: ['*|', '|*']
         Sender:
             Email: 'larry@gmail.com'
             Name: 'Larry P.'
@@ -27,6 +31,12 @@ Mailer:
             Password: iRuleGoogle
             Encryption: ssl
             AuthMode: login
+    Sendgrid:
+        ApiUser: yourApiUser
+        ApiKey: yourApiKey
+        DisableDelivery: false
+        Decorators:
+            Wrapper: ['*|', '|*']
     Mandrill:
         Mode: template # template or html
         ApiKey: yourApiKey

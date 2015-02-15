@@ -17,10 +17,15 @@ class Email implements \ArrayAccess
     public $email;
     public $name;
 
-    function __construct($email, $name = '')
+    function __construct($email, $name = null)
     {
         $this->email = $email;
         $this->name = $name;
+    }
+
+    public function __toString()
+    {
+        return $this->name ? $this->name . ' <' . $this->email . '>' : $this->email;
     }
 
     public function toArray()
@@ -98,6 +103,6 @@ class Email implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        $this->$offset = '';
+        $this->$offset = null;
     }
 }
