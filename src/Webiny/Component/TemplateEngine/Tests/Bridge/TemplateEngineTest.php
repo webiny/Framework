@@ -14,7 +14,7 @@ class TemplateEngineTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        \Webiny\Component\TemplateEngine\TemplateEngine::setConfig(__DIR__ . '/../../ExampleConfig.yaml');
+        \Webiny\Component\TemplateEngine\TemplateEngine::setConfig(__DIR__ . '/../ExampleConfig.yaml');
     }
 
     public function testGetInstance()

@@ -16,7 +16,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        Annotations::setConfig(__DIR__ . '/../Mocks/MockAnnotationsConfig.yaml');
+        //Annotations::setConfig(__DIR__ . '/../Mocks/MockAnnotationsConfig.yaml');
         Rest::setConfig(__DIR__ . '/../Mocks/MockRestConfig.yaml');
     }
 

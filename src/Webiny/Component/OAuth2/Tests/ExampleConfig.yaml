@@ -16,4 +16,4 @@ OAuth2:
         ClientSecret: secret_gp
         Scope: openid%20profile%20email
         RedirectUri: /security/login-gp/
-    Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2
+    Bridge: \Webiny\Component\OAuth2\Bridge\League\OAuth2

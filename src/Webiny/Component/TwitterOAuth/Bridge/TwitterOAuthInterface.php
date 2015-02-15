@@ -25,19 +25,11 @@ interface TwitterOAuthInterface
     public function __construct($clientId, $clientSecret, $redirectUri);
 
     /**
-     * Get the request token.
+     * Get the request token (temporary credentials).
      *
-     * @return string Request token.
+     * @return array Request token [oauth_token, oauth_token_secret].
      */
     public function getRequestToken();
-
-    /**
-     * Get the response code in http format.
-     * Example return: 200
-     *
-     * @return int Response code.
-     */
-    public function getResponseCode();
 
     /**
      * Get the authorize url.
@@ -84,29 +76,33 @@ interface TwitterOAuthInterface
      * Make a GET request to Twitter API.
      *
      * @param string $url    Api url.
+     * @param array $headers Request headers.
      * @param array  $params Additional parameters.
      *
      * @return string|array Api response (if json) it will be returned as array.
      */
-    public function get($url, array $params = []);
+    public function get($url, array $headers = [], array $params = []);
 
     /**
      * Make a POST request to Twitter API.
      *
      * @param string $url    Api url.
+     * @param array $postBody Post body.
+     * @param array $headers Request headers.
      * @param array  $params Additional parameters.
      *
      * @return string|array Api response (if json) it will be returned as array.
      */
-    public function post($url, array $params = []);
+    public function post($url, array $postBody, array $headers = [], array $params = []);
 
     /**
      * Make a DELETE request to Twitter API.
      *
      * @param string $url    Api url.
+     * @param array $headers Request headers.
      * @param array  $params Additional parameters.
      *
      * @return string|array Api response (if json) it will be returned as array.
      */
-    public function delete($url, array $params = []);
+    public function delete($url, array $headers = [], array $params = []);
 }

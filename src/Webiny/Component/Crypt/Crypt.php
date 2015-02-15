@@ -31,18 +31,15 @@ class Crypt
      * @param string $passwordAlgo     Name of the password algorithm.
      * @param string $cipherMode       Cipher block.
      * @param string $cipherBlock      Cipher mode.
-     * @param string $cipherInitVector Cipher initialization vector.
      *
      * @throws CryptException
      */
-    public function __construct($passwordAlgo = 'Blowfish', $cipherMode = 'CCM', $cipherBlock = 'rijndael-128',
-                                $cipherInitVector = '_FOO_VECTOR'
+    public function __construct($passwordAlgo = CRYPT_BLOWFISH, $cipherMode = MCRYPT_MODE_ECB,
+                                $cipherBlock = MCRYPT_RIJNDAEL_256
     ) {
         if ($this->isNull($this->_driverInstance)) {
             try {
-                $this->_driverInstance = Bridge\Crypt::getInstance($passwordAlgo, $cipherMode, $cipherBlock,
-                                                                   $cipherInitVector
-                );
+                $this->_driverInstance = Bridge\Crypt::getInstance($passwordAlgo, $cipherMode, $cipherBlock);
 
                 if (!$this->isInstanceOf($this->_driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
                     throw new CryptException('The provided bridge does not implement the required
@@ -172,17 +169,15 @@ class Crypt
      *
      * @param string      $string               The string you want to encrypt.
      * @param string      $key                  The secret key that will be used to encrypt the string.
-     * @param null|string $initializationVector Initialization vector for the encryption. More about
-     *                                          initialization vector (iv) @link http://en.wikipedia.org/wiki/Initialization_vector
      *
      * @throws CryptException
      *
      * @return string Encrypted string.
      */
-    public function encrypt($string, $key, $initializationVector = null)
+    public function encrypt($string, $key)
     {
         try {
-            return $this->_driverInstance->encrypt($string, $key, $initializationVector);
+            return $this->_driverInstance->encrypt($string, $key);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -195,16 +190,14 @@ class Crypt
      *
      * @param string $string                    The string you want to decrypt.
      * @param string $key                       The secret key that was used to encrypt the $string.
-     * @param        $initializationVector      Initialization vector for the encryption. More about
-     *                                          initialization vector (iv) @link http://en.wikipedia.org/wiki/Initialization_vector
      *
      * @throws CryptException
      * @return string Decrypted string.
      */
-    public function decrypt($string, $key, $initializationVector = null)
+    public function decrypt($string, $key)
     {
         try {
-            return $this->_driverInstance->decrypt($string, $key, $initializationVector);
+            return $this->_driverInstance->decrypt($string, $key);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }

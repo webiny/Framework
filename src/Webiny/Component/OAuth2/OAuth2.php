@@ -42,8 +42,9 @@ class OAuth2
     {
         $this->_instance = $instance;
 
-        $server = $instance->getServerName();
+        $server = $instance->getServerClassName();
         $this->_server = new $server($this);
+
     }
 
     /**

@@ -9,7 +9,6 @@ namespace Webiny\Component\Cache\Tests;
 
 use Webiny\Component\Cache\Cache;
 use Webiny\Component\Cache\CacheTrait;
-use Webiny\Component\ClassLoader\ClassLoader;
 
 class CacheTraitTest extends \PHPUnit_Framework_TestCase
 {

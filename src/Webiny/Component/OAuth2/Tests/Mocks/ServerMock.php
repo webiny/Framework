@@ -80,4 +80,14 @@ class ServerMock extends ServerAbstract
     {
         return 'access_token';
     }
+
+    /**
+     * Returns the server name.
+     *
+     * @return string
+     */
+    public function getServerName()
+    {
+        return 'ServerMock';
+    }
 }

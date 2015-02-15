@@ -17,13 +17,13 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.0",
-		"webiny/config": "~1.0",
-		"webiny/std-lib": "~1.0",
-		"webiny/storage": "~1.0",
-		"webiny/event-manager": "~1.0",
-		"webiny/class-loader": "~1.0",
-		"imagine/imagine": "0.6.*"
+		"php": ">=5.5.9",
+		"webiny/config": "~1.1",
+		"webiny/std-lib": "~1.1",
+		"webiny/storage": "~1.1",
+		"webiny/event-manager": "~1.1",
+		"imagine/imagine": "0.6.*",
+		"ext-gd": "*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4",
@@ -36,7 +36,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0-dev"
+			"dev-master": "1.2-dev"
 		}
 	}
 }

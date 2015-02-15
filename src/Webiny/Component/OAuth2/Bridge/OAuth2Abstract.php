@@ -57,11 +57,11 @@ abstract class OAuth2Abstract implements OAuth2Interface
 
 
     /**
-     * Name of the OAuth2 server.
+     * Name of the OAuth2 server class.
      *
      * @var string
      */
-    private $_serverName = '';
+    private $_serverClassName = '';
 
     /**
      * Optional array that is provided in case of 'custom' server name.
@@ -80,7 +80,7 @@ abstract class OAuth2Abstract implements OAuth2Interface
 
     /**
      * Currently supported servers are:
-     * [facebook, foursquare, github, google, instagram, linkedin, microsoft, salesforce].
+     * [facebook, google, linkedin].
      *
      * You can also paste 'custom' as server name, but in that case you must also provide the $options array that has
      * auth_url and token_url as array keys.
@@ -92,7 +92,7 @@ abstract class OAuth2Abstract implements OAuth2Interface
      */
     function setOAuth2Server($serverName, $options = null)
     {
-        $this->_serverName = $serverName;
+        $this->_serverClassName = $serverName;
         $this->_serverOptions = $options;
     }
 
@@ -183,12 +183,12 @@ abstract class OAuth2Abstract implements OAuth2Interface
     }
 
     /**
-     * Returns the name of current OAuth2 server.
+     * Returns the name of current OAuth2 server class.
      *
      * @return string
      */
-    function getServerName()
+    function getServerClassName()
     {
-        return $this->_serverName;
+        return $this->_serverClassName;
     }
 }

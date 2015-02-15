@@ -17,8 +17,8 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.0",
-		"symfony/yaml": "2.5.*",
+		"php": ">=5.5.9",
+		"symfony/yaml": "~2.0",
 		"webiny/std-lib": "~1.0"
 	},
 	"require-dev": {
@@ -32,7 +32,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.0-dev"
+			"dev-master": "1.2-dev"
 		}
 	}
 }

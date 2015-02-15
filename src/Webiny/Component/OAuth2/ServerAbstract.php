@@ -40,6 +40,13 @@ abstract class ServerAbstract
     abstract public function getAccessTokenUrl();
 
     /**
+     * Returns the server name.
+     *
+     * @return string
+     */
+    abstract public function getServerName();
+
+    /**
      * Returns an array [url, params].
      * 'url' - holds the destination url for accessing user details on the OAuth2 server.
      * 'params' - an optional array of additional parameters that would be sent together with the request.

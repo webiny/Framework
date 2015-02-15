@@ -23,13 +23,6 @@ class CryptTraitTest extends \PHPUnit_Framework_TestCase
     {
         $instance = $this->crypt('Password');
         $this->assertInstanceOf('\Webiny\Component\Crypt\Crypt', $instance);
-
-        $string = "some test string";
-        $encString = $instance->encrypt($string, "test_key_secret_");
-        $this->assertNotSame($string, $encString);
-
-        $this->assertNotSame($string, $instance->decrypt($encString, "test_key_secret2"));
-        $this->assertSame($string, $instance->decrypt($encString, "test_key_secret_"));
     }
 
 }

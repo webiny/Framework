@@ -63,6 +63,42 @@ class Facebook extends ServerAbstract
     }
 
     /**
+     * This method is called when user is redirected to the redirect_uri from the authorization step.
+     * Here you should process the response from OAuth2 server and extract the access token if possible.
+     * If you cannot get the access token, throw an exception.
+     *
+     * @param array $response Response from the OAuth2 server.
+     *
+     * @throws \Webiny\Component\OAuth2\OAuth2Exception
+     * @return string Access token.
+     */
+    public function processAuthResponse($response)
+    {
+        if (!$this->isArray($response)) {
+            throw new OAuth2Exception('Invalid response while trying to get the access token.');
+        }
+
+        if (isset($response['result']['error'])) {
+            throw new OAuth2Exception($this->jsonEncode($response['result']['error']['message']));
+        }
+
+        parse_str($response['result'], $info);
+
+        return $info['access_token'];
+    }
+
+
+    /**
+     * Returns the server name.
+     *
+     * @return string
+     */
+    public function getServerName()
+    {
+        return 'Facebook';
+    }
+
+    /**
      * Returns an array [url, params].
      * 'url' - holds the destination url for accessing user details on the OAuth2 server.
      * 'params' - an optional array of additional parameters that would be sent together with the request.
@@ -104,30 +140,5 @@ class Facebook extends ServerAbstract
         $user->setServiceName('facebook');
 
         return $user;
-    }
-
-    /**
-     * This method is called when user is redirected to the redirect_uri from the authorization step.
-     * Here you should process the response from OAuth2 server and extract the access token if possible.
-     * If you cannot get the access token, throw an exception.
-     *
-     * @param array $response Response from the OAuth2 server.
-     *
-     * @throws \Webiny\Component\OAuth2\OAuth2Exception
-     * @return string Access token.
-     */
-    public function processAuthResponse($response)
-    {
-        if (!$this->isArray($response)) {
-            throw new OAuth2Exception('Invalid response while trying to get the access token.');
-        }
-
-        if (isset($response['result']['error'])) {
-            throw new OAuth2Exception($this->jsonEncode($response['result']['error']['message']));
-        }
-
-        parse_str($response['result'], $info);
-
-        return $info['access_token'];
     }
 }
