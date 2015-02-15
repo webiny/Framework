@@ -263,6 +263,21 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($array, $a->val());
     }
 
+    public function testRemoveKeys()
+    {
+        $array = [
+            'k1' => 'val',
+            'k2' => null,
+            'k3' => false
+        ];
+        $a = new ArrayObject($array);
+        $a->removeKey(['k2', 'k3']);
+
+        unset($array['k2']);
+        unset($array['k3']);
+        $this->assertSame($array, $a->val());
+    }
+
     /**
      * @dataProvider arraySet1
      */

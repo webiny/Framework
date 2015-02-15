@@ -35,14 +35,14 @@ trait ManipulatorTrait
         $key = StdObjectWrapper::toString($key);
         $array = $this->val();
 
-        if($setOnlyIfDoesntExist && !$this->keyExists($key)) {
+        if ($setOnlyIfDoesntExist && !$this->keyExists($key)) {
             $array[$key] = $value;
             $this->val($array);
 
             return $value;
         } else {
-            if(!$setOnlyIfDoesntExist) {
-                if(!$this->isNull($value)) {
+            if (!$setOnlyIfDoesntExist) {
+                if (!$this->isNull($value)) {
                     $array[$key] = $value;
                     $this->val($array);
 
@@ -68,10 +68,10 @@ trait ManipulatorTrait
         $key = StdObjectWrapper::toString($key);
         $array = $this->val();
 
-        if($setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
-            if(strpos($key, '.') !== false) {
+        if ($setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
+            if (strpos($key, '.') !== false) {
                 $keys = explode('.', trim($key, '.'), 2);
-                if(!isset($array[$keys[0]])) {
+                if (!isset($array[$keys[0]])) {
                     $array[$keys[0]] = [];
                 }
                 $targetArray = new ArrayObject($array[$keys[0]]);
@@ -84,10 +84,10 @@ trait ManipulatorTrait
 
             return $value;
         } else {
-            if(!$setOnlyIfDoesntExist && !$this->isNull($value)) {
-                if(strpos($key, '.') !== false) {
+            if (!$setOnlyIfDoesntExist && !$this->isNull($value)) {
+                if (strpos($key, '.') !== false) {
                     $keys = explode('.', trim($key, '.'), 2);
-                    if(!isset($array[$keys[0]])) {
+                    if (!isset($array[$keys[0]])) {
                         $array[$keys[0]] = [];
                     }
                     $targetArray = new ArrayObject($array[$keys[0]]);
@@ -102,7 +102,7 @@ trait ManipulatorTrait
             }
         }
 
-        if(strpos($key, '.') !== false) {
+        if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
             $targetArray = new ArrayObject($array[$keys[0]]);
 
@@ -126,7 +126,7 @@ trait ManipulatorTrait
     {
         $array = $this->val();
 
-        if(!$this->isNull($v)) {
+        if (!$this->isNull($v)) {
             $array[$k] = $v;
         } else {
             $array[] = $k;
@@ -151,7 +151,7 @@ trait ManipulatorTrait
     {
         $array = $this->val();
 
-        if(!$this->isNull($v)) {
+        if (!$this->isNull($v)) {
             $array = array_reverse($array, true);
             $array[$k] = $v;
             $array = array_reverse($array, true);
@@ -176,7 +176,7 @@ trait ManipulatorTrait
     {
         $array = $this->val();
 
-        if(count(func_get_args()) > 0) {
+        if (count(func_get_args()) > 0) {
             $assign = $this->first()->val();
         }
         array_shift($array);
@@ -197,7 +197,7 @@ trait ManipulatorTrait
     {
         $array = $this->val();
 
-        if(count(func_get_args()) > 0) {
+        if (count(func_get_args()) > 0) {
             $assign = $this->last()->val();
         }
         array_pop($array);
@@ -208,15 +208,23 @@ trait ManipulatorTrait
     }
 
     /**
-     * Remove the element from the array under the given $key.
+     * Remove the element(s) from the array under the given $key.
      *
-     * @param string $key Key that will be removed from the array.
+     * @param string|array $key Key(s) that will be removed from the array.
      *
      * @return $this
      */
     public function removeKey($key)
     {
-        if($this->keyExists($key)) {
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                $this->removeKey($k);
+            }
+
+            return $this;
+        }
+
+        if ($this->keyExists($key)) {
             $array = $this->val();
             unset($array[$key]);
 
@@ -276,16 +284,16 @@ trait ManipulatorTrait
         $case = new StringObject($case);
         $case->caseLower();
         $realCase = '';
-        if($case->equals('lower')) {
+        if ($case->equals('lower')) {
             $realCase = CASE_LOWER;
         } else {
-            if($case->equals('upper')) {
+            if ($case->equals('upper')) {
                 $realCase = CASE_UPPER;
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_PARAM_VALUE_OUT_OF_SCOPE, [
-                        '$case',
-                        '"lower" or "upper"'
-                    ]
+                                                                                                     '$case',
+                                                                                                     '"lower" or "upper"'
+                                                                                                 ]
                 );
             }
         }
@@ -332,27 +340,27 @@ trait ManipulatorTrait
      */
     public function fill($start, $num, $value)
     {
-        if(!$this->isNumber($start)) {
+        if (!$this->isNumber($start)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$start',
-                    'integer'
-                ]
+                                                                                      '$start',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
-        if(!$this->isNumber($num)) {
+        if (!$this->isNumber($num)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$num',
-                    'integer'
-                ]
+                                                                                      '$num',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
-        if($num <= 0) {
+        if ($num <= 0) {
             throw new ArrayObjectException(ArrayObjectException::MSG_PARAM_VALUE_OUT_OF_SCOPE, [
-                    '$num',
-                    'greater than zero'
-                ]
+                                                                                                 '$num',
+                                                                                                 'greater than zero'
+                                                                                             ]
             );
         }
 
@@ -371,15 +379,15 @@ trait ManipulatorTrait
      */
     public function filter($callable = '')
     {
-        if($callable != '' && !$this->isCallable($callable)) {
+        if ($callable != '' && !$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$callable',
-                    'a callable function or method'
-                ]
+                                                                                      '$callable',
+                                                                                      'a callable function or method'
+                                                                                  ]
             );
         }
 
-        if($callable == '') {
+        if ($callable == '') {
             // Filter all values equal to FALSE
             $this->val(array_filter($this->val()));
         } else {
@@ -436,12 +444,12 @@ trait ManipulatorTrait
      */
     public function intersectAssoc($array, $callable = '')
     {
-        if($callable != '') {
-            if(!$this->isCallable($callable)) {
+        if ($callable != '') {
+            if (!$this->isCallable($callable)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$callable',
-                        'a callable function or method'
-                    ]
+                                                                                          '$callable',
+                                                                                          'a callable function or method'
+                                                                                      ]
                 );
             }
 
@@ -465,12 +473,12 @@ trait ManipulatorTrait
      */
     public function intersectKey($array, $callable = '')
     {
-        if($callable != '') {
-            if(!$this->isCallable($callable)) {
+        if ($callable != '') {
+            if (!$this->isCallable($callable)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$callable',
-                        'a callable function or method'
-                    ]
+                                                                                          '$callable',
+                                                                                          'a callable function or method'
+                                                                                      ]
                 );
             }
 
@@ -492,11 +500,11 @@ trait ManipulatorTrait
      */
     public function map($callable)
     {
-        if(!$this->isCallable($callable)) {
+        if (!$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$callable',
-                    'a callable function or method'
-                ]
+                                                                                      '$callable',
+                                                                                      'a callable function or method'
+                                                                                  ]
             );
         }
 
@@ -514,7 +522,7 @@ trait ManipulatorTrait
      */
     public function merge($array)
     {
-        if($this->isInstanceOf($array, $this)) {
+        if ($this->isInstanceOf($array, $this)) {
             $array = $array->val();
         }
 
@@ -533,7 +541,7 @@ trait ManipulatorTrait
      */
     public function mergeRecursive($array)
     {
-        if($this->isInstanceOf($array, $this)) {
+        if ($this->isInstanceOf($array, $this)) {
             $array = $array->val();
         }
 
@@ -560,27 +568,28 @@ trait ManipulatorTrait
      */
     public function mergeSmart($array)
     {
-        if($this->isArray($array)) {
+        if ($this->isArray($array)) {
             $array = new ArrayObject($array);
-        } elseif(!$this->isArrayObject($array)) {
+        } elseif (!$this->isArrayObject($array)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$array',
-                    'ArrayObject or array'
-                ]);
+                '$array',
+                'ArrayObject or array'
+            ]
+            );
         }
 
         /** @var ArrayObject $array */
         foreach ($array as $key => $value) {
-            if(array_key_exists($key, $this->_value)) {
-                if($this->isNumber($key)) {
+            if (array_key_exists($key, $this->_value)) {
+                if ($this->isNumber($key)) {
                     $this->_value[] = $value;
-                } elseif(is_array($value) || $this->isInstanceOf($value, $this)) {
+                } elseif (is_array($value) || $this->isInstanceOf($value, $this)) {
                     $this->_value[$key] = (new self($this->_value[$key]))->mergeSmart($value)->val();
                 } else {
                     $this->_value[$key] = $value;
                 }
             } else {
-                if($this->isInstanceOf($value, $this)) {
+                if ($this->isInstanceOf($value, $this)) {
                     $this->_value[$key] = $value->val();
                 } else {
                     $this->_value[$key] = $value;
@@ -604,11 +613,11 @@ trait ManipulatorTrait
      */
     public function sortUsingFunction($comparisonFunction)
     {
-        if(!is_callable($comparisonFunction)) {
+        if (!is_callable($comparisonFunction)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_ARG, [
-                    '$comparisonFunction',
-                    'callable'
-                ]
+                                                                                    '$comparisonFunction',
+                                                                                    'callable'
+                                                                                ]
             );
         }
 
@@ -634,7 +643,7 @@ trait ManipulatorTrait
     {
         try {
             $arr = $this->val();
-            if($direction == SORT_ASC) {
+            if ($direction == SORT_ASC) {
                 sort($arr, $sortFlag);
             } else {
                 rsort($arr, $sortFlag);
@@ -663,7 +672,7 @@ trait ManipulatorTrait
     {
         try {
             $arr = $this->val();
-            if($direction == SORT_ASC) {
+            if ($direction == SORT_ASC) {
                 asort($arr, $sortFlag);
             } else {
                 arsort($arr, $sortFlag);
@@ -692,7 +701,7 @@ trait ManipulatorTrait
     {
         try {
             $arr = $this->val();
-            if($direction == SORT_DESC) {
+            if ($direction == SORT_DESC) {
                 krsort($arr, $sortFlag);
             } else {
                 ksort($arr, $sortFlag);
@@ -719,16 +728,16 @@ trait ManipulatorTrait
     public function sortField($field, $direction = SORT_ASC, $sortFlag = SORT_NUMERIC)
     {
         // check array
-        if(!$this->isArray($this->first()->val())) {
+        if (!$this->isArray($this->first()->val())) {
             throw new ArrayObjectException(ArrayObjectException::MSG_MULTIDIM_SORT);
         }
 
         // check if key is present in the array
-        if(!$this->first()->key($field)) {
+        if (!$this->first()->key($field)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_VALUE_NOT_PRESENT, [
-                    '$field',
-                    'the current array'
-                ]
+                                                                                          '$field',
+                                                                                          'the current array'
+                                                                                      ]
             );
         }
 
@@ -740,7 +749,7 @@ trait ManipulatorTrait
             $tempArray[$m[$field]][] = $mk;
         }
 
-        if($direction == SORT_DESC) {
+        if ($direction == SORT_DESC) {
             krsort($tempArray, $sortFlag);
         } else {
             ksort($tempArray, $sortFlag);
@@ -798,7 +807,7 @@ trait ManipulatorTrait
             throw new ArrayObjectException($e->getMessage());
         }
 
-        if(!$this->isArray($arr)) {
+        if (!$this->isArray($arr)) {
             $arr = [$arr];
         }
 
@@ -823,20 +832,20 @@ trait ManipulatorTrait
      */
     public function replace($replacements, $recursive = false)
     {
-        if($this->isInstanceOf($replacements, $this)) {
+        if ($this->isInstanceOf($replacements, $this)) {
             $replacements = $replacements->val();
         } else {
-            if(!$this->isArray($replacements)) {
+            if (!$this->isArray($replacements)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$replacements',
-                        'array, ArrayObject'
-                    ]
+                                                                                          '$replacements',
+                                                                                          'array, ArrayObject'
+                                                                                      ]
                 );
             }
         }
 
         try {
-            if($recursive) {
+            if ($recursive) {
                 $arr = array_replace_recursive($this->val(), $replacements);
             } else {
                 $arr = array_replace($this->val(), $replacements);
@@ -875,19 +884,19 @@ trait ManipulatorTrait
      */
     public function slice($offset, $length, $preserveKeys = true)
     {
-        if(!$this->isNumber($offset)) {
+        if (!$this->isNumber($offset)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$offset',
-                    'integer'
-                ]
+                                                                                      '$offset',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
-        if(!$this->isNumber($length)) {
+        if (!$this->isNumber($length)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$length',
-                    'integer'
-                ]
+                                                                                      '$length',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
@@ -914,19 +923,19 @@ trait ManipulatorTrait
      */
     public function splice($offset, $length, $replacement)
     {
-        if(!$this->isNumber($offset)) {
+        if (!$this->isNumber($offset)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$offset',
-                    'integer'
-                ]
+                                                                                      '$offset',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
-        if(!$this->isNumber($length)) {
+        if (!$this->isNumber($length)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    '$length',
-                    'integer'
-                ]
+                                                                                      '$length',
+                                                                                      'integer'
+                                                                                  ]
             );
         }
 
@@ -969,17 +978,17 @@ trait ManipulatorTrait
      */
     public function walk($callable, $recursive = false, $userData = null)
     {
-        if(!$this->isCallable($callable)) {
+        if (!$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                    $callable,
-                    'a callable function or method'
-                ]
+                                                                                      $callable,
+                                                                                      'a callable function or method'
+                                                                                  ]
             );
         }
 
         try {
             $arr = $this->val();
-            if($recursive) {
+            if ($recursive) {
                 array_walk_recursive($arr, $callable, $userData);
             } else {
                 array_walk($arr, $callable, $userData);
@@ -1017,19 +1026,19 @@ trait ManipulatorTrait
      */
     public function diff($array, $compareKeys = false)
     {
-        if($this->isInstanceOf($array, $this)) {
+        if ($this->isInstanceOf($array, $this)) {
             $array = $array->val();
         } else {
-            if(!$this->isArray($array)) {
+            if (!$this->isArray($array)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$array',
-                        'array, ArrayObject'
-                    ]
+                                                                                          '$array',
+                                                                                          'array, ArrayObject'
+                                                                                      ]
                 );
             }
         }
 
-        if($compareKeys) {
+        if ($compareKeys) {
             $this->val(array_diff_assoc($this->val(), $array));
 
             return $this;
@@ -1051,14 +1060,14 @@ trait ManipulatorTrait
      */
     public function diffKeys($array)
     {
-        if($this->isInstanceOf($array, $this)) {
+        if ($this->isInstanceOf($array, $this)) {
             $array = $array->val();
         } else {
-            if(!$this->isArray($array)) {
+            if (!$this->isArray($array)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                        '$array',
-                        'array, ArrayObject'
-                    ]
+                                                                                          '$array',
+                                                                                          'array, ArrayObject'
+                                                                                      ]
                 );
             }
         }

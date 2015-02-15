@@ -112,7 +112,6 @@ class DateTimeObject extends StdObjectAbstract
      *                                              timezones: http://php.net/manual/en/timezones.php
      *
      * @throws DateTimeObjectException
-     * @internal param mixed $value
      */
     public function __construct($time = "now", $timezone = null)
     {
