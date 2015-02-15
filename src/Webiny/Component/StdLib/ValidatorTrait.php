@@ -186,6 +186,18 @@ trait ValidatorTrait
     }
 
     /**
+     * Checks if $var is readable.
+     *
+     * @param $var
+     *
+     * @return bool
+     */
+    protected static function isReadable($var)
+    {
+        return is_readable($var);
+    }
+
+    /**
      * Checks if $var is a directory.
      *
      * @param $var
