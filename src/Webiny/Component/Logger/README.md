@@ -41,16 +41,20 @@ Logger:
         Logger.Processor.MemoryUsage.Class: \Webiny\Component\Logger\Driver\Webiny\Processor\MemoryUsageProcessor
         Logger.Formatter.File.Class: \Webiny\Component\Logger\Driver\Webiny\Formatter\FileFormatter
         Logger.Handlers.File.Class: \Webiny\Component\Logger\Driver\Webiny\Handler\FileHandler
-        Logger.LogFile: /var/log/WebinyFileLogger.log
     Services:
         MyFileLogger:
             Class: %Logger.Class%
             Arguments: [System, %Logger.Driver.Class%]
             Calls:
                 - [addHandler, [@Logger.LogHandler]]
+        LogFile:
+            Class: \Webiny\Component\Storage\File\LocalFile
+            Arguments:
+                Key: Development/Log.txt
+                Storage: @Storage.Logger # Define this service in your Storage configuration
         LogHandler:
             Class: %Logger.Handlers.File.Class%
-            Arguments: [%Logger.LogFile%, [], true, false]
+            Arguments: [@Logger.LogFile, [], true, false]
             Calls:
                 - [addProcessor, [%Logger.Processor.FileLine.Class%]]
                 - [addProcessor, [%Logger.Processor.MemoryUsage.Class%]]
@@ -64,6 +68,9 @@ Logger:
     ClassLoader:
         Psr: '../Psr'
 ```
+
+NOTE: `FileHandler` in our example (LogHandler service) takes a `LocalFile` as first argument. We can only write to files
+using `Storage` component, so we need a service which provides us with a `LocalFile` instance.
 
 To use your logger in PHP:
 
