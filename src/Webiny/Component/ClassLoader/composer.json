@@ -17,13 +17,14 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.5.9"
 	},
 	"suggest": {
 		"webiny/cache": "Install Webiny Cache component to add caching features to ClassLoader."
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4",
+		"webiny/cache": "~1.1",
 		"mybuilder/phpunit-accelerator": "dev-master"
 	},
 	"autoload": {
@@ -33,7 +34,7 @@
 	},
 	"extras": {
 		"branch-alias": {
-			"dev-master": "1.1-dev"
+			"dev-master": "1.2-dev"
 		}
 	}
 }

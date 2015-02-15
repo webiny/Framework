@@ -7,8 +7,6 @@
 
 namespace Webiny\Component\Mailer\Tests\Bridge\SwiftMailer;
 
-
-use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\Mailer\Bridge\SwiftMailer\Message;
 use Webiny\Component\Storage\Driver\Local\Local;
 use Webiny\Component\Storage\File\LocalFile;

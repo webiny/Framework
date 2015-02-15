@@ -15,7 +15,7 @@ Http:
             ExpireTime: 86400
     TrustedProxies: ['192.168.1.9', '192.168.1.128', '127.0.0.1']
     TrustedHeaders:
-        # note the case, they must be matched to request headers
+        # note the case, they must match the request headers
         client_ip: 'X_FORWARDED_FOR'
         client_host: 'X_FORWARDED_HOST'
         client_proto: 'X_FORWARDED_PROTO'
