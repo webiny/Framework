@@ -157,7 +157,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
     public function testGetConfig()
     {
         OAuth2::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
-        $this->assertSame('\Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2', OAuth2::getConfig()->Bridge);
+        $this->assertSame('\Webiny\Component\OAuth2\Bridge\League\OAuth2', OAuth2::getConfig()->Bridge);
         $this->assertSame(123, OAuth2::getConfig()->Facebook->ClientId);
     }
 
