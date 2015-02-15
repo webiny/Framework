@@ -16,7 +16,14 @@ namespace Webiny\Component\Crypt\Bridge;
 interface CryptInterface
 {
 
-    function __construct($passwordAlgo, $cipherMode, $cipherBlock, $cipherInitVector);
+    /**
+     * Base constructor
+     *
+     * @param string $passwordAlgo Password hashing algorithm.
+     * @param string $cipherMode   Cipher mode.
+     * @param string $cipherBlock  Cipher block size.
+     */
+    function __construct($passwordAlgo, $cipherMode, $cipherBlock);
 
     // randoms
     /**
@@ -87,11 +94,10 @@ interface CryptInterface
      *
      * @param string      $string               The string you want to encrypt.
      * @param string      $key                  The secret key that will be used to encrypt the string.
-     * @param string|null $initializationVector Initialization vector for the encryption.
      *
      * @return string Encrypted string.
      */
-    function encrypt($string, $key, $initializationVector = null);
+    function encrypt($string, $key);
 
     /**
      * Decrypt a string that has been encrypted with the 'encrypt' method.
@@ -100,9 +106,8 @@ interface CryptInterface
      *
      * @param string      $string               The string you want to decrypt.
      * @param string      $key                  The secret key that was used to encrypt the $string.
-     * @param string|null $initializationVector Initialization vector for the encryption.
      *
      * @return string Decrypted string.
      */
-    function decrypt($string, $key, $initializationVector = null);
+    function decrypt($string, $key);
 }

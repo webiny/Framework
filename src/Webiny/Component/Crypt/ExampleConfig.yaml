@@ -11,16 +11,11 @@ Crypt:
     Services:
         Password:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [Blowfish, CCM, rijndael-128, _FOO_VECTOR]
         Cookie:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [Blowfish, CCM, rijndael-128, _FOO_VECTOR]
+            Arguments: [$2y$, ecb, rijndael-128]
     # You can overwrite the default driver by providing your own.
     # How to create a new driver, read in the Readme.md file.
     # If you don't wish to change the default driver,
     # just ommit this definition in your config file.
-    Bridge: \Webiny\Component\Crypt\Bridge\CryptLib\CryptLib
-    # Entries under ClassLoader are automatically registered
-    # with ClassLoader. You don't need this part if you are using Composer autoload.
-    ClassLoader:
-        CryptLib: /var/www/Vendors/PHP-CryptLib/lib/CryptLib
+    Bridge: \Webiny\Component\Crypt\Bridge\Webiny\Crypt

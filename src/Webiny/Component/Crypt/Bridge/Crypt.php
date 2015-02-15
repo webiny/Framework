@@ -24,7 +24,7 @@ class Crypt
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\Crypt\Bridge\CryptLib\CryptLib';
+    private static $_library = '\Webiny\Component\Crypt\Bridge\Webiny\Crypt';
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -51,20 +51,19 @@ class Crypt
      * Create an instance of a crypt driver.
      *
      *
-     * @param $passwordAlgo
-     * @param $cipherMode
-     * @param $cipherBlock
-     * @param $cipherInitVector
+     * @param string $passwordAlgo Password hashing algorithm.
+     * @param string $cipherMode   Cipher mode.
+     * @param string $cipherBlock  Cipher block size.
      *
      * @throws \Webiny\Component\StdLib\Exception\Exception
      * @return CryptInterface
      */
-    static function getInstance($passwordAlgo, $cipherMode, $cipherBlock, $cipherInitVector)
+    static function getInstance($passwordAlgo, $cipherMode, $cipherBlock)
     {
         $driver = static::_getLibrary();
 
         try {
-            $instance = new $driver($passwordAlgo, $cipherMode, $cipherBlock, $cipherInitVector);
+            $instance = new $driver($passwordAlgo, $cipherMode, $cipherBlock);
         } catch (\Exception $e) {
             throw new Exception('Unable to create an instance of ' . $driver);
         }

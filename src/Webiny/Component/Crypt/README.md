@@ -83,12 +83,11 @@ Example config:
 ```yaml
 Crypt:
     Services:
-        MyServiceExplanation:
-            Class: \Webiny\Component\Crypt\Crypt # path to crypt class
-            Arguments: [{$passwordAlgo}, {$cipherMode}, {$cipherBlock}, {$initializationVector}] # service structure
-        FooCryptService:
+        Password:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [Blowfish, CCM, rijndael-128, _FOO_VECTOR]
+        Cookie:
+            Class: \Webiny\Component\Crypt\Crypt
+            Arguments: [$2y$, ecb, rijndael-128]
 ```
 
 ## About
