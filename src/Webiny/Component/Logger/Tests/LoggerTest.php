@@ -11,6 +11,7 @@ namespace Webiny\Component\Logger\Tests;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Logger\Logger;
 use Webiny\Component\Logger\LoggerTrait;
+use Webiny\Component\Storage\Storage;
 
 class LoggerTest extends PHPUnit_Framework_TestCase
 {
@@ -31,7 +32,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
      */
     function testLogger(Logger $logger)
     {
-        $fileLocation = Logger::getConfig()->Parameters['Logger.LogFile'];
+        $fileLocation = '/var/www/projects/webiny/Vendors/src/Webiny/Component/Logger/Tests/UnitTest.log';
         $logger->error('Test error message!', ['customValue' => 'Webiny']);
         $this->assertFileExists($fileLocation);
         $logContents = file_get_contents($fileLocation);
@@ -44,11 +45,12 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(strpos($logContents, 'line') !== false);
         // Make sure MemoryUsageProcessor was triggered
         $this->assertTrue(strpos($logContents, 'memoryUsage') !== false);
-        unlink($fileLocation);
+        @unlink($fileLocation);
     }
 
     function DriverSet()
     {
+        Storage::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
         Logger::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
 
         return [

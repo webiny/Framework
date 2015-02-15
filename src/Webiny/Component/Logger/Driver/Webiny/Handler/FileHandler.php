@@ -8,8 +8,11 @@
 namespace Webiny\Component\Logger\Driver\Webiny\Handler;
 
 use Webiny\Component\Logger\Driver\Webiny\Formatter\FileFormatter;
+use Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterAbstract;
 use Webiny\Component\Logger\Driver\Webiny\Record;
 use Webiny\Component\Logger\LoggerException;
+use Webiny\Component\StdLib\StdObject\StdObjectException;
+use Webiny\Component\Storage\File\LocalFile;
 
 /**
  * FileHandler class stores log messages to log file
@@ -18,9 +21,12 @@ use Webiny\Component\Logger\LoggerException;
  */
 class FileHandler extends HandlerAbstract
 {
+    /**
+     * @var LocalFile
+     */
     private $_file;
 
-    public function __construct($file, $levels = [], $bubble = true, $buffer = false)
+    public function __construct(LocalFile $file, $levels = [], $bubble = true, $buffer = false)
     {
         parent::__construct($levels, $bubble, $buffer);
         try {
@@ -40,7 +46,7 @@ class FileHandler extends HandlerAbstract
      */
     protected function write(Record $record)
     {
-        file_put_contents($this->_file, $record->getFormattedRecord(), FILE_APPEND);
+        $this->_file->setContents($record->getFormattedRecord(), true);
     }
 
     /**

@@ -1,12 +1,12 @@
-#################################
-# Logger - example configuration #
-#################################
-
-# This is an example definition of Logger service.
-# In order to use Logger, you first must call Logger::setConfig($pathToYourConfig),
-# and then just use the LoggerTrait (eg. $this->logger('Webiny'))
-#
-#
+Storage:
+    Services:
+        Logger:
+            Class: \Webiny\Component\Storage\Storage
+            Arguments:
+                Driver:
+                    Object: \Webiny\Component\Storage\Driver\Local\Local
+                    ObjectArguments:
+                        - __DIR__ # Absolute root path
 Logger:
     Parameters:
         Logger.Class: \Webiny\Component\Logger\Logger
@@ -15,16 +15,20 @@ Logger:
         Logger.Processor.MemoryUsage.Class: \Webiny\Component\Logger\Driver\Webiny\Processor\MemoryUsageProcessor
         Logger.Formatter.File.Class: \Webiny\Component\Logger\Driver\Webiny\Formatter\FileFormatter
         Logger.Handlers.File.Class: \Webiny\Component\Logger\Driver\Webiny\Handler\FileHandler
-        Logger.LogFile: /var/www/projects/webiny/Vendors/Webiny/Component/Logger/Tests/UnitTest.log
     Services:
         Webiny:
             Class: %Logger.Class%
             Arguments: [System, %Logger.Driver.Class%]
             Calls:
                 - [addHandler, [@Logger.LogHandler]]
+        LogFile:
+            Class: \Webiny\Component\Storage\File\LocalFile
+            Arguments:
+                Key: UnitTest.log
+                Storage: @Storage.Logger # Define this service in your Storage configuration
         LogHandler:
             Class: %Logger.Handlers.File.Class%
-            Arguments: [%Logger.LogFile%, [], true, false]
+            Arguments: [@Logger.LogFile, [], true, false]
             Calls:
                 - [addProcessor, [%Logger.Processor.FileLine.Class%]]
                 - [addProcessor, [%Logger.Processor.MemoryUsage.Class%]]
