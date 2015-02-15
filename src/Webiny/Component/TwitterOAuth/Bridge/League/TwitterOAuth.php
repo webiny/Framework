@@ -5,20 +5,20 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth;
+namespace Webiny\Component\TwitterOAuth\Bridge\League;
 
+use League\OAuth1\Client\Credentials\TemporaryCredentials;
 use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface;
 
 /**
- * Bridge for TwitterOAuth library by Abraham Williams (https://github.com/abraham/twitteroauth)
+ * Bridge for TwitterOAuth library by The PHP League (http://thephpleague.com/)
  *
  * @package         Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth
  */
 class TwitterOAuth implements TwitterOAuthInterface
 {
-
     /**
-     * @var null|\TwitterOAuth
+     * @var null|\
      */
     private $_instance = null;
 
@@ -50,7 +50,12 @@ class TwitterOAuth implements TwitterOAuthInterface
         $this->_clientSecret = $clientSecret;
         $this->_redirectUri = $redirectUri;
 
-        $this->_instance = new \Abraham\TwitterOAuth\TwitterOAuth($clientId, $clientSecret);
+        $this->_instance = new \League\OAuth1\Client\Server\Twitter([
+                                                                        'identifier'   => $clientId,
+                                                                        'secret'       => $clientSecret,
+                                                                        'callback_uri' => $redirectUri,
+                                                                    ]
+        );
     }
 
     /**
@@ -85,44 +90,17 @@ class TwitterOAuth implements TwitterOAuthInterface
     }
 
     /**
-     * Get the request token.
+     * Get the request token (temporary credentials).
      *
-     * @return string Request token.
+     * @return array Request token [oauth_token, oauth_token_secret].
      */
     public function getRequestToken()
     {
-        return $this->_instance->getRequestToken($this->getRedirectUri());
-    }
-
-    /**
-     * Get the response code in http format.
-     * Example return: 200
-     *
-     * @return int Response code.
-     */
-    public function getResponseCode()
-    {
-        return $this->_instance->http_code;
-    }
-
-    /**
-     * Get the \TwitterOAuth instance.
-     *
-     * @return null|\Abraham\TwitterOAuth\TwitterOAuth
-     */
-    public function getDriverInstance()
-    {
-        return $this->_instance;
-    }
-
-    /**
-     * Set \TwitterOAuth instance.
-     *
-     * @param \Abraham\TwitterOAuth\TwitterOAuth $instance
-     */
-    public function setDriverInstance(\Abraham\TwitterOAuth\TwitterOAuth $instance)
-    {
-        $this->_instance = $instance;
+        $credentials = $this->_instance->getTemporaryCredentials();
+        return [
+          'oauth_token'         => $credentials->getIdentifier(),
+          'oauth_token_secret'  => $credentials->getSecret()
+        ];
     }
 
     /**
@@ -134,7 +112,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getAuthorizeUrl($requestToken)
     {
-        return $this->_instance->getAuthorizeURL($requestToken);
+        return $this->_instance->getAuthorizationUrl($requestToken);
     }
 
     /**
@@ -147,9 +125,11 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function authorize($token, $tokenSecret)
     {
-        $this->_instance = new \Abraham\TwitterOAuth\TwitterOAuth($this->getClientId(), $this->getClientSecret(),
-                                                                  $token, $tokenSecret
-        );
+        $ti = new TemporaryCredentials();
+        $ti->setIdentifier($token);
+        $ti->setSecret($tokenSecret);
+
+        return $this->_instance->authorize($ti);
     }
 
     /**
@@ -164,36 +144,26 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getAccessToken($verifier)
     {
-        return $this->_instance->getAccessToken($verifier);
+        $ti = $this->_instance->getTemporaryCredentials();
+
+        return $this->_instance->getTokenCredentials($this->_instance->getTemporaryCredentials(), $ti->getIdentifier(), $verifier);
     }
 
     /**
      * Sets the access token.
+     * Should throw an exception if it's unable to set the access token.
      *
      * @param array $accessToken Array[oauth_token, oauth_token_secret]
      *
-     * @throws TwitterOAuthException
      * @return void
      */
     public function setAccessToken(array $accessToken)
     {
-        // check keys
-        if (!isset($accessToken['oauth_token']) || !isset($accessToken['oauth_token_secret'])) {
-
-            throw new TwitterOAuthException('All required keys must be present inside the token array. The requested keys are [oauth_token, oauth_token_secret].'
-            );
-
-        }
-
-        $this->_instance = new \Abraham\TwitterOAuth\TwitterOAuth($this->getClientId(), $this->getClientSecret(),
-                                                                  $accessToken['oauth_token'],
-                                                                  $accessToken['oauth_token_secret']
-        );
-
+        return $this->authorize($accessToken['oauth_token'], $accessToken['oauth_token_secret']);
     }
 
     /**
-     * GET wrapper for oAuthRequest.
+     * Make a GET request to Twitter API.
      *
      * @param string $url    Api url.
      * @param array $headers Request headers.
@@ -201,23 +171,24 @@ class TwitterOAuth implements TwitterOAuthInterface
      *
      * @return string|array Api response (if json) it will be returned as array.
      */
-    public function get($url, array $headers = [], array $params = [])
+    public function get($url,  array $headers = [], array $params = [])
     {
-        return $this->_instance->get($url, $params);
+        return $this->_instance->createHttpClient()->get($url, $headers, $params);
     }
 
     /**
      * Make a POST request to Twitter API.
      *
      * @param string $url    Api url.
+     * @param array $postBody Post body.
      * @param array $headers Request headers.
      * @param array  $params Additional parameters.
      *
      * @return string|array Api response (if json) it will be returned as array.
      */
-    public function post($url, array $headers = [], array $params = [])
+    public function post($url, array $postBody, array $headers = [], array $params = [])
     {
-        return $this->_instance->post($url, $params);
+        return $this->_instance->createHttpClient()->post($url, $headers, $postBody, $params);
     }
 
     /**
@@ -231,6 +202,6 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function delete($url, array $headers = [], array $params = [])
     {
-        return $this->_instance->delete($url, $params);
+        return $this->_instance->createHttpClient()->delete($url, $headers, $params);
     }
 }
