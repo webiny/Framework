@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="../../../../vendor/autoload.php"
+         bootstrap="vendor/autoload.php"
         >
     <listeners>
         <listener class="\MyBuilder\PhpunitAccelerator\TestListener"/>
