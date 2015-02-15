@@ -48,12 +48,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     private $_cacheKey = null;
 
     /**
-     * File resource that was used to build this config data
-     * @var string|StringObject|FileObject|null
-     */
-    private $_fileResource = null;
-
-    /**
      * @var null|string
      */
     private $_resourceType = null;
@@ -154,7 +148,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __construct($resource, $cache = true)
     {
-
         $driverAbstractClassName = '\Webiny\Component\Config\Drivers\DriverAbstract';
         $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
 
@@ -176,11 +169,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } else {
             $originalResource = $resource;
         }
-
-        $this->_resourceType = self::determineResourceType($originalResource);
-        if ($this->_resourceType == self::FILE_RESOURCE) {
-            $this->_fileResource = $originalResource;
-        }
+        
+        $this->_resourceType = $this->determineResourceType($originalResource);
 
         // Build internal data array from array resource
         $this->_buildInternalData($resource);
@@ -377,13 +367,15 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public static function determineResourceType($resource)
     {
-        if (self::isArray($resource) || self::isArrayObject($resource)) {
+        if (self::isArray($resource)) {
             return self::ARRAY_RESOURCE;
-        } elseif (self::isFile($resource) || self::isFileObject($resource)) {
+        } elseif (self::isFile($resource)) {
             return self::FILE_RESOURCE;
-        } elseif (self::isString($resource) || self::isStringObject($resource)) {
+        } elseif (self::isString($resource)) {
             return self::STRING_RESOURCE;
         }
+        
+        die(print_r($resource));
         throw new ConfigException("Given ConfigObject resource is not allowed!");
     }
 
@@ -465,7 +457,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     {
         $data = [
             'data'         => [],
-            'fileResource' => $this->_fileResource,
             'resourceType' => $this->_resourceType,
             'driverClass'  => $this->_driverClass,
             'cacheKey'     => $this->_cacheKey
@@ -479,7 +470,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     {
         $data = unserialize($string);
         $this->_cacheKey = $data['cacheKey'];
-        $this->_fileResource = $data['fileResource'];
         $this->_driverClass = $data['driverClass'];
         $this->_resourceType = $data['resourceType'];
         $this->_data = new ArrayObject($data['data']);

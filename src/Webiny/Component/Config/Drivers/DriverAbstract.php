@@ -15,6 +15,7 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObject\StdObjectException;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
+use Webiny\Component\StdLib\StdObject\StringObject\StringObjectException;
 
 /**
  * Abstract Driver class
@@ -48,10 +49,46 @@ abstract class DriverAbstract
      * Create config driver instance
      *
      * @param null $resource Resource for driver
+     *
+     * @throws ConfigException
+     * @throws StringObjectException
      */
     public function __construct($resource = null)
     {
-        $this->_resource = $this->_normalizeResource($resource);
+        $this->_resource = $resource;
+
+        if (self::isNull($this->_resource) || !$this->_resource) {
+            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.'
+            );
+        }
+
+        if($this->isStdObject($resource)){
+            $this->_resource = $resource->val();
+        }
+
+        if ($this->isArray($this->_resource)) {
+            return;
+        }
+
+        /**
+         * Perform string checks
+         */
+        if ($this->str($this->_resource)->trim()->length() == 0) {
+            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
+            );
+        }
+
+        /**
+         * If it's a file - get its contents
+         */
+        if ($this->_isFilepath($this->_resource)) {
+            if (!$this->isFile($this->_resource)) {
+                throw new ConfigException('Invalid config file path given!');
+            }
+            $path = dirname($this->_resource);
+            $this->_resource = file_get_contents($this->_resource);
+            $this->_resource = str_replace('__DIR__', $path, $this->_resource);
+        }
     }
 
     /**
@@ -62,8 +99,6 @@ abstract class DriverAbstract
      */
     final public function getString()
     {
-        $this->_validateResource();
-
         $res = $this->_getString();
         if (!$this->isString($res) && !$this->isStringObject($res)) {
             throw new ConfigException('DriverAbstract method _getString() must return string or StringObject.');
@@ -80,16 +115,11 @@ abstract class DriverAbstract
      */
     final public function getArray()
     {
-
-        try {
-            $this->_validateResource();
-        } catch (StdObjectException $e) {
-            throw new ConfigException($e->getMessage());
-        }
-
         $res = $this->_getArray();
         if (!$this->isArray($res) && !$this->isArrayObject($res)) {
-            throw new ConfigException('DriverAbstract method _getArray() must return array or ArrayObject.');
+            $errorMessage = 'DriverAbstract method _getArray() must return array or ArrayObject.';
+            $errorMessage .= ' Make sure you have provided a valid config file path with file extension.';
+            throw new ConfigException($errorMessage);
         }
 
         return StdObjectWrapper::toArray($res);
@@ -97,81 +127,24 @@ abstract class DriverAbstract
 
     /**
      * Get driver resource
-     * @return mixed Driver resource (can be: string, array, StringObject, ArrayObject, FileObject)
+     * @return mixed Driver resource (can be: string, array, StringObject, ArrayObject)
      */
     final public function getResource()
+
     {
         return $this->_resource;
     }
 
-    /**
-     * Set driver resource
-     *
-     * @param mixed $resource Driver resource (can be: string, array, StringObject, ArrayObject, FileObject)
-     *
-     * @return $this
-     */
-    final public function setResource($resource)
+    private function _isFilepath($string)
     {
-        $this->_resource = $this->_normalizeResource($resource);
-
-        return $this;
-    }
-
-    /**
-     * Validate given config resource and throw ConfigException if it's not valid
-     * @throws ConfigException
-     */
-    protected function _validateResource()
-    {
-        if (self::isNull($this->_resource)) {
-            throw new ConfigException('Config resource can not be NULL! Please provide a valid file path, config string or PHP array.');
+        if (!$this->isString($string)) {
+            return false;
         }
 
-        if ($this->isArray($this->_resource)) {
+        if (preg_match('/^([\w+-\/]+\.[a-z]{3,4}|[\w+]:\\[\w+-\\]+\.[a-z]{3,4})$/m', $string)) {
             return true;
         }
 
-        /**
-         * Perform string checks
-         */
-        if ($this->str($this->_resource)->trim()->length() == 0) {
-            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
-        }
-
-        /**
-         * A very weak attempt to check if it's a valid file path
-         * Valid file path should not contain any spaces
-         *
-         * NOTE: Not a very reliable check. No regex can reliably match it either, so for now we stick with this.
-         * The point here is to determine if it's a file without doing is_file() or is_readable(), because what we want to
-         * do is provide the best possible exception messages to the developer. Config resource can also be just a string
-         * which is perfectly fine so we need a string-based check.
-         *
-         * If you have better ideas - let us know or contribute directly to the source at github.
-         */
-        if (!$this->str($this->_resource)->trim()->containsAny([' '])) {
-            if (dirname($this->_resource) == '.' || !file_exists($this->_resource)) {
-                throw new ConfigException('Config resource file does not exist!');
-            }
-        }
+        return false;
     }
-
-    /**
-     * Normalize resource value
-     *
-     * @param mixed $resource
-     *
-     * @return mixed Normalized resource value
-     */
-    private function _normalizeResource($resource)
-    {
-        // Convert resource to native PHP type
-        if ($this->isStdObject($resource)) {
-            return $resource->val();
-        }
-
-        return $resource;
-    }
-
 }

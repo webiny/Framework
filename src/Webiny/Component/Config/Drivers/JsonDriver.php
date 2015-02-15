@@ -37,13 +37,7 @@ class JsonDriver extends DriverAbstract
             return $this->_resource;
         }
 
-        if (file_exists($this->_resource)) {
-            $config = file_get_contents($this->_resource);
-        } else {
-            $config = $this->_resource;
-        }
-
-        return $this->_parseJsonString($config);
+        return $this->_parseJsonString($this->_resource);
     }
 
     /**

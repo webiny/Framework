@@ -42,9 +42,9 @@ class YamlDriver extends DriverAbstract
     {
         if (!$this->isNumber($indent)) {
             throw new ConfigException(ConfigException::MSG_INVALID_ARG, [
-                    '$indent',
-                    'integer'
-                ]
+                                                                          '$indent',
+                                                                          'integer'
+                                                                      ]
             );
         }
         $this->_indent = $indent;
@@ -72,7 +72,7 @@ class YamlDriver extends DriverAbstract
     {
         try {
             return $this->_yaml->setResource($this->_resource)->getArray();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ConfigException($e->getMessage());
         }
     }

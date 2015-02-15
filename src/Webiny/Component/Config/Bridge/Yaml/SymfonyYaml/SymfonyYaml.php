@@ -72,12 +72,10 @@ class SymfonyYaml implements YamlInterface
      */
     private function _parseResource()
     {
-        if ($this->isArray($this->_resource) || $this->isArrayObject($this->_resource)) {
+        if ($this->isArray($this->_resource)) {
             return StdObjectWrapper::toArray($this->_resource);
-        } elseif ($this->isFile($this->_resource)) {
-            return Yaml::parse(file_get_contents($this->_resource));
-        } elseif ($this->isString($this->_resource) || $this->isStringObject($this->_resource)) {
-            return Yaml::parse(StdObjectWrapper::toString($this->_resource));
+        } elseif ($this->isString($this->_resource)) {
+            return Yaml::parse($this->_resource);
         } elseif ($this->isInstanceOf($this->_resource, 'Webiny\Component\Config\ConfigObject')) {
             return $this->_resource->toArray();
         }

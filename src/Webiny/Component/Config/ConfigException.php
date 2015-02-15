@@ -18,12 +18,5 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  */
 class ConfigException extends ExceptionAbstract
 {
-    const COULD_NOT_SAVE_CONFIG_FILE = 101;
-    const CONFIG_FILE_DOES_NOT_EXIST = 102;
-
-    protected static $_messages = [
-        101 => 'Could not save config file.',
-        102 => 'Invalid $destination argument! File does not exist.'
-    ];
 
 }

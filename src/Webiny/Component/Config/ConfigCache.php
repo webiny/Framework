@@ -71,10 +71,8 @@ class ConfigCache
             case ConfigObject::ARRAY_RESOURCE:
                 return self::str(json_encode($resource))->md5()->val();
             case ConfigObject::STRING_RESOURCE:
-                return self::str($resource)->md5()->val();
-            // Default means it's a ConfigObject::FILE_RESOURCE
             default:
-                return self::str(StdObjectWrapper::toString($resource))->md5()->val();
+                return self::str($resource)->md5()->val();
         }
     }
 
@@ -88,7 +86,7 @@ class ConfigCache
      */
     private static function _isMd5($md5)
     {
-        if (!self::isString($md5) && !self::isStringObjecT($md5)) {
+        if (!self::isString($md5) && !self::isStringObject($md5)) {
             return false;
         }
 

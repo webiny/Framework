@@ -7,8 +7,6 @@
 
 namespace Webiny\Component\Config\Drivers;
 
-use Webiny\Component\Config\ConfigException;
-
 /**
  * PhpDriver is responsible for parsing PHP config files and returning a config array.
  *
@@ -35,27 +33,15 @@ class PhpDriver extends DriverAbstract
     {
         if ($this->isArray($this->_resource)) {
             return $this->_resource;
-        } else {
-            return include $this->_resource;
-        }
-    }
-
-    /**
-     * Validate given config resource and throw ConfigException if it's not valid
-     * @throws ConfigException
-     */
-    protected function _validateResource()
-    {
-        // If array - it's a valid resource
-        if ($this->isArray($this->_resource)) {
-            return true;
         }
 
-        // If it's a string - make sure it's a valid file
-        if ($this->isString($this->_resource) && file_exists($this->_resource)) {
-            return true;
-        }
+        $resource = $this->str($this->_resource);
+        $resource->replace([
+                               '<?php',
+                               '<?'
+                           ], ''
+        );
 
-        throw new ConfigException('PHP Config resource must be a valid file path or PHP array.');
+        return eval($resource);
     }
 }

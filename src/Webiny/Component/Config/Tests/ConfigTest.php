@@ -9,12 +9,13 @@ namespace Webiny\Component\Config\Tests;
 
 
 use Webiny\Component\Config\Config;
+use Webiny\Component\Config\ConfigException;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     function testYamlConfig()
     {
-        $yamlConfig = realpath(__DIR__ . '/Configs/config.yaml');
+        $yamlConfig = __DIR__ . '/Configs/config.yaml';
         $config = Config::getInstance()->yaml($yamlConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('Royal Oak', $config->get('bill-to.address.city'));
@@ -22,7 +23,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     function testJsonConfig()
     {
-        $jsonConfig = realpath(__DIR__ . '/Configs/config.json');
+        $jsonConfig = __DIR__ . '/Configs/config.json';
         $config = Config::getInstance()->json($jsonConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('Webiny', $config->get('website.name'));
@@ -33,7 +34,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     function testMissingFile()
     {
-        $jsonConfig = realpath(__DIR__ . '/Configs/configMissing.json');
+        $jsonConfig = __DIR__ . '/Configs/configMissing.json';
         Config::getInstance()->json($jsonConfig);
     }
 
@@ -42,13 +43,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     function testInvalidFilePath()
     {
-        $jsonConfig = realpath(__DIR__ . '/Configs');
+        $jsonConfig = __DIR__ . '/Configs';
         Config::getInstance()->json($jsonConfig);
     }
 
     function testPhpConfig()
     {
-        $phpConfig = realpath(__DIR__ . '/Configs/config.php');
+        $phpConfig = __DIR__ . '/Configs/config.php';
         $config = Config::getInstance()->php($phpConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('www.webiny.com', $config->get('default.url'));
@@ -56,7 +57,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     function testIniConfig()
     {
-        $iniConfig = realpath(__DIR__ . '/Configs/config.ini');
+        $iniConfig = __DIR__ . '/Configs/config.ini';
         $config = Config::getInstance()->ini($iniConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('coolProperty', $config->group2->newProperty);
