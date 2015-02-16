@@ -381,12 +381,11 @@ class Request
      */
     public function getConnectionPort()
     {
-        $remoteAddress = $this->server()->remoteAddress();
+        $host = $this->str($this->server()->httpHost());
 
-        $port = $this->server()->serverPort();
-        $fwdPort = $this->server()->get($this->getTrustedHeaders()['client_port']);
-        if ($fwdPort && $fwdPort != '' && in_array($remoteAddress, $this->getTrustedProxies())) {
-            $port = $fwdPort;
+        $port = 80;
+        if($host->contains(':')){
+            $port = $host->explode(':')->last();
         }
 
         return $port;
