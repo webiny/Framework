@@ -367,6 +367,10 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public static function determineResourceType($resource)
     {
+        if(self::isStdObject($resource)){
+            $resource = $resource->val();
+        }
+
         if (self::isArray($resource)) {
             return self::ARRAY_RESOURCE;
         } elseif (self::isFile($resource)) {
