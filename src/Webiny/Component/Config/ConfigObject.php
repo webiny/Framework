@@ -375,7 +375,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
             return self::STRING_RESOURCE;
         }
         
-        die(print_r($resource));
         throw new ConfigException("Given ConfigObject resource is not allowed!");
     }
 
