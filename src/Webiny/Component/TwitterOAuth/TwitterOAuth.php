@@ -71,46 +71,40 @@ class TwitterOAuth
     /**
      * Once we have token, we can run the authorization which than give us the option to request the access token.
      *
-     * @param string $token
-     * @param string $tokenSecret
+     * @param string $requestToken       Request token returned by getRequestToken method.
+     * @param string $requestTokenSecret Request token secret returned by getRequestToken method.
+     * @param string $oauthToken         OAuth token returned by Twitter OAuth server.
+     * @param string $oauthTokenVerifier OAuth token verifier returned by Twitter OAuth server.
      *
-     * @return void
+     * @return string
      */
-    public function authorize($token, $tokenSecret)
+    public function requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier)
     {
-        $this->_instance->authorize($token, $tokenSecret);
-    }
-
-    /**
-     * Get the access token.
-     *
-     * @param string $verifier Token verifier.
-     *
-     * @return array ["oauth_token" => "the-access-token",
-     *                "oauth_token_secret" => "the-access-secret",
-     *                "user_id" => "5555",
-     *                "screen_name" => "WebinyPlatform"]
-     */
-    public function getAccessToken($verifier)
-    {
-        return $this->_instance->getAccessToken($verifier);
+        return $this->_instance->requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier
+        );
     }
 
     /**
      * Sets the access token.
+     * Should throw an exception if it's unable to set the access token.
      *
      * @param array $accessToken Array[oauth_token, oauth_token_secret]
      *
-     * @throws TwitterOAuthException
      * @return void
      */
     public function setAccessToken(array $accessToken)
     {
-        try {
-            $this->_instance->setAccessToken($accessToken);
-        } catch (\Exception $e) {
-            throw new TwitterOAuthException($e->getMessage());
-        }
+        $this->_instance->setAccessToken($accessToken);
+    }
+
+    /**
+     * Returns the current access token.
+     *
+     * @return Array|bool False is returned if the access token is not set.
+     */
+    public function getAccessToken()
+    {
+        return $this->_instance->getAccessToken();
     }
 
     /**
@@ -122,18 +116,7 @@ class TwitterOAuth
     public function getUserDetails()
     {
         try {
-            $twUser = $this->_instance->get('account/verify_credentials');
-
-            $twUserObj = new TwitterOAuthUser($twUser->screen_name);
-            $twUserObj->setAvatarUrl($twUser->profile_image_url);
-            $twUserObj->setName($twUser->name);
-            $twUserObj->setLocation($twUser->location);
-            $twUserObj->setProfileUrl('https://twitter.com/' . $twUser->screen_name);
-            $twUserObj->setWebsite($twUser->url);
-            $twUserObj->setDescription($twUser->description);
-            $twUserObj->setProfileId($twUser->id);
-
-            return $twUserObj;
+            return $this->_instance->getUserDetails();
         } catch (\Exception $e) {
             throw new TwitterOAuthException($e->getMessage());
         }

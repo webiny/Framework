@@ -43,24 +43,14 @@ interface TwitterOAuthInterface
     /**
      * Once we have token, we can run the authorization which than give us the option to request the access token.
      *
-     * @param string $token
-     * @param string $tokenSecret
+     * @param string $requestToken Request token returned by getRequestToken method.
+     * @param string $requestTokenSecret Request token secret returned by getRequestToken method.
+     * @param string $oauthToken OAuth token returned by Twitter OAuth server.
+     * @param string $oauthTokenVerifier OAuth token verifier returned by Twitter OAuth server.
      *
-     * @return void
+     * @return string
      */
-    public function authorize($token, $tokenSecret);
-
-    /**
-     * Get the access token.
-     *
-     * @param string $verifier Token verifier.
-     *
-     * @return array ["oauth_token" => "the-access-token",
-     *                "oauth_token_secret" => "the-access-secret",
-     *                "user_id" => "5555",
-     *                "screen_name" => "WebinyPlatform"]
-     */
-    public function getAccessToken($verifier);
+    public function requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier);
 
     /**
      * Sets the access token.
@@ -71,6 +61,20 @@ interface TwitterOAuthInterface
      * @return void
      */
     public function setAccessToken(array $accessToken);
+
+    /**
+     * Returns the current access token.
+     *
+     * @return Array|bool False is returned if the access token is not set.
+     */
+    public function getAccessToken();
+
+    /**
+     * Returns an instance of TwitterOAuthUser.
+     *
+     * @return TwitterOAuthUser
+     */
+    public function getUserDetails();
 
     /**
      * Make a GET request to Twitter API.

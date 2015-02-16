@@ -8,7 +8,9 @@
 namespace Webiny\Component\TwitterOAuth\Bridge\League;
 
 use League\OAuth1\Client\Credentials\TemporaryCredentials;
+use League\OAuth1\Client\Credentials\TokenCredentials;
 use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface;
+use Webiny\Component\TwitterOAuth\TwitterOAuthUser;
 
 /**
  * Bridge for TwitterOAuth library by The PHP League (http://thephpleague.com/)
@@ -18,7 +20,7 @@ use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface;
 class TwitterOAuth implements TwitterOAuthInterface
 {
     /**
-     * @var null|\
+     * @var null|\League\OAuth1\Client\Server\Twitter
      */
     private $_instance = null;
 
@@ -35,6 +37,12 @@ class TwitterOAuth implements TwitterOAuthInterface
      * @var string
      */
     protected $_clientSecret = '';
+
+    /**
+     * @var Array[oauth_token, oauth_token_secret]
+     */
+    protected $_accessToken = [];
+
 
 
     /**
@@ -97,6 +105,7 @@ class TwitterOAuth implements TwitterOAuthInterface
     public function getRequestToken()
     {
         $credentials = $this->_instance->getTemporaryCredentials();
+
         return [
           'oauth_token'         => $credentials->getIdentifier(),
           'oauth_token_secret'  => $credentials->getSecret()
@@ -118,35 +127,29 @@ class TwitterOAuth implements TwitterOAuthInterface
     /**
      * Once we have token, we can run the authorization which than give us the option to request the access token.
      *
-     * @param string $token
-     * @param string $tokenSecret
+     * @param string $requestToken Request token returned by getRequestToken method.
+     * @param string $requestTokenSecret Request token secret returned by getRequestToken method.
+     * @param string $oauthToken OAuth token returned by Twitter OAuth server.
+     * @param string $oauthTokenVerifier OAuth token verifier returned by Twitter OAuth server.
      *
-     * @return void
+     * @return array[oauth_token, oauth_token_secret]
      */
-    public function authorize($token, $tokenSecret)
+    public function requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier)
     {
         $ti = new TemporaryCredentials();
-        $ti->setIdentifier($token);
-        $ti->setSecret($tokenSecret);
+        $ti->setIdentifier($requestToken);
+        $ti->setSecret($requestTokenSecret);
 
-        return $this->_instance->authorize($ti);
-    }
+        $tc = $this->_instance->getTokenCredentials($ti, $oauthToken, $oauthTokenVerifier);
 
-    /**
-     * Get the access token.
-     *
-     * @param string $verifier Token verifier.
-     *
-     * @return array ["oauth_token" => "the-access-token",
-     *                "oauth_token_secret" => "the-access-secret",
-     *                "user_id" => "5555",
-     *                "screen_name" => "WebinyPlatform"]
-     */
-    public function getAccessToken($verifier)
-    {
-        $ti = $this->_instance->getTemporaryCredentials();
+        $token = [
+            'oauth_token'           => $tc->getIdentifier(),
+            'oauth_token_secret'    => $tc->getSecret()
+        ];
 
-        return $this->_instance->getTokenCredentials($this->_instance->getTemporaryCredentials(), $ti->getIdentifier(), $verifier);
+        $this->setAccessToken($token);
+
+        return $token;
     }
 
     /**
@@ -159,7 +162,43 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function setAccessToken(array $accessToken)
     {
-        return $this->authorize($accessToken['oauth_token'], $accessToken['oauth_token_secret']);
+        $this->_accessToken = $accessToken;
+    }
+
+    /**
+     * Returns the current access token.
+     *
+     * @return Array|bool False is returned if the access token is not set.
+     */
+    public function getAccessToken()
+    {
+        return $this->_accessToken;
+    }
+
+    /**
+     * Returns an instance of TwitterOAuthUser.
+     *
+     * @return TwitterOAuthUser
+     */
+    public function getUserDetails()
+    {
+        $accessToken = $this->getAccessToken();
+        $tc = new TokenCredentials();
+        $tc->setIdentifier($accessToken['oauth_token']);
+        $tc->setSecret($accessToken['oauth_token_secret']);
+
+        $user = $this->_instance->getUserDetails($tc);
+
+        $twUserObj = new TwitterOAuthUser($user->nickname);
+        $twUserObj->setAvatarUrl($user->imageUrl);
+        $twUserObj->setName($user->name);
+        $twUserObj->setLocation($user->location);
+        $twUserObj->setProfileUrl('https://twitter.com/' . $user->screen_name);
+        $twUserObj->setWebsite($user->urls['url']);
+        $twUserObj->setDescription($user->description);
+        $twUserObj->setProfileId($user->uid);
+
+        return $twUserObj;
     }
 
     /**

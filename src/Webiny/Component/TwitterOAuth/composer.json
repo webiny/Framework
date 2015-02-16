@@ -20,7 +20,6 @@
 		"php": ">=5.5.9",
 		"webiny/std-lib": "~1.1",
 		"webiny/http": "~1.1",
-		"webiny/forked-abraham-twitteroauth": "~1.0",
 		"league/oauth1-client": "~1.0"
 	},
 	"suggest":{

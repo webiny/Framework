@@ -23,7 +23,7 @@ class TwitterOAuth
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth\TwitterOAuth';
+    private static $_library = '\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth';
 
     /**
      * Get the name of bridge library which will be used as the driver.
