@@ -18,9 +18,9 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.5.9",
-		"webiny/http": "~1.1",
-		"webiny/config": "~1.1",
-		"webiny/std-lib": "~1.1",
+		"webiny/http": "~1.2",
+		"webiny/config": "~1.2",
+		"webiny/std-lib": "~1.2",
 		"league/oauth2-client": "0.8.*"
 	},
 	"require-dev": {

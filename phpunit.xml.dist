@@ -23,6 +23,7 @@
         <testsuite name="Webiny Framework Test Suite">
             <directory>./src/Webiny/Component/Amazon/Tests</directory>
             <directory>./src/Webiny/Component/Annotations/Tests</directory>
+            <directory>./src/Webiny/Component/Bootstrap/Tests</directory>
             <directory>./src/Webiny/Component/Cache/Tests</directory>
             <directory>./src/Webiny/Component/ClassLoader/Tests</directory>
             <directory>./src/Webiny/Component/Config/Tests</directory>
