@@ -85,8 +85,7 @@ class OAuth2
     public function requestAccessToken()
     {
         $tokenUrl = $this->_processUrl($this->_server->getAccessTokenUrl());
-        $response = $this->_instance->requestAccessToken($tokenUrl);
-        $accessToken = $this->_server->processAuthResponse($response);
+        $accessToken = $this->_instance->requestAccessToken($tokenUrl);
         $this->_instance->setAccessToken($accessToken);
 
         return $accessToken;

@@ -66,16 +66,6 @@ abstract class ServerAbstract
      */
     abstract protected function _processUserDetails($result);
 
-    /**
-     * This method is called when user is redirected to the redirect_uri from the authorization step.
-     * Here you should process the response from OAuth2 server and extract the access token if possible.
-     * If you cannot get the access token, throw an exception.
-     *
-     * @param array $response Response from the OAuth2 server.
-     *
-     * @return string Access token.
-     */
-    abstract public function processAuthResponse($response);
 
     /**
      * Base constructor.

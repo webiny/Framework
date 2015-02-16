@@ -18,7 +18,6 @@ use Webiny\Component\StdLib\StdLibTrait;
  */
 class OAuth2Loader
 {
-
     use StdLibTrait, HttpTrait;
 
     private static $_instances = [];
@@ -43,9 +42,7 @@ class OAuth2Loader
             throw new OAuth2Exception('Unable to read "OAuth2.' . $key . '" configuration.');
         }
 
-        if (strpos($oauth2Config->RedirectUri, 'http://') !== false || strpos($oauth2Config->RedirectUri, 'https://'
-            ) !== false
-        ) {
+        if (self::str($oauth2Config->RedirectUri)->startsWith('http')) {
             $redirectUri = $oauth2Config->RedirectUri;
         } else {
             $redirectUri = self::httpRequest()
@@ -55,8 +52,7 @@ class OAuth2Loader
                                ->val();
         }
 
-        $instance = Bridge\OAuth2::getInstance($oauth2Config->ClientId, $oauth2Config->ClientSecret, $redirectUri
-        );
+        $instance = Bridge\OAuth2::getInstance($oauth2Config->ClientId, $oauth2Config->ClientSecret, $redirectUri);
 
         $server = $oauth2Config->get('Server', false);
         if (!$server) {

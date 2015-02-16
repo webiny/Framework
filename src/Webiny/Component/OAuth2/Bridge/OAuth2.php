@@ -24,7 +24,7 @@ class OAuth2
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2';
+    private static $_library = '\Webiny\Component\OAuth2\Bridge\League\OAuth2';
 
     /**
      * Get the name of bridge library which will be used as the driver.

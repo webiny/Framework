@@ -21,8 +21,8 @@ OAuth2:
     # How to create a new driver, read in the Readme.md file.
     # If you don't wish to change the default driver,
     # just ommit this definition in your config file.
-    Bridge: \Webiny\Component\OAuth2\Bridge\OAuth2\OAuth2
+    Bridge: \Webiny\Component\OAuth2\Bridge\League\OAuth2
     # Entries under ClassLoader are automatically registered
     # with ClassLoader. You don't need this part if you are using Composer autoload.
     ClassLoader:
-        OAuth2: /var/www/Vendors/OAuth2
+        OAuth2: /var/www/Vendors/League

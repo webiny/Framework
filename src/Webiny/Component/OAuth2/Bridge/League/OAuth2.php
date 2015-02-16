@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\OAuth2\Bridge\League;
 
-use OAuth2\Client;
+use League\OAuth2\Client\Provider\AbstractProvider;
 use Webiny\Component\OAuth2\Bridge\OAuth2Abstract;
 use Webiny\Component\OAuth2\Bridge\OAuth2Exception;
 use Webiny\Component\Http\HttpTrait;
@@ -20,6 +20,8 @@ use Webiny\Component\StdLib\StdLibTrait;
  */
 class OAuth2 extends OAuth2Abstract
 {
+    use HttpTrait, StdLibTrait;
+
     /**
      * @var null|\OAuth2\Client
      */
@@ -56,10 +58,12 @@ class OAuth2 extends OAuth2Abstract
      */
     function requestAccessToken($tokenUrl)
     {
-        return $this->_getProviderInstance()->getAccessToken($tokenUrl, 'authorization_code', [
-            'code' => $_GET['code']
-        ]
+        $token = $this->_getProviderInstance()->getAccessToken('AuthorizationCode', [
+                                                                          'code' => $this->httpRequest()->query('code', '')
+                                                                      ]
         );
+
+        return $token->accessToken;
     }
 
     /**
@@ -87,7 +91,6 @@ class OAuth2 extends OAuth2Abstract
      */
     function setAccessToken($accessToken)
     {
-        $this->_getProviderInstance()->setAccessToken($accessToken);
         $this->_accessToken = $accessToken;
     }
 
@@ -113,13 +116,18 @@ class OAuth2 extends OAuth2Abstract
         return false;
     }
 
+    /**
+     * @return null|AbstractProvider
+     */
     private function _getProviderInstance()
     {
         if (!is_null($this->_provider)) {
             return $this->_provider;
         }
 
-        $providerName = '\League\OAuth2\Client\Provider\\' . 'Facebook';
+        $provider = $this->str($this->getServerClassName())->explode('\\')->last();
+
+        $providerName = '\League\OAuth2\Client\Provider\\'.$provider;
         $this->_provider = new $providerName([
                                                  'clientId'     => $this->_clientId,
                                                  'clientSecret' => $this->_clientSecret,
@@ -127,6 +135,8 @@ class OAuth2 extends OAuth2Abstract
                                                  'scopes'       => $this->getScope(),
                                              ]
         );
+
+        return $this->_provider;
     }
 
 }
