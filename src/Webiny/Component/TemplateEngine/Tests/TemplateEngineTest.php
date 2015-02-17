@@ -20,6 +20,6 @@ class TemplateEngineClassTest extends \PHPUnit_Framework_TestCase
     {
         $config = TemplateEngine::getConfig();
 
-        $this->assertSame('/var/tmp/smarty/cache', $config->get('Engines.Smarty.CacheDir'));
+        $this->assertSame(__DIR__.'/temp/cache', $config->get('Engines.Smarty.CacheDir'));
     }
 }
