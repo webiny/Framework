@@ -73,7 +73,6 @@ class UrlGenerator
          */
         $url = $this->httpRequest()->getCurrentUrl(true)->setPath($path)->setQuery($unknownParams);
 
-        //$path = '/' . $this->str($url->getPath())->trimLeft('/')->trimRight('/')->val() . '/';
         $path = $url->getPath();
 
         if (!$absolute) {

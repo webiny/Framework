@@ -71,7 +71,6 @@ class Router
     public function match($url)
     {
         if($this->isString($url)) {
-            #$urlString = $this->str($url)->trimLeft('/')->trimRight('/')->val();
             $url = $this->url($url);
         } else {
             $url = StdObjectWrapper::isUrlObject($url) ? $url : $this->url('');
@@ -257,9 +256,9 @@ class Router
     /**
      * Initializes the Route by reading the default config, registering routes and creating
      * necessary object instances.
-     *
+     * Note: this method is called automatically when you do Router::setConfig().
      */
-    protected function _init()
+    public function initialize()
     {
         $this->_loader = new ConfigLoader(self::getConfig()->get('Routes', new ConfigObject([])));
         self::$_routeCollection = $this->_loader->getRouteCollection();
@@ -306,11 +305,9 @@ class Router
     /**
      * Post setConfig callback
      */
-    protected static function postSetConfig()
+    protected static function _postSetConfig()
     {
-        if(self::getConfig()->get('Cache', false)) {
-            Router::getInstance()->setCache(self::getConfig()->get('Cache'));
-        }
+        self::getInstance()->initialize();
     }
 
 }

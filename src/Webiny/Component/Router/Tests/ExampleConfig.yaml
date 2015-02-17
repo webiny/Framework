@@ -27,6 +27,3 @@ Router:
         Blog:
             Path: blog
             Callback: MyApp\Blog\index
-    # Name of the cache service that router will use to cache stuff.
-    # It's not required, but will make things run faster.
-    #Cache: TestCache

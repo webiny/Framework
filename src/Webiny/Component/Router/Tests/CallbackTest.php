@@ -12,7 +12,6 @@ use Webiny\Component\Router\Router;
 /**
  * Class CallbackTest
  * @package Webiny\Component\Router\Tests
- * @runTestsInSeparateProcesses
  */
 class CallbackTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,12 +20,6 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // we need to mock the $_SERVER
-        $_SERVER = [
-            'SCRIPT_NAME' => '/index.php',
-            'SERVER_NAME' => 'www.webiny.com',
-        ];
-
         Router::setConfig(__DIR__ . self::CONFIG);
     }
 

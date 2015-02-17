@@ -9,13 +9,14 @@ namespace Webiny\Component\Router\Tests;
 
 
 use Webiny\Component\Cache\Cache;
+use Webiny\Component\Config\Config;
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Http\Request;
 use Webiny\Component\Router\Router;
 
 /**
  * Class RouterTest
  * @package Webiny\Component\Router\Tests
- * @runTestsInSeparateProcesses
  */
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,13 +25,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // we need to mock the $_SERVER
-        $_SERVER = [
-            'SCRIPT_NAME' => '/index.php',
-            'SERVER_NAME' => 'www.webiny.com',
-        ];
-
-        Router::setConfig(__DIR__ . self::CONFIG);
+        Router::getInstance()->prependRoutes(Config::getInstance()->yaml(__DIR__.'/ExampleConfig.yaml')->get('Router.Routes'));
+        Request::getInstance()->setCurrentUrl('http://www.webiny.com/');
     }
 
     /**
