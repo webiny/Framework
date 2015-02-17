@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\OAuth2\Tests;
 
+use Webiny\Component\Http\Request;
 use Webiny\Component\OAuth2\OAuth2;
 use Webiny\Component\OAuth2\OAuth2Loader;
 use Webiny\Component\OAuth2\OAuth2Request;
@@ -145,18 +146,7 @@ class OAuth2RequestTest extends \PHPUnit_Framework_TestCase
     {
         OAuth2::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
 
-        // we need to mock the $_SERVER
-        $_SERVER = [
-            'USER'            => 'webiny',
-            'HOME'            => '/home/webiny',
-            'SCRIPT_FILENAME' => '/var/www/projects/webiny/Public/index.php',
-            'SCRIPT_NAME'     => '/index.php',
-            'REQUEST_URI'     => '/batman-is-better-than-superman/?batman=one&superman=two',
-            'DOCUMENT_URI'    => '/index.php',
-            'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'REMOTE_ADDR'     => '192.168.58.1',
-            'SERVER_NAME'     => 'admin.w3.com',
-        ];
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/batman-is-better-than-superman/?batman=one&superman=two');
 
         $oauth2Instance = OAuth2Loader::getInstance('Facebook');
         $oauth2Request = new OAuth2Request($oauth2Instance);

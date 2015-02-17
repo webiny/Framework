@@ -9,6 +9,7 @@ namespace Webiny\Component\Security\Tests\Authentication;
 
 
 use Webiny\Component\Config\Config;
+use Webiny\Component\Http\Request;
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Encoder\Encoder;
 use Webiny\Component\Security\Security;
@@ -137,11 +138,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     {
         $firewall->processLogin('MockProvider'); // let's authenticate the user
 
-        // lets mock the address
-        $_SERVER = [
-            'REQUEST_URI' => '/batman-is-better-than-superman/?batman=one&superman=two',
-            'SERVER_NAME' => 'admin.w3.com'
-        ];
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/batman-is-better-than-superman/?batman=one&superman=two');
 
         $result = $firewall->isUserAllowedAccess();
         $this->assertTrue($result);
@@ -157,11 +154,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     {
         $firewall->processLogin('MockProvider'); // let's authenticate the user
 
-        // lets mock the address
-        $_SERVER = [
-            'REQUEST_URI' => '/allowed/?batman=one&superman=two',
-            'SERVER_NAME' => 'admin.w3.com'
-        ];
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/allowed/?batman=one&superman=two');
 
         $result = $firewall->isUserAllowedAccess();
         $this->assertTrue($result);
@@ -177,12 +170,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     {
         $firewall->processLogin('MockProvider'); // let's authenticate the user
 
-        // lets mock the address
-        $_SERVER = [
-            'REQUEST_URI' => '/iamturganbaev/more-about-kyrgyzstan/532c08a1afb28/',
-            'SERVER_NAME' => 'admin.w3.com'
-        ];
-
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/iamturganbaev/more-about-kyrgyzstan/532c08a1afb28/');
         $result = $firewall->isUserAllowedAccess();
         $this->assertTrue($result);
     }
@@ -197,12 +185,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     {
         $firewall->processLogin('MockProvider'); // let's authenticate the user
 
-        // lets mock the address
-        $_SERVER = [
-            'REQUEST_URI' => '/about/',
-            'SERVER_NAME' => 'admin.w3.com'
-        ];
-
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/about/');
         $result = $firewall->isUserAllowedAccess();
         $this->assertFalse($result);
     }
