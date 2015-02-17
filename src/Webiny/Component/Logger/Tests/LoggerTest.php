@@ -32,7 +32,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
      */
     function testLogger(Logger $logger)
     {
-        $fileLocation = '/var/www/projects/webiny/Vendors/src/Webiny/Component/Logger/Tests/UnitTest.log';
+        $fileLocation = __DIR__.'/UnitTest.log';
         $logger->error('Test error message!', ['customValue' => 'Webiny']);
         $this->assertFileExists($fileLocation);
         $logContents = file_get_contents($fileLocation);
