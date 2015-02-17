@@ -301,6 +301,17 @@ class Request
     }
 
     /**
+     * This method sets the internal value of currentUrl to $url.
+     * This method will not actually do a redirect, it is used mostly for mocking the internal value.
+     *
+     * @param string $url Current url.
+     */
+    public function setCurrentUrl($url)
+    {
+        $this->_currentUrl = $url;
+    }
+
+    /**
      * Get client ip address.
      * This function check and validates headers from trusted proxies.
      *
