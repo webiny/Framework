@@ -10,7 +10,10 @@ namespace Webiny\Component\OAuth2\Tests;
 use Webiny\Component\OAuth2\OAuth2;
 use Webiny\Component\OAuth2\OAuth2Loader;
 
-
+/**
+ * Class OAuth2LoaderTest
+ * @package Webiny\Component\OAuth2\Tests
+ */
 class OAuth2LoaderTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -29,8 +32,9 @@ class OAuth2LoaderTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI'     => '/batman-is-better-than-superman/?batman=one&superman=two',
             'DOCUMENT_URI'    => '/index.php',
             'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'REMOTE_ADDR'     => '192.168.58.1',
+            'REMOTE_ADDR'     => '127.0.0.1',
             'SERVER_NAME'     => 'admin.w3.com',
+            'HTTP_HOST'       => 'admin.w3.com'
         ];
 
         $instance = OAuth2Loader::getInstance('Facebook');

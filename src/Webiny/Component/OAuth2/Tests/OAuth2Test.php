@@ -62,7 +62,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
      */
     public function testRequestAccessToken($oauth2)
     {
-        $this->assertSame('access_token', $oauth2->requestAccessToken());
+        $this->assertTrue($oauth2->requestAccessToken());
     }
 
     /**
