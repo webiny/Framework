@@ -41,14 +41,6 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testGetResponseCode(TwitterOAuth $instance)
-    {
-        $this->assertSame(200, $instance->getResponseCode());
-    }
-
-    /**
-     * @dataProvider dataProvider
-     */
     public function testGetAuthorizeUrl(TwitterOAuth $instance)
     {
         $this->assertSame('http://www.twitter.com/authMe', $instance->getAuthorizeUrl('token'));
@@ -74,14 +66,16 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
         $config = TwitterOAuth::getConfig();
 
         // create bridge
-        $bridge = new \Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth\TwitterOAuth($config->get('MyTwitterApp.ClientId'
-            ), $config->get('MyTwitterApp.ClientSecret'
-            ), '/'
+        $bridge = new \Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth($config->get('MyTwitterApp.ClientId'),
+                                                                                $config->get('MyTwitterApp.ClientSecret'),
+                                                                                '/'
         );
 
         // replace the \TwitterOAuth instance with mock
-        $mock = new TwitterOAuthMock($config->get('MyTwitterApp.ClientId'), $config->get('MyTwitterApp.ClientSecret'));
-        $bridge->setDriverInstance($mock);
+        $bridge = new TwitterOAuthMock($config->get('MyTwitterApp.ClientId'),
+                                     $config->get('MyTwitterApp.ClientSecret'),
+                                     '/');
+        //$bridge->setDriverInstance($mock);
 
         // create TwitterOAuth instance
         $instance = new TwitterOAuth($bridge);

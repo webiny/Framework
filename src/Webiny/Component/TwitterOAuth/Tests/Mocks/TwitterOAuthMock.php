@@ -10,11 +10,11 @@ namespace Webiny\Component\TwitterOAuth\Tests\Mocks;
 /**
  * This class mocks \TwitterOAuth class.
  */
-class TwitterOAuthMock extends \Abraham\TwitterOAuth\TwitterOAuth
+class TwitterOAuthMock extends \Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth
 {
     public $http_code = 200;
 
-    public function getRequestToken($oauth_callback)
+    public function getRequestToken()
     {
         return 'rToken';
     }
@@ -25,7 +25,7 @@ class TwitterOAuthMock extends \Abraham\TwitterOAuth\TwitterOAuth
         return 'http://www.twitter.com/authMe';
     }
 
-    public function getAccessToken($verifier)
+    public function getAccessToken()
     {
         return [
             "oauth_token"        => "the-access-token",
