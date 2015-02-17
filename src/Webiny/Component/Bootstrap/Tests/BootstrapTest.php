@@ -2,16 +2,16 @@
 
 namespace Webiny\Component\Bootstrap\Tests;
 
+use Webiny\Component\Http\Request;
 
+/**
+ * Class BootstrapTest
+ * @package Webiny\Component\Bootstrap\Tests
+ */
 class BootstrapTest extends \PHPUnit_Framework_TestCase
 {
     function setUp(){
-        $_SERVER = [
-            'REQUEST_URI' => '/',
-            'SCRIPT_NAME' => 'index.php',
-            'SERVER_NAME' => 'www.myapp.com',
-            'HTTP_HOST'   => 'www.myapp.com'
-        ];
+        Request::getInstance()->setCurrentUrl('http://www.myapp.com/');
     }
 
     /**

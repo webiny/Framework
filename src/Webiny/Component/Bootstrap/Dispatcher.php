@@ -187,14 +187,14 @@ class Dispatcher
      */
     public function setClassName($className)
     {
-        try{
+        try {
             $classFilename = ClassLoader::getInstance()->findClass($className);
-            if(!file_exists($classFilename)){
-                throw new BootstrapException('The provided callback class "'.$className.'" does not exist.');
-            }else{
+            if (!file_exists($classFilename)) {
+                throw new BootstrapException('The provided callback class "' . $className . '" does not exist.');
+            } else {
                 $this->_className = $className;
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw $e;
         }
 
@@ -226,7 +226,10 @@ class Dispatcher
                              ], $this->getParams()
         );
 
-        $instance->app()->httpResponse()->send();
+        $response = $instance->app()->httpResponse();
+        if ($response) {
+            $response->send();
+        }
     }
 
     /**
