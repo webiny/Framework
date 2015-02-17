@@ -33,17 +33,16 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         new Crypt('Fake');
     }
 
-    public function testEncrypt()
+    public function testEncryptDecrypt()
     {
         $crypt = new Crypt('Password');
-        $controlResult = "6SzWFRKj0AfVabH3zU1FNA==";
-        $this->assertSame($controlResult, base64_encode($crypt->encrypt('password', 'someSecuredKey12')));
-    }
 
-    public function testDecrypt()
-    {
-        $crypt = new Crypt('Password');
-        $encodedString = "6SzWFRKj0AfVabH3zU1FNA==";
-        $this->assertSame('password', $crypt->decrypt(base64_decode($encodedString), 'someSecuredKey12'));
+        $encrypted = $crypt->encrypt('password', 'someSecuredKey12');
+
+        $this->assertNotSame('password', $encrypted);
+
+        $decrypted = $crypt->decrypt($encrypted, 'someSecuredKey12');
+
+        $this->assertSame('password', $decrypted);
     }
 }

@@ -22,9 +22,8 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2',
-                                new OAuth2('Facebook', ['ROLE_ADMIN'])
-        );
+        $instance = new OAuth2('Facebook', ['ROLE_ADMIN']);
+        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2', $instance);
     }
 
     /**
