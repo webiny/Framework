@@ -10,6 +10,7 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/',
             'SCRIPT_NAME' => 'index.php',
             'SERVER_NAME' => 'www.myapp.com',
+            'HTTP_HOST'   => 'www.myapp.com'
         ];
     }
 

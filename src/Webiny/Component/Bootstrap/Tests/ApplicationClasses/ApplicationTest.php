@@ -5,7 +5,12 @@ namespace Webiny\Component\Bootstrap\Tests\ApplicationClasses;
 use Webiny\Component\Bootstrap\Environment;
 use Webiny\Component\Bootstrap\ApplicationClasses\Application;
 
-class RouterTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class ApplicationTest
+ * @package Webiny\Component\Bootstrap\Tests\ApplicationClasses
+ *
+ */
+class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
     function setUp()
     {
@@ -13,6 +18,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/',
             'SCRIPT_NAME' => 'index.php',
             'SERVER_NAME' => 'www.myapp.com',
+            'HTTP_HOST'   => 'www.myapp.com'
         ];
     }
 
