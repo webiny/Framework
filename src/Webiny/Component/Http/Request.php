@@ -381,9 +381,14 @@ class Request
      */
     public function getConnectionPort()
     {
-        $host = $this->str($this->server()->httpHost());
-
         $port = 80;
+        $host = $this->server()->httpHost();
+        if(empty($host)){
+            return $port;
+        }
+
+        $host = $this->str($host);
+
         if($host->contains(':')){
             $port = $host->explode(':')->last();
         }
