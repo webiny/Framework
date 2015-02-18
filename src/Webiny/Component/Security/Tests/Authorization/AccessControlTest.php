@@ -36,9 +36,6 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         new AccessControl($user, $config);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testIsUserAllowedAccessNoRolesDefined()
     {
         $user = new UserMock();
@@ -48,9 +45,6 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($instance->isUserAllowedAccess());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testIsUserAllowedAccessNoRolesRequired()
     {
         // lets mock the address to one that doesn't match any rules
@@ -73,9 +67,6 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($instance->isUserAllowedAccess());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testIsUserAllowedAccessRoleRequiredButDenied()
     {
         // lets mock the address to one that doesn't match any rules
@@ -98,9 +89,6 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($instance->isUserAllowedAccess());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testIsUserAllowedAccessRoleRequiredButGranted()
     {
         // lets mock the address to one that doesn't match any rules
@@ -123,9 +111,6 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($instance->isUserAllowedAccess());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testIsUserAllowedAccessDecisionStrategyAffirmative()
     {
         // lets mock the address to one that doesn't match any rules

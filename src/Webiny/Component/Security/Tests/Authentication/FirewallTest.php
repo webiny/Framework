@@ -31,7 +31,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testConstructor($firewall)
     {
@@ -42,7 +41,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testProcessLoginNoAuthProviderName($firewall)
     {
@@ -54,7 +52,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testProcessLoginWithAuthProviderName($firewall)
     {
@@ -66,7 +63,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testProcessLoginWithAuthProviderNameAndNotAuthenticatedUser($firewall)
     {
@@ -79,7 +75,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider             firewallProvider
-     * @runInSeparateProcess
      * @expectedException \Webiny\Component\Security\Authentication\FirewallException
      * @expectedExceptionMessage Unable to detect configuration for authentication provide
      */
@@ -92,10 +87,10 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testProcessLogout($firewall)
     {
+        UserProviderMock::$returnLoginObject = true;
         $result = $firewall->processLogin('MockProvider');
         $this->assertTrue($result);
         $result = $firewall->processLogout();
@@ -106,7 +101,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetUserWhileNotAuthenticated($firewall)
     {
@@ -119,7 +113,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetUserWhileAuthenticated($firewall)
     {
@@ -132,7 +125,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testIsUserAllowedAccessOnAddressThatIsNotInAccessRules($firewall)
     {
@@ -148,7 +140,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testIsUserAllowedAccessOnAddressThatIsInsideAccessRules($firewall)
     {
@@ -164,7 +155,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testIsUserAllowedAccessOnAddressThatIsInsideAccessRulesRegex($firewall)
     {
@@ -179,7 +169,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testIsUserDeniedAccessOnAddressThatIsInsideAccessRules($firewall)
     {
@@ -194,7 +183,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetRealName($firewall)
     {
@@ -205,7 +193,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetAnonymousAccess($firewall)
     {
@@ -216,7 +203,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetConfig($firewall)
     {
@@ -229,7 +215,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetToken($firewall)
     {
@@ -240,7 +225,6 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      * @param Firewall $firewall
      *
      * @dataProvider firewallProvider
-     * @runInSeparateProcess
      */
     public function testGetFirewallKey($firewall)
     {
@@ -249,6 +233,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
 
     public function firewallProvider()
     {
+        Security::deleteInstance();
         Security::setConfig(__DIR__ . '/../ExampleConfig.yaml');
         $config = Config::getInstance()->yaml(__DIR__ . '/../ExampleConfig.yaml');
         $firewallConfig = $config->Security->Firewalls->Admin;

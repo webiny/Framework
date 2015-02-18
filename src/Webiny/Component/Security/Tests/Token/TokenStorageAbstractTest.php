@@ -16,18 +16,12 @@ use Webiny\Component\Security\Tests\Mocks\UserMock;
 class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testConstructor()
     {
         $instance = new TokenStorageMock();
         $this->assertInstanceOf('\Webiny\Component\Security\Token\TokenStorageAbstract', $instance);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testSetGetTokenName()
     {
         $instance = new TokenStorageMock();
@@ -35,9 +29,6 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('TName', $instance->getTokenName());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testSetGetCrypt()
     {
         $instance = new TokenStorageMock();
@@ -50,9 +41,6 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Security\Tests\Mocks\TokenCryptMock', $instance->getCrypt());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testEncryptUserData()
     {
         \Webiny\Component\Crypt\Crypt::setConfig(__DIR__ . '/CryptDrivers/Crypt/CryptExampleConfig.yaml');
@@ -72,9 +60,6 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("uname", $result['u']);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testDecryptUserData()
     {
         \Webiny\Component\Crypt\Crypt::setConfig(__DIR__ . '/CryptDrivers/Crypt/CryptExampleConfig.yaml');

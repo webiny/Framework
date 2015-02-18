@@ -8,23 +8,18 @@
 namespace Webiny\Component\Security\Tests\Authentication\Providers\Form;
 
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Session;
 use Webiny\Component\Security\Authentication\Providers\Http\Http;
 
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Http\Http', new Http());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testGetLoginObject()
     {
         Session::getInstance()->save('username', 'un');
@@ -38,10 +33,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('pw', $login->getPassword());
     }
 
-    /**
-     * @expectedException \Webiny\Component\Security\Authentication\Providers\Http\HttpException
-     * @runInSeparateProcess
-     */
     public function testTriggerLoginFailed()
     {
         $http = new Http();
@@ -55,6 +46,8 @@ class HttpTest extends \PHPUnit_Framework_TestCase
      */
     public function testTriggerLogin()
     {
+        //Request::deleteInstance();
+
         // mock server vars
         $_SERVER = [
             'PHP_AUTH_USER' => 'name',
@@ -70,9 +63,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('pass', Session::getInstance()->get('password'));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testInvalidLoginProvidedCallback()
     {
         Session::getInstance()->save('username', 'uname');
@@ -89,9 +79,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('true', Session::getInstance()->get('login_retry'));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testLogoutCallback()
     {
         Session::getInstance()->save('username', 'uname');
