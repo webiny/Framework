@@ -11,9 +11,6 @@ use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth;
 
 class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @runInSeparateProcess
-     */
     public function testGetInstance()
     {
         $this->assertInstanceOf('\Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface',
@@ -23,7 +20,6 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthException
-     * @runInSeparateProcess
      */
     public function testGetInstanceException()
     {
