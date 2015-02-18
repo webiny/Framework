@@ -18,18 +18,12 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         Http::setConfig(__DIR__ . '/ExampleConfig.yaml');
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testConstructor()
     {
         $session = Session::getInstance();;
         $this->assertInstanceOf('\Webiny\Component\Http\Session', $session);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testSave()
     {
         $session = Session::getInstance();;
@@ -38,9 +32,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(123, $_SESSION["some_id"]);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testGet()
     {
         $session = Session::getInstance();;
@@ -50,9 +41,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(50, $session->get("doesnt_exist_2", 50));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testDelete()
     {
         $session = Session::getInstance();;
@@ -63,9 +51,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($session->get("some_id"));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function getAll()
     {
         $session = Session::getInstance();;
@@ -73,9 +58,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(["some_id" => 123], $session->getAll());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testGetSessionId()
     {
         $session = Session::getInstance();;

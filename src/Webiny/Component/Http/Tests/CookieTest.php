@@ -11,25 +11,19 @@ namespace Webiny\Component\Http\Tests;
 use Webiny\Component\Http\Http;
 use Webiny\Component\Http\Cookie;
 
-class CacheTest extends \PHPUnit_Framework_TestCase
+class CookieTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         Http::setConfig(__DIR__ . '/ExampleConfig.yaml');
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testConstructor()
     {
         $cookie = Cookie::getInstance();
         $this->assertInstanceOf('\Webiny\Component\Http\Cookie', $cookie);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testSave()
     {
         $cookie = Cookie::getInstance();
@@ -37,9 +31,6 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testGet()
     {
         $cookie = Cookie::getInstance();
@@ -49,9 +40,6 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($cookie->get("some_non_existing_cookie"));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testDelete()
     {
         // save

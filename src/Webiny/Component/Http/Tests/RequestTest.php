@@ -24,44 +24,36 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Http\Request', $request);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testQuery()
     {
+        Request::deleteInstance();
         $_GET = ["name" => "jack"];
         $this->assertSame("jack", Request::getInstance()->query("name"));
         $this->assertNull(Request::getInstance()->query("no-name"));
         $this->assertSame("default", Request::getInstance()->query("no-name-2", "default"));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testPost()
     {
+        Request::deleteInstance();
         $_POST = ["name" => "jack"];
         $this->assertSame("jack", Request::getInstance()->post("name"));
         $this->assertNull(Request::getInstance()->post("no-name"));
         $this->assertSame("default", Request::getInstance()->post("no-name-2", "default"));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testHeader()
     {
+        Request::deleteInstance();
         $_SERVER['HTTP_HOST'] = "localhost";
         $this->assertSame("localhost", Request::getInstance()->header("Host"));
         $this->assertNull(Request::getInstance()->header("NO-HTTP_HOST"));
         $this->assertSame("default", Request::getInstance()->header("NO-HTTP_HOST-2", "default"));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testEnv()
     {
+        Request::deleteInstance();
         $_ENV = ["name" => "jack"];
         $this->assertSame("jack", Request::getInstance()->env("name"));
         $this->assertNull(Request::getInstance()->env("no-name"));
@@ -70,13 +62,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testServer()
     {
+        Request::deleteInstance();
         $server = Request::getInstance()->server();
         $this->assertInstanceOf('\Webiny\Component\Http\Request\Server', $server);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testFiles()
     {
         $_FILES = [
@@ -89,6 +79,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
+        Request::deleteInstance();
         $file = Request::getInstance()->files('test_file');
         $this->assertInstanceOf('\Webiny\Component\Http\Request\Files\File', $file);
     }
