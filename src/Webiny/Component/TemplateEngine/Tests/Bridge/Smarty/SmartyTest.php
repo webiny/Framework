@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\TemplateEngine\Tests\Bridge\Smarty;
 
+use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty;
 use Webiny\Component\TemplateEngine\TemplateEngine;
@@ -24,6 +25,8 @@ class SmartyTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        // make sure we unregister the class loader map, can cause a conflict with the composer
+        ClassLoader::getInstance()->unregisterMap('Smarty_');
         TemplateEngine::setConfig(__DIR__ . '/../../ExampleConfig.yaml');
     }
 
