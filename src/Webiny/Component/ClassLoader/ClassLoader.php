@@ -31,6 +31,13 @@ class ClassLoader
      */
     private $_cache = false;
 
+    private $_loaders = [
+        'Psr4',
+        'Psr0',
+        'Pear'
+    ];
+
+
     /**
      * Base constructor.
      */
@@ -54,6 +61,28 @@ class ClassLoader
         self::_registerAutoloader();
 
         return self::$_instance;
+    }
+
+    /**
+     * Removes the given map prefix from class loader.
+     *
+     * @param string $mapPrefix Map prefix that should be removed.
+     *
+     * @return bool Returns true if the map prefix was found and removed, otherwise false.
+     */
+    public function unregisterMap($mapPrefix)
+    {
+        foreach($this->_loaders as $l)
+        {
+            $loader = "\\Webiny\\Component\\ClassLoader\\Loaders\\".$l;
+            $result = $loader::getInstance()->unregisterMap($mapPrefix);
+
+            if($result){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -145,10 +174,10 @@ class ClassLoader
         // from disk
         if ($file = $this->findClass($class)) {
             $this->_cache->save('wf.component.class_loader.' . $class, $file, 600, [
-                    '_wf',
-                    '_component',
-                    '_class_loader'
-                ]
+                                                                         '_wf',
+                                                                         '_component',
+                                                                         '_class_loader'
+                                                                     ]
             );
             require $file;
         }
@@ -164,9 +193,9 @@ class ClassLoader
     public function findClass($class)
     {
         if (strrpos($class, '\\') !== false) {
-            $file = Loaders\Psr0::getInstance()->findClass($class);
+            $file = Loaders\Psr4::getInstance()->findClass($class);
             if (!$file) {
-                $file = Loaders\Psr4::getInstance()->findClass($class);
+                $file = Loaders\Psr0::getInstance()->findClass($class);
             }
         } else {
             $file = Loaders\Pear::getInstance()->findClass($class);

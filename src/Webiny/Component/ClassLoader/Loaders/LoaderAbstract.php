@@ -42,6 +42,22 @@ abstract class LoaderAbstract
     }
 
     /**
+     * Removes the given map prefix from class loader.
+     *
+     * @param string $mapPrefix Map prefix that should be removed.
+     *
+     * @return bool Returns true if the map prefix was found and removed, otherwise false.
+     */
+    public function unregisterMap($mapPrefix)
+    {
+        if(isset($this->_maps[$mapPrefix])){
+            unset($this->_maps[$mapPrefix]);
+        }
+
+        return false;
+    }
+
+    /**
      * Register a map.
      *
      * @param string       $prefix  Map prefix or namespace.
@@ -49,7 +65,7 @@ abstract class LoaderAbstract
      *
      * @return void
      */
-    abstract public function  registerMap($prefix, $library);
+    abstract public function registerMap($prefix, $library);
 
     /**
      * Parses that class name and returns the absolute path to the class.

@@ -9,9 +9,6 @@ namespace Webiny\Component\ClassLoader\Tests\Loaders;
 
 use Webiny\Component\ClassLoader\ClassLoader;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class PearTest extends \PHPUnit_Framework_TestCase
 {
 

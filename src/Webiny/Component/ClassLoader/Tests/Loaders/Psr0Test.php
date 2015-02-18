@@ -9,9 +9,6 @@ namespace Webiny\Component\ClassLoader\Tests\Loaders;
 
 use Webiny\Component\ClassLoader\ClassLoader;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class Psr0Test extends \PHPUnit_Framework_TestCase
 {
 

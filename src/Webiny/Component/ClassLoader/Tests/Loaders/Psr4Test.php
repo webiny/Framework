@@ -9,14 +9,12 @@ namespace Webiny\Component\ClassLoader\Tests\Loaders;
 
 use Webiny\Component\ClassLoader\ClassLoader;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class Psr4Test extends \PHPUnit_Framework_TestCase
 {
 
     public function testFindClassCaseOne()
     {
+        ClassLoader::getInstance()->unregisterMap('Acme\Log\Writer');
         ClassLoader::getInstance()->registerMap([
                                                     'Acme\Log\Writer' => [
                                                         'Path' => './acme-log-writer/lib/',
