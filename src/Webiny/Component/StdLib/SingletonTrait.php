@@ -40,6 +40,14 @@ trait SingletonTrait
     }
 
     /**
+     * Deletes the current singleton instance.
+     */
+    final public static function deleteInstance()
+    {
+        static::$_wfInstance = null;
+    }
+
+    /**
      * The constructor is set to private to prevent creating new instances.
      * If you want to fire a function after the singleton instance is created, just implement 'init' method into your class.
      */
