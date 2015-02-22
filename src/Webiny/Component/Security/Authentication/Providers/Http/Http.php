@@ -123,8 +123,6 @@ class Http implements AuthenticationInterface
         $this->httpSession()->save('username', $username);
         $this->httpSession()->save('password', $password);
 
-        //header('Location: ' . $this->httpRequest()->getCurrentUrl());
-        //exit;
         $this->httpRedirect($this->httpRequest()->getCurrentUrl());
     }
 

@@ -22,11 +22,6 @@ abstract class StdObjectAbstract implements StdObjectInterface
 {
     use ValidatorTrait;
 
-    /**
-     * ArrayObject that caches the names of standard objects. This is used by StdObjectAbstract::_getStdObjectName
-     * @var ArrayObject
-     */
-    private static $_stdObjectName = null;
 
     /**
      * Return, or update, current standard objects value.
@@ -66,32 +61,5 @@ abstract class StdObjectAbstract implements StdObjectInterface
     public function exception($message)
     {
         return new StdObjectException($message);
-    }
-
-    /**
-     * Returns the name of current standard object without its namespace.
-     *
-     * @return ArrayObject|StringObject
-     */
-    private static function _getStdObjectName()
-    {
-        // check if self::$_stdObjectName is created
-        if (self::isNull(self::$_stdObjectName)) {
-            self::$_stdObjectName = new ArrayObject([]);
-        }
-
-        // get called class name (with full namespace)
-        $cc = get_called_class();
-
-        // check if we already have an entry for this class name
-        if (!self::$_stdObjectName->keyExists($cc)) {
-            $str = new StringObject($cc);
-            $className = $str->explode('\\')->last();
-            self::$_stdObjectName->key($cc, $className);
-        } else {
-            $className = self::$_stdObjectName->key($cc);
-        }
-
-        return $className;
     }
 }
