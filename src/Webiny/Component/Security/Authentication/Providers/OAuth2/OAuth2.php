@@ -135,7 +135,6 @@ class OAuth2 implements AuthenticationInterface
         if ($this->isArray($accessToken) && isset($accessToken['result']['error'])) {
             $this->httpSession()->delete('oauth_token');
 
-            //$this->_redirectToLoginPage($config);
             return false;
         }
 
@@ -155,7 +154,7 @@ class OAuth2 implements AuthenticationInterface
      */
     function invalidLoginProvidedCallback()
     {
-        // TODO: Implement invalidLoginProvidedCallback() method.
+        // we don't need this method for OAuth2
     }
 
     /**
@@ -165,7 +164,7 @@ class OAuth2 implements AuthenticationInterface
      */
     function loginSuccessfulCallback(UserAbstract $user)
     {
-        // TODO: Implement loginSuccessfulCallback() method.
+        // we don't need this method for OAuth2
     }
 
     /**
@@ -179,7 +178,7 @@ class OAuth2 implements AuthenticationInterface
      */
     function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
     {
-        // TODO: Implement userAuthorizedByTokenCallback() method.
+        // we don't need this method for OAuth2
     }
 
     /**
@@ -187,7 +186,7 @@ class OAuth2 implements AuthenticationInterface
      */
     function logoutCallback()
     {
-        // TODO: Implement logoutCallback() method.
+        // we don't need this method for OAuth2
     }
 
 

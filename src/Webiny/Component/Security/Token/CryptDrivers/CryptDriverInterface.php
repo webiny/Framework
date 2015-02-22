@@ -7,8 +7,6 @@
 
 namespace Webiny\Component\Security\Token\CryptDrivers;
 
-use Webiny\Component\Config\ConfigObject;
-
 /**
  * CryptInterface must be implemented by every token crypt driver.
  *

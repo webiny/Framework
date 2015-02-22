@@ -9,7 +9,6 @@ namespace Webiny\Component\Bootstrap\ApplicationClasses;
 
 use Webiny\Component\Bootstrap\Environment;
 use Webiny\Component\Config\ConfigObject;
-use Webiny\Component\Http\Http;
 use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Response;
 use Webiny\Component\TemplateEngine\TemplateEngine;

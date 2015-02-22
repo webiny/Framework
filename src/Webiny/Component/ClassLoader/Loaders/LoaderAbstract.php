@@ -32,7 +32,7 @@ abstract class LoaderAbstract
      */
     static public function getInstance()
     {
-        if (static::$_instance != null) {
+        if (static::$_instance !== null) {
             return static::$_instance;
         }
 

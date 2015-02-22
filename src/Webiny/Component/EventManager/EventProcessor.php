@@ -77,6 +77,12 @@ class EventProcessor
      */
     private function _orderByPriority($eventListeners)
     {
+        /**
+         * @param int $a
+         * @param int $b
+         *
+         * @return int
+         */
         $comparisonFunction = function ($a, $b) {
             if ($a->getPriority() == $b->getPriority()) {
                 // This will keep the order of same priority listeners in the order of subscribing

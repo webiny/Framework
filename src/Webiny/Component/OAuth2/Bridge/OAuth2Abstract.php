@@ -55,7 +55,6 @@ abstract class OAuth2Abstract implements OAuth2Interface
      */
     protected $_redirectUri = '';
 
-
     /**
      * Name of the OAuth2 server class.
      *

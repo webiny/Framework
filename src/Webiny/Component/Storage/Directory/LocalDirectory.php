@@ -138,7 +138,7 @@ class LocalDirectory implements DirectoryInterface, \IteratorAggregate
 
     protected function _loadItems()
     {
-        if ($this->_items == null) {
+        if ($this->_items === null) {
             $keys = $this->_storage->getKeys($this->_key, $this->_recursive);
 
             // Filter keys if regex is set

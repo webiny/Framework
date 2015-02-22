@@ -5,7 +5,7 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Security\Tests\Authentication\Providers\Form;
+namespace Webiny\Component\Security\Tests\Authentication\Providers\Http;
 
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
@@ -46,13 +46,15 @@ class HttpTest extends \PHPUnit_Framework_TestCase
      */
     public function testTriggerLogin()
     {
-        //Request::deleteInstance();
+        Request::deleteInstance();
 
         // mock server vars
         $_SERVER = [
             'PHP_AUTH_USER' => 'name',
             'PHP_AUTH_PW'   => 'pass'
         ];
+
+        Request::getInstance()->setCurrentUrl('http://admin.w3.com/login');
 
         $http = new Http();
         $http->setExitTrigger('exception');

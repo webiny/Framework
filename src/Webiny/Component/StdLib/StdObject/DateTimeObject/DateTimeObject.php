@@ -122,7 +122,7 @@ class DateTimeObject extends StdObjectAbstract
             // if UNIX timestamp - convert to string value
             if (is_numeric($time) && $time <= PHP_INT_MAX && $time >= ~PHP_INT_MAX) {
                 // Try converting timestamp to date string and back
-                $date = @date('Y-m-d H:i:s', $time);
+                $date = date('Y-m-d H:i:s', $time);
                 if ($date && strtotime($date)) {
                     $time = $date;
                 }

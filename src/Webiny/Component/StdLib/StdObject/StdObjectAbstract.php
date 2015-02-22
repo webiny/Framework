@@ -69,24 +69,6 @@ abstract class StdObjectAbstract implements StdObjectInterface
     }
 
     /**
-     * Returns the name of standard object config class, or throws a StdObjectException if config class does not exist.
-     *
-     * @return string
-     * @throws StdObjectException
-     */
-    private static function _getStdObjectConfigClassName()
-    {
-        $stdObjectName = self::_getStdObjectName();
-        $configClassName = 'Webiny\Component\StdLib\StdObject\\' . $stdObjectName . '\\' . $stdObjectName . 'Config';
-        if (!self::classExists($configClassName)) {
-            throw new StdObjectException('StdObjectAbstract: Config class for "' . $stdObjectName . '" standard object does not exist.'
-            );
-        }
-
-        return $configClassName;
-    }
-
-    /**
      * Returns the name of current standard object without its namespace.
      *
      * @return ArrayObject|StringObject

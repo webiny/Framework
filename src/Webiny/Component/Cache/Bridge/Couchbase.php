@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Cache\Bridge;
 
+use Webiny\Component\Cache\Cache;
 use Webiny\Component\Cache\CacheException;
 
 /**

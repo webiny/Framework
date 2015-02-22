@@ -81,7 +81,7 @@ class TemplateEngine
         }
 
         if (!self::isInstanceOf($instance, '\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface')) {
-            throw new TemplateEngineException(Exception::MSG_INVALID_ARG, [
+            throw new TemplateEngineException(TemplateEngineException::MSG_INVALID_ARG, [
                     'driver',
                     '\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface'
                 ]

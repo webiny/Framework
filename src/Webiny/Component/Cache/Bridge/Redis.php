@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Cache\Bridge;
 
+use Webiny\Component\Cache\Cache;
+
 /**
  * Redis cache bridge loader.
  *

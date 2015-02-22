@@ -133,7 +133,7 @@ class Cookie
      * @return CookieStorageInterface
      * @throws \Webiny\Component\Http\Cookie\CookieException
      */
-    private function _getStorage($config = null)
+    private function _getStorage(ConfigObject $config = null)
     {
         if (!isset($this->_storage)) {
             try {

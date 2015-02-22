@@ -12,7 +12,7 @@ use Webiny\Component\Cache\Cache;
 class CacheStorageTest extends \PHPUnit_Framework_TestCase
 {
     const CACHE_KEY = 'TestKey';
-    const MEMCACHE_IP = '192.168.58.20';
+    const MEMCACHE_IP = '127.0.0.1';
     const CONFIG = 'ExampleConfig.yaml';
 
     /**

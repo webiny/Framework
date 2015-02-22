@@ -950,23 +950,4 @@ trait ManipulatorTrait
 
         return $this;
     }
-
-    public function cryptEncode($key, $salt = '')
-    {
-        /**
-         * @TODO: implement me
-         */
-    }
-
-    public function cryptDecode($key, $salt = '')
-    {
-        /**
-         * @TODO: implement me
-         */
-    }
-
-    public function baseConvert()
-    {
-        // @TODO
-    }
 }

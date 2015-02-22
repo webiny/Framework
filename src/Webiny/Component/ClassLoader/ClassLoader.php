@@ -53,7 +53,7 @@ class ClassLoader
      */
     static public function getInstance()
     {
-        if (self::$_instance != null) {
+        if (self::$_instance !== null) {
             return self::$_instance;
         }
 

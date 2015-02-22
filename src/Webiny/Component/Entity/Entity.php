@@ -35,7 +35,7 @@ class Entity
      */
     public function getDatabase()
     {
-        if (self::$_database == null) {
+        if (self::$_database === null) {
             self::$_database = self::mongo(self::getConfig()->Database);
         }
 

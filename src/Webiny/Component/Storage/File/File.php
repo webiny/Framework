@@ -65,7 +65,7 @@ class File implements FileInterface
      */
     public function getTimeModified($asDateTimeObject = false)
     {
-        if ($this->_timeModified == null) {
+        if ($this->_timeModified === null) {
             $this->_timeModified = $time = $this->_storage->getTimeModified($this->_key);
             if ($time) {
                 $this->_timeModified = $asDateTimeObject ? $this->datetime()->setTimestamp($time) : $time;
@@ -96,7 +96,7 @@ class File implements FileInterface
      */
     public function getContents()
     {
-        if ($this->_contents == null) {
+        if ($this->_contents === null) {
             $this->_contents = $this->_storage->getContents($this->_key);
         }
 
@@ -148,7 +148,7 @@ class File implements FileInterface
      */
     public function getUrl()
     {
-        if ($this->_url == null) {
+        if ($this->_url === null) {
             $this->_url = $this->_storage->getURL($this->_key);
         }
 

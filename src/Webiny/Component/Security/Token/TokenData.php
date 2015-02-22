@@ -42,6 +42,7 @@ class TokenData
      */
     private $_authProviderName;
 
+
     /**
      * Base constructor.
      *

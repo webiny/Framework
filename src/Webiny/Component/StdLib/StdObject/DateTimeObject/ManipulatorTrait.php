@@ -163,7 +163,7 @@ trait ManipulatorTrait
                     $interval = \DateInterval::createFromDateString($interval);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new DateTimeObjectException(DateTimeObjectException::MSG_INVALID_DATE_INTERVAL, [$interval]);
         }
 

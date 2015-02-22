@@ -129,7 +129,7 @@ class ConfigCompiler
      *
      * @return ArrayObject
      */
-    private function _extendConfig($config, $parentConfig)
+    private function _extendConfig(ArrayObject $config, ArrayObject $parentConfig)
     {
 
         $configCalls = null;

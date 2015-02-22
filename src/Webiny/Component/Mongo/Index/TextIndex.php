@@ -9,6 +9,8 @@
 
 namespace Webiny\Component\Mongo\Index;
 
+use Webiny\Component\Mongo\MongoException;
+
 /**
  * Text index
  *

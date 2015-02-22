@@ -124,7 +124,7 @@ class MethodParser
      *
      * @return string Name of the http method, like post, get, etc.
      */
-    private function _getMethod($annotations)
+    private function _getMethod(ConfigObject $annotations)
     {
         return strtolower($annotations->get('method', $this->_classDefaults->get('method', 'get')));
     }
@@ -136,7 +136,7 @@ class MethodParser
      *
      * @return string|boolean Name of the role, or false if there is no access rule defined.
      */
-    private function _getRole($annotations)
+    private function _getRole(ConfigObject $annotations)
     {
         return $annotations->get('role', $this->_classDefaults->get('role', false));
     }
@@ -148,7 +148,7 @@ class MethodParser
      *
      * @return array An array containing cache settings.
      */
-    private function _getCache($annotations)
+    private function _getCache(ConfigObject $annotations)
     {
         return [
             'ttl' => $annotations->get('cache.ttl', $this->_classDefaults->get('cache.ttl', 0))
@@ -162,7 +162,7 @@ class MethodParser
      *
      * @return bool
      */
-    private function _getDefault($annotations)
+    private function _getDefault(ConfigObject $annotations)
     {
         return $annotations->get('default', false);
     }
@@ -174,7 +174,7 @@ class MethodParser
      *
      * @return array
      */
-    private function _getHeader($annotations)
+    private function _getHeader(ConfigObject $annotations)
     {
         // headers status code depends on the request method type, unless it's forced on the class or method
         $successStatus = $annotations->get('header.status.success', false);
@@ -212,7 +212,14 @@ class MethodParser
         ];
     }
 
-    private function _getRateControl($annotations)
+    /**
+     * Extracts the rate control information from the method annotations.
+     *
+     * @param ConfigObject $annotations
+     *
+     * @return array
+     */
+    private function _getRateControl(ConfigObject $annotations)
     {
         return $annotations->get('rateControl', [], true);
     }

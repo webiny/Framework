@@ -143,7 +143,7 @@ abstract class UserAbstract implements UserInterface
     /**
      * Sets the auth flag.
      *
-     * @param $bool
+     * @param bool $bool
      */
     public function setIsAuthenticated($bool)
     {

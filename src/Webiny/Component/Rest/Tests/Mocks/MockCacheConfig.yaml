@@ -3,4 +3,4 @@ Cache:
         TestCache:
             Factory: \Webiny\Component\Cache\Cache
             Method: Memcache
-            MethodArguments: [192.168.58.20, 11211, []]
+            MethodArguments: [127.0.0.1, 11211, []]

@@ -20,7 +20,6 @@ class Transport implements TransportInterface
 {
 
     private $_mailer = null;
-    private $_decorators = [];
     private $_config;
 
     /**

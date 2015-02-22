@@ -123,8 +123,9 @@ class Http implements AuthenticationInterface
         $this->httpSession()->save('username', $username);
         $this->httpSession()->save('password', $password);
 
-        header('Location: ' . $this->httpRequest()->getCurrentUrl());
-        exit;
+        //header('Location: ' . $this->httpRequest()->getCurrentUrl());
+        //exit;
+        $this->httpRedirect($this->httpRequest()->getCurrentUrl());
     }
 
     /**
@@ -175,6 +176,7 @@ class Http implements AuthenticationInterface
 
     /**
      * Triggers the exit process from Http authentication process.
+     * This method is used so we can mock the behaviour of this provider, for unit tests.
      *
      * @throws HttpException
      */

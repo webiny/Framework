@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Http;
 
-use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
 
 /**
@@ -71,10 +70,7 @@ trait HttpTrait
      */
     protected static function httpRedirect($url, $headers = null)
     {
-        if (!StdObjectWrapper::isStdObject($url)) {
-            $url = new UrlObject($url);
-        }
-
+        $url = new UrlObject($url);
         $url->goToUrl($headers); // this method dies when it's executed
     }
 }

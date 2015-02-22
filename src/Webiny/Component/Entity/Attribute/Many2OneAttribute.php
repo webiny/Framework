@@ -80,7 +80,7 @@ class Many2OneAttribute extends AttributeAbstract
             }
         }
 
-        if($this->getValue()->getId()->getValue() == null) {
+        if($this->getValue()->getId()->getValue() === null) {
             $this->getValue()->save();
         }
 

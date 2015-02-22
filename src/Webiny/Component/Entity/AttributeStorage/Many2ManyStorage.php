@@ -77,7 +77,7 @@ class Many2ManyStorage
          */
         foreach ($attribute->getValue() as $item) {
             $firstEntityId = $attribute->getParentEntity()->getId()->getValue();
-            if ($item->getId()->getValue() == null) {
+            if ($item->getId()->getValue() === null) {
                 $item->save();
             }
             $secondEntityId = $item->getId()->getValue();

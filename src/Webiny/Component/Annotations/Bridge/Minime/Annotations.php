@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Annotations\Bridge\Minime;
 
-use Minime\Annotations\AnnotationsBag;
 use Minime\Annotations\ParserRules;
 use Webiny\Component\Annotations\Bridge\AnnotationsInterface;
 

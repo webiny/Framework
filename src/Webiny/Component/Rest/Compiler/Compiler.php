@@ -10,7 +10,6 @@ namespace Webiny\Component\Rest\Compiler;
 use Webiny\Component\Rest\Parser\ParsedApi;
 use Webiny\Component\Rest\Parser\ParsedClass;
 use Webiny\Component\Rest\Parser\PathTransformations;
-use Webiny\Component\Rest\Rest;
 
 /**
  * Compiler transforms ParsedClass instances into a special array.

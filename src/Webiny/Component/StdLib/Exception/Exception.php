@@ -10,9 +10,6 @@
 namespace Webiny\Component\StdLib\Exception;
 
 
-use Webiny\Component\StdLib\StdObjectTrait;
-use Webiny\Component\StdLib\ValidatorTrait;
-
 /**
  * Standard exception class.
  *

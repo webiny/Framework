@@ -10,7 +10,6 @@
 
 namespace Webiny\Component\StdLib\StdObject\ArrayObject;
 
-use Webiny\Component\StdLib\StdObject\StdObjectValidatorTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 

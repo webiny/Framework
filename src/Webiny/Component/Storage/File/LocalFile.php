@@ -28,7 +28,7 @@ class LocalFile extends File
      */
     public function getSize()
     {
-        if ($this->_size == null) {
+        if ($this->_size === null) {
             $this->_size = $this->_storage->getSize($this->_key);
         }
 

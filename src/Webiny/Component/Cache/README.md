@@ -80,7 +80,7 @@ The preferred way of defining cache drivers is creating them inside your the con
       SomeOtherCache:
           Factory: "\Webiny\Component\Cache\Cache"
           Method: "Memcache"
-          Arguments: ['192.168.249.128', '11211']
+          Arguments: ['127.0.0.1', '11211']
 ```
 
 See the `ExampleConfig.yaml` for additional details.

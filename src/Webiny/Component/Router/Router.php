@@ -77,7 +77,7 @@ class Router
         }
 
         // get it from cache
-        if(($result = $this->_loadFromCache('match.' . $url->val())) != false) {
+        if(($result = $this->_loadFromCache('match.' . $url->val())) !== false) {
             return $this->unserialize($result);
         }
 

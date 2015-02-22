@@ -284,7 +284,7 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Insert or update
          */
-        if ($this->getId()->getValue() == null) {
+        if ($this->getId()->getValue() === null) {
             Entity::getInstance()->getDatabase()->insert(static::$_entityCollection, $data);
             $this->getId()->setValue((string)$data['_id']);
         } else {

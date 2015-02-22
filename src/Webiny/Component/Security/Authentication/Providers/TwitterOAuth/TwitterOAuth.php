@@ -38,10 +38,6 @@ class TwitterOAuth implements AuthenticationInterface
      */
     private $_connection;
 
-    /**
-     * @var Config
-     */
-    private $_config;
 
     /**
      * Base constructor.
@@ -134,7 +130,7 @@ class TwitterOAuth implements AuthenticationInterface
      */
     function invalidLoginProvidedCallback()
     {
-        // TODO: Implement invalidLoginProvidedCallback() method.
+        // we don't need this method for TwitterOAuth
     }
 
     /**
@@ -144,7 +140,7 @@ class TwitterOAuth implements AuthenticationInterface
      */
     function loginSuccessfulCallback(UserAbstract $user)
     {
-        // TODO: Implement loginSuccessfulCallback() method.
+        // we don't need this method for TwitterOAuth
     }
 
     /**
@@ -158,7 +154,7 @@ class TwitterOAuth implements AuthenticationInterface
      */
     function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
     {
-        // TODO: Implement userAuthorizedByTokenCallback() method.
+        // we don't need this method for TwitterOAuth
     }
 
     /**
@@ -166,6 +162,6 @@ class TwitterOAuth implements AuthenticationInterface
      */
     function logoutCallback()
     {
-        // TODO: Implement logoutCallback() method.
+        // we don't need this method for TwitterOAuth
     }
 }

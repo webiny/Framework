@@ -12,7 +12,6 @@ use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Entity\EntityException;
-use Webiny\Component\StdLib\StdLibTrait;
 
 
 /**
