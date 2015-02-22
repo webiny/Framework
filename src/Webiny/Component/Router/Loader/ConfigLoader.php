@@ -50,7 +50,7 @@ class ConfigLoader
      */
     function getRouteCollection()
     {
-        foreach ($this->_config as $name => &$routeConfig) {
+        foreach ($this->_config as $name => $routeConfig) {
             $this->_routeCollection->add($name, $this->processRoute($routeConfig));
         }
 

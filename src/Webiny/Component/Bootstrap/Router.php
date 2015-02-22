@@ -51,7 +51,7 @@ class Router
                 $ns = Bootstrap::getInstance()->getEnvironment()->getApplicationConfig()->get('Namespace', false);
 
                 // extract callback parts
-                $callbackData = $this->str($callback['Class'])->trimLeft('\\')->replace($ns, '')->explode('\\')->val();
+                $callbackData = $this->str($callback['Class'])->trimLeft('\\')->trimLeft($ns)->explode('\\')->val();
 
                 if ($callbackData[1] == 'Modules' && $callbackData[3] == 'Controllers') {
                     // custom route, but still an MVC application

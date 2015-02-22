@@ -275,6 +275,8 @@ class Dispatcher
      * Tries to set the view template for the given $instance.
      *
      * @param mixed $instance Instance provided from _getCallbackClassInstance method.
+     *
+     * @return bool
      */
     private function _setTemplate($instance)
     {
@@ -282,6 +284,10 @@ class Dispatcher
         if (!empty($this->getModule()) && $instance->app()->view()->getAutoload()) {
             $templateDir = Bootstrap::getInstance()->getEnvironment()->getApplicationAbsolutePath(
                 ) . 'App/Modules/' . $this->getModule() . '/Views/' . $this->getController();
+
+            if(!is_dir($templateDir)){
+                return false;
+            }
 
             $templates = scandir($templateDir);
             if ($templates) {
@@ -300,6 +306,7 @@ class Dispatcher
                     $instance->app()->view()->setTemplate('../Modules/' . $this->getModule(
                                                           ) . '/Views/' . $this->getController() . '/' . $tplFilename
                     );
+                    return true;
                 }
             }
         }

@@ -45,6 +45,4 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         \Webiny\Component\Bootstrap\Router::getInstance()->mvcRouter('/invalid-module/my-ctrl/my-act/');
     }
-
-
 }

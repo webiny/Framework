@@ -108,7 +108,7 @@ class ClassParser
             throw new RestException('Parser: The class "' . $this->_class . '" doesn\'t have any methods defined.');
         }
 
-        foreach ($methods as &$m) {
+        foreach ($methods as $m) {
             if ($m->isPublic()) {
                 $methodParser = new MethodParser($this->_class, $m, $this->_normalize);
                 $parsedMethod = $methodParser->parse();

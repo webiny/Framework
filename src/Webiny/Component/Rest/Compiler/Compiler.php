@@ -98,7 +98,7 @@ class Compiler
         ];
 
         $file = $cacheFileTemplate;
-        foreach ($map as $k => &$v) {
+        foreach ($map as $k => $v) {
             $file = str_replace('|' . $k . '|', $v, $file);
         }
 
@@ -128,7 +128,7 @@ class Compiler
         ];
 
         $file = $cacheFileTemplate;
-        foreach ($map as $k => &$v) {
+        foreach ($map as $k => $v) {
             $file = str_replace('|' . $k . '|', $v, $file);
         }
 

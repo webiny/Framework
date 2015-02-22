@@ -280,7 +280,7 @@ class View
      */
     public function assign(array $data, $root = 'Ctrl')
     {
-        foreach ($data as $k => &$d) {
+        foreach ($data as $k => $d) {
             if ($root != '') {
                 if (!isset($this->_viewData[$root])) {
                     $this->_viewData[$root] = [];

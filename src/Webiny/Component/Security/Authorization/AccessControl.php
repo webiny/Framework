@@ -116,6 +116,7 @@ class AccessControl
         }
 
         // see which of the rules matches the path and extract the requested roles for access
+        $returnRoles = [];
         foreach ($rules as $r) {
             $path = $r->get('Path', false);
             if ($path && $this->_testPath($path)) {
@@ -127,11 +128,11 @@ class AccessControl
                 }
 
                 // covert the role names to Role instances
-                foreach ($roles as &$role) {
-                    $role = new Role($role);
+                foreach ($roles as $role) {
+                    $returnRoles[] = new Role($role);
                 }
 
-                return $roles;
+                return $returnRoles;
             }
         }
 

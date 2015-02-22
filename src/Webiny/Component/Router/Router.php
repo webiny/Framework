@@ -222,7 +222,7 @@ class Router
      */
     public function appendRoutes(ConfigObject $routes)
     {
-        foreach ($routes as $name => &$routeConfig) {
+        foreach ($routes as $name => $routeConfig) {
             self::$_routeCollection->add($name, $this->_loader->processRoute($routeConfig));
         }
 
@@ -238,7 +238,7 @@ class Router
      */
     public function prependRoutes(ConfigObject $routes)
     {
-        foreach ($routes as $name => &$routeConfig) {
+        foreach ($routes as $name => $routeConfig) {
             self::$_routeCollection->prepend($name, $this->_loader->processRoute($routeConfig));
         }
 
