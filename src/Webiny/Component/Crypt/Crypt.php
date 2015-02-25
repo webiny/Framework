@@ -25,16 +25,17 @@ class Crypt
      */
     private $_driverInstance = null;
 
+
     /**
      * Base constructor.
      *
-     * @param string $passwordAlgo     Name of the password algorithm.
-     * @param string $cipherMode       Cipher block.
-     * @param string $cipherBlock      Cipher mode.
+     * @param int|string $passwordAlgo Name of the password algorithm.
+     * @param string     $cipherMode   Cipher block.
+     * @param string     $cipherBlock  Cipher mode.
      *
      * @throws CryptException
      */
-    public function __construct($passwordAlgo = CRYPT_BLOWFISH, $cipherMode = MCRYPT_MODE_ECB,
+    public function __construct($passwordAlgo = CRYPT_BLOWFISH, $cipherMode = MCRYPT_MODE_CBC,
                                 $cipherBlock = MCRYPT_RIJNDAEL_256
     ) {
         if ($this->isNull($this->_driverInstance)) {
@@ -47,8 +48,7 @@ class Crypt
                     );
                 }
             } catch (\Exception $e) {
-                throw new CryptException('Unable to get the instance from \Webiny\Component\Crypt\Bridge\Crypt::getInstance()'
-                );
+                throw $e;
             }
         }
     }
@@ -167,8 +167,8 @@ class Crypt
     /**
      * Encrypt the given $string using a cypher and the secret $key
      *
-     * @param string      $string               The string you want to encrypt.
-     * @param string      $key                  The secret key that will be used to encrypt the string.
+     * @param string $string The string you want to encrypt.
+     * @param string $key    The secret key that will be used to encrypt the string.
      *
      * @throws CryptException
      *
@@ -188,8 +188,8 @@ class Crypt
      * In order to decrypt the string correctly, you must provide the same secret key that was used for the encryption
      * process.
      *
-     * @param string $string                    The string you want to decrypt.
-     * @param string $key                       The secret key that was used to encrypt the $string.
+     * @param string $string The string you want to decrypt.
+     * @param string $key    The secret key that was used to encrypt the $string.
      *
      * @throws CryptException
      * @return string Decrypted string.
