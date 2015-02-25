@@ -40,7 +40,7 @@ Here are a few examples:
     $randomString = $crypt->generateUserReadableString(5); // A12uL
 
     // generate a string that can contain special characters
-    $randomString = $crypt->generateHardReadableString(5); &"!3g
+    $randomString = $crypt->generateHardReadableString(5); // &"!3g
 ```
 
 ## Password hashing and validation
