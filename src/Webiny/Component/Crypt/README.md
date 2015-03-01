@@ -40,7 +40,7 @@ Here are a few examples:
     $randomString = $crypt->generateUserReadableString(5); // A12uL
 
     // generate a string that can contain special characters
-    $randomString = $crypt->generateHardReadableString(5); &"!3g
+    $randomString = $crypt->generateHardReadableString(5); // &"!3g
 ```
 
 ## Password hashing and validation
@@ -62,9 +62,9 @@ This component comes with a support for encrypting and validating passwords usin
 ## Encrypting and decrypting strings
 
 The last feature provided by this component is encryption and decryption of strings. This process uses a secret key and
-a initialization vector (http://en.wikipedia.org/wiki/Initialization_vector). Both parameters must be exactly the same
-for the decryption process as they were for the encryption process, or else the string cannot be decrypted back to its
-original form.
+a initialization vector (http://en.wikipedia.org/wiki/Initialization_vector). The IV is handled internally, within the method.
+The provided key needs to be exactly the same for the decryption process as is was for the encryption process, 
+or else the string cannot be decrypted back to its original form, and an exception will be thrown.
 
 ```php
     $crypt = new \Webiny\Component\Crypt\Crypt();
@@ -97,22 +97,15 @@ Crypt:
 ### "{$passwordAlgo}"
 
 The algorithm used for hashing passwords. Supported algorithms depend on the defined `Bridge` library.
-The default library, `PHP-CryptLib`, supports:
-- **BCrypt** - (*default*)
-- **PBKDF1**
-- **PBKDF2**
-- **SHA256** - (crypt()'s implementation)
-- **SHA512** - (crypt()'s implementation)
-- **Schneier** (a PBKDF derivative)
+The default library, `Webiny\Crypt`, supports the same algorithms as [password_hash](http://php.net/manual/en/function.password-hash.php).
+By default `CRYPT_BLOWFISH` is used.
 
 ### "{$cipherMode}"
 
 This is the mode that will be used for encrypting and decrypting strings.
 Following modes are supported by the default library:
 - **CBC** - Encryption (Cipher Block Chaining) - (*default*)
-- **CCM** - Encryption and Authentication (Counter Cipher Block Chaining)
 - **CFB** - Encryption (Cipher FeedBack)
-- **CTR** - Encryption (Counter)
 - **ECB** - Encryption (Electronic CodeBook)
 - **NOFB** - Encryption (Output FeedBack - Variable Block Size)
 
@@ -121,21 +114,14 @@ Following modes are supported by the default library:
 
 `cipher_block` is the portable block cipher used, in combination with `cipher_mode` for the encrypt/decrypt method.
 The following options are available:
-- **aes-128**
-- **aes-192**
-- **aes-256**
-- **rijndael-128** - (*default*)
-- **rijndael-160**
+- **Blowfish**
+- **cast-128**
+- **cast-256**
+- **rijndael-128**
 - **rijndael-192**
-- **rijndael-224**
-- **rijndael-256**
+- **rijndael-256** - (*default*)
 - **des**
 - **tripledes**
-
-### "{$initializationVector}"
-
-This option holds the default value for the initialization vector used in `encrypt` and `decrypt` methods.
-The default value is `_FOO_VECTOR`.
 
 ## Crypt as a service
 
@@ -154,7 +140,8 @@ class MyClass
 {
     use CryptTrait;
 
-    function myMethod(){
+    function myMethod()
+    {
         $crypt = $this->crypt('FooCryptService');
     }
 }

@@ -63,26 +63,38 @@ class Crypt implements CryptInterface
      */
     function generateRandomInt($min = 1, $max = PHP_INT_MAX)
     {
+        // get the range
         $range = $max - $min;
-        $bytes = max(floor(mb_strlen($range, '8bit')/8), 1);
+        if ($range === 0) {
+            return $min;
+        }
 
+        // how many bytes we need to generate, based on the range
+        $bytes = max(floor(mb_strlen($range, '8bit') / 8), 1);
+
+        // let's generate a random number that is greater than the $range
         $num = 1;
         do {
             $temp = $num * hexdec(bin2hex($this->_generator($bytes)));
-            if ($temp < PHP_INT_MAX) {
-                $num = $temp;
-            } else {
-                break;
+            if ($temp > 0) {
+                if ($temp < PHP_INT_MAX) {
+                    $num = $temp;
+                } else {
+                    break;
+                }
             }
         } while ($num < $range);
 
         if ($num > $range) {
+            // correct the $int, to fall within a random place between 0 and &range
             $minTemp = $num - $range;
             $randDiff = mt_rand($minTemp, $num);
             $num -= $randDiff;
             $num += $min;
         } else {
-            if ($num < $range) {
+            if ($num <= $range) {
+                // add random number to $min
+                // happens in case when we had to break the loop, because $int would be greater than PHP_INT_MAX
                 $num += $min;
             }
         }
@@ -101,13 +113,18 @@ class Crypt implements CryptInterface
      */
     function generateRandomString($length, $chars = '')
     {
+        // generate a random string
         $random = $this->_generator($length);
 
+        // define the character map
         if ($chars == '') {
             $chars = self::CHARS . self::NUMBERS . self::SYMBOLS;
         }
+
         $len = strlen($chars);
 
+        // build a string by converting the generated random string
+        // into a random number that is placed within the defined character map
         $string = '';
         for ($i = 0; $i < $length; $i++) {
             $o = ord($random[$i]) % $len;
@@ -148,18 +165,12 @@ class Crypt implements CryptInterface
      * The hashing algorithm used depends on your config.
      *
      * @param string $password String you wish to hash.
-     * @param string $salt     Optional salt. If not provided, a random salt will be generated.
      *
      * @return string Hash of the given string.
      */
-    function createPasswordHash($password, $salt = null)
+    function createPasswordHash($password)
     {
-        $options = [];
-        if (!is_null($salt)) {
-            $options = ['salt' => $salt];
-        }
-
-        return password_hash($password, $this->_passwordAlgo, $options);
+        return password_hash($password, $this->_passwordAlgo);
     }
 
     /**
@@ -186,20 +197,31 @@ class Crypt implements CryptInterface
      */
     function encrypt($string, $key)
     {
-        $key = hash('sha256', $key, true);
-        $iv_size = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
-        $iv = $this->generateRandomString($iv_size);
-        $stringHash = hash('sha256', $string, true); // we need it to verify if the decrypted string is correct
+        // hash the key, so we have the required key size
+        $key = $this->_getKeyHash($key);
 
-        $cipherText = mcrypt_encrypt($this->_cipherBlock, $key, $string, $this->_cipherMode, $iv);
+        // create initialization vector
+        $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
+        if (!$ivSize) {
+            throw new CryptException('The provided cipher doesn\'t support the block size.');
+        }
+        $iv = $this->generateRandomString($ivSize);
 
+        // used later to verify if the decrypted string is correct (use a weaker hash to save space)
+        $stringHash = hash('crc32', $string);
+
+        // encrypt the message
+        $cipherText = mcrypt_encrypt($this->_cipherBlock, $key, $stringHash . $string, $this->_cipherMode, $iv);
+
+        // verify if we managed to encrypt the message
         if (!$cipherText) {
             throw new CryptException('Unable to encrypt the data.
             Check that the provided key has the proper length.'
             );
         }
 
-        return base64_encode($iv . $stringHash . $cipherText);
+        // concatenate and encode the result
+        return base64_encode($iv . $cipherText);
     }
 
     /**
@@ -215,18 +237,37 @@ class Crypt implements CryptInterface
      */
     function decrypt($string, $key)
     {
-        $key = hash('sha256', $key, true);
-        $text = base64_decode($string);
-        $iv = substr($text, 0, 32);
-        $stringHash = substr($text, 32, 32);
-        $text = substr($text, 64);
+        // hash the key
+        $key = $this->_getKeyHash($key);
 
+        // decode the string
+        $text = base64_decode($string);
+
+        // we need to know the IV size
+        $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
+        if (!$ivSize) {
+            throw new CryptException('The provided cipher doesn\'t support the block size.');
+        }
+
+        // extract the iv from the message
+        $iv = substr($text, 0, $ivSize);
+
+        // remove the iv from the message
+        $text = substr($text, $ivSize);
+
+        // decrypt the message
         $plainText = mcrypt_decrypt($this->_cipherBlock, $key, $text, $this->_cipherMode, $iv);
 
-        if (!$plainText || hash('sha256', trim($plainText), true) != $stringHash) {
+        // extract the  string hash from the message
+        $stringHash = substr($plainText, 0, 8);
+        $plainText = substr($plainText, 8);
+
+        // verify if the message was decrypted correctly
+        if (!$plainText || hash('crc32', trim($plainText)) != $stringHash) {
             throw new CryptException('Unable to decrypt the data.');
         }
 
+        // return the result
         return trim($plainText);
     }
 
@@ -249,7 +290,7 @@ class Crypt implements CryptInterface
             $seedTwo .= chr((mt_rand() ^ (mt_rand() / getrandmax())) % 256);
         }
 
-        // seed: microtime+time
+        // seed: microtime
         $seedThree = '';
         do {
             $seedThree .= hash('sha256', microtime(true));
@@ -259,5 +300,22 @@ class Crypt implements CryptInterface
         $random = str_shuffle($seedThree . $seedOne . $seedTwo);
 
         return substr($random, 0, $size);
+    }
+
+    /**
+     * Generates a hash from the given key. The has length is determined by the cipher mode and cipher block.
+     *
+     * @param string $key Key for which the hash should be generated.
+     *
+     * @return string
+     */
+    private function _getKeyHash($key)
+    {
+        // get key size based on the block and mode
+        $keySize = mcrypt_get_key_size($this->_cipherBlock, $this->_cipherMode);
+
+        // generate and return the key hash
+        $key = hash('sha256', $key, true);
+        return substr($key, 0, $keySize);
     }
 }
