@@ -19,8 +19,8 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 /**
  * Config class creates config objects from files, strings and arrays.
  *
- * Example usage:
- * $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini');
+ * Ex1: $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini');
+ * Ex2: $config = $this->config()->ini('path/to/file.ini');
  *
  * @package         Webiny\Component\Config
  */
@@ -94,11 +94,11 @@ class Config
 
 
     /**
-     * Get Config object from PHP file or array
+     * Get Config object from PHP array
      *
-     * @param string|array $resource   Config resource in form of a file path or config string
+     * @param array $resource   Config resource in form of a PHP array
      *
-     * @param bool         $flushCache Flush existing cache and load config file
+     * @param bool  $flushCache Flush existing cache and create new config
      *
      * @return ConfigObject
      */

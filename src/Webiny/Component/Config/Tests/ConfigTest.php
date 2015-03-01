@@ -47,12 +47,22 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         Config::getInstance()->json($jsonConfig);
     }
 
+    /**
+     * @expectedException \Webiny\Component\Config\ConfigException
+     */
     function testPhpConfig()
     {
         $phpConfig = __DIR__ . '/Configs/config.php';
         $config = Config::getInstance()->php($phpConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('www.webiny.com', $config->get('default.url'));
+    }
+
+    function testPhpArrayConfig()
+    {
+        $config = Config::getInstance()->php(['key' => 'value']);
+        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertEquals('value', $config->get('key'));
     }
 
     function testIniConfig()
