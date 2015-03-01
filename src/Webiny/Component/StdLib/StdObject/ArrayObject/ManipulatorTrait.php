@@ -50,6 +50,10 @@ trait ManipulatorTrait
             }
         }
 
+        if(!isset($array[$key])){
+            return $value;
+        }
+
         return $array[$key];
     }
 
@@ -103,9 +107,16 @@ trait ManipulatorTrait
 
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
+            if(!isset($array[$keys[0]])){
+                $array[$keys[0]] = [];
+            }
             $targetArray = new ArrayObject($array[$keys[0]]);
 
             return $targetArray->keyNested($keys[1], $value, true);
+        }
+
+        if(!isset($array[$key])){
+            return $value;
         }
 
         return $array[$key];
