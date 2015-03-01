@@ -204,7 +204,7 @@ class Storage
      * @throws StorageException
      * @return mixed
      */
-    public function getAbsolutePath($key)
+    public function getAbsolutePath($key = '')
     {
         if ($this->supportsAbsolutePaths()) {
             return $this->_driver->getAbsolutePath($key);

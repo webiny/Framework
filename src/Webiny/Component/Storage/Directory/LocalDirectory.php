@@ -119,6 +119,16 @@ class LocalDirectory implements DirectoryInterface, \IteratorAggregate
         return $this->_key;
     }
 
+    /**
+     * Get absolute folder path
+     *
+     * @return string
+     */
+    public function getAbsolutePath()
+    {
+        return $this->_storage->getAbsolutePath($this->_key);
+    }
+
     protected function _parseFilter($filter)
     {
         if (empty($filter)) {

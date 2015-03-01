@@ -111,7 +111,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     {
         $this->_recentKey = $key;
         $data = file_get_contents($this->_buildPath($key));
-        if (!$data) {
+        if ($data === false) {
             throw new StorageException(StorageException::FAILED_TO_READ);
         }
 
