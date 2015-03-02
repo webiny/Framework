@@ -13,7 +13,7 @@ Crypt:
             Class: \Webiny\Component\Crypt\Crypt
         Cookie:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [$2y$, ecb, rijndael-128]
+            Arguments: [$2y$, cbc, rijndael-128]
     # You can overwrite the default driver by providing your own.
     # How to create a new driver, read in the Readme.md file.
     # If you don't wish to change the default driver,
