@@ -87,7 +87,7 @@ Crypt:
             Class: \Webiny\Component\Crypt\Crypt
         Cookie:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [$2y$, ecb, rijndael-128]
+            Arguments: [$2y$, ebc, rijndael-128]
 ```
 
 ## About
