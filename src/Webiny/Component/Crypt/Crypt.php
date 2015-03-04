@@ -25,9 +25,20 @@ class Crypt
      */
     private $_driverInstance = null;
 
-    protected $_passwordAlgo = PASSWORD_BCRYPT;
+    /**
+     * @var int Password algorithm used by password_hash
+     */
+    protected $_passwordAlgo = CRYPT_BLOWFISH;
+
+    /**
+     * @var string Mcrypt mode used for encryption and decryption.
+     */
     protected $_cipherMode = MCRYPT_MODE_CFB;
-    protected $_cipherBlock = MCRYPT_RIJNDAEL_128;
+
+    /**
+     * @var string * @var string Mcrypt cipher used for encryption and decryption.
+     */
+    protected $_cipher = MCRYPT_RIJNDAEL_128;
 
 
     /**
@@ -35,13 +46,12 @@ class Crypt
      *
      * @throws CryptException
      */
-    public function __construct() {
+    public function __construct()
+    {
         if ($this->isNull($this->_driverInstance)) {
             try {
-                $this->_driverInstance = Bridge\Crypt::getInstance(
-                    $this->_passwordAlgo,
-                    $this->_cipherMode,
-                    $this->_cipherBlock
+                $this->_driverInstance = Bridge\Crypt::getInstance($this->_passwordAlgo, $this->_cipherMode,
+                                                                   $this->_cipher
                 );
 
                 if (!$this->isInstanceOf($this->_driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
@@ -194,7 +204,7 @@ class Crypt
      * @param string $key    The secret key that was used to encrypt the $string.
      *
      * @throws CryptException
-     * @return string Decrypted string.
+     * @return string Decrypted string or false if unable to decrypt (wrong key).
      */
     public function decrypt($string, $key)
     {

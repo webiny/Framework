@@ -129,8 +129,8 @@ class Crypt implements CryptInterface
      * Generates a random string using the defined character set.
      * If $chars param is empty, the string will be generated using numbers, letters and special characters.
      *
-     * @param int    $length Length of the generated string.
-     * @param string $chars  A string containing a list of chars that will be uses for generating the random string.
+     * @param int $length   Length of the generated string.
+     * @param string $chars A string containing a list of chars that will be uses for generating the random string.
      *
      * @return string Random string with the given $length containing only the provided set of $chars.
      */
@@ -288,7 +288,7 @@ class Crypt implements CryptInterface
         // generate new hash
         $newStringHash = hash_hmac(self::HASH, $cipherText, $macKey, true);
 
-        if($newStringHash != $stringHash){
+        if ($newStringHash != $stringHash) {
             return false; // don't throw the exception, so we don't expose the key
         }
 
@@ -332,10 +332,14 @@ class Crypt implements CryptInterface
 
         // mix the seeds
         $mixLoop = mt_rand(2, 5);
-        $seeds = [$seedOne, $seedTwo, $seedThree];
+        $seeds = [
+            $seedOne,
+            $seedTwo,
+            $seedThree
+        ];
         shuffle($seeds);
         $random = implode('', $seeds);
-        for($i=0; $i<$mixLoop; $i++){
+        for ($i = 0; $i < $mixLoop; $i++) {
             $random = str_shuffle($random);
         }
 
@@ -356,6 +360,7 @@ class Crypt implements CryptInterface
 
         // generate and return the key hash
         $key = hash(self::HASH, $key, true);
+
         return mb_substr($key, 0, $keySize, '8bit');
     }
 }

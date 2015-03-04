@@ -112,7 +112,7 @@ or else the string cannot be decrypted back to its original form. In that case, 
 The component doesn't take any configuration.
 Internally the following values are set.
 
-Password algorithm: `PASSWORD_BCRYPT`
+Password algorithm: `CRYPT_BLOWFISH`
 - used for generating password hashes
 
 Encryption cipher: `rijndael-128`
