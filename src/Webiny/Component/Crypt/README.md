@@ -87,7 +87,7 @@ Crypt:
             Class: \Webiny\Component\Crypt\Crypt
         Cookie:
             Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [$2y$, ebc, rijndael-128]
+            Arguments: [$2y$, cbc, rijndael-128]
 ```
 
 ## About
@@ -117,9 +117,9 @@ The following options are available:
 - **Blowfish**
 - **cast-128**
 - **cast-256**
-- **rijndael-128**
+- **rijndael-128** - (*default*)
 - **rijndael-192**
-- **rijndael-256** - (*default*)
+- **rijndael-256** 
 - **des**
 - **tripledes**
 
