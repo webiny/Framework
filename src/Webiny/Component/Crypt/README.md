@@ -3,6 +3,28 @@ Crypt Component
 The `Crypt` component provides methods for generating random numbers and strings, also, password hashing and password
 hash verification and methods for encryption and decryption of strings.
 
+The component uses a combination of three different seeds for providing randomness:
+  - MCRYPT_DEV_URANDOM,
+  - mt_rand
+  - microtime
+
+For mixing seeds we use a basic combination of `mt_rand`, `shuffle` and `str_shuffle`.
+
+Password hashing and validation if done using native `password_hash` and `password_verify` methods.
+Encoding and decoding is done using `mcrypt_encrypt` and `mcrypt_decrypt` methods.
+
+Notice:
+This class will provide the necessary security for most your day-to-day operations, like
+storing and verifying passwords, generating random numbers and strings,
+and also basic encryption and decryption.
+
+The library has been tested, but not reviewed by a security expert. If you have
+any suggestions or improvements to report, feel free to open an issue.
+
+If you require a more advanced library for generating higher strength random numbers,
+we suggest you use, or create a driver for, [ircmaxell/RandomLib](https://github.com/ircmaxell/RandomLib).
+
+
 Install the component
 ---------------------
 The best way to install the component is using Composer. This library requires that you also add a repository to your
@@ -13,12 +35,25 @@ composer require webiny/crypt
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/crypt).
 
+## Using Crypt
+
+```php
+class MyClass
+{
+    use Webiny\Component\Crypt\CryptTrait;
+
+    function myMethod()
+    {
+        $this->crypt()->encrypt('to encrypt', 'secret key');
+    }
+}
+```
+
 ## Generate random integers
 
 To generate a random integer you just have to pass the range to the `Crypt` instance:
 
 ```php
-    $crypt = new \Webiny\Component\Crypt\Crypt();
     $randomInt = $crypt->generateRandomInt(10, 20); // e.g. 15
 ```
 
@@ -31,8 +66,6 @@ characters to make the string more "harder".
 Here are a few examples:
 
 ```php
-    $crypt = new \Webiny\Component\Crypt\Crypt();
-
     // generate a string from a defined set of characters
     $randomString = $crypt->generateRandomString(5, $chars = 'abc'); // e.g. cabcc
 
@@ -50,8 +83,6 @@ algorithms like `md5` or `sha1`, but a more secure way is using encryption algor
 This component comes with a support for encrypting and validating passwords using such a method.
 
 ```php
-    $crypt = new \Webiny\Component\Crypt\Crypt();
-
     // hash password
     $passwordHash = $crypt->createPasswordHash('login123'); // $2y$08$GgGha6bh53ofEPnBawShwO5FA3Q8ImvPXjJzh662/OAWkjeejAJKa
 
@@ -63,8 +94,8 @@ This component comes with a support for encrypting and validating passwords usin
 
 The last feature provided by this component is encryption and decryption of strings. This process uses a secret key and
 a initialization vector (http://en.wikipedia.org/wiki/Initialization_vector). The IV is handled internally, within the method.
-The provided key needs to be exactly the same for the decryption process as is was for the encryption process, 
-or else the string cannot be decrypted back to its original form, and an exception will be thrown.
+The provided key needs to be exactly the same for the decryption process as is was for the encryption process,
+or else the string cannot be decrypted back to its original form. In that case, the component returns `false` as the result.
 
 ```php
     $crypt = new \Webiny\Component\Crypt\Crypt();
@@ -78,76 +109,15 @@ or else the string cannot be decrypted back to its original form, and an excepti
 
 # Crypt config
 
-Example config:
+The component doesn't take any configuration.
+Internally the following values are set.
 
-```yaml
-Crypt:
-    Services:
-        Password:
-            Class: \Webiny\Component\Crypt\Crypt
-        Cookie:
-            Class: \Webiny\Component\Crypt\Crypt
-            Arguments: [$2y$, cbc, rijndael-128]
-```
+Password algorithm: `PASSWORD_BCRYPT`
+- used for generating password hashes
 
-## About
+Encryption cipher: `rijndael-128`
+Encryption mode: `cfb`
 
-`Crypt` config has the following options:
-
-### "{$passwordAlgo}"
-
-The algorithm used for hashing passwords. Supported algorithms depend on the defined `Bridge` library.
-The default library, `Webiny\Crypt`, supports the same algorithms as [password_hash](http://php.net/manual/en/function.password-hash.php).
-By default `CRYPT_BLOWFISH` is used.
-
-### "{$cipherMode}"
-
-This is the mode that will be used for encrypting and decrypting strings.
-Following modes are supported by the default library:
-- **CBC** - Encryption (Cipher Block Chaining) - (*default*)
-- **CFB** - Encryption (Cipher FeedBack)
-- **ECB** - Encryption (Electronic CodeBook)
-- **NOFB** - Encryption (Output FeedBack - Variable Block Size)
-
-
-### "{$cipherBlock}"
-
-`cipher_block` is the portable block cipher used, in combination with `cipher_mode` for the encrypt/decrypt method.
-The following options are available:
-- **Blowfish**
-- **cast-128**
-- **cast-256**
-- **rijndael-128** - (*default*)
-- **rijndael-192**
-- **rijndael-256** 
-- **des**
-- **tripledes**
-
-## Crypt as a service
-
-This is the preferred way to use the component.
-
-To define a crypt services, you need to create your config file and set it using:
-
-```php
-    Crypt::setConfig($pathToYourConfig);
-```
-
-Then you can use is by getting the instance over the `CryptTrait`
-
-```php
-class MyClass
-{
-    use CryptTrait;
-
-    function myMethod()
-    {
-        $crypt = $this->crypt('FooCryptService');
-    }
-}
-```
-
-An example config can be found under `ExampleConfig.yaml`.
 
 ## Custom `Crypt` driver
 

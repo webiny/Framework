@@ -25,22 +25,24 @@ class Crypt
      */
     private $_driverInstance = null;
 
+    protected $_passwordAlgo = PASSWORD_BCRYPT;
+    protected $_cipherMode = MCRYPT_MODE_CFB;
+    protected $_cipherBlock = MCRYPT_RIJNDAEL_128;
+
 
     /**
      * Base constructor.
      *
-     * @param int|string $passwordAlgo Name of the password algorithm.
-     * @param string     $cipherMode   Cipher block.
-     * @param string     $cipherBlock  Cipher mode.
-     *
      * @throws CryptException
      */
-    public function __construct($passwordAlgo = CRYPT_BLOWFISH, $cipherMode = MCRYPT_MODE_CBC,
-                                $cipherBlock = MCRYPT_RIJNDAEL_128
-    ) {
+    public function __construct() {
         if ($this->isNull($this->_driverInstance)) {
             try {
-                $this->_driverInstance = Bridge\Crypt::getInstance($passwordAlgo, $cipherMode, $cipherBlock);
+                $this->_driverInstance = Bridge\Crypt::getInstance(
+                    $this->_passwordAlgo,
+                    $this->_cipherMode,
+                    $this->_cipherBlock
+                );
 
                 if (!$this->isInstanceOf($this->_driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
                     throw new CryptException('The provided bridge does not implement the required

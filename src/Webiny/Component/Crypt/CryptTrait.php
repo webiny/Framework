@@ -7,9 +7,6 @@
 
 namespace Webiny\Component\Crypt;
 
-use Webiny\Component\ServiceManager\ServiceManager;
-use Webiny\Component\ServiceManager\ServiceManagerException;
-
 /**
  * Crypt trait.
  *
@@ -21,17 +18,10 @@ trait CryptTrait
     /**
      * Get Crypt component instance.
      *
-     * @param string $cryptId Name of the crypt service.
-     *
-     * @throws \Webiny\Component\ServiceManager\ServiceManagerException
      * @return Crypt
      */
-    function crypt($cryptId)
+    function crypt()
     {
-        try {
-            return ServiceManager::getInstance()->getService('Crypt.' . $cryptId);
-        } catch (ServiceManagerException $e) {
-            throw $e;
-        }
+        return new Crypt();
     }
 }

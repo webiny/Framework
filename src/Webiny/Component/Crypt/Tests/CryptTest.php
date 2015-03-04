@@ -11,10 +11,6 @@ use Webiny\Component\Crypt\Crypt;
 
 class CryptTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        Crypt::setConfig(__DIR__ . '/ExampleConfig.yaml');
-    }
 
     public function testConstructor()
     {
@@ -110,17 +106,14 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $crypt->decrypt($encrypted, $decKey));
     }
 
-    /**
-     * @throws \Webiny\Component\Crypt\CryptException
-     * @expectedExceptionMessage Unable to decrypt the data.
-     * @expectedException \Webiny\Component\Crypt\CryptException
-     */
+
     public function testEncryptDecryptFail()
     {
         $crypt = new Crypt();
         $encrypted = $crypt->encrypt('test string', 'some key');
 
-        $crypt->decrypt($encrypted, 'wrong key');
+        $result = $crypt->decrypt($encrypted, 'wrong key');
+        $this->assertFalse($result);
     }
 
     public function encryptDescryptDataProvider()

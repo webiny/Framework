@@ -8,12 +8,34 @@
 namespace Webiny\Component\Crypt\Bridge\Webiny;
 
 use Webiny\Component\Crypt\Bridge\CryptInterface;
-use Webiny\Component\Crypt\CryptException;
 
 /**
  * Class Crypt.
  *
- * This is a simple class providing the basic cryptographic methods with a medium random string generator.
+ * This is a simple class providing the basic cryptographic methods.
+ *
+ * The class uses a combination of three different seeds for providing randomness:
+ *  - MCRYPT_DEV_URANDOM,
+ *  - mt_rand
+ *  - microtime
+ *
+ * For mixing seeds we use a basic combination of mt_rand, shuffle and str_shuffle
+ *
+ * Password hashing and validation if done using nativ password_hash and password_verify methods.
+ *
+ * Encoding and decoding is done using mcrypt methods.
+ *
+ * Notice:
+ * This class will provide the neccessary security for most your day-to-day operations, like
+ * storing and verifying passwords, generating medium strenght random numbers and strings,
+ * and also basic medium encryption and decryption.
+ *
+ * The library has been tested, but not reviewd by a security expert. If you have
+ * any suggestions or improvements to report, feel free to open an issue.
+ *
+ * If you require a more advanced random library, with higher strenght random generator,
+ * we suggest you use https://github.com/ircmaxell/RandomLib.
+ *
  *
  * @package Webiny\Component\Crypt\Bridge\Webiny
  */
@@ -22,6 +44,7 @@ class Crypt implements CryptInterface
     const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     const NUMBERS = '0123456789';
     const SYMBOLS = '!"#$%&\'()* +,-./:;<=>?@[\]^_`{|}~';
+    const HASH = 'sha512';
 
     /**
      * @var string Name of the password algorithm.
@@ -200,28 +223,29 @@ class Crypt implements CryptInterface
         // hash the key, so we have the required key size
         $key = $this->_getKeyHash($key);
 
+        // mac key
+        $macKey = $this->_getKeyHash($key);
+
         // create initialization vector
         $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
         if (!$ivSize) {
-            throw new CryptException('The provided cipher doesn\'t support the block size.');
+            return false; // don't throw the exception, so we don't expose the key
         }
         $iv = $this->generateRandomString($ivSize);
 
-        // used later to verify if the decrypted string is correct (use a weaker hash to save space)
-        $stringHash = hash('crc32', $string);
-
         // encrypt the message
-        $cipherText = mcrypt_encrypt($this->_cipherBlock, $key, $stringHash . $string, $this->_cipherMode, $iv);
+        $cipherText = mcrypt_encrypt($this->_cipherBlock, $key, $string, $this->_cipherMode, $iv);
 
         // verify if we managed to encrypt the message
         if (!$cipherText) {
-            throw new CryptException('Unable to encrypt the data.
-            Check that the provided key has the proper length.'
-            );
+            return false; // don't throw the exception, so we don't expose the key
         }
 
+        // used later to verify if the decrypted string is correct
+        $stringHash = hash_hmac(self::HASH, $cipherText, $macKey, true);
+
         // concatenate and encode the result
-        return base64_encode($iv . $cipherText);
+        return base64_encode($iv . $cipherText . $stringHash);
     }
 
     /**
@@ -240,31 +264,40 @@ class Crypt implements CryptInterface
         // hash the key
         $key = $this->_getKeyHash($key);
 
+        // mac key
+        $macKey = $this->_getKeyHash($key);
+
         // decode the string
-        $text = base64_decode($string);
+        $string = base64_decode($string);
 
         // we need to know the IV size
         $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
         if (!$ivSize) {
-            throw new CryptException('The provided cipher doesn\'t support the block size.');
+            return false; // don't throw the exception, so we don't expose the key
         }
 
         // extract the iv from the message
-        $iv = substr($text, 0, $ivSize);
+        $iv = substr($string, 0, $ivSize);
 
-        // remove the iv from the message
-        $text = substr($text, $ivSize);
+        // extract the string hash from the message
+        $stringHash = substr($string, -64);
+
+        // extract cipher text
+        $cipherText = substr($string, $ivSize, -64);
+
+        // generate new hash
+        $newStringHash = hash_hmac(self::HASH, $cipherText, $macKey, true);
+
+        if($newStringHash != $stringHash){
+            return false; // don't throw the exception, so we don't expose the key
+        }
 
         // decrypt the message
-        $plainText = mcrypt_decrypt($this->_cipherBlock, $key, $text, $this->_cipherMode, $iv);
-
-        // extract the  string hash from the message
-        $stringHash = substr($plainText, 0, 8);
-        $plainText = substr($plainText, 8);
+        $plainText = mcrypt_decrypt($this->_cipherBlock, $key, $cipherText, $this->_cipherMode, $iv);
 
         // verify if the message was decrypted correctly
-        if (!$plainText || hash('crc32', trim($plainText)) != $stringHash) {
-            throw new CryptException('Unable to decrypt the data.');
+        if (!$plainText) {
+            return false; // don't throw the exception, so we don't expose the key
         }
 
         // return the result
@@ -293,13 +326,20 @@ class Crypt implements CryptInterface
         // seed: microtime
         $seedThree = '';
         do {
-            $seedThree .= hash('sha256', microtime(true));
+            $seedThree .= microtime(true);
         } while (strlen($seedThree) < $size);
+        $seedThree = hash(self::HASH, $seedThree);
 
         // mix the seeds
-        $random = str_shuffle($seedThree . $seedOne . $seedTwo);
+        $mixLoop = mt_rand(2, 5);
+        $seeds = [$seedOne, $seedTwo, $seedThree];
+        shuffle($seeds);
+        $random = implode('', $seeds);
+        for($i=0; $i<$mixLoop; $i++){
+            $random = str_shuffle($random);
+        }
 
-        return substr($random, 0, $size);
+        return mb_substr($random, 0, $size, '8bit');
     }
 
     /**
@@ -315,7 +355,7 @@ class Crypt implements CryptInterface
         $keySize = mcrypt_get_key_size($this->_cipherBlock, $this->_cipherMode);
 
         // generate and return the key hash
-        $key = hash('sha256', $key, true);
-        return substr($key, 0, $keySize);
+        $key = hash(self::HASH, $key, true);
+        return mb_substr($key, 0, $keySize, '8bit');
     }
 }

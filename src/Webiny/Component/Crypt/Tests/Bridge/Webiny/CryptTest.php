@@ -182,14 +182,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($text, $decText);
     }
 
-    /**
-     * @expectedException \Webiny\Component\Crypt\CryptException
-     * @expectedExceptionMessage Unable to decrypt the data.
-     */
+
     public function testEncryptDecryptException()
     {
         $c = new CryptBridge(CRYPT_BLOWFISH, MCRYPT_MODE_ECB, MCRYPT_RIJNDAEL_256);
         $data = $c->encrypt('test', 'secret key');
-        $c->decrypt($data, 'wrong key');
+        $result = $c->decrypt($data, 'wrong key');
+
+        $this->assertFalse($result);
     }
 }
