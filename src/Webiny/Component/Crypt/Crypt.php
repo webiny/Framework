@@ -36,7 +36,7 @@ class Crypt
      * @throws CryptException
      */
     public function __construct($passwordAlgo = CRYPT_BLOWFISH, $cipherMode = MCRYPT_MODE_CBC,
-                                $cipherBlock = MCRYPT_RIJNDAEL_256
+                                $cipherBlock = MCRYPT_RIJNDAEL_128
     ) {
         if ($this->isNull($this->_driverInstance)) {
             try {
