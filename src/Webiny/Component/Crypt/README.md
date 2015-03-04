@@ -67,7 +67,7 @@ Here are a few examples:
 
 ```php
     // generate a string from a defined set of characters
-    $randomString = $crypt->generateRandomString(5, $chars = 'abc'); // e.g. cabcc
+    $randomString = $crypt->generateRandomString(5, 'abc'); // e.g. cabcc
 
     // generate a string that contains only letters (lower & upper case and numbers)
     $randomString = $crypt->generateUserReadableString(5); // A12uL
@@ -81,6 +81,8 @@ Here are a few examples:
 A preferred way of storing users passwords in a database is by hashing/encrypting it first. You can use common hashing
 algorithms like `md5` or `sha1`, but a more secure way is using encryption algorithms like Blowfish.
 This component comes with a support for encrypting and validating passwords using such a method.
+Note that you don't need to add `salt` to your password, the salt is handled internally in the `createPasswordHash` method.
+
 
 ```php
     // hash password
@@ -98,8 +100,6 @@ The provided key needs to be exactly the same for the decryption process as is w
 or else the string cannot be decrypted back to its original form. In that case, the component returns `false` as the result.
 
 ```php
-    $crypt = new \Webiny\Component\Crypt\Crypt();
-
     // encrypt it
     $encrypted = $crypt->encrypt('some data', 'abcdefgh12345678');
 
@@ -116,7 +116,9 @@ Password algorithm: `PASSWORD_BCRYPT`
 - used for generating password hashes
 
 Encryption cipher: `rijndael-128`
+
 Encryption mode: `cfb`
+- used for encryption and decryption
 
 
 ## Custom `Crypt` driver
