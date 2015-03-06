@@ -28,7 +28,7 @@ class Http
         'Session'        => [
             'Storage' => [
                 'Driver'     => '\Webiny\Component\Http\Session\Storage\NativeStorage',
-                'Prefix'     => 'wfs_',
+                'Prefix'     => '',
                 'ExpireTime' => 86400
             ]
         ],
@@ -43,7 +43,7 @@ class Http
             'Storage'    => [
                 'Driver' => '\Webiny\Component\Http\Cookie\Storage\NativeStorage'
             ],
-            'Prefix'     => 'wfc_',
+            'Prefix'     => '',
             'HttpOnly'   => 'true',
             'ExpireTime' => 86400
         ]
