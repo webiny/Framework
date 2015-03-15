@@ -9,6 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
+         stderr="true"
          bootstrap="vendor/autoload.php"
         >
     <listeners>
