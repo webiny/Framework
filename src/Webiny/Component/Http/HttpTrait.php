@@ -14,7 +14,6 @@ use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
  *
  * @package         Webiny\Component\Http
  */
-
 trait HttpTrait
 {
 
@@ -67,10 +66,14 @@ trait HttpTrait
      *
      * @param string|UrlObject $url
      * @param string|int|array $headers Headers that you wish to send with your request.
+     * @param int              $redirectCode
      */
-    protected static function httpRedirect($url, $headers = null)
+    protected static function httpRedirect($url, $headers = [], $redirectCode = 301)
     {
         $url = new UrlObject($url);
-        $url->goToUrl($headers); // this method dies when it's executed
+
+        $headers['Location'] = $url->val();
+        $response = new Response('', $redirectCode, $headers);
+        $response->sendHeaders();
     }
 }
