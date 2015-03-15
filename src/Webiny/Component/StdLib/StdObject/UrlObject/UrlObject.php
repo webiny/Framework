@@ -143,45 +143,6 @@ class UrlObject extends StdObjectAbstract
     }
 
     /**
-     * Redirect the current address.
-     *
-     * @param null|string|array $header
-     */
-    public function goToUrl($header = null)
-    {
-
-        // is some additional header being set
-        if(!$this->isNull($header)) {
-
-            // if it's numeric, we want to get the header text for that header code
-            if($this->isNumber($header)) {
-                // get header string for the given code
-                $code = $header;
-                $text = $this->_getHeaderResponseString($header);
-
-                // detect the protocol
-                $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-
-                // issue the first header
-                header($protocol . ' ' . $code . ' ' . $text);
-            } else {
-                if($this->isArray($header)) {
-                    foreach ($header as $h) {
-                        header($h);
-                    }
-                } else {
-                    header($header);
-                }
-            }
-        }
-
-        // do the redirect
-        header('Location:' . $this->val());
-
-        die();
-    }
-
-    /**
      * Get host name, without trailing slash.
      *
      * @return bool|string Host name without the trailing slash.
