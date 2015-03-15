@@ -92,45 +92,35 @@ class Crypt implements CryptInterface
             return $min;
         }
 
-        // how many bytes we need to generate, based on the range
-        $bytes = max(floor(mb_strlen($range, '8bit') / 8), 1);
+        // explode the range
+        $rangeData = str_split($range);
 
-        // let's generate a random number that is greater than the $range
-        $num = 1;
-        do {
-            $temp = $num * hexdec(bin2hex($this->_generator($bytes)));
-            if ($temp > 0) {
-                if ($temp < PHP_INT_MAX) {
-                    $num = $temp;
-                } else {
-                    break;
-                }
+        // generate the random number within the range
+        $num = '';
+        foreach ($rangeData as $r) {
+            // create char range
+            $chars = '';
+            for ($i = 0; $i <= $r; $i++) {
+                $chars .= $i;
             }
-        } while ($num < $range);
 
-        if ($num > $range) {
-            // correct the $int, to fall within a random place between 0 and &range
-            $minTemp = $num - $range;
-            $randDiff = mt_rand($minTemp, $num);
-            $num -= $randDiff;
-            $num += $min;
-        } else {
-            if ($num <= $range) {
-                // add random number to $min
-                // happens in case when we had to break the loop, because $int would be greater than PHP_INT_MAX
-                $num += $min;
-            }
+            // generate a random int from the given chars
+            $num .= $this->generateRandomString(1, $chars);
         }
 
-        return $num;
+        // cast to int
+        $num = (int)$num;
+
+        // add the random range number to min
+        return $num + $min;
     }
 
     /**
      * Generates a random string using the defined character set.
      * If $chars param is empty, the string will be generated using numbers, letters and special characters.
      *
-     * @param int $length   Length of the generated string.
-     * @param string $chars A string containing a list of chars that will be uses for generating the random string.
+     * @param int    $length Length of the generated string.
+     * @param string $chars  A string containing a list of chars that will be uses for generating the random string.
      *
      * @return string Random string with the given $length containing only the provided set of $chars.
      */
@@ -144,14 +134,25 @@ class Crypt implements CryptInterface
             $chars = self::CHARS . self::NUMBERS . self::SYMBOLS;
         }
 
-        $len = strlen($chars);
+        $len = $this->_strLen($chars);
+        $mask = 256 - (256 % $len);
 
         // build a string by converting the generated random string
         // into a random number that is placed within the defined character map
         $string = '';
         for ($i = 0; $i < $length; $i++) {
+            // is the current char within the mask range
+            if (ord($random[$i]) >= $mask) {
+                continue;
+            }
+
             $o = ord($random[$i]) % $len;
             $string .= $chars[$o];
+        }
+
+        // check if we under-generated
+        if ($this->_strLen($string) < $length) {
+            $string .= $this->generateRandomString(($length - $this->_strLen($string)), $chars);
         }
 
         return $string;
@@ -224,7 +225,7 @@ class Crypt implements CryptInterface
         $key = $this->_getKeyHash($key);
 
         // mac key
-        $macKey = $this->_getKeyHash($key);
+        $macKey = $this->_hkdf($key, self::HASH);
 
         // create initialization vector
         $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
@@ -242,7 +243,7 @@ class Crypt implements CryptInterface
         }
 
         // used later to verify if the decrypted string is correct
-        $stringHash = hash_hmac(self::HASH, $cipherText, $macKey, true);
+        $stringHash = hash_hmac(self::HASH, $cipherText . $iv, $macKey, true);
 
         // concatenate and encode the result
         return base64_encode($iv . $cipherText . $stringHash);
@@ -265,10 +266,13 @@ class Crypt implements CryptInterface
         $key = $this->_getKeyHash($key);
 
         // mac key
-        $macKey = $this->_getKeyHash($key);
+        $macKey = $this->_hkdf($key, self::HASH);
 
         // decode the string
         $string = base64_decode($string);
+        if (!$string) {
+            return false;
+        }
 
         // we need to know the IV size
         $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
@@ -277,16 +281,25 @@ class Crypt implements CryptInterface
         }
 
         // extract the iv from the message
-        $iv = substr($string, 0, $ivSize);
+        $iv = $this->_subStr($string, 0, $ivSize);
+        if ($this->_strLen($iv) != $ivSize) {
+            return false;
+        }
 
         // extract the string hash from the message
-        $stringHash = substr($string, -64);
+        $stringHash = $this->_subStr($string, -64);
+        if ($this->_strLen($stringHash) != 64) {
+            return false;
+        }
 
         // extract cipher text
-        $cipherText = substr($string, $ivSize, -64);
+        $cipherText = $this->_subStr($string, $ivSize, -64);
+        if ($this->_strLen($string) <= ($ivSize + 64)) {
+            return false;
+        }
 
         // generate new hash
-        $newStringHash = hash_hmac(self::HASH, $cipherText, $macKey, true);
+        $newStringHash = hash_hmac(self::HASH, $cipherText . $iv, $macKey, true);
 
         if ($newStringHash != $stringHash) {
             return false; // don't throw the exception, so we don't expose the key
@@ -300,13 +313,12 @@ class Crypt implements CryptInterface
             return false; // don't throw the exception, so we don't expose the key
         }
 
-        // return the result
-        return trim($plainText);
+        // remove padding and return the result
+        return rtrim($plainText, "\0");
     }
 
     /**
-     * A simple seed generator that uses a combination of mcrypt_create_iv (MCRYPT_DEV_URANDOM), mt_rand and microtime.
-     * The combination of those three factors should generate a medium strength random string.
+     * A simple seed generator that uses mcrypt_create_iv (MCRYPT_DEV_URANDOM).
      *
      * @param int $size Size of the generated string
      *
@@ -315,35 +327,7 @@ class Crypt implements CryptInterface
     private function _generator($size)
     {
         // seed: mcrypt
-        $seedOne = mcrypt_create_iv($size, MCRYPT_DEV_URANDOM);
-
-        // seed: mt_rand
-        $seedTwo = '';
-        for ($i = 0; $i < $size; $i++) {
-            $seedTwo .= chr((mt_rand() ^ (mt_rand() / getrandmax())) % 256);
-        }
-
-        // seed: microtime
-        $seedThree = '';
-        do {
-            $seedThree .= microtime(true);
-        } while (strlen($seedThree) < $size);
-        $seedThree = hash(self::HASH, $seedThree);
-
-        // mix the seeds
-        $mixLoop = mt_rand(2, 5);
-        $seeds = [
-            $seedOne,
-            $seedTwo,
-            $seedThree
-        ];
-        shuffle($seeds);
-        $random = implode('', $seeds);
-        for ($i = 0; $i < $mixLoop; $i++) {
-            $random = str_shuffle($random);
-        }
-
-        return mb_substr($random, 0, $size, '8bit');
+        return mcrypt_create_iv($size, MCRYPT_DEV_URANDOM);
     }
 
     /**
@@ -361,6 +345,71 @@ class Crypt implements CryptInterface
         // generate and return the key hash
         $key = hash(self::HASH, $key, true);
 
-        return mb_substr($key, 0, $keySize, '8bit');
+        return $this->_subStr($key, 0, $keySize);
+    }
+
+    /**
+     * Helper function for substr.
+     *
+     * @param $str
+     * @param $start
+     * @param $len
+     *
+     * @return string
+     */
+    private function _subStr($str, $start, $len = null)
+    {
+        return mb_substr($str, $start, $len, '8bit');
+    }
+
+    private function _strLen($str)
+    {
+        return mb_strlen($str, '8bit');
+    }
+
+    /**
+     * HKDF
+     * https://gist.github.com/narfbg/8793435
+     *
+     * @link    https://tools.ietf.org/rfc/rfc5869.txt
+     *
+     * @param                 $key       Input key
+     * @param string          $digest    A SHA-2 hashing algorithm
+     * @param                 $salt      Optional salt
+     * @param                 $length    Output length (defaults to the selected digest size)
+     * @param string          $info      Optional context/application-specific info
+     *
+     * @return string A pseudo-random key
+     */
+    private function _hkdf($key, $digest = 'sha512', $salt = null, $length = null, $info = '')
+    {
+        if (!in_array($digest, array(
+            'sha224',
+            'sha256',
+            'sha384',
+            'sha512'
+        ), true
+        )
+        ) {
+            return false;
+        }
+
+        $digest_length = substr($digest, 3) / 8;
+        if (empty($length) OR !is_int($length)) {
+            $length = $digest_length;
+        } elseif ($length > (255 * $digest_length)) {
+            return false;
+        }
+
+        isset($salt) OR $salt = str_repeat("\0", substr($digest, 3) / 8);
+
+        $prk = hash_hmac($digest, $key, $salt, true);
+        $key = '';
+        for ($key_block = '', $block_index = 1; strlen($key) < $length; $block_index++) {
+            $key_block = hash_hmac($digest, $key_block . $info . chr($block_index), $prk, true);
+            $key .= $key_block;
+        }
+
+        return substr($key, 0, $length);
     }
 }
