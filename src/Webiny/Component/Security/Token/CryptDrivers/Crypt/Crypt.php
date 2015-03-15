@@ -28,15 +28,13 @@ class Crypt implements CryptDriverInterface
     /**
      * Creates an new crypt driver instance.
      *
-     * @param string $cryptName Name of the Crypt service.
-     *
      * @throws CryptException
      * @return \Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt
      */
-    public function __construct($cryptName)
+    public function __construct()
     {
         try {
-            $this->_serviceInstance = $this->crypt($cryptName);
+            $this->_serviceInstance = $this->crypt();
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }

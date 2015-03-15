@@ -23,18 +23,17 @@ class Crypt implements EncoderDriverInterface
      * @var null|\Webiny\Component\Crypt\Crypt
      */
     private $_instance = null;
+    
 
     /**
      * Constructor
      *
-     * @param string $cryptName Name of the crypt service.
-     *
      * @throws \Exception
      */
-    public function __construct($cryptName)
+    public function __construct()
     {
         try {
-            $this->_instance = $this->crypt($cryptName);
+            $this->_instance = $this->crypt();
         } catch (\Exception $e) {
             throw $e;
         }

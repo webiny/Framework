@@ -13,7 +13,7 @@ use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 
 /**
- * Token abstract.
+ * Token
  *
  * @package         Webiny\Component\Security\User\Token
  */

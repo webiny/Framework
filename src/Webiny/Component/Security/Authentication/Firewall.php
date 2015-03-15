@@ -24,7 +24,6 @@ use Webiny\Component\Security\Token\Token;
 use Webiny\Component\Security\User\UserAbstract;
 use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
-use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
 /**
@@ -92,6 +91,18 @@ class Firewall
      * @var AccessControl
      */
     private $_accessControl;
+
+    /**
+     * @var array A list of currently built-in authentication providers. The keys are used so you don't need to write
+     *            the fully qualified class names in the yaml config.
+     */
+    private static $_authProviders = [
+        'Http'         => '\Webiny\Component\Security\Authentication\Providers\Http\Http',
+        'Form'         => '\Webiny\Component\Security\Authentication\Providers\Form\Form',
+        'OAuth2'       => '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2',
+        'TwitterOAuth' => '\Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
+    ];
+
 
     /**
      * Constructor.
@@ -286,7 +297,8 @@ class Firewall
      *
      * @return string Password hash.
      */
-    public function createPasswordHash($password){
+    public function createPasswordHash($password)
+    {
         return $this->_encoder->createPasswordHash($password);
     }
 
@@ -298,12 +310,13 @@ class Firewall
      *
      * @return bool True if $password matches $hash. Otherwise false is returned.
      */
-    public function verifyPasswordHash($password, $hash){
+    public function verifyPasswordHash($password, $hash)
+    {
         return $this->_encoder->verifyPasswordHash($password, $hash);
     }
 
     /**
-     * Returns the config of current auth provider based on current url.
+     * Returns the config of current auth provider.
      *
      * @param string $authProvider Name of the auth provider you wish to use to process the login.
      *                             If you don't set it, the first registered provider will be used.
@@ -319,14 +332,32 @@ class Firewall
         }
 
         if ($authProvider == '') {
-            // get the first config
+            // get the first auth provider from the list
             $providers = $this->getConfig()->get('AuthenticationProviders', []);
-            $this->_authProviderConfig = Security::getConfig()->get('AuthenticationProviders.' . $providers[0], false);
+            $authProvider = $providers[0];
+            $this->_authProviderConfig = Security::getConfig()
+                                                 ->get('AuthenticationProviders.' . $providers[0], new ConfigObject([])
+                                                 );
         } else {
-            $this->_authProviderConfig = Security::getConfig()->get('AuthenticationProviders.' . $authProvider, false);
+            $this->_authProviderConfig = Security::getConfig()
+                                                 ->get('AuthenticationProviders.' . $authProvider, new ConfigObject([])
+                                                 );
         }
 
-        if (!$this->_authProviderConfig || !$this->_authProviderConfig->get('Driver', false)) {
+        // merge the internal driver
+        // merge only if driver is not set and it matches the internal auth provider name
+        if (!$this->_authProviderConfig->get('Driver', false) && isset(self::$_authProviders[$authProvider])) {
+            $this->_authProviderConfig->mergeWith(['Driver' => self::$_authProviders[$authProvider]]);
+        }
+
+        // make sure the requested auth provider is assigned to the current firewall
+        if(!in_array($authProvider, $this->getConfig()->get('AuthenticationProviders', [])->toArray())){
+            throw new FirewallException('Authentication provider "' . $authProvider . '" is not defined on "'.$this->getFirewallKey().'" firewall.'
+            );
+        }
+
+        // check that we have the driver
+        if (!$this->_authProviderConfig->get('Driver', false)) {
             throw new FirewallException('Unable to detect configuration for authentication provider "' . $authProvider . '".'
             );
         }
@@ -404,16 +435,28 @@ class Firewall
     private function _initToken()
     {
         $tokenName = $this->getConfig()->get('Token', false);
-        if (!$tokenName) {
-            throw new FirewallException('Token for "' . $this->_firewallKey . '" firewall is not defined.');
-        }
         $rememberMe = $this->getConfig()->get('RememberMe', false);
-        $securityKey = Security::getConfig()->get('Tokens.' . $tokenName . '.SecurityKey', false);
 
-        if (!$securityKey) {
-            throw new FirewallException('Missing security key for "' . $tokenName . '" token.');
+
+        if (!$tokenName) {
+            // fallback to the default token
+            $securityKey = $this->getConfig()->get('TokenKey', false);
+
+            if (!$securityKey) {
+                throw new FirewallException('Missing TokenKey for "' . $this->getRealmName() . '" firewall.');
+            }
+        } else {
+            $securityKey = Security::getConfig()->get('Tokens.' . $tokenName . '.SecurityKey', false);
+
+            if (!$securityKey) {
+                throw new FirewallException('Missing security key for "' . $tokenName . '" token.');
+            }
         }
-        $tokenCryptDriver = Security::getConfig()->get('Tokens.' . $tokenName . '.Driver', false);
+
+        $tokenCryptDriver = Security::getConfig()
+                                    ->get('Tokens.' . $tokenName . '.Driver',
+                                          '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt'
+                                    );
         if (!$tokenCryptDriver) {
             throw new FirewallException('Driver parameter for token "' . $tokenName . '" is not defined.');
         }
@@ -437,7 +480,7 @@ class Firewall
      */
     private function _getTokenName()
     {
-        return 'wf_token_' . $this->_firewallKey . '_realm';
+        return strtolower($this->_firewallKey) . '_token';
     }
 
     /**

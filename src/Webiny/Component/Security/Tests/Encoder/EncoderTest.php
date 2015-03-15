@@ -13,7 +13,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock', 'Test');
+        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock');
         $this->assertInstanceOf('\Webiny\Component\Security\Encoder\Encoder', $encoder);
     }
 
@@ -22,24 +22,24 @@ class EncoderTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorException()
     {
-        new Encoder('FakeDriver', 'Test');
+        new Encoder('FakeDriver');
     }
 
     public function testCreatePasswordHash()
     {
-        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock', 'Test');
-        $this->assertSame('passwordTest', $encoder->createPasswordHash('password'));
+        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock');
+        $this->assertSame('password', $encoder->createPasswordHash('password')); // since we use the mock encoder, there is no hashing
     }
 
     public function testVerifyPasswordHashTrue()
     {
-        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock', 'Test');
-        $this->assertTrue($encoder->verifyPasswordHash('password', 'passwordTest'));
+        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock');
+        $this->assertTrue($encoder->verifyPasswordHash('password', 'password'));
     }
 
     public function testVerifyPasswordHashFalse()
     {
-        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock', 'Test');
+        $encoder = new Encoder('\Webiny\Component\Security\Tests\Mocks\EncoderMock');
         $this->assertFalse($encoder->verifyPasswordHash('admin', 'password'));
     }
 }

@@ -76,7 +76,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider             firewallProvider
      * @expectedException \Webiny\Component\Security\Authentication\FirewallException
-     * @expectedExceptionMessage Unable to detect configuration for authentication provide
+     * @expectedExceptionMessage Authentication provider "fake auth provider" is not defined on "Admin" firewall.
      */
     public function testProcessLoginAuthProviderNameException($firewall)
     {
@@ -239,7 +239,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
         $firewallConfig = $config->Security->Firewalls->Admin;
 
         $userProviderMock = new UserProviderMock();
-        $encoder = new Encoder($config->Security->Encoders->MockEncoder->Driver, '', []);
+        $encoder = new Encoder($config->Security->Encoders->MockEncoder->Driver, []);
 
         $firewall = new Firewall('Admin', $firewallConfig, [$userProviderMock], $encoder);
 

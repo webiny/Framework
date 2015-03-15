@@ -56,7 +56,7 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $result = $instance->encryptUserData($user);
 
         // validate the result
-        $result = unserialize($result);
+        $result = json_decode($result, true);
         $this->assertSame("uname", $result['u']);
     }
 

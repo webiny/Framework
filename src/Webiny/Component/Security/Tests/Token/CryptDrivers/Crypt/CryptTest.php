@@ -24,15 +24,6 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt', $crypt);
     }
 
-    /**
-     * @expectedException \Webiny\Component\Security\Token\CryptDrivers\Crypt\CryptException
-     * @expectedExceptionMessage Service "Crypt.Fake" is not defined in services configuration file.
-     */
-    public function testConstructorException()
-    {
-        new Crypt('Fake');
-    }
-
     public function testEncryptDecrypt()
     {
         $crypt = new Crypt('Password');

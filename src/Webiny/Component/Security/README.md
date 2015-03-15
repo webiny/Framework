@@ -93,75 +93,34 @@ class MyClass
 
 # Example configuration
 
-This is an example configuration of the security layer.
+This is an example configuration.
 The next few topics will describe every part of the configuration.
 
 ```yaml
 Security:
-    Tokens:
-        SomeTokenName:
-            Driver: '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt'
-            Params: [Cookie]
-            SecurityKey: $3cR3tK3y_654321 # secret key that will be used to encrypt the token data
-    Encoders:
-        CryptEncoder:
-            Driver: '\Webiny\Component\Security\Encoder\Drivers\Crypt'
-            Params: [Password]
-            Salt: 'CHANGE THIS SECRET' # must be 8, 16, 32 or 64 characters
     UserProviders:
-        SomeOAuth2Provider:
-            Driver: '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2Provider'
-        TwitterOAuthProvider:
-            Driver: '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
-        SomeBuiltInMemoryProvider:
+        Memory:
             john: {password: secret, roles: 'ROLE_USER'}
             admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
-        FromDatabase:
-            Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
-            Params:
-                Entity: 'My\App\Entities\User'
-                Username: username
-                Password: password
-                Role: ROLE_USER
     AuthenticationProviders:
-        Http:
-            Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
-        Facebook:
-            Driver: '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2'
+        OAuth2:
             Params:
-                Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
-                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
-        TwitterOAuth:
-            Driver: \Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
-            Params:
-                Server: MyTwitterApp # which twitter app to use (must be registered by TwitterOAuth component)
-                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+                Server: FBAuth
+                Roles: [ROLE_USER]
     Firewalls:
         Admin:
             RealmName: Administration
             Anonymous: true
             RememberMe: true
-            Token: SomeTokenName
-            Encoder: MockEncoder
-            UserProviders: [MockProvider]
-            AuthenticationProviders: ['Http', 'Facebook']
-            AccessControl:
-                Rules:
-                    - {Path: '/^\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9]{13}$/', Roles: ROLE_ANONYMOUS}
-                    - {Path: '/^\/about/', Roles: ROLE_ANONYMOUS}
-                    - {Path: '/^\/statistics/', Roles: ROLE_ANONYMOUS}
-                DecisionStrategy: affirmative
-            RoleHierarchy:
-                ROLE_USER: ROLE_EDITOR
-                ROLE_ADMIN: ROLE_USER
+            TokenKey: SecretKey
+            UserProviders: [Memory, OAuth2]
+            AuthenticationProviders: [Http, Form, OAuth2]
 ```
 
 # Components
 
-The security layer is actually a set of several components that work and communicate together. Each of these components
-needs to be configured.
-
-The next sections will go through the components and explain what they do.
+The security layer is actually a set of several components that work and communicate together. 
+The next few sections will go through the components and explain what they do.
 
 ## Tokens (`Security.Tokens`)
 
@@ -178,12 +137,25 @@ Security:
     Tokens:
         SomeTokenName:
             Driver: '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt'
-            Params: [Cookie]
             SecurityKey: $3cR3tK3y # secret key that will be used to encrypt the token data
+    Firewalls:
+        Admin:
+            Token: SomeTokenName
 ```
 
 The built-in token driver is using the `Crypt` component, which is probably satisfying for the most cases.
 You can also have multiple tokens defined, with different drivers or security key, but you can only use one token per firewall.
+
+By default, you don't need to define a `Token`, an internal token is automatically set for you. In case of the default
+token, you just need to define the `TokenKey` under your firewall:
+
+```yaml
+Security:
+    Firewalls:
+        Admin:
+            TokenKey: SecretKey
+```
+
 
 ## Encoders (`Security.Encoders`)
 
@@ -192,7 +164,7 @@ verifying if the submitted password matches the given hash. Encoders do the simi
 
 The encoder component comes with a default `Crypt` driver, that uses the built in `Crypt` component, for hashing and verifying passwords.
 
-The driver requires that you have `Crypt` service defined. Just provide the name of the  service under `Params` and your encoder is ready. It is also very recommended that you define a `Salt` parameter that will be used to additionally secure the passwords.
+The driver requires that you have `Crypt` service defined. Just provide the name of the  service under `Params` and your encoder is ready. 
 
 Example encoder configuration:
 
@@ -202,16 +174,22 @@ Security:
     Encoders:
         EncoderOne:
             Driver: \Webiny\Component\Security\Encoder\Drivers\Crypt
-            Params: [Password]
-            Salt: 'CHANGE THIS SECRET'
         EncoderTwo:
             Driver: \Webiny\Component\Security\Encoder\Drivers\Null
+    Firewalls:
+        Admin:
+            Encoder: EncoderOne
 ```
 
 To create a custom encoder driver, you need to create a class that implements
 `\Webiny\Component\Security\Encoder\EncoderDriverInterface`.
 
 The component also comes with a `Null` driver, which doesn't encode passwords, it keeps them in their plain format.
+You can also set `Encoder: false` under the `Firewall`. That will use the `Null` driver.
+
+By default you don't need to define an `Encoder`, an internal encoder is automatically defined for you. 
+
+
 
 ## User Providers (`Security.UserProviders`)
 
@@ -219,7 +197,13 @@ User providers are like a databases from where the `Security` component queries 
 Each provider consists of 2 parts, a user provider, and the user class itself.
 The provider part is responsible for loading users based on submitted login credentials, while the user object is responsible for verifying the submitted credentials against the loaded object from the provider.
 
-There are three built-in user providers, the `Memory` provider, `OAuth2` provider and the `TwitterOAuth` provider.
+There are four built-in user providers:
+- `Memory` 
+- `OAuth2` 
+- `TwitterOAuth`
+- `Entity`
+
+
 
 ### Memory provider
 
@@ -233,13 +217,16 @@ Security:
             admin: {Password: login, Roles: [ROLE_SUPERADMIN, ROLE_GOD]}
         MyOtherMemoryUsers:
             marco: {password: polo, roles: ROLE_ADMIN}
+    Firewall:
+        Admin:
+            UserProviders: [MyTestMemoryUsers, MyOtherMemoryUsers]
 ```
 
 As you see, you can have multiple memory providers defined. Which one you wish to use, depends on how you define your firewall. You can use both of them, but we'll see more about that later.
 
 **NOTE:**
-Make sure that you set `encoder` to `false` on firewalls that are using `memory` or some other provider that contains
-passwords in raw format, that is, where passwords are not encrypted.
+Make sure that you set `Encoder` to `false` on firewalls that are using `Memory` or some other provider that contains
+passwords in raw format, that is, where passwords are not encrypted. (NOTE: do not ever do that for production code).
 
 
 ### OAuth2 provider
@@ -254,6 +241,9 @@ Security:
     UserProviders:
         SomeOAuth2Provider:
             Driver: '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2Provider'
+    Firewall:
+        Admin:
+            UserProviders: [SomeOAuth2Provider]
 ```
 
 ### TwitterOAuth provider
@@ -263,8 +253,10 @@ Unfortunately Twitter doesn't support the version 2 of OAuth protocol, just vers
 ```yaml
 Security:
     UserProviders:
-        TwitterOAuthProvider:
+        MyTwitterOAuthProvider:
             Driver: '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
+    Firewall:
+        UserProviders: [MyTwitterOAuthProvider]
 ```
 
 ### Entity provider
@@ -272,20 +264,23 @@ Security:
 This provider uses the Entity component which is tied to your database. 
  
 ```yaml
-FromDatabase:
-    Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
-    Params:
-        Entity: 'My\App\Entities\User'
-        Username: username
-        Password: password
-        Role: ROLE_USER
+Security:
+    UserProviders:
+        MyFromDatabaseProvider:
+            Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
+            Params:
+                Entity: 'My\App\Entities\User'
+                Username: username
+                Password: password
+                Role: ROLE_USER
+    Firewall:
+        UserProviders: [MyFromDatabaseProvider]
 ```
 
 **Entity** parameter points your entity class.
 **Username** defines the field name in the collection that holds the username.
 **Password** same as the username, just points to the password field.
 **Role** points either to the collection field holding the users role, or will be used as the role name, if the field doesn't exist.
-
 
 ### Custom user providers
 
@@ -305,19 +300,23 @@ Authentication providers are ways of authenticating users.
 This is an example configuration for an authentication provider:
 
 ```yaml
-AuthenticationProviders:
-    Http:
-        Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
-    Facebook:
-        Driver: '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2'
-        Params:
-            Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
-            Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
-    TwitterOAuth:
-        Driver: \Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
-        Params:
-            Server: ['MyTwitterApp'] # which twitter app to use (must be registered by TwitterOAuth component)
-            Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+Security:
+    AuthenticationProviders:
+        Http:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
+        Facebook:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2'
+            Params:
+                Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+        TwitterOAuth:
+            Driver: \Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
+            Params:
+                Server: ['MyTwitterApp'] # which twitter app to use (must be registered by TwitterOAuth component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+    Firewall:
+        Admin:
+            AuthenticationProviders: [Http, Facebook, TwitterOAuth]
 ```
 
 The configuration must have two parameters, the `Driver` param that defines which class to use to process the authentication,
@@ -487,6 +486,91 @@ There are also some, user provider specific, events:
 - `wf.security.user.twitter` fired when user is authenticated over Twitter OAuth provider
 
 Each of those two events, returns a different class, for OAuth2 it's `Webiny\Component\Security\User\Providers\OAuth2\OAuth2Event` and for Twitter it's `Webiny\Component\Security\User\Providers\TwitterOAuth`. Both classes have two methods, one returns an object, containing different user information we manged to get from the OAuth(2) server. The other method returns an instance of the OAuth class, either TwitterOAuth or OAuth2, giving you direct access to the API and the access key.
+
+
+## Using provider short codes
+
+If you only need one instance of user or authentication provider, you can use short codes. With short codes you don't need
+to define the `Driver` parameter, and in cases of authentication provider, you don't need to define the auth provider under `Security.AuthenticationProviders`.
+
+For example, this config can we written in a shorter version:
+
+```yaml
+Security:
+    UserProviders:
+        OAuth2:
+            Driver: '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2Provider'
+        TwitterOAuth:
+            Driver: '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
+        Memory:
+            john: {password: secret, roles: 'ROLE_USER'}
+            admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
+        Entity:
+            Driver: '\Webiny\Component\Security\User\Providers\Entity\Entity'
+            Params:
+                Entity: 'My\App\Entities\User'
+                Username: username
+                Password: password
+                Role: ROLE_USER
+    AuthenticationProviders:
+        Http:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\Http\Http'
+        Form:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\Form\Form'
+        OAuth2:
+            Driver: '\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2'
+            Params:
+                Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+        TwitterOAuth:
+            Driver: \Webiny\Component\Security\Authentication\Providers\TwitterOAuth\TwitterOAuth'
+            Params:
+                Server: MyTwitterApp # which twitter app to use (must be registered by TwitterOAuth component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+    Firewalls:
+        Admin:
+            RealmName: Administration
+            Anonymous: true
+            RememberMe: true
+            UserProviders: [OAuth2, TwitterOAuth, Memory, Entity]
+            AuthenticationProviders: [Http, Form, OAuth2, TwitterOAuth]
+```
+
+short version:
+
+```yaml
+Security:
+    UserProviders:
+        Memory:
+            john: {password: secret, roles: 'ROLE_USER'}
+            admin: {password: login123, roles: 'ROLE_SUPERADMIN'}
+        Entity:
+            Params:
+                Entity: 'My\App\Entities\User'
+                Username: username
+                Password: password
+                Role: ROLE_USER
+    AuthenticationProviders:
+        OAuth2:
+            Params:
+                Server: Facebook # which OAuth2 server to use (defined under OAuth2 component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+        TwitterOAuth:
+            Params:
+                Server: MyTwitterApp # which twitter app to use (must be registered by TwitterOAuth component)
+                Roles: [ROLE_USER] # which role to assign to user authenticated with this provider
+    Firewalls:
+        Admin:
+            RealmName: Administration
+            Anonymous: true
+            RememberMe: true
+            UserProviders: [OAuth2, TwitterOAuth, Memory, Entity]
+            AuthenticationProviders: [Http, Form, OAuth2, TwitterOAuth]
+```
+
+The key is that the name of the `UserProvider` or `AuthenticationProvider` matches the internal driver name. 
+This is valid only for the internal providers, for custom provider you always need to define the `Driver`.
+
 
 Resources
 ---------

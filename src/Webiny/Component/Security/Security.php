@@ -36,26 +36,25 @@ class Security
     private $_firewalls;
 
     /**
-     * List of encoder instances.
-     * @var array
+     * @var array A list of currently built-in user providers. The keys are used so you don't need to write
+     *            the fully qualified class names in the yaml config.
      */
-    private $_encoders = [];
+    private static $_userProviders = [
+        'Entity'       => '\Webiny\Component\Security\User\Providers\Entity\Entity',
+        'Memory'       => '\Webiny\Component\Security\User\Providers\Memory\Memory',
+        'OAuth2'       => '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2',
+        'TwitterOAuth' => '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
+    ];
 
     /**
-     * List of user provider instances.
-     * @var array
+     * @var array A list of currently built-in encoders. The keys are used so you don't need to write
+     *            the fully qualified class names in the yaml config.
      */
-    private $_userProviders = [];
+    private static $_encoders = [
+        'Crypt' => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
+        'Null'  => '\Webiny\Component\Security\Encoder\Drivers\Null'
+    ];
 
-
-    /**
-     * Initialize security.
-     */
-    protected function _init()
-    {
-        $this->_initEncoders();
-        $this->_initUserProviders();
-    }
 
     /**
      * Initializes the security layer for a specific firewall.
@@ -88,82 +87,14 @@ class Security
                 }
             }
 
-            $fw = new Firewall($firewallKey, $firewall, $this->_getFirewallUserProviders($firewallKey
-            ), $this->_getFirewallEncoder($firewallKey)
+            $fw = new Firewall($firewallKey, $firewall, $this->_getFirewallUserProviders($firewallKey),
+                               $this->_getFirewallEncoder($firewallKey)
             );
 
             $this->_firewalls[$firewallKey] = $fw;
         }
 
         return $fw;
-    }
-
-    /**
-     * Initialize user providers defined for this firewall.
-     *
-     * @throws SecurityException
-     */
-    private function _initUserProviders()
-    {
-        $providers = $this->getConfig()->get('UserProviders', []);
-
-        if (count($providers) < 1) {
-            throw new SecurityException('There are no user providers defined. Please define at last one provider.');
-        }
-
-        foreach ($providers as $pk => $provider) {
-            if (is_object($provider)) {
-                if (isset($provider->Driver)) {
-                    try {
-                        $params = $provider->get('Params', null, true);
-                        $this->_userProviders[$pk] = $this->factory($provider->Driver,
-                                                                    '\Webiny\Component\Security\User\UserProviderInterface',
-                                                                    is_null($params) ? null : [$params]
-                        );
-                    } catch (\Exception $e) {
-                        throw new SecurityException($e->getMessage());
-                    }
-                } else {
-                    $this->_userProviders[$pk] = new MemoryProvider($provider->toArray());
-                }
-            } else {
-                throw new SecurityException('Unable to read user provider "' . $pk . '".');
-            }
-        }
-    }
-
-    /**
-     * Create the encoder instance.
-     * If encoder is not defined, we create an instance of Null encoder.
-     */
-    private function _initEncoders()
-    {
-        $encoders = $this->getConfig()->get('Encoders', []);
-
-        if (count($encoders) > 0) {
-            foreach ($encoders as $ek => $encoder) {
-                // encoder params
-                $driver = $encoder->get('Driver', false);
-                if (!$driver) {
-                    throw new SecurityException('Encoder "Driver" param must be present.');
-                }
-                $salt = $encoder->get('Salt', '');
-                $params = $encoder->get('Params', null);
-                if ($params) {
-                    $params = $params->toArray();
-                }
-
-                // encoder instance
-                $this->_encoders[$ek] = new Encoder($driver, $salt, $params);
-            }
-        }
-
-        if (!isset($this->_encoders['_null'])) {
-            $encoder = '\Webiny\Component\Security\Encoder\Drivers\Null';
-            $salt = '';
-            $params = null;
-            $this->_encoders['_null'] = new Encoder($encoder, $salt, $params);
-        }
     }
 
     /**
@@ -179,18 +110,46 @@ class Security
     {
         $userProviders = [];
 
-        // get the provider name
-        $providers = $this->_getFirewallConfig($firewallKey)->get('UserProviders', false);
-        if (!$providers) {
+        $firewallProviders = $this->_getFirewallConfig($firewallKey)->get('UserProviders', false);
+        if (!$firewallProviders || count($firewallProviders) < 1) {
             throw new SecurityException('User providers for firewall "' . $firewallKey . '" are not defined.');
         }
 
-        foreach ($providers as $p) {
-            if (!isset($this->_userProviders[$p])) {
-                throw new SecurityException('User provider "' . $p . '" missing for firewall "' . $firewallKey . '".');
+        $providers = $this->getConfig()->get('UserProviders', []);
+
+        foreach ($firewallProviders as $pk) {
+
+            // get global config
+            $gConfig = $providers->get($pk, false);
+
+            // get firewall driver and params
+            if (isset($gConfig->Driver)) {
+                $driver = $gConfig->Driver;
+                if (isset(self::$_userProviders[$driver])) { // short-hand driver name in the global config
+                    $driver = self::$_userProviders[$driver];
+                }
+                $params = $gConfig->get('Params', null, true);
+            } else if (isset(self::$_userProviders[$pk])) {
+                $driver = self::$_userProviders[$pk];
+                $params = null;
+            } else {
+                throw new SecurityException('User providers "' . $pk . '" is missing a Driver.');
             }
 
-            $userProviders[] = $this->_userProviders[$p];
+            // In case of memory user provider, we don't have the parameters, but we have the user accounts
+            // these need to be passed to the constructor.
+            // Not the best way to do it, but keeps the yaml config simpler
+            if ($driver == self::$_userProviders['Memory'] && $params == null) {
+                $params = $gConfig->toArray();
+            }
+
+            try {
+                $userProviders[$pk] = $this->factory($driver, '\Webiny\Component\Security\User\UserProviderInterface',
+                                                     is_null($params) ? null : [$params]
+                );
+            } catch (\Exception $e) {
+                throw new SecurityException($e->getMessage());
+            }
         }
 
         if (count($userProviders) < 1) {
@@ -210,17 +169,34 @@ class Security
      */
     private function _getFirewallEncoder($firewallKey)
     {
-        $encoder = $this->_getFirewallConfig($firewallKey)->get('Encoder', '_null');
-        if (!isset($this->_encoders[$encoder])) {
-            if ($encoder != '') {
-                throw new SecurityException('Encoder "' . $encoder . '" is not defined in your Security.Encoders config.'
-                );
-            } else {
-                return $this->_encoders['_null'];
-            }
+        // get the encoder name
+        $encoderName = $this->_getFirewallConfig($firewallKey)->get('Encoder', 'Crypt');
+        if (!$encoderName) {
+            $encoderName = 'Null';
         }
 
-        return $this->_encoders[$encoder];
+        // check if the encoder is defined in the global config
+        $encoderConfig = $this->getConfig()->get('Encoders.' . $encoderName, false);
+
+        // get the driver & params
+        $driver = false;
+        $params = null;
+        if ($encoderConfig) {
+            $driver = $encoderConfig->get('Driver', false);
+            $params = $encoderConfig->get('Params', null, true);
+        }
+
+        // get the driver class name
+        if (!$driver && isset(self::$_encoders[$encoderName])) { // use built-in driver
+            $driver = self::$_encoders[$encoderName];
+        } else if (isset(self::$_encoders[$driver])) { // driver defined as short-name built-in driver
+            $driver = self::$_encoders[$driver];
+        } else if (!$driver) {
+            throw new SecurityException('Invalid "Driver" param for "' . $encoderName . '" encoder.');
+        }
+
+        // create encoder instance
+        return new Encoder($driver, $params);
     }
 
     /**

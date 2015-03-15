@@ -57,7 +57,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $firewallConfig = $config->Security->Firewalls->Admin;
 
         $userProviderMock = new UserProviderMock();
-        $encoder = new Encoder($config->Security->Encoders->MockEncoder->Driver, '', []);
+        $encoder = new Encoder($config->Security->Encoders->MockEncoder->Driver, []);
 
         $firewall = new Firewall('Admin', $firewallConfig, [$userProviderMock], $encoder);
         

@@ -9,6 +9,7 @@ namespace Webiny\Component\Security\Token;
 
 use Webiny\Component\Crypt\CryptTrait;
 use Webiny\Component\Http\HttpTrait;
+use Webiny\Component\Security\Role\Role;
 use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
 use Webiny\Component\Security\User\UserAbstract;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -90,12 +91,19 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function encryptUserData(UserAbstract $user)
     {
+        // extract the roles
+        $roles = $user->getRoles();
+        $roleArray = [];
+        foreach($roles as $r){
+            $roleArray[] = $r->getRole();
+        }
+
         // data (we use short syntax to reduce the size of the cookie or session)
         $data = [
             // username
             'u'   => $user->getUsername(),
             // rules
-            'r'   => $user->getRoles(),
+            'r'   => $roleArray,
             // valid until
             'vu'  => time() + (86400 * 30),
             // session id
@@ -105,10 +113,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
         ];
 
         // build and add token to $data
-        $token = $this->str($data['u'], '|' . $data['vu'] . '|' . $this->_securityKey)->hash()->val();
-        $data['t'] = $token;
-
-        return $this->getCrypt()->encrypt($this->serialize($data), $this->_securityKey);
+        return $this->getCrypt()->encrypt($this->jsonEncode($data), $this->getEncryptionKey());
     }
 
     /**
@@ -124,8 +129,8 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     {
         // decrypt token data
         try {
-            $data = $this->getCrypt()->decrypt($tokenData, $this->_securityKey);
-            $data = $this->unserialize($data);
+            $data = $this->getCrypt()->decrypt($tokenData, $this->getEncryptionKey());
+            $data = $this->jsonDecode($data, true);
         } catch (\Exception $e) {
             $this->deleteUserToken();
 
@@ -133,23 +138,15 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
         }
 
         // validate token data
-        if (!isset($data['u']) || !isset($data['r']) || !isset($data['vu']) || !isset($data['sid']) || !isset($data['t']) || !isset($data['ap'])
+        if (!isset($data['u']) || !isset($data['r']) || !isset($data['vu']) || !isset($data['sid']) || !isset($data['ap'])
         ) {
             $this->deleteUserToken();
 
             return false;
         }
 
-        // validate sid so we are sure that nobody stole a cookie
+        // validate sid
         if ($this->httpSession()->getSessionId() != $data['sid']) {
-            $this->deleteUserToken();
-
-            return false;
-        }
-
-        // validate token-token :)
-        $token = $this->str($data['u'], '|' . $data['vu'] . '|' . $this->_securityKey)->hash()->val();
-        if ($token != $data['t']) {
             $this->deleteUserToken();
 
             return false;
@@ -161,6 +158,13 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
 
             return false;
         }
+
+        // recreate the roles
+        $roles = [];
+        foreach($data['r'] as $role){
+            $roles[] = new Role($role);
+        }
+        $data['r'] = $roles;
 
         // return TokenData instance
         return new TokenData($data);
@@ -174,6 +178,27 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     public function setSecurityKey($securityKey)
     {
         $this->_securityKey = $securityKey;
+    }
+
+    /**
+     * Uses the current key, user session id and browser user agent, to form a new key.
+     * The new key is then unique to that user, and is used for encryption/decryption process.
+     *
+     * @return string
+     */
+    public function getEncryptionKey()
+    {
+        // initial key
+        $securityKey = $this->_securityKey;
+
+        // append current session id
+        $securityKey .= $this->httpSession()->getSessionId();
+
+        // append user agent
+        $securityKey .= $this->httpRequest()->server()->httpUserAgent();
+
+        // hash and return
+        return hash('sha512', $securityKey);
     }
 
 }

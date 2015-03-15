@@ -8,7 +8,7 @@
 namespace Webiny\Component\Security\Tests\User\Providers\Memory;
 
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\User\Providers\Memory\MemoryProvider;
+use Webiny\Component\Security\User\Providers\Memory\Memory;
 
 class MemoryProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,11 +20,11 @@ class MemoryProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($instance)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\User\Providers\Memory\MemoryProvider', $instance);
+        $this->assertInstanceOf('\Webiny\Component\Security\User\Providers\Memory\Memory', $instance);
     }
 
     /**
-     * @param MemoryProvider $instance
+     * @param Memory $instance
      *
      * @dataProvider dataProvider
      */
@@ -60,7 +60,7 @@ class MemoryProviderTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $instance = new MemoryProvider($users);
+        $instance = new Memory($users);
 
         return [[$instance]];
     }
