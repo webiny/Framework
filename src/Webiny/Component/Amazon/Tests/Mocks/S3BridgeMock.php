@@ -17,15 +17,15 @@ use Webiny\Component\Amazon\S3\S3ClientInterface;
  */
 class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterface
 {
-    private $_instance;
+    private $instance;
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
-        $this->_instance = $this->getMockBuilder('\Aws\S3\S3Client')
+        $this->instance = $this->getMockBuilder('\Aws\S3\S3Client')
                      ->disableOriginalConstructor()
                      ->getMock();
-        $this->_instance->expects($this->any())->method('doesObjectExist')->will($this->onConsecutiveCalls(true, false));
-        $this->_instance->expects($this->any())->method('doesBucketExist')->will($this->onConsecutiveCalls(true, false));
+        $this->instance->expects($this->any())->method('doesObjectExist')->will($this->onConsecutiveCalls(true, false));
+        $this->instance->expects($this->any())->method('doesBucketExist')->will($this->onConsecutiveCalls(true, false));
     }
 
 
@@ -67,7 +67,7 @@ class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterf
      */
     public function doesBucketExist($bucket, $accept403 = true, array $params = [])
     {
-        return $this->_instance->doesBucketExist($bucket);
+        return $this->instance->doesBucketExist($bucket);
     }
 
     /**
@@ -124,7 +124,7 @@ class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterf
      */
     public function doesObjectExist($bucket, $key, array $params = [])
     {
-        return $this->_instance->doesObjectExist($bucket, $key);
+        return $this->instance->doesObjectExist($bucket, $key);
     }
 
     /**

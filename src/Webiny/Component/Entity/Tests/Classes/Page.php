@@ -5,10 +5,10 @@ use Webiny\Component\Entity\EntityAbstract;
 
 class Page extends EntityAbstract
 {
-    protected static $_entityCollection = "Page";
-    protected static $_entityMask = "{title} ({id})";
+    protected static $entityCollection = "Page";
+    protected static $entityMask = "{title} ({id})";
 
-    protected function _entityStructure()
+    protected function entityStructure()
     {
 
         // Char

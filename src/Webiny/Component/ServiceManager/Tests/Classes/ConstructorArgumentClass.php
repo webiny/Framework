@@ -10,15 +10,15 @@ namespace Webiny\Component\ServiceManager\Tests\Classes;
 
 class ConstructorArgumentClass
 {
-    private $_parameter;
+    private $parameter;
 
     public function __construct($parameter)
     {
-        $this->_parameter = $parameter;
+        $this->parameter = $parameter;
     }
 
     public function getConstructorParameterValue()
     {
-        return $this->_parameter;
+        return $this->parameter;
     }
 }

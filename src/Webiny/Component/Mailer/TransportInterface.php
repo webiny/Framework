@@ -23,7 +23,7 @@ interface TransportInterface
      *
      * @param ConfigObject $config The base configuration.
      */
-    function __construct($config);
+    public function __construct($config);
 
     /**
      * Sends the message.
@@ -33,7 +33,7 @@ interface TransportInterface
      *
      * @return bool|int Number of success sends, or bool FALSE if sending failed.
      */
-    function send(MessageInterface $message, &$failures = null);
+    public function send(MessageInterface $message, &$failures = null);
 
     /**
      * Decorators are arrays that contain keys and values. The message body and subject will be scanned for the keys,
@@ -43,5 +43,5 @@ interface TransportInterface
      *
      * @return $this
      */
-    function setDecorators(array $replacements);
+    public function setDecorators(array $replacements);
 }

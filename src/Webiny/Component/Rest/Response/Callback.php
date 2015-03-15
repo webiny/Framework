@@ -24,7 +24,7 @@ class Callback
     /**
      * @var RequestBag
      */
-    private $_requestBag;
+    private $requestBag;
 
 
     /**
@@ -34,7 +34,7 @@ class Callback
      */
     public function __construct(RequestBag $requestBag)
     {
-        $this->_requestBag = $requestBag;
+        $this->requestBag = $requestBag;
     }
 
     /**
@@ -45,26 +45,26 @@ class Callback
      */
     public function getCallbackResult()
     {
-        $class = $this->_requestBag->getClassData()['class'];
-        $this->_requestBag->setClassInstance(new $class);
+        $class = $this->requestBag->getClassData()['class'];
+        $this->requestBag->setClassInstance(new $class);
 
         // create CallbackResult instance
         $cr = new CallbackResult();
 
         $env = 'production';
-        if ($this->_requestBag->getApiConfig()->get('Environment', 'production') == 'development') {
+        if ($this->requestBag->getApiConfig()->get('Environment', 'production') == 'development') {
             $cr->setEnvToDevelopment();
             $env = 'development';
         }
 
         // attach some metadata
         $cr->attachDebugHeader('Class', $class);
-        $cr->attachDebugHeader('ClassVersion', $this->_requestBag->getClassData()['version']);
+        $cr->attachDebugHeader('ClassVersion', $this->requestBag->getClassData()['version']);
         $cr->attachDebugHeader('Method', strtoupper($this->httpRequest()->getRequestMethod()));
-        $cr->attachDebugHeader('CompileCacheFile', $this->_requestBag->getCompileCacheFile());
+        $cr->attachDebugHeader('CompileCacheFile', $this->requestBag->getCompileCacheFile());
 
 
-        if (!$this->_requestBag->getMethodData()) {
+        if (!$this->requestBag->getMethodData()) {
             // if no method matched the request
             $cr->setHeaderResponse(404);
             $cr->setErrorResponse('No service matched the request.');
@@ -74,7 +74,7 @@ class Callback
 
         // check rate limit
         try {
-            $rateControl = RateControl::isWithinRateLimits($this->_requestBag, $cr);
+            $rateControl = RateControl::isWithinRateLimits($this->requestBag, $cr);
             if (!$rateControl) {
                 $cr->setHeaderResponse(429);
                 $cr->setErrorResponse('Rate control limit reached.');
@@ -87,11 +87,11 @@ class Callback
 
         // verify access role
         try {
-            $hasAccess = Security::hasAccess($this->_requestBag);
+            $hasAccess = Security::hasAccess($this->requestBag);
             if (!$hasAccess) {
                 $cr->setHeaderResponse(403);
                 $cr->setErrorResponse('You don\'t have the required access level.');
-                $cr->attachDebugHeader('RequestedRole', $this->_requestBag->getMethodData()['role']);
+                $cr->attachDebugHeader('RequestedRole', $this->requestBag->getMethodData()['role']);
 
                 return $cr;
             }
@@ -101,7 +101,7 @@ class Callback
 
         // verify cache
         try {
-            $cachedResult = Cache::getFromCache($this->_requestBag);
+            $cachedResult = Cache::getFromCache($this->requestBag);
         } catch (\Exception $e) {
             throw new RestException('Reading result from cache failed. ' . $e->getMessage());
         }
@@ -113,30 +113,30 @@ class Callback
         } else {
             try {
                 $result = call_user_func_array([
-                                                   $this->_requestBag->getClassInstance(),
-                                                   $this->_requestBag->getMethodData()['method']
-                                               ], $this->_requestBag->getMethodParameters()
+                                                   $this->requestBag->getClassInstance(),
+                                                   $this->requestBag->getMethodData()['method']
+                                               ], $this->requestBag->getMethodParameters()
                 );
 
                 // check if method has custom headers set
-                $cr->setHeaderResponse($this->_requestBag->getMethodData()['header']['status']['success']);
+                $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['success']);
                 $cr->attachDebugHeader('Cache', 'MISS');
 
                 // add result to output
                 $cr->setData($result);
 
                 // check if we need to attach the cache headers
-                if ($this->_requestBag->getMethodData()['header']['cache']['expires'] > 0) {
-                    $cr->setExpiresIn($this->_requestBag->getMethodData()['header']['cache']['expires']);
+                if ($this->requestBag->getMethodData()['header']['cache']['expires'] > 0) {
+                    $cr->setExpiresIn($this->requestBag->getMethodData()['header']['cache']['expires']);
                 }
 
                 // cache the result
-                Cache::saveResult($this->_requestBag, $result);
+                Cache::saveResult($this->requestBag, $result);
 
             } catch (RestErrorException $re) {
                 // check if method has custom headers set
-                $cr->setHeaderResponse($this->_requestBag->getMethodData()['header']['status']['error'],
-                                       $this->_requestBag->getMethodData()['header']['status']['errorMessage']
+                $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['error'],
+                                       $this->requestBag->getMethodData()['header']['status']['errorMessage']
                 );
 
                 $cr->setErrorResponse($re->getErrorMessage(), $re->getErrorDescription(), $re->getErrorCode());
@@ -155,8 +155,8 @@ class Callback
                 }
             } catch (\Exception $e) {
                 // check if method has custom headers set
-                $cr->setHeaderResponse($this->_requestBag->getMethodData()['header']['status']['error'],
-                                       $this->_requestBag->getMethodData()['header']['status']['errorMessage']
+                $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['error'],
+                                       $this->requestBag->getMethodData()['header']['status']['errorMessage']
                 );
 
                 $cr->setErrorResponse('There has been an error processing the request.');

@@ -32,7 +32,7 @@ class UrlGenerator
      * @return string Generated url.
      * @throws RouterException
      */
-    function generate($name, $parameters = [], $absolute = true)
+    public function generate($name, $parameters = [], $absolute = true)
     {
         $route = Router::getRouteCollection()->get($name);
         if ($this->isNull($route)) {

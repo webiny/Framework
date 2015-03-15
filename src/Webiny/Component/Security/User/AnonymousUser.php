@@ -22,7 +22,7 @@ class AnonymousUser extends UserAbstract
     /**
      * Base constructor.
      */
-    function __construct()
+    public function __construct()
     {
         parent::populate('anonymous', '', [], false);
     }
@@ -35,7 +35,7 @@ class AnonymousUser extends UserAbstract
      *
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Firewall $firewall)
+    public function authenticate(Login $login, Firewall $firewall)
     {
         return true;
     }

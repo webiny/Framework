@@ -18,14 +18,14 @@ class Env
 {
     use StdLibTrait;
 
-    private $_envBag;
+    private $envBag;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->_envBag = $this->arr($_ENV);
+        $this->envBag = $this->arr($_ENV);
     }
 
     /**
@@ -38,7 +38,7 @@ class Env
      */
     public function get($key, $value = null)
     {
-        return $this->_envBag->key($key, $value, true);
+        return $this->envBag->key($key, $value, true);
     }
 
     /**
@@ -48,6 +48,6 @@ class Env
      */
     public function getAll()
     {
-        return $this->_envBag->val();
+        return $this->envBag->val();
     }
 }

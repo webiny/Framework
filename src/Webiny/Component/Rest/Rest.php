@@ -37,27 +37,27 @@ class Rest
     /**
      * @var string Name of the api configuration.
      */
-    private $_api;
+    private $api;
 
     /**
      * @var string Environment, can either be 'development' or 'production'.
      */
-    private $_environment = 'production';
+    private $environment = 'production';
 
     /**
      * @var mixed|\Webiny\Component\Config\ConfigObject Rest api specific configuration.
      */
-    private $_config;
+    private $config;
 
     /**
      * @var string Name of the class that has been registered.
      */
-    private $_class;
+    private $class;
 
     /**
      * @var bool Should the url parts be normalized.
      */
-    private $_normalize;
+    private $normalize;
 
 
     /**
@@ -71,7 +71,7 @@ class Rest
      * @throws RestException
      * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
      */
-    static public function initRest($api, $url = '')
+    public static function initRest($api, $url = '')
     {
         $config = self::getConfig()->get($api, false);
 
@@ -116,7 +116,7 @@ class Rest
             return false;
         }
 
-        return self::_processRouterResponse($result, $config, $api);
+        return self::processRouterResponse($result, $config, $api);
     }
 
     /**
@@ -130,7 +130,7 @@ class Rest
      * @return Rest
      * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
      */
-    static private function _processRouterResponse(MatchedRoute $matchedRoute, ConfigObject $config, $api)
+    private static function processRouterResponse(MatchedRoute $matchedRoute, ConfigObject $config, $api)
     {
         // based on the matched route create the class name
         $className = self::str($config->get('Router.Class'))->trimLeft('\\')->prepend('\\');
@@ -158,18 +158,18 @@ class Rest
      */
     public function __construct($api, $class)
     {
-        $this->_config = $this->getConfig()->get($api, false);
-        if (!$this->_config) {
+        $this->config = $this->getConfig()->get($api, false);
+        if (!$this->config) {
             throw new RestException('Configuration for "' . $api . '" not found.');
         }
 
-        $this->setEnvironment($this->_config->get('Environment', 'production'));
+        $this->setEnvironment($this->config->get('Environment', 'production'));
 
-        $this->_api = $api;
-        $this->_class = $class;
-        $this->_normalize = $this->_config->get('Router.Normalize', false);
+        $this->api = $api;
+        $this->class = $class;
+        $this->normalize = $this->config->get('Router.Normalize', false);
 
-        $this->_registerClass();
+        $this->registerClass();
     }
 
     /**
@@ -186,7 +186,7 @@ class Rest
             throw new RestException('Unknown environment "' . $env . '".');
         }
 
-        $this->_environment = $env;
+        $this->environment = $env;
     }
 
     /**
@@ -196,7 +196,7 @@ class Rest
      */
     public function getEnvironment()
     {
-        return $this->_environment;
+        return $this->environment;
     }
 
     /**
@@ -208,11 +208,11 @@ class Rest
     public function processRequest()
     {
         try {
-            $router = new Router($this->_api, $this->_class, $this->_normalize);
+            $router = new Router($this->api, $this->class, $this->normalize);
 
             return $router->processRequest();
         } catch (\Exception $e) {
-            throw new RestException('Unable to process request for class "' . $this->_class . '". ' . $e->getMessage());
+            throw new RestException('Unable to process request for class "' . $this->class . '". ' . $e->getMessage());
         }
     }
 
@@ -221,9 +221,9 @@ class Rest
      *
      * @return bool
      */
-    private function _isDevelopment()
+    private function isDevelopment()
     {
-        return ($this->_environment == 'development') ? true : false;
+        return ($this->environment == 'development') ? true : false;
     }
 
     /**
@@ -231,18 +231,18 @@ class Rest
      *
      * @throws RestException
      */
-    private function _registerClass()
+    private function registerClass()
     {
         try {
-            if (!Cache::isCacheValid($this->_api, $this->_class) || $this->_isDevelopment()) {
+            if (!Cache::isCacheValid($this->api, $this->class) || $this->isDevelopment()) {
                 try {
-                    $this->_parseClass();
+                    $this->parseClass();
                 } catch (\Exception $e) {
-                    throw new RestException('Error registering class "' . $this->_class . '". ' . $e->getMessage());
+                    throw new RestException('Error registering class "' . $this->class . '". ' . $e->getMessage());
                 }
             }
         } catch (\Exception $e) {
-            throw new RestException('Unable to register class "' . $this->_class . '". ' . $e->getMessage());
+            throw new RestException('Unable to register class "' . $this->class . '". ' . $e->getMessage());
         }
     }
 
@@ -250,13 +250,13 @@ class Rest
      * Calls the Parser to parse the class and
      * then Compiler to create a compiled cache file of the parsed class.
      */
-    private function _parseClass()
+    private function parseClass()
     {
         $parser = new Parser();
-        $parsedApi = $parser->parseApi($this->_class, $this->_normalize);
+        $parsedApi = $parser->parseApi($this->class, $this->normalize);
 
         // in development we always write cache
-        $writer = new Compiler($this->_api, $this->_normalize);
+        $writer = new Compiler($this->api, $this->normalize);
         $writer->writeCacheFiles($parsedApi);
     }
 }

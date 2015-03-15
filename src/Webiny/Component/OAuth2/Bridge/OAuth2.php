@@ -24,16 +24,16 @@ class OAuth2
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\OAuth2\Bridge\League\OAuth2';
+    private static $library = '\Webiny\Component\OAuth2\Bridge\League\OAuth2';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    static function _getLibrary()
+    static function getLibrary()
     {
-        return \Webiny\Component\OAuth2\OAuth2::getConfig()->get('Bridge', self::$_library);
+        return \Webiny\Component\OAuth2\OAuth2::getConfig()->get('Bridge', self::$library);
     }
 
     /**
@@ -44,7 +44,7 @@ class OAuth2
      */
     static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -60,7 +60,7 @@ class OAuth2
      */
     static function getInstance($clientId, $clientSecret, $redirectUri, $certificateFile = '')
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = new $driver($clientId, $clientSecret, $redirectUri);

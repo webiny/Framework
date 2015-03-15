@@ -19,7 +19,7 @@ class LocalFile extends File
 {
     use StdObjectTrait;
 
-    protected $_size;
+    protected $size;
 
     /**
      * Get file size in bytes
@@ -28,11 +28,11 @@ class LocalFile extends File
      */
     public function getSize()
     {
-        if ($this->_size === null) {
-            $this->_size = $this->_storage->getSize($this->_key);
+        if ($this->size === null) {
+            $this->size = $this->storage->getSize($this->key);
         }
 
-        return $this->_size;
+        return $this->size;
     }
 
     /**
@@ -42,7 +42,7 @@ class LocalFile extends File
      */
     public function getAbsolutePath()
     {
-        return $this->_storage->getAbsolutePath($this->_key);
+        return $this->storage->getAbsolutePath($this->key);
     }
 
     /**
@@ -52,8 +52,8 @@ class LocalFile extends File
      */
     public function touch()
     {
-        $this->_storage->touchKey($this->_key);
-        $this->_timeModified = null;
+        $this->storage->touchKey($this->key);
+        $this->timeModified = null;
 
         return $this;
     }

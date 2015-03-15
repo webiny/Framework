@@ -40,7 +40,7 @@ class AnnotationsTest extends \PHPUnit_Framework_TestCase
     public function testGetPropertyAnnotations2()
     {
         $annotations = Annotations::getPropertyAnnotations('\Webiny\Component\Annotations\Tests\TestClass',
-                                                           '$_anotherVar'
+                                                           '$anotherVar'
         );
 
         $this->assertSame("ADMIN", $annotations->access->role);

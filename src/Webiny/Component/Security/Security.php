@@ -33,13 +33,13 @@ class Security
      * Current firewall that took over the request.
      * @var Firewall
      */
-    private $_firewalls;
+    private $firewalls;
 
     /**
      * @var array A list of currently built-in user providers. The keys are used so you don't need to write
      *            the fully qualified class names in the yaml config.
      */
-    private static $_userProviders = [
+    private static $userProviders = [
         'Entity'       => '\Webiny\Component\Security\User\Providers\Entity\Entity',
         'Memory'       => '\Webiny\Component\Security\User\Providers\Memory\Memory',
         'OAuth2'       => '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2',
@@ -50,7 +50,7 @@ class Security
      * @var array A list of currently built-in encoders. The keys are used so you don't need to write
      *            the fully qualified class names in the yaml config.
      */
-    private static $_encoders = [
+    private static $encoders = [
         'Crypt' => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
         'Null'  => '\Webiny\Component\Security\Encoder\Drivers\Null'
     ];
@@ -69,8 +69,8 @@ class Security
     public function firewall($firewallKey = '')
     {
         // initialize firewall
-        if (isset($this->_firewalls[$firewallKey])) {
-            $fw = $this->_firewalls[$firewallKey];
+        if (isset($this->firewalls[$firewallKey])) {
+            $fw = $this->firewalls[$firewallKey];
         } else {
             if ($firewallKey == '') {
                 $firewall = $this->getConfig()->Firewalls[0];
@@ -87,11 +87,11 @@ class Security
                 }
             }
 
-            $fw = new Firewall($firewallKey, $firewall, $this->_getFirewallUserProviders($firewallKey),
-                               $this->_getFirewallEncoder($firewallKey)
+            $fw = new Firewall($firewallKey, $firewall, $this->getFirewallUserProviders($firewallKey),
+                               $this->getFirewallEncoder($firewallKey)
             );
 
-            $this->_firewalls[$firewallKey] = $fw;
+            $this->firewalls[$firewallKey] = $fw;
         }
 
         return $fw;
@@ -106,11 +106,11 @@ class Security
      * @return array Array of user provider instances for the given firewall.
      * @throws SecurityException
      */
-    private function _getFirewallUserProviders($firewallKey)
+    private function getFirewallUserProviders($firewallKey)
     {
         $userProviders = [];
 
-        $firewallProviders = $this->_getFirewallConfig($firewallKey)->get('UserProviders', false);
+        $firewallProviders = $this->getFirewallConfig($firewallKey)->get('UserProviders', false);
         if (!$firewallProviders || count($firewallProviders) < 1) {
             throw new SecurityException('User providers for firewall "' . $firewallKey . '" are not defined.');
         }
@@ -121,17 +121,20 @@ class Security
 
             // get global config
             $gConfig = $providers->get($pk, false);
+            $params = null;
 
             // get firewall driver and params
             if (isset($gConfig->Driver)) {
                 $driver = $gConfig->Driver;
-                if (isset(self::$_userProviders[$driver])) { // short-hand driver name in the global config
-                    $driver = self::$_userProviders[$driver];
+                if (isset(self::$userProviders[$driver])) { // short-hand driver name in the global config
+                    $driver = self::$userProviders[$driver];
                 }
                 $params = $gConfig->get('Params', null, true);
-            } else if (isset(self::$_userProviders[$pk])) {
-                $driver = self::$_userProviders[$pk];
-                $params = null;
+            } else if (isset(self::$userProviders[$pk])) {
+                $driver = self::$userProviders[$pk];
+                if($gConfig){
+                    $params = $gConfig->get('Params', null, true);
+                }
             } else {
                 throw new SecurityException('User providers "' . $pk . '" is missing a Driver.');
             }
@@ -139,9 +142,10 @@ class Security
             // In case of memory user provider, we don't have the parameters, but we have the user accounts
             // these need to be passed to the constructor.
             // Not the best way to do it, but keeps the yaml config simpler
-            if ($driver == self::$_userProviders['Memory'] && $params == null) {
+            if ($driver == self::$userProviders['Memory'] && $params == null) {
                 $params = $gConfig->toArray();
             }
+
 
             try {
                 $userProviders[$pk] = $this->factory($driver, '\Webiny\Component\Security\User\UserProviderInterface',
@@ -167,10 +171,10 @@ class Security
      * @return Encoder
      * @throws SecurityException
      */
-    private function _getFirewallEncoder($firewallKey)
+    private function getFirewallEncoder($firewallKey)
     {
         // get the encoder name
-        $encoderName = $this->_getFirewallConfig($firewallKey)->get('Encoder', 'Crypt');
+        $encoderName = $this->getFirewallConfig($firewallKey)->get('Encoder', 'Crypt');
         if (!$encoderName) {
             $encoderName = 'Null';
         }
@@ -187,10 +191,10 @@ class Security
         }
 
         // get the driver class name
-        if (!$driver && isset(self::$_encoders[$encoderName])) { // use built-in driver
-            $driver = self::$_encoders[$encoderName];
-        } else if (isset(self::$_encoders[$driver])) { // driver defined as short-name built-in driver
-            $driver = self::$_encoders[$driver];
+        if (!$driver && isset(self::$encoders[$encoderName])) { // use built-in driver
+            $driver = self::$encoders[$encoderName];
+        } else if (isset(self::$encoders[$driver])) { // driver defined as short-name built-in driver
+            $driver = self::$encoders[$driver];
         } else if (!$driver) {
             throw new SecurityException('Invalid "Driver" param for "' . $encoderName . '" encoder.');
         }
@@ -204,7 +208,7 @@ class Security
      *
      * @return ConfigObject
      */
-    private function _getFirewallConfig($firewallKey)
+    private function getFirewallConfig($firewallKey)
     {
         return $this->getConfig()->Firewalls->{$firewallKey};
     }

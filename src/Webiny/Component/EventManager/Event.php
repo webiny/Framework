@@ -21,8 +21,8 @@ class Event implements \ArrayAccess, \IteratorAggregate
 {
     use StdLibTrait;
 
-    private $_propagationStopped = false;
-    private $_eventData;
+    private $propagationStopped = false;
+    private $eventData;
 
     public function __construct($eventData = null)
     {
@@ -34,9 +34,9 @@ class Event implements \ArrayAccess, \IteratorAggregate
                     ]
                 );
             }
-            $this->_eventData = $this->arr($eventData);
+            $this->eventData = $this->arr($eventData);
         } else {
-            $this->_eventData = $this->arr();
+            $this->eventData = $this->arr();
         }
     }
 
@@ -46,7 +46,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function isPropagationStopped()
     {
-        return $this->_propagationStopped;
+        return $this->propagationStopped;
     }
 
     /**
@@ -58,7 +58,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function stopPropagation()
     {
-        $this->_propagationStopped = true;
+        $this->propagationStopped = true;
     }
 
     /**
@@ -71,8 +71,8 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function get($name, $default = null)
     {
-        if ($this->_eventData->keyExists($name)) {
-            return $this->_eventData->key($name);
+        if ($this->eventData->keyExists($name)) {
+            return $this->eventData->key($name);
         }
 
         return $default;
@@ -105,9 +105,9 @@ class Event implements \ArrayAccess, \IteratorAggregate
         }
 
         if ($this->isNull($name)) {
-            $this->_eventData[] = $value;
+            $this->eventData[] = $value;
         } else {
-            $this->_eventData[$name] = $value;
+            $this->eventData[$name] = $value;
         }
     }
 
@@ -127,7 +127,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetExists($offset)
     {
-        return $this->_eventData->keyExists($offset);
+        return $this->eventData->keyExists($offset);
     }
 
     /**
@@ -143,7 +143,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetGet($offset)
     {
-        return $this->_eventData->key($offset);
+        return $this->eventData->key($offset);
     }
 
     /**
@@ -162,7 +162,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetSet($offset, $value)
     {
-        $this->_eventData->key($offset, $value);
+        $this->eventData->key($offset, $value);
     }
 
     /**
@@ -179,7 +179,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetUnset($offset)
     {
-        $this->_eventData->removeKey($offset);
+        $this->eventData->removeKey($offset);
     }
 
     /**
@@ -191,7 +191,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function __isset($name)
     {
-        return $this->_eventData->keyExists($name);
+        return $this->eventData->keyExists($name);
     }
 
     /**
@@ -203,8 +203,8 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function __unset($name)
     {
-        if ($this->_eventData->keyExists($name)) {
-            $this->_eventData->removeKey($name);
+        if ($this->eventData->keyExists($name)) {
+            $this->eventData->removeKey($name);
         }
     }
 
@@ -217,7 +217,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->_eventData->getIterator();
+        return $this->eventData->getIterator();
     }
 
     /**
@@ -227,7 +227,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
     public function toArray()
     {
         $data = [];
-        foreach ($this->_eventData as $k => $v) {
+        foreach ($this->eventData as $k => $v) {
             $data[$k] = $v;
         }
 

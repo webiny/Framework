@@ -24,9 +24,9 @@ abstract class CacheAbstract implements StorageInterface
      * @return CacheStorageInterface
      * @throws CacheException
      */
-    static function getInstance()
+    public static function getInstance()
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = new $driver();

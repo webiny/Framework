@@ -28,7 +28,7 @@ class TextAttribute extends AttributeAbstract
     {
         if (!$this->isString($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->_attribute,
+                    $this->attribute,
                     'string',
                     gettype($value)
                 ]

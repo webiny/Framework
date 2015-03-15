@@ -42,6 +42,6 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         ];
 
         $query = new Query();
-        $this->assertSame($_POST, $query->getAll());
+        $this->assertSame($_GET, $query->getAll());
     }
 }

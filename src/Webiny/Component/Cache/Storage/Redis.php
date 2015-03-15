@@ -25,7 +25,7 @@ class Redis
      *
      * @return CacheStorageInterface
      */
-    static function getInstance($host = 'localhost', $port = 6379)
+    public static function getInstance($host = 'localhost', $port = 6379)
     {
         return \Webiny\Component\Cache\Bridge\Redis::getInstance($host, $port);
     }

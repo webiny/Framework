@@ -15,7 +15,7 @@ use Webiny\Component\ServiceManager\ServiceManager;
 class ServiceManagerInheritanceTest extends PHPUnit_Framework_TestCase
 {
 
-    protected static $_services = [
+    protected static $services = [
         'Abstract' => [
             'Abstract' => true,
             'Class'    => '\Webiny\Component\ServiceManager\Tests\Classes\AbstractService'
@@ -30,7 +30,7 @@ class ServiceManagerInheritanceTest extends PHPUnit_Framework_TestCase
 
     public function testInheritance()
     {
-        $servicesConfig = new ConfigObject(self::$_services);
+        $servicesConfig = new ConfigObject(self::$services);
         ServiceManager::getInstance()->registerServices('Inheritance', $servicesConfig);
         $service = ServiceManager::getInstance()->getService('Inheritance.Real');
         $this->assertEquals('Webiny', $service->getValue());

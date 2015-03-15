@@ -49,7 +49,7 @@ class LocalHelper
      */
     public function getKey($path, $directory)
     {
-        $path = $this->_normalizePath($path);
+        $path = $this->normalizePath($path);
 
         return ltrim(substr($path, strlen($directory)), '/');
     }
@@ -68,7 +68,7 @@ class LocalHelper
             if (!$create) {
                 throw new StorageException(StorageException::DIRECTORY_DOES_NOT_EXIST, [$directory]);
             }
-            $this->_createDirectory($directory);
+            $this->createDirectory($directory);
         }
     }
 
@@ -81,7 +81,7 @@ class LocalHelper
      */
     public function normalizeDirectoryPath($path)
     {
-        $path = $this->_normalizePath($path);
+        $path = $this->normalizePath($path);
 
         if (is_link($path)) {
             $path = realpath($path);
@@ -97,7 +97,7 @@ class LocalHelper
      *
      * @throws \Webiny\Component\Storage\StorageException
      */
-    protected function _createDirectory($directory)
+    protected function createDirectory($directory)
     {
         $umask = umask(0);
         $created = mkdir($directory, 0777, true);
@@ -115,10 +115,10 @@ class LocalHelper
      *
      * @return string
      */
-    protected function _normalizePath($path)
+    protected function normalizePath($path)
     {
         $path = str_replace('\\', '/', $path);
-        $prefix = $this->_getAbsolutePrefix($path);
+        $prefix = $this->getAbsolutePrefix($path);
         $path = substr($path, strlen($prefix));
         $parts = array_filter(explode('/', $path), 'strlen');
         $tokens = array();
@@ -151,7 +151,7 @@ class LocalHelper
      *
      * @return string
      */
-    protected function _getAbsolutePrefix($path)
+    protected function getAbsolutePrefix($path)
     {
         preg_match('|^(?P<prefix>([a-zA-Z]:)?/)|', $path, $matches);
 

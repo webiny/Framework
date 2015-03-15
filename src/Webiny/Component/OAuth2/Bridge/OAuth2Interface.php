@@ -24,21 +24,21 @@ interface OAuth2Interface
      * @param string $clientSecret Client secret.
      * @param string $redirectUri  Target url where to redirect after authentication.
      */
-    function __construct($clientId, $clientSecret, $redirectUri);
+    public function __construct($clientId, $clientSecret, $redirectUri);
 
     /**
      * Get client id.
      *
      * @return string Client id.
      */
-    function getClientId();
+    public function getClientId();
 
     /**
      * Get client secret.
      *
      * @return string Client secret.
      */
-    function getClientSecret();
+    public function getClientSecret();
 
     /**
      * Requests the access token from the OAuth server.
@@ -49,14 +49,14 @@ interface OAuth2Interface
      * @throws \Webiny\Component\OAuth2\Bridge\OAuth2Exception
      * @return string Access token.
      */
-    function requestAccessToken($tokenUrl);
+    public function requestAccessToken($tokenUrl);
 
     /**
      * Get access  token.
      *
      * @return string Access token.
      */
-    function getAccessToken();
+    public function getAccessToken();
 
 
     /**
@@ -64,7 +64,7 @@ interface OAuth2Interface
      *
      * @return string Redirect URI.
      */
-    function getRedirectURI();
+    public function getRedirectURI();
 
     /**
      * Set the access token.
@@ -73,7 +73,7 @@ interface OAuth2Interface
      *
      * @return void
      */
-    function setAccessToken($accessToken);
+    public function setAccessToken($accessToken);
 
     /**
      * Set the certificate used by OAuth2 requests.
@@ -82,14 +82,14 @@ interface OAuth2Interface
      *
      * @return void
      */
-    function setCertificate($pathToCertificate);
+    public function setCertificate($pathToCertificate);
 
     /**
      * Returns the path to certificate.
      *
      * @return string Path to certificate.
      */
-    function getCertificate();
+    public function getCertificate();
 
     /**
      * Set the request scope.
@@ -98,14 +98,14 @@ interface OAuth2Interface
      *
      * @return void
      */
-    function setScope($scope);
+    public function setScope($scope);
 
     /**
      * Get the defined scope.
      *
      * @return string A comma separated list of parameters.
      */
-    function getScope();
+    public function getScope();
 
     /**
      * Set the state parameter.
@@ -114,19 +114,19 @@ interface OAuth2Interface
      *
      * @return void.
      */
-    function setState($state);
+    public function setState($state);
 
     /**
      * Get the state parameter.
      *
      * @return string State parameter
      */
-    function getState();
+    public function getState();
 
     /**
      * Returns the name of access token param. Its usually either 'access_token' or 'token' based on the OAuth2 server.
      *
      * @return string
      */
-    function getAccessTokenName();
+    public function getAccessTokenName();
 }

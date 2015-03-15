@@ -23,7 +23,7 @@ trait ValidatorTrait
      *
      * @return string Boolean true if it's a leap year.
      */
-    function isLeap()
+    public function isLeap()
     {
         if (date('L', $this->getTimestamp()) > 0) {
             return true;
@@ -37,7 +37,7 @@ trait ValidatorTrait
      *
      * @return bool Boolean true if the date is in the future. Otherwise false.
      */
-    function isFuture()
+    public function isFuture()
     {
         if ($this->getTimestamp() > time()) {
             return true;
@@ -51,7 +51,7 @@ trait ValidatorTrait
      *
      * @return bool Boolean true if the date is in the past. Otherwise false.
      */
-    function isPast()
+    public function isPast()
     {
         if ($this->isFuture()) {
             return false;
@@ -67,7 +67,7 @@ trait ValidatorTrait
      *
      * @return bool Boolean true if current date object is larger than the provided $time.
      */
-    function largerThan($time)
+    public function largerThan($time)
     {
         $diff = $this->diff($time, false);
         if ($diff->key('invert') <= 0) {
@@ -84,7 +84,7 @@ trait ValidatorTrait
      *
      * @return bool Boolean true if current date object is smaller than the provided $time.
      */
-    function smallerThan($time)
+    public function smallerThan($time)
     {
         if ($this->largerThan($time)) {
             return false;

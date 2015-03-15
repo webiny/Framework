@@ -22,12 +22,12 @@ class Compiler
     /**
      * @var string Name of the api configuration.
      */
-    private $_api;
+    private $api;
 
     /**
      * @var bool Should the class name and the method name be normalized.
      */
-    private $_normalize;
+    private $normalize;
 
 
     /**
@@ -38,8 +38,8 @@ class Compiler
      */
     public function __construct($api, $normalize)
     {
-        $this->_api = $api;
-        $this->_normalize = $normalize;
+        $this->api = $api;
+        $this->normalize = $normalize;
     }
 
     /**
@@ -53,13 +53,13 @@ class Compiler
         $writtenCacheFiles = [];
 
         foreach ($parsedApi->versions as $v => $parsedClass) {
-            $cacheFile = Cache::getCacheFilename($this->_api, $parsedApi->apiClass, $v);
+            $cacheFile = Cache::getCacheFilename($this->api, $parsedApi->apiClass, $v);
 
-            $this->_deleteExisting($cacheFile);
+            $this->deleteExisting($cacheFile);
 
-            $compileArray = $this->_compileCacheFile($parsedClass, $v);
+            $compileArray = $this->compileCacheFile($parsedClass, $v);
 
-            $this->_compileCacheTemplate($compileArray, $cacheFile, $v);
+            $this->compileCacheTemplate($compileArray, $cacheFile, $v);
 
             $writtenCacheFiles[$v] = [
                 'class'        => $parsedClass->class,
@@ -70,8 +70,8 @@ class Compiler
         }
 
         // write current and latest versions (just include return a specific version)
-        $this->_compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->latestVersion], 'latest');
-        $this->_compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->currentVersion], 'current');
+        $this->compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->latestVersion], 'latest');
+        $this->compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->currentVersion], 'current');
     }
 
     /**
@@ -81,7 +81,7 @@ class Compiler
      * @param string $cacheFile    Cache file into which the content will be written.
      * @param string $version      Version name.
      */
-    private function _compileCacheTemplate($compileArray, $cacheFile, $version)
+    private function compileCacheTemplate($compileArray, $cacheFile, $version)
     {
         // template
         $cacheFileTemplate = file_get_contents(__DIR__ . '/Templates/Cache.tpl');
@@ -113,7 +113,7 @@ class Compiler
      * @param array  $compileArray Array holding different meta data regarding the api and the class.
      * @param string $aliasVersion Name of the version.
      */
-    private function _compileCacheAliasTemplate($compileArray, $aliasVersion)
+    private function compileCacheAliasTemplate($compileArray, $aliasVersion)
     {
         // template
         $cacheFileTemplate = file_get_contents(__DIR__ . '/Templates/CacheAlias.tpl');
@@ -142,7 +142,7 @@ class Compiler
      *
      * @param string $cacheFile Cache file location.
      */
-    private function _deleteExisting($cacheFile)
+    private function deleteExisting($cacheFile)
     {
         if (file_exists($cacheFile)) {
             unlink($cacheFile);
@@ -158,7 +158,7 @@ class Compiler
      *
      * @return array The compiled array.
      */
-    private function _compileCacheFile(ParsedClass $parsedClass, $version)
+    private function compileCacheFile(ParsedClass $parsedClass, $version)
     {
         $compileArray = [];
         $compileArray['class'] = $parsedClass->class;
@@ -168,7 +168,7 @@ class Compiler
 
 
         foreach ($parsedClass->parsedMethods as $m) {
-            $url = $this->_buildUrlMatchPattern($m->name, $m->params);
+            $url = $this->buildUrlMatchPattern($m->name, $m->params);
             $compileArray[$m->method][$url] = [
                 'default'     => $m->default,
                 'role'        => ($m->role) ? $m->role : false,
@@ -200,15 +200,15 @@ class Compiler
      *
      * @return string The url pattern.
      */
-    private function _buildUrlMatchPattern($methodName, array $parameters)
+    private function buildUrlMatchPattern($methodName, array $parameters)
     {
         $url = $methodName;
-        if ($this->_normalize) {
+        if ($this->normalize) {
             $url = PathTransformations::methodNameToUrl($methodName);
         }
 
         foreach ($parameters as $p) {
-            $matchType = $this->_getParamMatchType($p->type);
+            $matchType = $this->getParamMatchType($p->type);
             $url = $url . '/' . $matchType;
         }
 
@@ -222,7 +222,7 @@ class Compiler
      *
      * @return string Match pattern.
      */
-    private function _getParamMatchType($paramType)
+    private function getParamMatchType($paramType)
     {
         switch ($paramType) {
             case 'string':

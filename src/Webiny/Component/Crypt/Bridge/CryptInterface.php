@@ -23,7 +23,7 @@ interface CryptInterface
      * @param string $cipherMode   Cipher mode.
      * @param string $cipherBlock  Cipher block size.
      */
-    function __construct($passwordAlgo, $cipherMode, $cipherBlock);
+    public function __construct($passwordAlgo, $cipherMode, $cipherBlock);
 
     // randoms
     /**
@@ -34,7 +34,7 @@ interface CryptInterface
      *
      * @return int Random number between $min and $max.
      */
-    function generateRandomInt($min, $max);
+    public function generateRandomInt($min, $max);
 
     /**
      * Generates a random string using the defined character set.
@@ -45,7 +45,7 @@ interface CryptInterface
      *
      * @return string Random string with the given $length containing only the provided set of $chars.
      */
-    function generateRandomString($length, $chars = '');
+    public function generateRandomString($length, $chars = '');
 
     /**
      * Generates a random string, but without using special characters that are hard to read.
@@ -55,7 +55,7 @@ interface CryptInterface
      *
      * @return string Random string with the given $length.
      */
-    function generateUserReadableString($length);
+    public function generateUserReadableString($length);
 
     /**
      * Generates a random string with a lot of 'noise' (special characters).
@@ -65,7 +65,7 @@ interface CryptInterface
      *
      * @return string Random string with the given $length.
      */
-    function generateHardReadableString($length);
+    public function generateHardReadableString($length);
 
     // password hashing and verification
     /**
@@ -76,7 +76,7 @@ interface CryptInterface
      *
      * @return string Hash of the given string.
      */
-    function createPasswordHash($password);
+    public function createPasswordHash($password);
 
     /**
      * Verify if the given $hash matches the given $password.
@@ -86,7 +86,7 @@ interface CryptInterface
      *
      * @return bool True if $password matches the $hash, otherwise false is returned.
      */
-    function verifyPasswordHash($password, $hash);
+    public function verifyPasswordHash($password, $hash);
 
     // encryption and decryption
     /**
@@ -97,7 +97,7 @@ interface CryptInterface
      *
      * @return string Encrypted string.
      */
-    function encrypt($string, $key);
+    public function encrypt($string, $key);
 
     /**
      * Decrypt a string that has been encrypted with the 'encrypt' method.
@@ -109,5 +109,5 @@ interface CryptInterface
      *
      * @return string Decrypted string.
      */
-    function decrypt($string, $key);
+    public function decrypt($string, $key);
 }

@@ -22,12 +22,12 @@ class RouteOption
     /**
      * @var string
      */
-    private $_name = '';
+    private $name = '';
 
     /**
      * @var \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject
      */
-    private $_attributes;
+    private $attributes;
 
 
     /**
@@ -36,10 +36,10 @@ class RouteOption
      * @param string $name       Name of the route parameter.
      * @param array  $attributes An array of attributes that are going to be attached to the parameter.
      */
-    function __construct($name, array $attributes = [])
+    public function __construct($name, array $attributes = [])
     {
-        $this->_name = $name;
-        $this->_attributes = $this->arr([]);
+        $this->name = $name;
+        $this->attributes = $this->arr([]);
 
         foreach ($attributes as $k => $v) {
             $this->addAttribute($k, $v);
@@ -54,12 +54,12 @@ class RouteOption
      *
      * @return $this
      */
-    function addAttribute($name, $value)
+    public function addAttribute($name, $value)
     {
         if ($name == 'Pattern') {
-            $value = $this->_sanitizePattern($name, $value);
+            $value = $this->sanitizePattern($name, $value);
         }
-        $this->_attributes[$name] = $value;
+        $this->attributes[$name] = $value;
 
         return $this;
     }
@@ -72,9 +72,9 @@ class RouteOption
      *
      * @return string
      */
-    function getAttribute($name, $default = null)
+    public function getAttribute($name, $default = null)
     {
-        return $this->_attributes->key($name, $default, true);
+        return $this->attributes->key($name, $default, true);
     }
 
     /**
@@ -84,9 +84,9 @@ class RouteOption
      *
      * @return bool
      */
-    function hasAttribute($name)
+    public function hasAttribute($name)
     {
-        return $this->_attributes->keyExists($name);
+        return $this->attributes->keyExists($name);
     }
 
     /**
@@ -94,9 +94,9 @@ class RouteOption
      *
      * @return array
      */
-    function getAttributes()
+    public function getAttributes()
     {
-        return $this->_attributes->val();
+        return $this->attributes->val();
     }
 
     /**
@@ -108,12 +108,12 @@ class RouteOption
      * @return string
      * @throws \Webiny\Component\Router\RouterException
      */
-    private function _sanitizePattern($name, $pattern)
+    private function sanitizePattern($name, $pattern)
     {
         // make sure value is a string
         if (!$this->isString($pattern)) {
             throw new RouterException('The value of %s.%s option must be a string.', [
-                    $this->_name,
+                    $this->name,
                     $name
                 ]
             );
@@ -125,7 +125,7 @@ class RouteOption
         // make sure pattern is not empty
         if ($pattern->length() < 1) {
             throw new RouterException('The route for %s.%s cannot be empty.', [
-                    $this->_name,
+                    $this->name,
                     $name
                 ]
             );

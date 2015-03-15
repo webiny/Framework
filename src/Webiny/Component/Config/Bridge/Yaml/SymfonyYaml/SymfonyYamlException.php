@@ -20,7 +20,7 @@ class SymfonyYamlException extends YamlException
 {
     const UNABLE_TO_PARSE = 101;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'SymfonyYaml Bridge - Unable to parse given resource of type %s'
     ];
 }

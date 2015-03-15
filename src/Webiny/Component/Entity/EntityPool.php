@@ -24,11 +24,11 @@ class EntityPool
     /**
      * @var ArrayObject
      */
-    private $_pool;
+    private $pool;
 
     protected function init()
     {
-        $this->_pool = $this->arr();
+        $this->pool = $this->arr();
     }
 
     /**
@@ -41,7 +41,7 @@ class EntityPool
      */
     public function get($class, $id)
     {
-        $entityPool = $this->_pool->key($class, $this->arr(), true);
+        $entityPool = $this->pool->key($class, $this->arr(), true);
 
         if ($entityPool->keyExists($id)) {
             return $entityPool->key($id);
@@ -60,7 +60,7 @@ class EntityPool
     public function add($instance)
     {
         $class = get_class($instance);
-        $entityPool = $this->_pool->key($class, $this->arr(), true);
+        $entityPool = $this->pool->key($class, $this->arr(), true);
         $entityPool->key($instance->getId()->getValue(), $instance);
 
         return $instance;
@@ -75,7 +75,7 @@ class EntityPool
      */
     public function remove(EntityAbstract $instance)
     {
-        $entityPool = $this->_pool->key(get_class($instance), $this->arr(), true);
+        $entityPool = $this->pool->key(get_class($instance), $this->arr(), true);
         $entityPool->removeKey($instance->getId()->getValue());
         unset($instance);
 

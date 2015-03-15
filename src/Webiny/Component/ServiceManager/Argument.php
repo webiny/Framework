@@ -23,7 +23,7 @@ class Argument
     /**
      * Simple value, class name or service name
      */
-    private $_value;
+    private $value;
 
     /**
      * Create Argument instance
@@ -32,7 +32,7 @@ class Argument
      */
     public function __construct($argument)
     {
-        $this->_value = $argument;
+        $this->value = $argument;
     }
 
     /**
@@ -44,16 +44,16 @@ class Argument
         /**
          * If 'object' key exists - it's either a class or service
          **/
-        if ($this->isArray($this->_value) && $this->arr($this->_value)->keyExists('Object')) {
-            $this->_value = $this->arr($this->_value);
-            $this->_value = $this->_createValue($this->_value->key('Object'),
-                                                $this->_value->key('ObjectArguments', [], true)
+        if ($this->isArray($this->value) && $this->arr($this->value)->keyExists('Object')) {
+            $this->value = $this->arr($this->value);
+            $this->value = $this->createValue($this->value->key('Object'),
+                                                $this->value->key('ObjectArguments', [], true)
             );
         } else {
-            $this->_value = $this->_createValue($this->_value);
+            $this->value = $this->createValue($this->value);
         }
 
-        return $this->_value;
+        return $this->value;
     }
 
     /**
@@ -66,7 +66,7 @@ class Argument
      *
      * @return mixed|object
      */
-    private function _createValue($object, $arguments = [])
+    private function createValue($object, $arguments = [])
     {
 
         if ($this->isInstanceOf($arguments, '\Webiny\Component\Config\ConfigObject')) {

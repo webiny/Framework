@@ -22,8 +22,8 @@ class SymfonyYaml implements YamlInterface
 {
     use StdLibTrait;
 
-    private $_indent = 4;
-    private $_resource = null;
+    private $indent = 4;
+    private $resource = null;
 
     /**
      * Set resource to work on
@@ -34,7 +34,7 @@ class SymfonyYaml implements YamlInterface
      */
     public function setResource($resource)
     {
-        $this->_resource = $resource;
+        $this->resource = $resource;
 
         return $this;
     }
@@ -46,11 +46,11 @@ class SymfonyYaml implements YamlInterface
      *
      * @return string Yaml string
      */
-    function getString($indent = 4)
+    public function getString($indent = 4)
     {
-        $this->_indent = $indent;
+        $this->indent = $indent;
 
-        return $this->_toString();
+        return $this->toString();
     }
 
     /**
@@ -58,9 +58,9 @@ class SymfonyYaml implements YamlInterface
      *
      * @return array Parsed Yaml array
      */
-    function getArray()
+    public function getArray()
     {
-        return $this->_parseResource();
+        return $this->parseResource();
     }
 
     /**
@@ -70,17 +70,17 @@ class SymfonyYaml implements YamlInterface
      * @throws SymfonyYamlException
      * @return string
      */
-    private function _parseResource()
+    private function parseResource()
     {
-        if ($this->isArray($this->_resource)) {
-            return StdObjectWrapper::toArray($this->_resource);
-        } elseif ($this->isString($this->_resource)) {
-            return Yaml::parse($this->_resource);
-        } elseif ($this->isInstanceOf($this->_resource, 'Webiny\Component\Config\ConfigObject')) {
-            return $this->_resource->toArray();
+        if ($this->isArray($this->resource)) {
+            return StdObjectWrapper::toArray($this->resource);
+        } elseif ($this->isString($this->resource)) {
+            return Yaml::parse($this->resource);
+        } elseif ($this->isInstanceOf($this->resource, 'Webiny\Component\Config\ConfigObject')) {
+            return $this->resource->toArray();
         }
 
-        throw new SymfonyYamlException(SymfonyYamlException::UNABLE_TO_PARSE, [gettype($this->_resource)]);
+        throw new SymfonyYamlException(SymfonyYamlException::UNABLE_TO_PARSE, [gettype($this->resource)]);
     }
 
     /**
@@ -89,9 +89,9 @@ class SymfonyYaml implements YamlInterface
      * @throws SymfonyYamlException
      * @return $this
      */
-    private function _toString()
+    private function toString()
     {
-        return Yaml::dump($this->_parseResource(), 2, $this->_indent);
+        return Yaml::dump($this->parseResource(), 2, $this->indent);
     }
 
 }

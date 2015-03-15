@@ -20,11 +20,11 @@ abstract class IndexAbstract implements IndexInterface
 {
     use StdLibTrait;
 
-    protected $_name = '';
-    protected $_fields = [];
-    protected $_sparse = false;
-    protected $_unique = false;
-    protected $_dropDuplicates = false;
+    protected $name = '';
+    protected $fields = [];
+    protected $sparse = false;
+    protected $unique = false;
+    protected $dropDuplicates = false;
 
     /**
      * @param string $name           Index name
@@ -35,13 +35,13 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function __construct($name, $fields, $sparse = false, $unique = false, $dropDuplicates = false)
     {
-        $this->_name = $name;
-        $this->_fields = $fields;
-        $this->_unique = $unique;
-        $this->_sparse = $sparse;
-        $this->_dropDuplicates = $dropDuplicates;
+        $this->name = $name;
+        $this->fields = $fields;
+        $this->unique = $unique;
+        $this->sparse = $sparse;
+        $this->dropDuplicates = $dropDuplicates;
 
-        $this->_normalizeFields();
+        $this->normalizeFields();
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -61,7 +61,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -71,9 +71,9 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function setFields($fields)
     {
-        $this->_fields = $fields;
+        $this->fields = $fields;
 
-        $this->_normalizeFields();
+        $this->normalizeFields();
 
         return $this;
     }
@@ -83,19 +83,19 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function getFields()
     {
-        return $this->_fields;
+        return $this->fields;
     }
 
     public function setSparse($flag)
     {
-        $this->_sparse = $flag;
+        $this->sparse = $flag;
 
         return $this;
     }
 
     public function getSparse()
     {
-        return $this->_sparse;
+        return $this->sparse;
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function setDropDuplicates($dropDuplicates)
     {
-        $this->_dropDuplicates = $dropDuplicates;
+        $this->dropDuplicates = $dropDuplicates;
 
         return $this;
     }
@@ -115,7 +115,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function getDropDuplicates()
     {
-        return $this->_dropDuplicates;
+        return $this->dropDuplicates;
     }
 
     /**
@@ -125,7 +125,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function setUnique($unique)
     {
-        $this->_unique = $unique;
+        $this->unique = $unique;
 
         return $this;
     }
@@ -135,7 +135,7 @@ abstract class IndexAbstract implements IndexInterface
      */
     public function getUnique()
     {
-        return $this->_unique;
+        return $this->unique;
     }
 
     /**
@@ -146,10 +146,10 @@ abstract class IndexAbstract implements IndexInterface
     public function getOptions()
     {
         $options = [
-            'name'     => $this->_name,
-            'sparse'   => $this->_sparse,
-            'dropDups' => $this->_dropDuplicates,
-            'unique'   => $this->_unique
+            'name'     => $this->name,
+            'sparse'   => $this->sparse,
+            'dropDups' => $this->dropDuplicates,
+            'unique'   => $this->unique
         ];
 
         return $options;
@@ -160,10 +160,10 @@ abstract class IndexAbstract implements IndexInterface
      *
      * @return void
      */
-    protected function _normalizeFields()
+    protected function normalizeFields()
     {
         $normalizedFields = [];
-        foreach($this->_fields as $key => $field){
+        foreach($this->fields as $key => $field){
             if($this->isNumber($key)){
                 $direction = 1;
                 if($this->str($field)->startsWith('-')){
@@ -174,6 +174,6 @@ abstract class IndexAbstract implements IndexInterface
                 $normalizedFields[$key] = $field;
             }
         }
-        $this->_fields = $normalizedFields;
+        $this->fields = $normalizedFields;
     }
 }

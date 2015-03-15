@@ -24,8 +24,8 @@ class Many2ManyStorage
 
     public function load(Many2ManyAttribute $attribute)
     {
-        $firstClassName = $this->_extractClassName($attribute->getParentEntity());
-        $secondClassName = $this->_extractClassName($attribute->getEntity());
+        $firstClassName = $this->extractClassName($attribute->getParentEntity());
+        $secondClassName = $this->extractClassName($attribute->getEntity());
 
         // Select related IDs from aggregation table
         $query = [
@@ -56,8 +56,8 @@ class Many2ManyStorage
     public function save(Many2ManyAttribute $attribute)
     {
         $collectionName = $attribute->getIntermediateCollection();
-        $firstClassName = $this->_extractClassName($attribute->getParentEntity());
-        $secondClassName = $this->_extractClassName($attribute->getEntity());
+        $firstClassName = $this->extractClassName($attribute->getParentEntity());
+        $secondClassName = $this->extractClassName($attribute->getEntity());
 
         // Ensure index
         list($indexKey1, $indexKey2) = $this->arr([
@@ -122,8 +122,8 @@ class Many2ManyStorage
             return;
         }
 
-        $firstClassName = $this->_extractClassName($attribute->getParentEntity());
-        $secondClassName = $this->_extractClassName($attribute->getEntity());
+        $firstClassName = $this->extractClassName($attribute->getParentEntity());
+        $secondClassName = $this->extractClassName($attribute->getEntity());
         $query = $this->arr([
                                 $firstClassName  => $sourceEntityId,
                                 $secondClassName => $item
@@ -142,7 +142,7 @@ class Many2ManyStorage
      *
      * @return string
      */
-    private function _extractClassName($class)
+    private function extractClassName($class)
     {
         if (!$this->isString($class)) {
             $class = get_class($class);

@@ -27,28 +27,28 @@ class Environment
     /**
      * @var ConfigObject Application configuration (App.yaml from users application).
      */
-    private $_applicationConfig;
+    private $applicationConfig;
 
     /**
      * @var string Absolute path to the root of users application.
      */
-    private $_applicationAbsolutePath;
+    private $applicationAbsolutePath;
 
     /**
      * @var string Name of the current environment.
      */
-    private $_currentEnvironmentName;
+    private $currentEnvironmentName;
 
     /**
      * @var ConfigObject List of loaded configurations from the current environment.
      */
-    private $_componentConfigs;
+    private $componentConfigs;
 
     /**
      * @var array List of Webiny Framework components, defined in order that we don't have problems with dependencies
      * between the components.
      */
-    private $_webinyComponents = [
+    private $webinyComponents = [
         'ClassLoader',
         'Config',
         'ServiceManager',
@@ -82,13 +82,13 @@ class Environment
      */
     public function initializeEnvironment($applicationAbsolutePath)
     {
-        $this->_applicationAbsolutePath = $applicationAbsolutePath;
+        $this->applicationAbsolutePath = $applicationAbsolutePath;
 
-        $this->_loadApplicationConfig();
-        $this->_registerAppNamespace();
-        $this->_initializeEnvironment();
-        $this->_initializeComponentConfigurations();
-        $this->_setErrorReporting();
+        $this->loadApplicationConfig();
+        $this->registerAppNamespace();
+        $this->initializeEnvironmentInternal();
+        $this->initializeComponentConfigurations();
+        $this->setErrorReporting();
     }
 
     /**
@@ -98,7 +98,7 @@ class Environment
      */
     public function getApplicationConfig()
     {
-        return $this->_applicationConfig->Application;
+        return $this->applicationConfig->Application;
     }
 
     /**
@@ -108,7 +108,7 @@ class Environment
      */
     public function getApplicationAbsolutePath()
     {
-        return $this->_applicationAbsolutePath;
+        return $this->applicationAbsolutePath;
     }
 
     /**
@@ -118,7 +118,7 @@ class Environment
      */
     public function getComponentConfigs()
     {
-        return $this->_componentConfigs;
+        return $this->componentConfigs;
     }
 
     /**
@@ -129,12 +129,12 @@ class Environment
      */
     public function getCurrentEnvironmentName()
     {
-        if (!empty($this->_currentEnvironmentName)) {
-            return $this->_currentEnvironmentName;
+        if (!empty($this->currentEnvironmentName)) {
+            return $this->currentEnvironmentName;
         }
 
         // get current environments
-        $environments = $this->_applicationConfig->get('Application.Environments', false);
+        $environments = $this->applicationConfig->get('Application.Environments', false);
 
         if($environments){
             // get current url
@@ -143,16 +143,16 @@ class Environment
             // loop over all registered environments in the config, and try to match the current based on the domain
             foreach ($environments as $eName => $e) {
                 if ($currentUrl->contains($e->Domain)) {
-                    $this->_currentEnvironmentName = $eName;
+                    $this->currentEnvironmentName = $eName;
                 }
             }
         }
 
-        if (empty($this->_currentEnvironmentName)) {
-            $this->_currentEnvironmentName = 'Production';
+        if (empty($this->currentEnvironmentName)) {
+            $this->currentEnvironmentName = 'Production';
         }
 
-        return $this->_currentEnvironmentName;
+        return $this->currentEnvironmentName;
     }
 
     /**
@@ -163,19 +163,19 @@ class Environment
      */
     public function getCurrentEnvironmentConfig()
     {
-        return $this->_applicationConfig->get('Application.Environments.' . $this->getCurrentEnvironmentName(), new ConfigObject([]));
+        return $this->applicationConfig->get('Application.Environments.' . $this->getCurrentEnvironmentName(), new ConfigObject([]));
     }
 
     /**
      * Loads application configuration.
      */
-    private function _loadApplicationConfig()
+    private function loadApplicationConfig()
     {
         // load the config
         try{
-            $this->_applicationConfig = $this->config()->yaml($this->_applicationAbsolutePath . 'App/Config/App.yaml');
+            $this->applicationConfig = $this->config()->yaml($this->applicationAbsolutePath . 'App/Config/App.yaml');
         }catch (\Exception $e){
-            throw new BootstrapException('Unable to read app config file: '.$this->_applicationAbsolutePath . 'App/Config/App.yaml');
+            throw new BootstrapException('Unable to read app config file: '.$this->applicationAbsolutePath . 'App/Config/App.yaml');
         }
 
     }
@@ -187,10 +187,10 @@ class Environment
      * @throws BootstrapException
      * @throws \Webiny\Component\Config\ConfigException
      */
-    private function _initializeEnvironment()
+    private function initializeEnvironmentInternal()
     {
         // validate the environment
-        $environments = $this->_applicationConfig->get('Application.Environments', false);
+        $environments = $this->applicationConfig->get('Application.Environments', false);
 
         if($environments){
             // get the production environment
@@ -204,12 +204,12 @@ class Environment
         $currentEnvName = $this->getCurrentEnvironmentName();
 
         // load the production environment configs
-        $this->_componentConfigs = $this->_loadConfigurations('Production');
+        $this->componentConfigs = $this->loadConfigurations('Production');
 
         // check if the current env is different from Production
         if ($currentEnvName != 'Production') {
-            $currentConfigs = $this->_loadConfigurations($currentEnvName);
-            $this->_componentConfigs->mergeWith($currentConfigs);
+            $currentConfigs = $this->loadConfigurations($currentEnvName);
+            $this->componentConfigs->mergeWith($currentConfigs);
         }
     }
 
@@ -218,10 +218,10 @@ class Environment
      *
      * @throws BootstrapException
      */
-    private function _setErrorReporting()
+    private function setErrorReporting()
     {
         // set error reporting
-        $errorReporting = $this->_applicationConfig->get('Application.Environments.' . $this->getCurrentEnvironmentName(
+        $errorReporting = $this->applicationConfig->get('Application.Environments.' . $this->getCurrentEnvironmentName(
                      ) . '.ErrorReporting', 'off'
         );
         if (strtolower($errorReporting) == 'on') {
@@ -236,19 +236,19 @@ class Environment
      *
      * @throws BootstrapException
      */
-    private function _registerAppNamespace()
+    private function registerAppNamespace()
     {
         // get app namespace
-        $namespace = $this->_applicationConfig->get('Application.Namespace', false);
+        $namespace = $this->applicationConfig->get('Application.Namespace', false);
         if (!$namespace) {
             throw new BootstrapException('Unable to register application namespace. You must define the application namespace in your App.yaml config file.');
         }
 
         try{
             // register the namespace
-            ClassLoader::getInstance()->registerMap([$namespace => $this->_applicationAbsolutePath.'App']);
+            ClassLoader::getInstance()->registerMap([$namespace => $this->applicationAbsolutePath.'App']);
         }catch (\Exception $e){
-            throw new BootstrapException('Unable to register application ('.$namespace.' => '.$this->_applicationAbsolutePath.'App'.') namespace with ClassLoader.');
+            throw new BootstrapException('Unable to register application ('.$namespace.' => '.$this->applicationAbsolutePath.'App'.') namespace with ClassLoader.');
         }
 
     }
@@ -259,10 +259,10 @@ class Environment
      * If configuration name matches a Webiny Framework component, then the configuration is automatically assigned
      * to that component.
      */
-    private function _initializeComponentConfigurations()
+    private function initializeComponentConfigurations()
     {
-        foreach ($this->_webinyComponents as $c) {
-            $componentConfig = $this->_componentConfigs->get($c, false);
+        foreach ($this->webinyComponents as $c) {
+            $componentConfig = $this->componentConfigs->get($c, false);
             if ($componentConfig) {
                 $class = 'Webiny\Component\\' . $c . '\\' . $c;
                 $method = 'setConfig';
@@ -283,10 +283,10 @@ class Environment
      * @return ConfigObject
      * @throws \Webiny\Component\Config\ConfigException
      */
-    private function _loadConfigurations($environment)
+    private function loadConfigurations($environment)
     {
         $configs = new ConfigObject([]);
-        $configFolder = $this->_applicationAbsolutePath . 'App/Config/' . $environment;
+        $configFolder = $this->applicationAbsolutePath . 'App/Config/' . $environment;
         $h = scandir($configFolder);
 
         foreach ($h as $configFile) {

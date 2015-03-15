@@ -23,7 +23,7 @@ class Loader
     /**
      * @var string Default Annotations bridge.
      */
-    private static $_library = '\Webiny\Component\Annotations\Bridge\Minime\Annotations';
+    private static $library = '\Webiny\Component\Annotations\Bridge\Minime\Annotations';
 
 
     /**
@@ -31,9 +31,9 @@ class Loader
      *
      * @return string
      */
-    public static function _getLibrary()
+    public static function getLibrary()
     {
-        return \Webiny\Component\Annotations\Annotations::getConfig()->get('Bridge', self::$_library);
+        return \Webiny\Component\Annotations\Annotations::getConfig()->get('Bridge', self::$library);
     }
 
     /**
@@ -44,7 +44,7 @@ class Loader
      */
     public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -55,7 +55,7 @@ class Loader
      */
     public static function getInstance()
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = self::factory($driver, '\Webiny\Component\Annotations\Bridge\AnnotationsInterface');

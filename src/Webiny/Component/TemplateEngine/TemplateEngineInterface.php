@@ -23,7 +23,7 @@ interface TemplateEngineInterface
      *
      * @return string Parsed template.
      */
-    function fetch($template, $parameters = []);
+    public function fetch($template, $parameters = []);
 
     /**
      * Fetch the template from the given location, parse it and output the result to the browser.
@@ -33,7 +33,7 @@ interface TemplateEngineInterface
      *
      * @return void
      */
-    function render($template, $parameters = []);
+    public function render($template, $parameters = []);
 
     /**
      * Assign a variable and its value into the template engine.
@@ -43,7 +43,7 @@ interface TemplateEngineInterface
      *
      * @return void
      */
-    function assign($var, $value);
+    public function assign($var, $value);
 
     /**
      * Root dir where the templates are stored.
@@ -52,7 +52,7 @@ interface TemplateEngineInterface
      *
      * @return void
      */
-    function setTemplateDir($path);
+    public function setTemplateDir($path);
 
     /**
      * Register a plugin for the template engine.
@@ -61,5 +61,5 @@ interface TemplateEngineInterface
      *
      * @return void
      */
-    function registerPlugin(Plugin $plugin);
+    public function registerPlugin(Plugin $plugin);
 }

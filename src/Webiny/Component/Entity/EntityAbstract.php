@@ -29,26 +29,26 @@ abstract class EntityAbstract implements \ArrayAccess
      * Entity attributes
      * @var ArrayObject
      */
-    protected $_attributes;
+    protected $attributes;
 
     /**
      * @var string Entity collection name
      */
-    protected static $_entityCollection = null;
+    protected static $entityCollection = null;
 
     /**
      * View mask (used for grids and many2one input fields)
      * @var string
      */
-    protected static $_entityMask = '{id}';
+    protected static $entityMask = '{id}';
 
-    private $_dirty = false;
+    private $dirty = false;
 
     /**
      * This method is called during instantiation to build entity structure
      * @return void
      */
-    protected abstract function _entityStructure();
+    protected abstract function entityStructure();
 
     /**
      * Find entity by ID
@@ -68,13 +68,13 @@ abstract class EntityAbstract implements \ArrayAccess
         }
         $data = Entity::getInstance()
                       ->getDatabase()
-                      ->findOne(static::$_entityCollection, ["_id" => Entity::getInstance()->getDatabase()->id($id)]);
+                      ->findOne(static::$entityCollection, ["_id" => Entity::getInstance()->getDatabase()->id($id)]);
         if (!$data) {
             return null;
         }
         $data = EntityMongoAdapter::getInstance()->adaptValues($data);
         $instance = new static;
-        $instance->populate($data)->__setDirty(false);
+        $instance->populate($data)->setDirty(false);
 
         return EntityPool::getInstance()->add($instance);
     }
@@ -95,13 +95,13 @@ abstract class EntityAbstract implements \ArrayAccess
 
         $data = Entity::getInstance()
                       ->getDatabase()
-                      ->findOne(static::$_entityCollection, $conditions);
+                      ->findOne(static::$entityCollection, $conditions);
         if (!$data) {
             return null;
         }
         $data = EntityMongoAdapter::getInstance()->adaptValues($data);
         $instance = new static;
-        $instance->populate($data)->__setDirty(false);
+        $instance->populate($data)->setDirty(false);
 
         return EntityPool::getInstance()->add($instance);
     }
@@ -122,10 +122,10 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Convert order parameters to Mongo format
          */
-        $order = self::_parseOrderParameters($order);
+        $order = self::parseOrderParameters($order);
         $offset = $limit * ($page > 0 ? $page - 1 : 0);
 
-        return new EntityCollection(get_called_class(), static::$_entityCollection, $conditions, $order, $limit, $offset
+        return new EntityCollection(get_called_class(), static::$entityCollection, $conditions, $order, $limit, $offset
         );
     }
 
@@ -134,8 +134,8 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function __construct()
     {
-        $this->_attributes = $this->arr();
-        $this->_entityStructure();
+        $this->attributes = $this->arr();
+        $this->entityStructure();
 
         /**
          * Add ID to the list of attributes
@@ -150,7 +150,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function attr($attribute)
     {
-        return EntityAttributeBuilder::getInstance()->__setContext($this->_attributes, $attribute)->__setEntity($this);
+        return EntityAttributeBuilder::getInstance()->_setContext($this->attributes, $attribute)->_setEntity($this);
     }
 
     /**
@@ -184,14 +184,15 @@ abstract class EntityAbstract implements \ArrayAccess
      * Set entity's dirty flag
      *
      * NOTE: you should not be calling this method on your own!
+     * This me
      *
      * @param bool $flag
      *
      * @return $this|bool
      */
-    public function __setDirty($flag = true)
+    public function setDirty($flag = true)
     {
-        $this->_dirty = boolval($flag);
+        $this->dirty = boolval($flag);
 
         return $this;
     }
@@ -201,9 +202,9 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @return bool
      */
-    public function __getDirty()
+    public function getDirty()
     {
-        return $this->_dirty;
+        return $this->dirty;
     }
 
     /**
@@ -216,7 +217,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function getAttribute($attribute)
     {
-        if (!$this->_attributes->keyExists($attribute)) {
+        if (!$this->attributes->keyExists($attribute)) {
             throw new EntityException(EntityException::ATTRIBUTE_NOT_FOUND, [
                                                                               $attribute,
                                                                               get_class($this)
@@ -224,7 +225,7 @@ abstract class EntityAbstract implements \ArrayAccess
             );
         }
 
-        return $this->_attributes[$attribute];
+        return $this->attributes[$attribute];
     }
 
     /**
@@ -234,7 +235,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function getAttributes()
     {
-        return $this->_attributes;
+        return $this->attributes;
     }
 
     /**
@@ -243,14 +244,14 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function getId()
     {
-        return $this->_attributes['id'];
+        return $this->attributes['id'];
     }
 
     public function getMaskedValue()
     {
         $maskItems = [];
-        preg_match_all('/\{(.*?)\}/', static::$_entityMask, $maskItems);
-        $maskedValue = $this->str(static::$_entityMask);
+        preg_match_all('/\{(.*?)\}/', static::$entityMask, $maskItems);
+        $maskedValue = $this->str(static::$entityMask);
         foreach ($maskItems[1] as $attr) {
             $maskedValue->replace('{' . $attr . '}', $this->getAttribute($attr)->getValue());
         }
@@ -263,7 +264,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
-        if (!$this->__getDirty() && !$this->isNull($this->getId()->getValue())) {
+        if (!$this->getDirty() && !$this->isNull($this->getId()->getValue())) {
             return true;
         }
 
@@ -285,16 +286,16 @@ abstract class EntityAbstract implements \ArrayAccess
          * Insert or update
          */
         if ($this->getId()->getValue() === null) {
-            Entity::getInstance()->getDatabase()->insert(static::$_entityCollection, $data);
+            Entity::getInstance()->getDatabase()->insert(static::$entityCollection, $data);
             $this->getId()->setValue((string)$data['_id']);
         } else {
             $id = Entity::getInstance()->getDatabase()->id($this->getId()->getValue());
             Entity::getInstance()
                   ->getDatabase()
-                  ->update(static::$_entityCollection, ['_id' => $id], ['$set' => $data], ['upsert' => true]);
+                  ->update(static::$entityCollection, ['_id' => $id], ['$set' => $data], ['upsert' => true]);
         }
 
-        $this->__setDirty(false);
+        $this->setDirty(false);
 
         /**
          * Now save One2Many values
@@ -386,7 +387,7 @@ abstract class EntityAbstract implements \ArrayAccess
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr Many2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
-                $firstClassName = $this->_extractClassName($attr->getParentEntity());
+                $firstClassName = $this->extractClassName($attr->getParentEntity());
                 $query = [$firstClassName => $this->getId()->getValue()];
                 Entity::getInstance()->getDatabase()->remove($attr->getIntermediateCollection(), $query);
             }
@@ -406,7 +407,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         Entity::getInstance()
               ->getDatabase()
-              ->remove(static::$_entityCollection,
+              ->remove(static::$entityCollection,
                        ['_id' => Entity::getInstance()->getDatabase()->id($this->getId()->getValue())]
               );
 
@@ -428,7 +429,7 @@ abstract class EntityAbstract implements \ArrayAccess
         $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
         $validation = $this->arr();
         /* @var $entityAttribute AttributeAbstract */
-        foreach ($this->_attributes as $attributeName => $entityAttribute) {
+        foreach ($this->attributes as $attributeName => $entityAttribute) {
             // Check if attribute is required and it's value is set
             if ($entityAttribute->getRequired() && !isset($data[$attributeName])) {
                 $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING,
@@ -555,7 +556,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->_attributes[$offset]);
+        return isset($this->attributes[$offset]);
     }
 
     /**
@@ -571,7 +572,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->_attributes[$offset];
+        return $this->attributes[$offset];
     }
 
     /**
@@ -590,7 +591,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->_attributes[$offset]->setValue($value);
+        $this->attributes[$offset]->setValue($value);
     }
 
     /**
@@ -616,7 +617,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @return array
      */
-    private static function _parseOrderParameters($order)
+    private static function parseOrderParameters($order)
     {
         $parsedOrder = [];
         if (count($order) > 0) {
@@ -642,7 +643,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @return string
      */
-    private function _extractClassName($class)
+    private function extractClassName($class)
     {
         if (!$this->isString($class)) {
             $class = get_class($class);

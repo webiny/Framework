@@ -25,27 +25,27 @@ class Dispatcher
     /**
      * @var string Module name (MVC Only)
      */
-    private $_module;
+    private $module;
 
     /**
      * @var string Controller name (MVC Only)
      */
-    private $_controller;
+    private $controller;
 
     /**
      * @var string Action name.
      */
-    private $_action;
+    private $action;
 
     /**
      * @var array Array of parameters that will be passed to the callback method.
      */
-    private $_params = [];
+    private $params = [];
 
     /**
      * @var string Callback class name.
      */
-    private $_className;
+    private $className;
 
 
     /**
@@ -103,7 +103,7 @@ class Dispatcher
      */
     public function setModule($module)
     {
-        $this->_module = $module;
+        $this->module = $module;
     }
 
     /**
@@ -113,7 +113,7 @@ class Dispatcher
      */
     public function getModule()
     {
-        return $this->_module;
+        return $this->module;
     }
 
     /**
@@ -123,7 +123,7 @@ class Dispatcher
      */
     public function setController($controller)
     {
-        $this->_controller = $controller;
+        $this->controller = $controller;
     }
 
     /**
@@ -133,7 +133,7 @@ class Dispatcher
      */
     public function getController()
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     /**
@@ -145,7 +145,7 @@ class Dispatcher
      */
     public function setAction($action)
     {
-        $this->_action = $this->str($action)->replace('Action', '')->val();
+        $this->action = $this->str($action)->replace('Action', '')->val();
     }
 
     /**
@@ -155,7 +155,7 @@ class Dispatcher
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -165,7 +165,7 @@ class Dispatcher
      */
     public function setParams(array $params)
     {
-        $this->_params = $params;
+        $this->params = $params;
     }
 
     /**
@@ -175,7 +175,7 @@ class Dispatcher
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->params;
     }
 
     /**
@@ -192,7 +192,7 @@ class Dispatcher
             if (!file_exists($classFilename)) {
                 throw new BootstrapException('The provided callback class "' . $className . '" does not exist.');
             } else {
-                $this->_className = $className;
+                $this->className = $className;
             }
         } catch (\Exception $e) {
             throw $e;
@@ -207,7 +207,7 @@ class Dispatcher
      */
     public function getClassName()
     {
-        return $this->_className;
+        return $this->className;
     }
 
     /**
@@ -217,7 +217,7 @@ class Dispatcher
      */
     public function issueCallback()
     {
-        $instance = $this->_getCallbackClassInstance();
+        $instance = $this->getCallbackClassInstance();
 
         // call the controller
         call_user_func_array([
@@ -241,7 +241,7 @@ class Dispatcher
      * @return mixed
      * @throws BootstrapException
      */
-    private function _getCallbackClassInstance()
+    private function getCallbackClassInstance()
     {
         // create and validate the instance
         $className = $this->getClassName();
@@ -257,13 +257,13 @@ class Dispatcher
             }
         }
 
-        $app = $this->_getApplicationInstance();
+        $app = $this->getApplicationInstance();
 
         // assign the app to the app trait
         $instance->setAppInstance($app);
 
         // set the instance template
-        $this->_setTemplate($instance);
+        $this->setTemplate($instance);
 
         // call the setUp method
         $instance->setUp();
@@ -278,7 +278,7 @@ class Dispatcher
      *
      * @return bool
      */
-    private function _setTemplate($instance)
+    private function setTemplate($instance)
     {
         // we don't know what is the template extension, so we need to match by action name
         if (!empty($this->getModule()) && $instance->app()->view()->getAutoload()) {
@@ -319,7 +319,7 @@ class Dispatcher
      * @return Application
      * @throws BootstrapException
      */
-    private function _getApplicationInstance()
+    private function getApplicationInstance()
     {
         // create the app instance
         $app = new Application(Bootstrap::getInstance()->getEnvironment());

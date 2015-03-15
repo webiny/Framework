@@ -28,12 +28,12 @@ class Mailer
     /**
      * @var string Name of the mailer we are currently using.
      */
-    private $_mailerName;
+    private $mailerName;
 
     /**
      * @var TransportInterface
      */
-    private $_transport;
+    private $transport;
 
     /**
      * Base constructor.
@@ -44,8 +44,8 @@ class Mailer
      */
     public function __construct($mailer = 'Default')
     {
-        $this->_mailerName = $mailer;
-        $this->_transport = Loader::getTransport($mailer);
+        $this->mailerName = $mailer;
+        $this->transport = Loader::getTransport($mailer);
     }
 
     /**
@@ -61,7 +61,7 @@ class Mailer
         if($config && !$config instanceof ConfigObject){
             $config = new ConfigObject($config);
         }
-        return Loader::getMessage($this->_mailerName, $config);
+        return Loader::getMessage($this->mailerName, $config);
     }
 
     /**
@@ -74,7 +74,7 @@ class Mailer
      */
     public function send(MessageInterface $message, &$failures = null)
     {
-        return $this->_transport->send($message, $failures);
+        return $this->transport->send($message, $failures);
     }
 
     /**
@@ -87,7 +87,7 @@ class Mailer
      */
     public function setDecorators(array $replacements)
     {
-        $this->_transport->setDecorators($replacements);
+        $this->transport->setDecorators($replacements);
 
         return $this;
     }

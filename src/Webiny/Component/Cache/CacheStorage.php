@@ -20,17 +20,17 @@ class CacheStorage
     /**
      * @var null|Null
      */
-    private static $_nullDriver = null;
+    private static $nullDriver = null;
 
     /**
      * @var \Webiny\Component\Cache\Bridge\CacheStorageInterface
      */
-    private $_driver;
+    private $driver;
 
     /**
      * @var array
      */
-    private $_options = [
+    private $options = [
         'status' => true,
         'ttl'    => 86400
     ];
@@ -42,13 +42,13 @@ class CacheStorage
      * @param CacheStorageInterface $driver  Instance of CacheInterface.
      * @param array                 $options Array of options.
      */
-    function __construct(CacheStorageInterface $driver, array $options = [])
+    public function __construct(CacheStorageInterface $driver, array $options = [])
     {
-        $this->_driver = $driver;
+        $this->driver = $driver;
 
         foreach ($options as $k => $v) {
-            if (isset($this->_options[$k])) {
-                $this->_options[$k] = $v;
+            if (isset($this->options[$k])) {
+                $this->options[$k] = $v;
             }
         }
     }
@@ -58,18 +58,18 @@ class CacheStorage
      *
      * @return CacheStorageInterface
      */
-    function getDriver()
+    public function getDriver()
     {
         // if driver status is false, we return the Null driver
         if (!$this->getStatus()) {
-            if (is_null(self::$_nullDriver)) {
-                self::$_nullDriver = new Storage\Null();
+            if (is_null(self::$nullDriver)) {
+                self::$nullDriver = new Storage\Null();
             }
 
-            return self::$_nullDriver;
+            return self::$nullDriver;
         }
 
-        return $this->_driver;
+        return $this->driver;
     }
 
     /**
@@ -77,9 +77,9 @@ class CacheStorage
      *
      * @return mixed
      */
-    function getStatus()
+    public function getStatus()
     {
-        return $this->_options['status'];
+        return $this->options['status'];
     }
 
     /**
@@ -87,9 +87,9 @@ class CacheStorage
      *
      * @param bool $status Turn caching on or off.
      */
-    function setStatus($status)
+    public function setStatus($status)
     {
-        $this->_options['status'] = (bool)$status;
+        $this->options['status'] = (bool)$status;
     }
 
     /**
@@ -97,9 +97,9 @@ class CacheStorage
      *
      * @return int
      */
-    function getTtl()
+    public function getTtl()
     {
-        return $this->_options['ttl'];
+        return $this->options['ttl'];
     }
 
     /**

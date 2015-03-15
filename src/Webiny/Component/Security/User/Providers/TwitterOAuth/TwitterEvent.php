@@ -24,17 +24,17 @@ class TwitterEvent extends Event
     /**
      * @var \Webiny\Component\TwitterOAuth\TwitterOAuthUser
      */
-    private $_twitterUser;
+    private $twitterUser;
 
     /**
      * @var \Webiny\Component\TwitterOAuth\TwitterOAuth
      */
-    private $_oauth;
+    private $oauth;
 
     public function __construct(TwitterOAuthUser $twitterUser, TwitterOAuth $twitterOAuth)
     {
-        $this->_twitterUser = $twitterUser;
-        $this->_oauth = $twitterOAuth;
+        $this->twitterUser = $twitterUser;
+        $this->oauth = $twitterOAuth;
     }
 
     /**
@@ -44,7 +44,7 @@ class TwitterEvent extends Event
      */
     public function getUser()
     {
-        return $this->_twitterUser;
+        return $this->twitterUser;
     }
 
     /**
@@ -55,6 +55,6 @@ class TwitterEvent extends Event
      */
     public function getTwitterOAuthInstance()
     {
-        return $this->_oauth;
+        return $this->oauth;
     }
 }

@@ -23,16 +23,16 @@ class TwitterOAuth
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth';
+    private static $library = '\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    private static function _getLibrary()
+    private static function getLibrary()
     {
-        return \Webiny\Component\TwitterOAuth\TwitterOAuth::getConfig()->get('Bridge', self::$_library);
+        return \Webiny\Component\TwitterOAuth\TwitterOAuth::getConfig()->get('Bridge', self::$library);
     }
 
     /**
@@ -43,7 +43,7 @@ class TwitterOAuth
      */
     public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -58,7 +58,7 @@ class TwitterOAuth
      */
     public static function getInstance($clientId, $clientSecret, $redirectUri)
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = new $driver($clientId, $clientSecret, $redirectUri);

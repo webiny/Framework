@@ -113,7 +113,7 @@ class UrlMatcher
                 }
 
                 // if we matched the route, we need to extract the parameters
-                $params = $this->_extractParameters($matches, $compiledRoute);
+                $params = $this->extractParameters($matches, $compiledRoute);
             }
 
             return new MatchedRoute($route->getCallback(), $params);
@@ -130,7 +130,7 @@ class UrlMatcher
      *
      * @return array
      */
-    private function _extractParameters($matches, CompiledRoute $compiledRoute)
+    private function extractParameters($matches, CompiledRoute $compiledRoute)
     {
         $params = [];
         foreach ($compiledRoute->getVariables() as $index => $var) {

@@ -21,7 +21,7 @@ class APC extends APCObject implements CacheStorageInterface
     /**
      * Constructor.
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct('webiny');
     }

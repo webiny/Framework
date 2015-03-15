@@ -38,27 +38,27 @@ class Router
     /**
      * @var RouteCollection
      */
-    private static $_routeCollection;
+    private static $routeCollection;
 
     /**
      * @var UrlGenerator
      */
-    private $_urlGenerator;
+    private $urlGenerator;
 
     /**
      * @var UrlMatcher
      */
-    private $_urlMatcher;
+    private $urlMatcher;
 
     /**
      * @var ConfigLoader
      */
-    private $_loader;
+    private $loader;
 
     /**
      * @var bool|CacheStorage
      */
-    private $_cache = false;
+    private $cache = false;
 
 
     /**
@@ -77,16 +77,16 @@ class Router
         }
 
         // get it from cache
-        if(($result = $this->_loadFromCache('match.' . $url->val())) !== false) {
+        if(($result = $this->loadFromCache('match.' . $url->val())) !== false) {
             return $this->unserialize($result);
         }
 
         // try to match the url
-        $result = $this->_urlMatcher->match($url);
+        $result = $this->urlMatcher->match($url);
         
         // cache it
         $cacheResult = $this->isArray($result) ? $this->serialize($result) : $result;
-        $this->_saveToCache('match.' . $url->val(), $cacheResult);
+        $this->saveToCache('match.' . $url->val(), $cacheResult);
 
         return $result;
     }
@@ -156,12 +156,12 @@ class Router
     public function generate($name, $parameters = [], $absolute = true)
     {
         $key = 'generate.' . $name . implode('|', $parameters) . $absolute;
-        if(($url = $this->_loadFromCache($key))) {
+        if(($url = $this->loadFromCache($key))) {
             return $url;
         }
 
-        $url = $this->_urlGenerator->generate($name, $parameters, $absolute);
-        $this->_saveToCache($key, $url);
+        $url = $this->urlGenerator->generate($name, $parameters, $absolute);
+        $this->saveToCache($key, $url);
 
         return $url;
     }
@@ -176,19 +176,19 @@ class Router
      */
     public function setCache($cache)
     {
-        $this->_cache = $cache;
+        $this->cache = $cache;
         if($this->isBool($cache) && $cache === false) {
-            $this->_cache = $cache;
+            $this->cache = $cache;
         } else {
             if(is_object($cache)) {
                 if($this->isInstanceOf($cache, '\Webiny\Component\Cache\CacheStorage')) {
-                    $this->_cache = $cache;
+                    $this->cache = $cache;
                 } else {
                     throw new RouterException('$cache must either be a boolean or instance of \Webiny\Component\Cache\CacheStorage.'
                     );
                 }
             } else {
-                $this->_cache = $this->cache($cache);
+                $this->cache = $this->cache($cache);
             }
         }
     }
@@ -200,7 +200,7 @@ class Router
      */
     public function getCache()
     {
-        return $this->_cache;
+        return $this->cache;
     }
 
     /**
@@ -210,7 +210,7 @@ class Router
      */
     public function setRouteCollection(RouteCollection $routeCollection)
     {
-        self::$_routeCollection = $routeCollection;
+        self::$routeCollection = $routeCollection;
     }
 
     /**
@@ -223,7 +223,7 @@ class Router
     public function appendRoutes(ConfigObject $routes)
     {
         foreach ($routes as $name => $routeConfig) {
-            self::$_routeCollection->add($name, $this->_loader->processRoute($routeConfig));
+            self::$routeCollection->add($name, $this->loader->processRoute($routeConfig));
         }
 
         return $this;
@@ -239,7 +239,7 @@ class Router
     public function prependRoutes(ConfigObject $routes)
     {
         foreach ($routes as $name => $routeConfig) {
-            self::$_routeCollection->prepend($name, $this->_loader->processRoute($routeConfig));
+            self::$routeCollection->prepend($name, $this->loader->processRoute($routeConfig));
         }
 
         return $this;
@@ -250,7 +250,7 @@ class Router
      */
     public static function getRouteCollection()
     {
-        return self::$_routeCollection;
+        return self::$routeCollection;
     }
 
     /**
@@ -260,10 +260,10 @@ class Router
      */
     public function initialize()
     {
-        $this->_loader = new ConfigLoader(self::getConfig()->get('Routes', new ConfigObject([])));
-        self::$_routeCollection = $this->_loader->getRouteCollection();
-        $this->_urlMatcher = new UrlMatcher();
-        $this->_urlGenerator = new UrlGenerator();
+        $this->loader = new ConfigLoader(self::getConfig()->get('Routes', new ConfigObject([])));
+        self::$routeCollection = $this->loader->getRouteCollection();
+        $this->urlMatcher = new UrlMatcher();
+        $this->urlGenerator = new UrlGenerator();
 
         $this->setCache(self::getConfig()->get('Cache', false));
     }
@@ -274,7 +274,7 @@ class Router
      * @param string $path  This is the cache key.
      * @param string $value This is the value that is going to be stored.
      */
-    private function _saveToCache($path, $value)
+    private function saveToCache($path, $value)
     {
         if($this->getCache()) {
             $this->getCache()->save(self::CACHE_KEY . md5($path), $value, null, [
@@ -293,7 +293,7 @@ class Router
      *
      * @return bool|string
      */
-    private function _loadFromCache($path)
+    private function loadFromCache($path)
     {
         if($this->getCache()) {
             return $this->getCache()->read(self::CACHE_KEY . md5($path));
@@ -303,11 +303,18 @@ class Router
     }
 
     /**
-     * Post setConfig callback
+     * Post setConfig callback.
      */
-    protected static function _postSetConfig()
+    protected static function postSetConfig()
     {
         self::getInstance()->initialize();
     }
 
+    /**
+     * Initialize based on singleton callback.
+     */
+    protected function init()
+    {
+        $this->initialize();
+    }
 }

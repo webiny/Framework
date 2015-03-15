@@ -31,7 +31,7 @@ class ArrayObjectException extends StdObjectException
      *
      * @var array
      */
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Invalid parameter type provided for %s param. Parameter type must be within this range [%s].',
         102 => 'When combining arrays, both arrays must have an equal number of items.',
         103 => 'Method countValues() can be performed on an ArrayObject that contains only STRING and INTEGER values.',

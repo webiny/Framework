@@ -19,7 +19,7 @@ class ConfigCache
 {
     use StdLibTrait;
 
-    private static $_configCache = null;
+    private static $configCache = null;
 
     /**
      * Get config from cache
@@ -30,14 +30,14 @@ class ConfigCache
      */
     public static function getCache($resource)
     {
-        if (!self::isArrayObject(self::$_configCache)) {
-            self::$_configCache = self::arr(self::$_configCache);
+        if (!self::isArrayObject(self::$configCache)) {
+            self::$configCache = self::arr(self::$configCache);
         }
 
-        $cacheKey = !self::_isMd5($resource) ? self::createCacheKey($resource) : $resource;
+        $cacheKey = !self::isMd5($resource) ? self::createCacheKey($resource) : $resource;
 
-        if (self::$_configCache->keyExists($cacheKey)) {
-            return self::$_configCache->key($cacheKey);
+        if (self::$configCache->keyExists($cacheKey)) {
+            return self::$configCache->key($cacheKey);
         }
 
         return false;
@@ -51,10 +51,10 @@ class ConfigCache
      */
     public static function setCache($cacheKey, $config)
     {
-        if (!self::isArrayObject(self::$_configCache)) {
-            self::$_configCache = self::arr(self::$_configCache);
+        if (!self::isArrayObject(self::$configCache)) {
+            self::$configCache = self::arr(self::$configCache);
         }
-        self::$_configCache->key($cacheKey, $config);
+        self::$configCache->key($cacheKey, $config);
     }
 
     /**
@@ -84,7 +84,7 @@ class ConfigCache
      *
      * @return Boolean
      */
-    private static function _isMd5($md5)
+    private static function isMd5($md5)
     {
         if (!self::isString($md5) && !self::isStringObject($md5)) {
             return false;

@@ -38,64 +38,64 @@ class Request
     /**
      * @var array Array of IPs from trusted proxies.
      */
-    private $_trustedProxies = [];
+    private $trustedProxies = [];
 
     /**
      * @var string
      */
-    private $_currentUrl = '';
+    private $currentUrl = '';
 
     /**
      * @var Query
      */
-    private $_query;
+    private $query;
 
     /**
      * @var Post
      */
-    private $_post;
+    private $post;
 
     /**
      * @var Payload
      */
-    private $_payload;
+    private $payload;
 
     /**
      * @var Files
      */
-    private $_files;
+    private $files;
 
     /**
      * @var Server
      */
-    private $_server;
+    private $server;
 
     /**
      * @var Env
      */
-    private $_env;
+    private $env;
 
     /**
      * @var Headers
      */
-    private $_headers;
+    private $headers;
 
     /**
      * This function prepare the Request and all of its sub-classes.
      * This class is called automatically by SingletonTrait.
      */
-    protected function _init()
+    protected function init()
     {
-        $this->_query = new Query();
-        $this->_post = new Post();
-        $this->_payload = new Payload();
-        $this->_server = new Server();
-        $this->_files = new Files();
-        $this->_env = new Env();
-        $this->_headers = new Headers();
+        $this->query = new Query();
+        $this->post = new Post();
+        $this->payload = new Payload();
+        $this->server = new Server();
+        $this->files = new Files();
+        $this->env = new Env();
+        $this->headers = new Headers();
 
         if (Http::getConfig()->TrustedProxies) {
-            $this->_trustedProxies = Http::getConfig()->TrustedProxies->toArray();
+            $this->trustedProxies = Http::getConfig()->TrustedProxies->toArray();
         }
     }
 
@@ -110,7 +110,7 @@ class Request
      */
     public function query($key = null, $value = null)
     {
-        return $this->isNull($key) ? $this->_query->getAll() : $this->_query->get($key, $value);
+        return $this->isNull($key) ? $this->query->getAll() : $this->query->get($key, $value);
     }
 
     /**
@@ -120,7 +120,7 @@ class Request
      */
     public function getQuery()
     {
-        return $this->_query;
+        return $this->query;
     }
 
     /**
@@ -134,7 +134,7 @@ class Request
      */
     public function post($key = null, $value = null)
     {
-        return $this->isNull($key) ? $this->_post->getAll() : $this->_post->get($key, $value);
+        return $this->isNull($key) ? $this->post->getAll() : $this->post->get($key, $value);
     }
 
     /**
@@ -144,7 +144,7 @@ class Request
      */
     public function getPost()
     {
-        return $this->_post;
+        return $this->post;
     }
 
     /**
@@ -158,7 +158,7 @@ class Request
      */
     public function header($key = null, $value = null)
     {
-        return $this->isNull($key) ? $this->_headers->getAll() : $this->_headers->get($key, $value);
+        return $this->isNull($key) ? $this->headers->getAll() : $this->headers->get($key, $value);
     }
 
     /**
@@ -172,7 +172,7 @@ class Request
      */
     public function payload($key = null, $value = null)
     {
-        return $this->isNull($key) ? $this->_payload->getAll() : $this->_payload->get($key, $value);
+        return $this->isNull($key) ? $this->payload->getAll() : $this->payload->get($key, $value);
     }
 
     /**
@@ -182,7 +182,7 @@ class Request
      */
     public function getPayload()
     {
-        return $this->_payload;
+        return $this->payload;
     }
 
     /**
@@ -196,7 +196,7 @@ class Request
      */
     public function env($key = null, $value = null)
     {
-        return $this->isNull($key) ? $this->_env->getAll() : $this->_env->get($key, $value);
+        return $this->isNull($key) ? $this->env->getAll() : $this->env->get($key, $value);
     }
 
     /**
@@ -206,7 +206,7 @@ class Request
      */
     public function server()
     {
-        return $this->_server;
+        return $this->server;
     }
 
     /**
@@ -223,7 +223,7 @@ class Request
     public function files($name, $arrayOffset = null)
     {
         try {
-            return $this->_files->get($name, $arrayOffset);
+            return $this->files->get($name, $arrayOffset);
         } catch (Files\FilesException $e) {
             throw $e;
         }
@@ -236,7 +236,7 @@ class Request
      */
     public function getTrustedProxies()
     {
-        return $this->_trustedProxies;
+        return $this->trustedProxies;
     }
 
     /**
@@ -266,7 +266,7 @@ class Request
      */
     public function getCurrentUrl($asUrlObject = false)
     {
-        if ($this->_currentUrl == '') {
+        if ($this->currentUrl == '') {
             // schema
             $pageURL = 'http';
             if ($this->isRequestSecured()) {
@@ -290,13 +290,13 @@ class Request
                 $pageURL .= '?' . $query;
             }
 
-            $this->_currentUrl = $pageURL;
+            $this->currentUrl = $pageURL;
         }
 
         if ($asUrlObject) {
-            return $this->url($this->_currentUrl);
+            return $this->url($this->currentUrl);
         } else {
-            return $this->_currentUrl;
+            return $this->currentUrl;
         }
     }
 
@@ -308,7 +308,7 @@ class Request
      */
     public function setCurrentUrl($url)
     {
-        $this->_currentUrl = $url;
+        $this->currentUrl = $url;
     }
 
     /**

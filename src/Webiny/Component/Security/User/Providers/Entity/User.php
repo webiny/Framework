@@ -8,29 +8,29 @@ use Webiny\Component\Security\User\UserAbstract;
 
 class User extends UserAbstract
 {
-    private $_entity;
-    private $_username = 'username';
-    private $_password = 'password';
-    private $_role = '';
+    private $entity;
+    private $username = 'username';
+    private $password = 'password';
+    private $role = '';
 
     public function setParams(array $params)
     {
         if (!isset($params['Entity'])) {
             throw new EntityException('The "Entity" parameter must be defined for the Entity User Provider.');
         } else {
-            $this->_entity = $params['Entity'];
+            $this->entity = $params['Entity'];
         }
 
         if (isset($params['Username'])) {
-            $this->_username = $params['Username'];
+            $this->username = $params['Username'];
         }
 
         if (isset($params['Password'])) {
-            $this->_password = $params['Password'];
+            $this->password = $params['Password'];
         }
 
         if (isset($params['Role'])) {
-            $this->_role = $params['Role'];
+            $this->role = $params['Role'];
         }
     }
 
@@ -44,16 +44,16 @@ class User extends UserAbstract
      */
     public function authenticate(Login $login, Firewall $firewall)
     {
-        $entityInstance = new $this->_entity;
-        $user = $entityInstance->find([$this->_username => $login->getUsername()]);
+        $entityInstance = new $this->entity;
+        $user = $entityInstance->find([$this->username => $login->getUsername()]);
         if ($user && isset($user[0])) {
             $user = $user[0];
-            if ($firewall->verifyPasswordHash($login->getPassword(), $user[$this->_password])) {
+            if ($firewall->verifyPasswordHash($login->getPassword(), $user[$this->password])) {
 
-                if(isset($user[$this->_role])){
-                    $role = $user[$this->_role];
+                if(isset($user[$this->role])){
+                    $role = $user[$this->role];
                 }else{
-                    $role = $this->_role;
+                    $role = $this->role;
                 }
                 $role = new Role($role);
                 $this->setRoles([$role]);

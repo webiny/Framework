@@ -23,22 +23,22 @@ class Crypt
     /**
      * @var null|CryptInterface
      */
-    private $_driverInstance = null;
+    private $driverInstance = null;
 
     /**
      * @var int Password algorithm used by password_hash
      */
-    protected $_passwordAlgo = CRYPT_BLOWFISH;
+    protected $passwordAlgo = CRYPT_BLOWFISH;
 
     /**
      * @var string Mcrypt mode used for encryption and decryption.
      */
-    protected $_cipherMode = MCRYPT_MODE_CFB;
+    protected $cipherMode = MCRYPT_MODE_CFB;
 
     /**
      * @var string * @var string Mcrypt cipher used for encryption and decryption.
      */
-    protected $_cipher = MCRYPT_RIJNDAEL_128;
+    protected $cipher = MCRYPT_RIJNDAEL_128;
 
 
     /**
@@ -48,13 +48,13 @@ class Crypt
      */
     public function __construct()
     {
-        if ($this->isNull($this->_driverInstance)) {
+        if ($this->isNull($this->driverInstance)) {
             try {
-                $this->_driverInstance = Bridge\Crypt::getInstance($this->_passwordAlgo, $this->_cipherMode,
-                                                                   $this->_cipher
+                $this->driverInstance = Bridge\Crypt::getInstance($this->passwordAlgo, $this->cipherMode,
+                                                                   $this->cipher
                 );
 
-                if (!$this->isInstanceOf($this->_driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
+                if (!$this->isInstanceOf($this->driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
                     throw new CryptException('The provided bridge does not implement the required
 												interface "\Webiny\Component\Crypt\Bridge\CryptInterface"'
                     );
@@ -77,7 +77,7 @@ class Crypt
     public function generateRandomInt($min, $max)
     {
         try {
-            return $this->_driverInstance->generateRandomInt($min, $max);
+            return $this->driverInstance->generateRandomInt($min, $max);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -96,7 +96,7 @@ class Crypt
     public function generateRandomString($length, $chars = '')
     {
         try {
-            return $this->_driverInstance->generateRandomString($length, $chars);
+            return $this->driverInstance->generateRandomString($length, $chars);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -114,7 +114,7 @@ class Crypt
     public function generateUserReadableString($length)
     {
         try {
-            return $this->_driverInstance->generateUserReadableString($length);
+            return $this->driverInstance->generateUserReadableString($length);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -132,7 +132,7 @@ class Crypt
     public function generateHardReadableString($length)
     {
         try {
-            return $this->_driverInstance->generateHardReadableString($length);
+            return $this->driverInstance->generateHardReadableString($length);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -151,7 +151,7 @@ class Crypt
     public function createPasswordHash($password)
     {
         try {
-            return $this->_driverInstance->createPasswordHash($password);
+            return $this->driverInstance->createPasswordHash($password);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -169,7 +169,7 @@ class Crypt
     public function verifyPasswordHash($password, $hash)
     {
         try {
-            return $this->_driverInstance->verifyPasswordHash($password, $hash);
+            return $this->driverInstance->verifyPasswordHash($password, $hash);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -189,7 +189,7 @@ class Crypt
     public function encrypt($string, $key)
     {
         try {
-            return $this->_driverInstance->encrypt($string, $key);
+            return $this->driverInstance->encrypt($string, $key);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -209,7 +209,7 @@ class Crypt
     public function decrypt($string, $key)
     {
         try {
-            return $this->_driverInstance->decrypt($string, $key);
+            return $this->driverInstance->decrypt($string, $key);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }

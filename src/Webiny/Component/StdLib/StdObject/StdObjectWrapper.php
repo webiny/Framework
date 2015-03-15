@@ -22,7 +22,7 @@ class StdObjectWrapper extends StdObjectAbstract
 {
     use ValidatorTrait;
 
-    protected $_value = null;
+    protected $value = null;
 
     /**
      * Constructor.
@@ -32,7 +32,7 @@ class StdObjectWrapper extends StdObjectAbstract
      */
     public function __construct($value)
     {
-        $this->_value = $value;
+        $this->value = $value;
     }
 
     /**

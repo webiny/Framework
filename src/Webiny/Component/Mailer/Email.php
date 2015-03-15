@@ -17,7 +17,7 @@ class Email implements \ArrayAccess
     public $email;
     public $name;
 
-    function __construct($email, $name = null)
+    public function __construct($email, $name = null)
     {
         $this->email = $email;
         $this->name = $name;

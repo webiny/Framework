@@ -21,37 +21,37 @@ class RequestBag
     /**
      * @var string Rest api configuration name.
      */
-    private $_api;
+    private $api;
 
     /**
      * @var ConfigObject The actual Rest api configuration.
      */
-    private $_apiConfig;
+    private $apiConfig;
 
     /**
      * @var array An array holding information about the class.
      */
-    private $_classData;
+    private $classData;
 
     /**
      * @var array An array holding information about the api method.
      */
-    private $_methodData;
+    private $methodData;
 
     /**
      * @var array List of api method parameters and their values.
      */
-    private $_methodParameters;
+    private $methodParameters;
 
     /**
      * @var mixed Actual instance of the api class.
      */
-    private $_classInstance;
+    private $classInstance;
 
     /**
      * @var string Path to the compiled cache file.
      */
-    private $_compileCacheFile;
+    private $compileCacheFile;
 
 
     /**
@@ -63,7 +63,7 @@ class RequestBag
      */
     public function setApi($api)
     {
-        $this->_api = $api;
+        $this->api = $api;
 
         return $this;
     }
@@ -75,7 +75,7 @@ class RequestBag
      */
     public function getApi()
     {
-        return $this->_api;
+        return $this->api;
     }
 
     /**
@@ -86,11 +86,11 @@ class RequestBag
      */
     public function getApiConfig()
     {
-        if (empty($this->_apiConfig)) {
-            $this->_apiConfig = \Webiny\Component\Rest\Rest::getConfig()->{$this->_api};
+        if (empty($this->apiConfig)) {
+            $this->apiConfig = \Webiny\Component\Rest\Rest::getConfig()->{$this->api};
         }
 
-        return $this->_apiConfig;
+        return $this->apiConfig;
     }
 
     /**
@@ -102,7 +102,7 @@ class RequestBag
      */
     public function setClassData($classData)
     {
-        $this->_classData = $classData;
+        $this->classData = $classData;
 
         return $this;
     }
@@ -114,7 +114,7 @@ class RequestBag
      */
     public function getClassData()
     {
-        return $this->_classData;
+        return $this->classData;
     }
 
     /**
@@ -126,7 +126,7 @@ class RequestBag
      */
     public function setCompileCacheFile($cacheFile)
     {
-        $this->_compileCacheFile = $cacheFile;
+        $this->compileCacheFile = $cacheFile;
 
         return $this;
     }
@@ -138,7 +138,7 @@ class RequestBag
      */
     public function getCompileCacheFile()
     {
-        return $this->_compileCacheFile;
+        return $this->compileCacheFile;
     }
 
     /**
@@ -150,7 +150,7 @@ class RequestBag
      */
     public function setMethodData($methodData)
     {
-        $this->_methodData = $methodData;
+        $this->methodData = $methodData;
 
         return $this;
     }
@@ -162,7 +162,7 @@ class RequestBag
      */
     public function getMethodData()
     {
-        return $this->_methodData;
+        return $this->methodData;
     }
 
     /**
@@ -174,7 +174,7 @@ class RequestBag
      */
     public function setMethodParameters($methodParameters)
     {
-        $this->_methodParameters = $methodParameters;
+        $this->methodParameters = $methodParameters;
 
         return $this;
     }
@@ -186,7 +186,7 @@ class RequestBag
      */
     public function getMethodParameters()
     {
-        return $this->_methodParameters;
+        return $this->methodParameters;
     }
 
     /**
@@ -198,7 +198,7 @@ class RequestBag
      */
     public function setClassInstance($classInstance)
     {
-        $this->_classInstance = $classInstance;
+        $this->classInstance = $classInstance;
 
         return $this;
     }
@@ -210,7 +210,7 @@ class RequestBag
      */
     public function getClassInstance()
     {
-        return $this->_classInstance;
+        return $this->classInstance;
     }
 
 }

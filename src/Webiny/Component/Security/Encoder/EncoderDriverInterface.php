@@ -24,7 +24,7 @@ interface EncoderDriverInterface
      *
      * @return string Password hash.
      */
-    function createPasswordHash($password);
+    public function createPasswordHash($password);
 
     /**
      * Verify if the $password matches the $hash.
@@ -34,5 +34,5 @@ interface EncoderDriverInterface
      *
      * @return bool True if $password matches $hash. Otherwise false is returned.
      */
-    function verifyPasswordHash($password, $hash);
+    public function verifyPasswordHash($password, $hash);
 }

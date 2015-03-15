@@ -29,12 +29,12 @@ class Token
     /**
      * @var TokenStorageAbstract
      */
-    private $_storage;
+    private $storage;
 
     /**
      * @var bool
      */
-    private $_rememberMe = false;
+    private $rememberMe = false;
 
     /**
      * Base constructor.
@@ -52,19 +52,19 @@ class Token
     public function __construct($tokenName, $rememberMe = false, $securityKey, CryptDriverInterface $cryptDriver)
     {
 
-        $this->_rememberMe = $rememberMe;
+        $this->rememberMe = $rememberMe;
 
         try {
-            $this->_storage = $this->factory($this->_getStorageName(),
+            $this->storage = $this->factory($this->getStorageName(),
                                              '\Webiny\Component\Security\Token\TokenStorageAbstract'
             );
-            $this->_storage->setSecurityKey($securityKey);
-            $this->_storage->setCrypt($cryptDriver);
+            $this->storage->setSecurityKey($securityKey);
+            $this->storage->setCrypt($cryptDriver);
         } catch (Exception $e) {
             throw new TokenException($e->getMessage());
         }
 
-        $this->_storage->setTokenName($tokenName);
+        $this->storage->setTokenName($tokenName);
     }
 
     /**
@@ -74,7 +74,7 @@ class Token
      */
     public function getUserFromToken()
     {
-        return $this->_storage->loadUserFromToken();
+        return $this->storage->loadUserFromToken();
     }
 
     /**
@@ -86,7 +86,7 @@ class Token
      */
     public function saveUser(UserAbstract $user)
     {
-        return $this->_storage->saveUserToken($user);
+        return $this->storage->saveUserToken($user);
     }
 
     /**
@@ -96,7 +96,7 @@ class Token
      */
     public function deleteUserToken()
     {
-        return $this->_storage->deleteUserToken();
+        return $this->storage->deleteUserToken();
     }
 
     /**
@@ -105,9 +105,9 @@ class Token
      *
      * @return string
      */
-    private function _getStorageName()
+    private function getStorageName()
     {
-        if ($this->_rememberMe) {
+        if ($this->rememberMe) {
             return self::TOKEN_COOKIE_STORAGE;
         }
 

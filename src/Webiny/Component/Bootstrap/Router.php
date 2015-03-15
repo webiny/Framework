@@ -55,10 +55,10 @@ class Router
 
                 if ($callbackData[1] == 'Modules' && $callbackData[3] == 'Controllers') {
                     // custom route, but still an MVC application
-                    return $this->_dispatchMvc($callbackData[2], $callbackData[4], $callback['Method'], $result->getParams());
+                    return $this->dispatchMvc($callbackData[2], $callbackData[4], $callback['Method'], $result->getParams());
                 } else {
                     // custom route and custom callback (non MVC)
-                    return $this->_dispatchCustom($callback['Class'], $callback['Method'], $result->getParams());
+                    return $this->dispatchCustom($callback['Class'], $callback['Method'], $result->getParams());
                 }
             } else { // fallback to the mvc router
                 return $this->mvcRouter($this->httpRequest()->getCurrentUrl(true)->getPath());
@@ -114,7 +114,7 @@ class Router
         }
 
         // call the dispatcher
-        return $this->_dispatchMvc($module->val(), $controller->val(), $action->val(), $params);
+        return $this->dispatchMvc($module->val(), $controller->val(), $action->val(), $params);
     }
 
     /**
@@ -127,7 +127,7 @@ class Router
      *
      * @return Dispatcher
      */
-    private function _dispatchMvc($module, $controller, $action, $params)
+    private function dispatchMvc($module, $controller, $action, $params)
     {
         return Dispatcher::mvcDispatcher($module, $controller, $action, $params);
     }
@@ -141,7 +141,7 @@ class Router
      *
      * @return Dispatcher
      */
-    private function _dispatchCustom($className, $action, $params)
+    private function dispatchCustom($className, $action, $params)
     {
         return Dispatcher::customDispatcher($className, $action, $params);
     }

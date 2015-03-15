@@ -24,17 +24,17 @@ abstract class ImageAbstract implements ImageInterface
     /**
      * @var string File format
      */
-    private $_format = 'png';
+    private $format = 'png';
 
     /**
      * @var File
      */
-    private $_destination;
+    private $destination;
 
     /**
      * @var array
      */
-    private static $_formats = [
+    private static $formats = [
         'jpg',
         'jpeg',
         'png',
@@ -50,7 +50,7 @@ abstract class ImageAbstract implements ImageInterface
      */
     public function getFormat()
     {
-        return $this->_format;
+        return $this->format;
     }
 
     /**
@@ -62,11 +62,11 @@ abstract class ImageAbstract implements ImageInterface
      */
     public function setFormat($format)
     {
-        if (!in_array($format, self::$_formats)) {
+        if (!in_array($format, self::$formats)) {
             throw new ImageException('Invalid image format provided. Supported formats are [jpg, jpeg, png, gif].');
         }
 
-        $this->_format = $format;
+        $this->format = $format;
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class ImageAbstract implements ImageInterface
      */
     public function setDestination(File $destination)
     {
-        $this->_destination = $destination;
+        $this->destination = $destination;
     }
 
     /**
@@ -92,11 +92,11 @@ abstract class ImageAbstract implements ImageInterface
     public function save(File $file = null, $options = [])
     {
         if ($this->isNull($file)) {
-            if ($this->isNull($this->_destination)) {
+            if ($this->isNull($this->destination)) {
                 throw new ImageException('Unable to save the image. Destination storage is not defined.');
             }
 
-            $file = $this->_destination;
+            $file = $this->destination;
         }
 
         // extract the type

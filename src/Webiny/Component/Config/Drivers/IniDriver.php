@@ -18,19 +18,19 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  */
 class IniDriver extends DriverAbstract
 {
-    private $_delimiter = '.';
-    private $_useSections = true;
+    private $delimiter = '.';
+    private $useSections = true;
 
     /**
      * Get config data as string
      *
      * @return string
      */
-    protected function _getString()
+    protected function getStringInternal()
     {
-        $data = $this->_getArray();
+        $data = $this->getArray();
 
-        return $this->_getIni($data);
+        return $this->getIni($data);
     }
 
 
@@ -43,7 +43,7 @@ class IniDriver extends DriverAbstract
      */
     public function setDelimiter($delimiter)
     {
-        $this->_delimiter = $delimiter;
+        $this->delimiter = $delimiter;
 
         return $this;
     }
@@ -57,7 +57,7 @@ class IniDriver extends DriverAbstract
      */
     public function useSections($useSections)
     {
-        $this->_useSections = $useSections;
+        $this->useSections = $useSections;
 
         return $this;
     }
@@ -66,13 +66,13 @@ class IniDriver extends DriverAbstract
      * Parse config resource and build config array
      * @return array
      */
-    protected function _getArray()
+    protected function getArrayInternal()
     {
-        if ($this->isArray($this->_resource)) {
-            return $this->_resource;
+        if ($this->isArray($this->resource)) {
+            return $this->resource;
         }
 
-        return $this->_parseIniString($this->_resource);
+        return $this->parseIniString($this->resource);
     }
 
     /**
@@ -82,12 +82,12 @@ class IniDriver extends DriverAbstract
      *
      * @return array
      */
-    private function _parseIniString($data)
+    private function parseIniString($data)
     {
         $config = $this->arr();
         $data = parse_ini_string($data, true);
         foreach ($data as $section => $value) {
-            $config = $config->mergeRecursive($this->_processValue($section, $value));
+            $config = $config->mergeRecursive($this->processValue($section, $value));
         }
 
         return $config;
@@ -103,7 +103,7 @@ class IniDriver extends DriverAbstract
      *
      * @return array
      */
-    private function _processValue($section, $value, $config = [])
+    private function processValue($section, $value, $config = [])
     {
         // Need to catch Exception in case INI string is not properly formed
         try {
@@ -113,27 +113,26 @@ class IniDriver extends DriverAbstract
             $config = $this->arr();
         }
 
-
         // Create StringObject and trim invalid characters
         $section = $this->str($section);
-        $this->_validateSection($section);
+        $this->validateSection($section);
 
         // Handle nested sections, ex: parent.child.property
-        if ($section->contains($this->_delimiter)) {
+        if ($section->contains($this->delimiter)) {
             /**
              * Explode section and only take 2 elements
              * First element will be the new array key, and second will be passed for recursive processing
              * Ex: parent.child.property will be split into 'parent' and 'child.property'
              */
-            $sections = $section->explode($this->_delimiter, 2)->removeFirst($section);
+            $sections = $section->explode($this->delimiter, 2)->removeFirst($section);
             $localConfig = $config->key($section, [], true);
-            $config->key($section, $this->_processValue($sections->last()->val(), $value, $localConfig));
+            $config->key($section, $this->processValue($sections->last()->val(), $value, $localConfig));
         } else {
             // If value is an array, we need to process it's keys
             if ($this->isArray($value)) {
                 foreach ($value as $k => $v) {
                     $localConfig = $config->key($section, [], true);
-                    $config->key($section, $this->_processValue($k, $v, $localConfig));
+                    $config->key($section, $this->processValue($k, $v, $localConfig));
                 }
             } else {
                 $config->key($section, $value);
@@ -143,15 +142,15 @@ class IniDriver extends DriverAbstract
         return $config->val();
     }
 
-    private function _validateSection(StringObject $section)
+    private function validateSection(StringObject $section)
     {
-        $tmp = $section->explode($this->_delimiter);
+        $tmp = $section->explode($this->delimiter);
         if ($tmp->first()->contains('-') || $this->isNumber($tmp->first()->val())) {
             throw new ConfigException(sprintf('Invalid config key "%s"', $section->val()));
         }
     }
 
-    private function _getIni($data)
+    private function getIni($data)
     {
         $string = '';
 
@@ -164,27 +163,27 @@ class IniDriver extends DriverAbstract
 
         foreach (array_keys($data) as $key) {
             $string .= '[' . $key . "]\n";
-            $string .= $this->_getSection($data[$key], '') . "\n";
+            $string .= $this->getSection($data[$key], '') . "\n";
         }
 
         return $string;
     }
 
-    private function _getSection(&$ini, $prefix)
+    private function getSection(&$ini, $prefix)
     {
         $string = '';
         foreach ($ini as $key => $val) {
             if (is_array($val)) {
-                $string .= $this->_getSection($ini[$key], $prefix . $key . $this->_delimiter);
+                $string .= $this->getSection($ini[$key], $prefix . $key . $this->delimiter);
             } else {
-                $string .= $prefix . $key . ' = ' . str_replace("\n", "\\\n", $this->_setValue($val)) . "\n";
+                $string .= $prefix . $key . ' = ' . str_replace("\n", "\\\n", $this->setValue($val)) . "\n";
             }
         }
 
         return $string;
     }
 
-    private function _setValue($val)
+    private function setValue($val)
     {
         if ($val === true) {
             return 'true';

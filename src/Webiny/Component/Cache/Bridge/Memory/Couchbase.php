@@ -23,7 +23,7 @@ class Couchbase extends CouchbaseObject implements CacheStorageInterface
      *
      * @param \Couchbase $couchbase
      */
-    function __construct(\Couchbase $couchbase)
+    public function __construct(\Couchbase $couchbase)
     {
         parent::__construct($couchbase, 'webiny');
     }

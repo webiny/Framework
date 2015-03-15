@@ -18,14 +18,14 @@ class Query
 {
     use StdLibTrait;
 
-    private $_queryBag;
+    private $queryBag;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->_queryBag = $this->arr($_GET);
+        $this->queryBag = $this->arr($_GET);
     }
 
     /**
@@ -38,7 +38,7 @@ class Query
      */
     public function get($key, $value = null)
     {
-        return $this->_queryBag->key($key, $value, true);
+        return $this->queryBag->key($key, $value, true);
     }
 
     /**
@@ -48,7 +48,7 @@ class Query
      */
     public function getAll()
     {
-        return $this->_queryBag->val();
+        return $this->queryBag->val();
     }
 
 }

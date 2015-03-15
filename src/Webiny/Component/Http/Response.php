@@ -27,36 +27,36 @@ class Response
     /**
      * @var string Holds the response content that will be rendered on the page.
      */
-    private $_content;
+    private $content;
 
     /**
      * @var int Holds the response HTTP status code.
      */
-    private $_statusCode;
+    private $statusCode;
 
     /**
      * @var string HTTP response status message;
      */
-    private $_statusMessage;
+    private $statusMessage;
 
     /**
      * @var string Content type header value.
      */
-    private $_contentType;
+    private $contentType;
 
     /**
      * @var string Holds the header charset information.
      */
-    private $_charset;
+    private $charset;
 
     /**
      * Holds header information.
      *
      * @var \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject
      */
-    private $_headers;
+    private $headers;
 
-    private $_cacheControl;
+    private $cacheControl;
 
     /**
      * @var array An array of http status codes by RFC2616 standard or some other if noted by comment.
@@ -154,9 +154,9 @@ class Response
     {
         $this->setContent($content);
         $this->setStatusCode($statusCode);
-        $this->_headers = $this->arr($headers);
-        $this->_cacheControl = new CacheControl();
-        $this->_cacheControl->setAsDontCache();
+        $this->headers = $this->arr($headers);
+        $this->cacheControl = new CacheControl();
+        $this->cacheControl->setAsDontCache();
     }
 
     /**
@@ -187,7 +187,7 @@ class Response
             throw new ResponseException('Response content must be a string.');
         }
 
-        $this->_content = $content;
+        $this->content = $content;
 
         return $this;
     }
@@ -199,7 +199,7 @@ class Response
      */
     public function getContent()
     {
-        return $this->_content;
+        return $this->content;
     }
 
     /**
@@ -217,13 +217,13 @@ class Response
             if (!isset(self::$httpStatuses[$statusCode])) {
                 throw new ResponseException('Invalid status code provided: "' . $statusCode . '".');
             } else {
-                $this->_statusMessage = self::$httpStatuses[$statusCode];
+                $this->statusMessage = self::$httpStatuses[$statusCode];
             }
         } else {
-            $this->_statusMessage = $message;
+            $this->statusMessage = $message;
         }
 
-        $this->_statusCode = $statusCode;
+        $this->statusCode = $statusCode;
 
         return $this;
     }
@@ -235,7 +235,7 @@ class Response
      */
     public function getStatusCode()
     {
-        return $this->_statusCode;
+        return $this->statusCode;
     }
 
     /**
@@ -247,7 +247,7 @@ class Response
      */
     public function setContentType($contentType)
     {
-        $this->_contentType = $contentType;
+        $this->contentType = $contentType;
 
         $this->setHeader('Content-Type', $contentType . '; charset=' . $this->getCharset());
 
@@ -261,7 +261,7 @@ class Response
      */
     public function getContentType()
     {
-        return (isset($this->_contentType) ? $this->_contentType : self::CONTENT_TYPE);
+        return (isset($this->contentType) ? $this->contentType : self::CONTENT_TYPE);
     }
 
     /**
@@ -273,7 +273,7 @@ class Response
      */
     public function setCharset($charset)
     {
-        $this->_charset = $charset;
+        $this->charset = $charset;
         $this->setContentType($this->getContentType()); // update charset which is set on content-type
 
         return $this;
@@ -286,7 +286,7 @@ class Response
      */
     public function getCharset()
     {
-        return (isset($this->_charset) ? $this->_charset : self::CHARSET);
+        return (isset($this->charset) ? $this->charset : self::CHARSET);
     }
 
     /**
@@ -299,7 +299,7 @@ class Response
      */
     public function setHeader($key, $value)
     {
-        $this->_headers->key($key, $value);
+        $this->headers->key($key, $value);
 
         return $this;
     }
@@ -311,7 +311,7 @@ class Response
      */
     public function getHeaders()
     {
-        return $this->_headers->val();
+        return $this->headers->val();
     }
 
     /**
@@ -335,7 +335,7 @@ class Response
             'Last-Modified'
         ];
         foreach ($headersToRemove as $header) {
-            $this->_headers->removeKey($header);
+            $this->headers->removeKey($header);
         }
 
         return $this;
@@ -348,7 +348,7 @@ class Response
      */
     public function cacheControl()
     {
-        return $this->_cacheControl;
+        return $this->cacheControl;
     }
 
     /**
@@ -362,16 +362,16 @@ class Response
         // first build headers -> only if they haven't already been sent
         if (!headers_sent()) {
             // status code header
-            header(self::PROTOCOL . ' ' . $this->getStatusCode() . ' ' . $this->_statusMessage
+            header(self::PROTOCOL . ' ' . $this->getStatusCode() . ' ' . $this->statusMessage
             );
 
             // other headers
-            foreach ($this->_headers as $k => $v) {
+            foreach ($this->headers as $k => $v) {
                 header($k . ': ' . $v);
             }
 
             // cache control headers
-            $cacheControlHeaders = $this->_cacheControl->getCacheControl();
+            $cacheControlHeaders = $this->cacheControl->getCacheControl();
             foreach ($cacheControlHeaders as $k => $v) {
                 header($k . ': ' . $v);
             }
@@ -387,7 +387,7 @@ class Response
      */
     public function sendContent()
     {
-        echo $this->_content;
+        echo $this->content;
 
         return $this;
     }

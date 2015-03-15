@@ -30,7 +30,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     /**
      * @var Page
      */
-    private static $_page;
+    private static $page;
 
     public static function setUpBeforeClass()
     {
@@ -81,7 +81,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
                                                $label2
                                            ]
         );
-        self::$_page = $page;
+        self::$page = $page;
     }
 
     public static function tearDownAfterClass()
@@ -95,7 +95,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public function testEntity()
     {
-        $page = self::$_page;
+        $page = self::$page;
         $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
         $this->assertTrue($page->save());
         $this->assertInstanceOf('Webiny\Component\Entity\Tests\Classes\Author', $page->author);
@@ -110,7 +110,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
          * Get recently saved Page instance and verify values
          * Must set to self because EntityPool 'remove()' method unsets reference
          */
-        self::$_page = $page = Page::findById($page->id);
+        self::$page = $page = Page::findById($page->id);
         $this->assertEquals('First blog post', $page->title);
         $this->assertEquals(2, $page->labels->count());
         $this->assertEquals('Pavel Denisjuk', $page->author->name);
@@ -140,7 +140,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public function testFindOne()
     {
-        $page = Page::findOne(['id' => self::$_page->id]);
+        $page = Page::findOne(['id' => self::$page->id]);
         $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
 
         $page = Page::findOne(['title' => 'First blog post']);
@@ -155,7 +155,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
      */
     public function testPopulateValidation()
     {
-        $page = self::$_page;
+        $page = self::$page;
         $data = [
             'title' => 12,
             'author' => false
@@ -166,14 +166,14 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public function testRestrictException()
     {
-        $page = self::$_page;
+        $page = self::$page;
         $this->setExpectedException('\Webiny\Component\Entity\EntityException');
         $page->author->delete();
     }
 
     public function testCascade()
     {
-        $page = self::$_page;
+        $page = self::$page;
         $authorId = $page->author->id;
 
         $page->author->getAttribute('pages')->setOnDelete('cascade');

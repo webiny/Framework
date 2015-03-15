@@ -25,12 +25,12 @@ class File implements FileInterface
     /**
      * @var Storage
      */
-    protected $_storage;
-    protected $_key;
-    protected $_contents;
-    protected $_isDirectory;
-    protected $_timeModified;
-    protected $_url;
+    protected $storage;
+    protected $key;
+    protected $contents;
+    protected $isDirectory;
+    protected $timeModified;
+    protected $url;
 
     /**
      * Construct a File instance
@@ -43,11 +43,11 @@ class File implements FileInterface
      */
     public function __construct($key, Storage $storage)
     {
-        $this->_storage = $storage;
-        $this->_key = $key;
+        $this->storage = $storage;
+        $this->key = $key;
 
         // Make sure a file path is given
-        if ($this->_storage->keyExists($key) && $this->_storage->isDirectory($this->_key)) {
+        if ($this->storage->keyExists($key) && $this->storage->isDirectory($this->key)) {
             throw new StorageException(StorageException::FILE_OBJECT_CAN_NOT_READ_DIRECTORY_PATHS, [$key]);
         }
     }
@@ -57,7 +57,7 @@ class File implements FileInterface
      */
     public function getStorage()
     {
-        return $this->_storage;
+        return $this->storage;
     }
 
     /**
@@ -65,14 +65,14 @@ class File implements FileInterface
      */
     public function getTimeModified($asDateTimeObject = false)
     {
-        if ($this->_timeModified === null) {
-            $this->_timeModified = $time = $this->_storage->getTimeModified($this->_key);
+        if ($this->timeModified === null) {
+            $this->timeModified = $time = $this->storage->getTimeModified($this->key);
             if ($time) {
-                $this->_timeModified = $asDateTimeObject ? $this->datetime()->setTimestamp($time) : $time;
+                $this->timeModified = $asDateTimeObject ? $this->datetime()->setTimestamp($time) : $time;
             }
         }
 
-        return $this->_timeModified;
+        return $this->timeModified;
     }
 
     /**
@@ -80,9 +80,9 @@ class File implements FileInterface
      */
     public function setContents($contents, $append = false)
     {
-        $this->_contents = $contents;
-        if ($this->_storage->setContents($this->_key, $this->_contents, $append) !== false) {
-            $this->_key = $this->_storage->getRecentKey();
+        $this->contents = $contents;
+        if ($this->storage->setContents($this->key, $this->contents, $append) !== false) {
+            $this->key = $this->storage->getRecentKey();
             $this->eventManager()->fire(StorageEvent::FILE_SAVED, new StorageEvent($this));
 
             return true;
@@ -96,11 +96,11 @@ class File implements FileInterface
      */
     public function getContents()
     {
-        if ($this->_contents === null) {
-            $this->_contents = $this->_storage->getContents($this->_key);
+        if ($this->contents === null) {
+            $this->contents = $this->storage->getContents($this->key);
         }
 
-        return $this->_contents;
+        return $this->contents;
     }
 
     /**
@@ -108,11 +108,11 @@ class File implements FileInterface
      */
     public function rename($newKey)
     {
-        if ($this->_storage->renameKey($this->_key, $newKey)) {
+        if ($this->storage->renameKey($this->key, $newKey)) {
             $event = new StorageEvent($this);
             // Set `oldKey` property that will be available only on rename
-            $event->oldKey = $this->_key;
-            $this->_key = $newKey;
+            $event->oldKey = $this->key;
+            $this->key = $newKey;
             $this->eventManager()->fire(StorageEvent::FILE_RENAMED, $event);
 
             return true;
@@ -126,7 +126,7 @@ class File implements FileInterface
      */
     public function delete()
     {
-        if ($this->_storage->deleteKey($this->_key)) {
+        if ($this->storage->deleteKey($this->key)) {
             $this->eventManager()->fire(StorageEvent::FILE_DELETED, new StorageEvent($this));
 
             return true;
@@ -140,7 +140,7 @@ class File implements FileInterface
      */
     public function getKey()
     {
-        return $this->_key;
+        return $this->key;
     }
 
     /**
@@ -148,10 +148,10 @@ class File implements FileInterface
      */
     public function getUrl()
     {
-        if ($this->_url === null) {
-            $this->_url = $this->_storage->getURL($this->_key);
+        if ($this->url === null) {
+            $this->url = $this->storage->getURL($this->key);
         }
 
-        return $this->_url;
+        return $this->url;
     }
 }

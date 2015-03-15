@@ -17,14 +17,14 @@ class ServiceCreator
 {
     use StdLibTrait;
 
-    private $_config;
+    private $config;
 
     /**
      * @param ServiceConfig $config Compiled service config
      */
     public function __construct(ServiceConfig $config)
     {
-        $this->_config = $config;
+        $this->config = $config;
     }
 
     /**
@@ -35,14 +35,14 @@ class ServiceCreator
     {
         // Get real arguments values
         $arguments = [];
-        foreach ($this->_config->getArguments() as $arg) {
+        foreach ($this->config->getArguments() as $arg) {
             $arguments[] = $arg->value();
         }
 
-        $service = $this->_getServiceInstance($arguments);
+        $service = $this->getServiceInstance($arguments);
 
         // Call methods
-        foreach ($this->_config->getCalls() as $call) {
+        foreach ($this->config->getCalls() as $call) {
             $arguments = [];
             foreach ($call[1] as $arg) {
                 $arguments[] = $arg->value();
@@ -57,12 +57,12 @@ class ServiceCreator
         return $service;
     }
 
-    private function _getServiceInstance($arguments)
+    private function getServiceInstance($arguments)
     {
         // Create service instance
-        if ($this->isNull($this->_config->getFactory())) {
+        if ($this->isNull($this->config->getFactory())) {
             try {
-                $reflection = new \ReflectionClass($this->_config->getClass());
+                $reflection = new \ReflectionClass($this->config->getClass());
             } catch (\ReflectionException $e) {
                 throw new ServiceManagerException(ServiceManagerException::SERVICE_CLASS_DOES_NOT_EXIST);
             }
@@ -72,15 +72,15 @@ class ServiceCreator
         }
 
         // Build factory instance
-        $service = $this->_config->getFactory()->value();
+        $service = $this->config->getFactory()->value();
         $arguments = [];
-        foreach ($this->_config->getMethodArguments() as $arg) {
+        foreach ($this->config->getMethodArguments() as $arg) {
             $arguments[] = $arg->value();
         }
 
         return call_user_func_array([
                                         $service,
-                                        $this->_config->getMethod()
+                                        $this->config->getMethod()
                                     ], $arguments
         );
     }

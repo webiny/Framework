@@ -26,12 +26,12 @@ abstract class AttributeAbstract implements JsonSerializable
      * @var EntityAbstract
      */
 
-    protected $_entity;
-    protected $_attribute = '';
-    protected $_defaultValue = null;
-    protected $_value = null;
-    protected $_required = false;
-    protected $_once = false;
+    protected $entity;
+    protected $attribute = '';
+    protected $defaultValue = null;
+    protected $value = null;
+    protected $required = false;
+    protected $once = false;
 
     /**
      * @param string         $attribute
@@ -39,8 +39,8 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __construct($attribute, EntityAbstract $entity)
     {
-        $this->_attribute = $attribute;
-        $this->_entity = $entity;
+        $this->attribute = $attribute;
+        $this->entity = $entity;
     }
 
     /**
@@ -50,11 +50,11 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __toString()
     {
-        if($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
-            return (string)$this->_defaultValue;
+        if($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+            return (string)$this->defaultValue;
         }
 
-        return $this->isNull($this->_value) ? '' : (string)$this->_value;
+        return $this->isNull($this->value) ? '' : (string)$this->value;
     }
 
     /**
@@ -67,8 +67,8 @@ abstract class AttributeAbstract implements JsonSerializable
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($this->isNull($this->_value)) {
-            $this->_value = $value;
+        if($this->isNull($this->value)) {
+            $this->value = $value;
         }
 
         return $value;
@@ -93,7 +93,7 @@ abstract class AttributeAbstract implements JsonSerializable
     public function attr($attribute = null)
     {
         if($this->isNull($attribute)) {
-            return $this->_attribute;
+            return $this->attribute;
         }
 
         return EntityAttributeBuilder::getInstance()->attr($attribute);
@@ -108,7 +108,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setRequired($flag = true)
     {
-        $this->_required = $flag;
+        $this->required = $flag;
 
         return $this;
     }
@@ -120,7 +120,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getRequired()
     {
-        return $this->_required;
+        return $this->required;
     }
 
     /**
@@ -134,7 +134,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setOnce($flag = true)
     {
-        $this->_once = $flag;
+        $this->once = $flag;
 
         return $this;
     }
@@ -148,7 +148,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getOnce()
     {
-        return $this->_once;
+        return $this->once;
     }
 
 
@@ -161,7 +161,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setDefaultValue($defaultValue = null)
     {
-        $this->_defaultValue = $defaultValue;
+        $this->defaultValue = $defaultValue;
 
         return $this;
     }
@@ -173,7 +173,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getDefaultValue()
     {
-        return $this->_defaultValue;
+        return $this->defaultValue;
     }
 
     /**
@@ -185,15 +185,15 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setValue($value = null)
     {
-        if(!$this->_canAssign()) {
+        if(!$this->canAssign()) {
             return $this;
         }
 
         $this->validate($value);
-        if($this->_value != $value) {
-            $this->_entity->__setDirty(true);
+        if($this->value != $value) {
+            $this->entity->setDirty(true);
         }
-        $this->_value = $value;
+        $this->value = $value;
 
         return $this;
     }
@@ -205,11 +205,11 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getValue()
     {
-        if($this->isNull($this->_value) && !$this->isNull($this->_defaultValue)) {
-            return $this->_defaultValue;
+        if($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+            return $this->defaultValue;
         }
 
-        return $this->_value;
+        return $this->value;
     }
 
     /**
@@ -245,9 +245,9 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return bool
      */
-    protected function _canAssign()
+    protected function canAssign()
     {
-        if($this->_entity->getId()->getValue() && $this->getOnce() && $this->_value !== null) {
+        if($this->entity->getId()->getValue() && $this->getOnce() && $this->value !== null) {
             return false;
         }
 

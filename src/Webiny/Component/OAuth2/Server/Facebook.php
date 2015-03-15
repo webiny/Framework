@@ -47,7 +47,7 @@ class Facebook extends ServerAbstract
      *
      * @return string Url to OAuth2 authorize page.
      */
-    function getAuthorizeUrl()
+    public function getAuthorizeUrl()
     {
         return self::API_AUTH_URL;
     }
@@ -57,7 +57,7 @@ class Facebook extends ServerAbstract
      *
      * @return string Url to access token page.
      */
-    function getAccessTokenUrl()
+    public function getAccessTokenUrl()
     {
         return self::API_ACCESS_TOKEN;
     }
@@ -105,7 +105,7 @@ class Facebook extends ServerAbstract
      *
      * @return array
      */
-    protected function _getUserDetailsTargetData()
+    protected function getUserDetailsTargetData()
     {
         return [
             'url'    => self::API_ME,
@@ -122,7 +122,7 @@ class Facebook extends ServerAbstract
      * @return OAuth2User
      * @throws \Webiny\Component\OAuth2\OAuth2Exception
      */
-    function _processUserDetails($result)
+    public function processUserDetails($result)
     {
         $result = self::arr($result['result']);
         if ($result->keyExists('error')) {

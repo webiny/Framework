@@ -30,11 +30,11 @@ class OAuth2 implements AuthenticationInterface
     /**
      * @var null|\Webiny\Component\OAuth2\OAuth2
      */
-    private $_oauth2Instance = null;
+    private $oauth2Instance = null;
     /**
      * @var array
      */
-    private $_oauth2Roles = [];
+    private $oauth2Roles = [];
 
     /**
      * Exit triggers. By default it's set to "die". "exception" is used for unit tests.
@@ -45,7 +45,7 @@ class OAuth2 implements AuthenticationInterface
     /**
      * @var string
      */
-    private $_exitTrigger = 'die';
+    private $exitTrigger = 'die';
 
 
     /**
@@ -56,11 +56,11 @@ class OAuth2 implements AuthenticationInterface
      *
      * @throws OAuth2Exception
      */
-    function __construct($serverName, $roles)
+    public function __construct($serverName, $roles)
     {
         try {
-            $this->_oauth2Instance = OAuth2Loader::getInstance($serverName);
-            $this->_oauth2Roles = (array)$roles;
+            $this->oauth2Instance = OAuth2Loader::getInstance($serverName);
+            $this->oauth2Roles = (array)$roles;
         } catch (\Exception $e) {
             throw new OAuth2Exception($e->getMessage());
         }
@@ -83,7 +83,7 @@ class OAuth2 implements AuthenticationInterface
             throw new OAuth2Exception(('Invalid exit trigger "' . $trigger . '".'));
         }
 
-        $this->_exitTrigger = $trigger;
+        $this->exitTrigger = $trigger;
     }
 
     /**
@@ -96,23 +96,23 @@ class OAuth2 implements AuthenticationInterface
      * @throws OAuth2Exception
      * @return Login
      */
-    function getLoginObject(ConfigObject $config)
+    public function getLoginObject(ConfigObject $config)
     {
         // step1 -> get access token
-        $oauth2 = $this->_getOAuth2Instance();
+        $oauth2 = $this->getOAuth2Instance();
         if (!$this->httpRequest()->query('code', false)) {
             $this->httpSession()->delete('oauth_token');
 
             // append state param to make the request more secured
-            $state = $this->_createOAuth2State();
+            $state = $this->createOAuth2State();
             $this->httpSession()->save('oauth_state', $state);
             $oauth2->setState($state);
 
-            $oauth2 = $this->_getOAuth2Instance();
+            $oauth2 = $this->getOAuth2Instance();
             $authUrl = $oauth2->getAuthenticationUrl();
 
             header('Location: ' . $authUrl);
-            $this->_triggerExit('Redirecting');
+            $this->triggerExit('Redirecting');
         } else {
             if (!$this->httpSession()->get('oauth_token', false)) {
                 $accessToken = $oauth2->requestAccessToken();
@@ -141,7 +141,7 @@ class OAuth2 implements AuthenticationInterface
         // step2 -> return the login object with auth token
         $login = new Login('', '');
         $login->setAttribute('oauth2_server', $oauth2);
-        $login->setAttribute('oauth2_roles', $this->_oauth2Roles);
+        $login->setAttribute('oauth2_roles', $this->oauth2Roles);
 
         return $login;
     }
@@ -152,7 +152,7 @@ class OAuth2 implements AuthenticationInterface
      * Use this callback to clear the submit data from the previous request so that you don't get stuck in an
      * infinitive loop between login page and login submit page.
      */
-    function invalidLoginProvidedCallback()
+    public function invalidLoginProvidedCallback()
     {
         // we don't need this method for OAuth2
     }
@@ -162,7 +162,7 @@ class OAuth2 implements AuthenticationInterface
      *
      * @param UserAbstract $user
      */
-    function loginSuccessfulCallback(UserAbstract $user)
+    public function loginSuccessfulCallback(UserAbstract $user)
     {
         // we don't need this method for OAuth2
     }
@@ -176,7 +176,7 @@ class OAuth2 implements AuthenticationInterface
      *
      * @return mixed
      */
-    function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
+    public function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
     {
         // we don't need this method for OAuth2
     }
@@ -184,7 +184,7 @@ class OAuth2 implements AuthenticationInterface
     /**
      * Logout callback is called when user auth token was deleted.
      */
-    function logoutCallback()
+    public function logoutCallback()
     {
         // we don't need this method for OAuth2
     }
@@ -193,12 +193,12 @@ class OAuth2 implements AuthenticationInterface
     /**
      * @return array|null|\Webiny\Component\OAuth2\OAuth2
      */
-    private function _getOAuth2Instance()
+    private function getOAuth2Instance()
     {
-        return $this->_oauth2Instance;
+        return $this->oauth2Instance;
     }
 
-    private function _createOAuth2State()
+    private function createOAuth2State()
     {
         return uniqid('wf-');
     }
@@ -208,9 +208,9 @@ class OAuth2 implements AuthenticationInterface
      *
      * @throws OAuth2Exception
      */
-    private function _triggerExit($msg)
+    private function triggerExit($msg)
     {
-        switch ($this->_exitTrigger) {
+        switch ($this->exitTrigger) {
             case 'die':
                 die($msg);
                 break;

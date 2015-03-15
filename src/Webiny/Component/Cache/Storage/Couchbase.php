@@ -26,7 +26,7 @@ class Couchbase
      *
      * @return CacheStorageInterface
      */
-    static function getInstance($user, $password, $bucket, $host)
+    public static function getInstance($user, $password, $bucket, $host)
     {
         return \Webiny\Component\Cache\Bridge\Couchbase::getInstance($user, $password, $bucket, $host);
     }

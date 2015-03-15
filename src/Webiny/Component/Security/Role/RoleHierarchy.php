@@ -23,16 +23,16 @@ class RoleHierarchy
     /**
      * @var ArrayObject
      */
-    private $_map;
+    private $map;
 
     /**
      * Constructor.
      *
      * @param array $hierarchy Role hierarchy array from system configuration.
      */
-    function __construct($hierarchy)
+    public function __construct($hierarchy)
     {
-        $this->_buildRoleMap($hierarchy);
+        $this->buildRoleMap($hierarchy);
     }
 
     /**
@@ -49,8 +49,8 @@ class RoleHierarchy
             /**
              * @var $role Role
              */
-            if (isset($this->_map[$role->getRole()])) {
-                foreach ($this->_map[$role->getRole()] as $r) {
+            if (isset($this->map[$role->getRole()])) {
+                foreach ($this->map[$role->getRole()] as $r) {
                     $accessibleRoles[] = new Role($r);
                 }
             }
@@ -64,9 +64,9 @@ class RoleHierarchy
      *
      * @param array $hierarchy Role hierarchy array from system configuration.
      */
-    private function _buildRoleMap($hierarchy)
+    private function buildRoleMap($hierarchy)
     {
-        $this->_map = $this->arr();
+        $this->map = $this->arr();
 
         foreach ($hierarchy as $main => $roles) {
             $hierarchy[$main] = $this->arr((array)$roles);
@@ -74,7 +74,7 @@ class RoleHierarchy
 
         $hierarchy = $this->arr($hierarchy);
         foreach ($hierarchy as $main => $roles) {
-            $this->_map->append($main, $roles->val());
+            $this->map->append($main, $roles->val());
             $additionalRoles = clone $roles;
             $parsed = $this->arr();
             $role = '';
@@ -85,9 +85,9 @@ class RoleHierarchy
                 }
 
                 $parsed->append($role);
-                $innerRole = $this->arr($this->_map->key($main));
+                $innerRole = $this->arr($this->map->key($main));
                 $innerRole->merge($hierarchy[$role]->val());
-                $this->_map->append($main, $innerRole->val());
+                $this->map->append($main, $innerRole->val());
                 $additionalRoles->merge($hierarchy->key($role)->diff($parsed->val())->val());
             }
         }

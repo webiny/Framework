@@ -19,13 +19,13 @@ class File
 
     use StdLibTrait;
 
-    private $_name;
-    private $_tmpName;
-    private $_type;
-    private $_error;
-    private $_size;
-    private $_stored = false;
-    private $_storedPath = '';
+    private $name;
+    private $tmpName;
+    private $type;
+    private $error;
+    private $size;
+    private $stored = false;
+    private $storedPath = '';
 
     /**
      * Constructor.
@@ -38,11 +38,11 @@ class File
      */
     public function __construct($name, $tmpName, $type, $error, $size)
     {
-        $this->_name = $name;
-        $this->_tmpName = $tmpName;
-        $this->_type = $type;
-        $this->_error = $error;
-        $this->_size = $size;
+        $this->name = $name;
+        $this->tmpName = $tmpName;
+        $this->type = $type;
+        $this->error = $error;
+        $this->size = $size;
     }
 
     /**
@@ -52,7 +52,7 @@ class File
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -62,7 +62,7 @@ class File
      */
     public function getTmpName()
     {
-        return $this->_tmpName;
+        return $this->tmpName;
     }
 
     /**
@@ -72,7 +72,7 @@ class File
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -82,7 +82,7 @@ class File
      */
     public function getError()
     {
-        return $this->_error;
+        return $this->error;
     }
 
     /**
@@ -92,7 +92,7 @@ class File
      */
     public function getSize()
     {
-        return $this->_size;
+        return $this->size;
     }
 
     /**
@@ -124,18 +124,18 @@ class File
 
         // check if we have already stored the file
         $path = $folder . $filename;
-        if ($this->_stored && $this->_storedPath == $path) {
+        if ($this->stored && $this->storedPath == $path) {
             return true;
         }
 
         // move the file
         try {
-            $result = move_uploaded_file($this->_tmpName, $path);
+            $result = move_uploaded_file($this->tmpName, $path);
             if (!$result) {
                 throw new FilesException('Unable to store file.');
             }
-            $this->_stored = $result;
-            $this->_storedPath = $folder . $filename;
+            $this->stored = $result;
+            $this->storedPath = $folder . $filename;
         } catch (\Exception $e) {
             throw new FilesException($e->getMessage());
         }

@@ -27,7 +27,7 @@ class Entity
     /**
      * @var null|Mongo
      */
-    protected static $_database = null;
+    protected static $database = null;
 
     /**
      * Get entity database
@@ -35,11 +35,11 @@ class Entity
      */
     public function getDatabase()
     {
-        if (self::$_database === null) {
-            self::$_database = self::mongo(self::getConfig()->Database);
+        if (self::$database === null) {
+            self::$database = self::mongo(self::getConfig()->Database);
         }
 
-        return self::$_database;
+        return self::$database;
     }
 
     /**
@@ -49,7 +49,7 @@ class Entity
      */
     public function setDatabase(Mongo $mongoDatabase)
     {
-        self::$_database = $mongoDatabase;
+        self::$database = $mongoDatabase;
     }
 
 }

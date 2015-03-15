@@ -13,8 +13,8 @@ use Webiny\Component\Config\ConfigObject;
 
 class AmazonS3Test extends \PHPUnit_Framework_TestCase
 {
-    private $_bucket = 'webiny-test';
-    private $_key = 'webiny-test.txt';
+    private $bucket = 'webiny-test';
+    private $key = 'webiny-test.txt';
     /**
      * @dataProvider driverSet
      */
@@ -28,19 +28,19 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testAmazon(S3 $S3)
     {
-        $S3->createBucket($this->_bucket);
-        $this->assertTrue($S3->doesBucketExist($this->_bucket));
+        $S3->createBucket($this->bucket);
+        $this->assertTrue($S3->doesBucketExist($this->bucket));
 
-        $S3->putObject($this->_bucket, $this->_key, 'Component test');
-        $this->assertTrue($S3->doesObjectExist($this->_bucket, $this->_key));
+        $S3->putObject($this->bucket, $this->key, 'Component test');
+        $this->assertTrue($S3->doesObjectExist($this->bucket, $this->key));
 
-        $this->assertSame('Component test', (string)$S3->getObject($this->_bucket, $this->_key)['Body']);
+        $this->assertSame('Component test', (string)$S3->getObject($this->bucket, $this->key)['Body']);
 
-        $S3->deleteObject($this->_bucket, $this->_key);
-        $this->assertFalse($S3->doesObjectExist($this->_bucket, $this->_key));
+        $S3->deleteObject($this->bucket, $this->key);
+        $this->assertFalse($S3->doesObjectExist($this->bucket, $this->key));
 
-        $S3->deleteBucket($this->_bucket);
-        $this->assertFalse($S3->doesBucketExist($this->_bucket));
+        $S3->deleteBucket($this->bucket);
+        $this->assertFalse($S3->doesBucketExist($this->bucket));
     }
 
     public function driverSet()

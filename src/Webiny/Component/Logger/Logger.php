@@ -23,7 +23,7 @@ class Logger
 {
     use StdLibTrait, ComponentTrait;
 
-    private static $_defaultConfig = [
+    private static $defaultConfig = [
         'Parameters'  => [
             'Logger.Class'        => '\Webiny\Component\Logger\Logger',
             'Logger.Driver.Class' => '\Webiny\Component\Logger\Driver\NullDriver'
@@ -42,7 +42,7 @@ class Logger
     /**
      * @var null
      */
-    private $_driverInstance = null;
+    private $driverInstance = null;
 
     /**
      * Create new logger using given name and driver.<br>
@@ -60,8 +60,8 @@ class Logger
      */
     public function __construct($name, $driverInstance)
     {
-        $this->_driverInstance = $driverInstance;
-        $this->_driverInstance->setName($name);
+        $this->driverInstance = $driverInstance;
+        $this->driverInstance->setName($name);
     }
 
     /**
@@ -74,11 +74,11 @@ class Logger
      * @return mixed
      * @throws LoggerException
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
-        if (method_exists($this->_driverInstance, $name)) {
+        if (method_exists($this->driverInstance, $name)) {
             return call_user_func_array([
-                                            $this->_driverInstance,
+                                            $this->driverInstance,
                                             $name
                                         ], $arguments
             );
@@ -98,7 +98,7 @@ class Logger
      */
     public function emergency($message, array $context = array())
     {
-        $this->_driverInstance->emergency($message, $context);
+        $this->driverInstance->emergency($message, $context);
     }
 
     /**
@@ -114,7 +114,7 @@ class Logger
      */
     public function alert($message, array $context = array())
     {
-        $this->_driverInstance->alert($message, $context);
+        $this->driverInstance->alert($message, $context);
     }
 
     /**
@@ -129,7 +129,7 @@ class Logger
      */
     public function critical($message, array $context = array())
     {
-        $this->_driverInstance->critical($message, $context);
+        $this->driverInstance->critical($message, $context);
     }
 
     /**
@@ -143,7 +143,7 @@ class Logger
      */
     public function error($message, array $context = array())
     {
-        $this->_driverInstance->error($message, $context);
+        $this->driverInstance->error($message, $context);
     }
 
     /**
@@ -159,7 +159,7 @@ class Logger
      */
     public function warning($message, array $context = array())
     {
-        $this->_driverInstance->warning($message, $context);
+        $this->driverInstance->warning($message, $context);
     }
 
     /**
@@ -172,7 +172,7 @@ class Logger
      */
     public function notice($message, array $context = array())
     {
-        $this->_driverInstance->notice($message, $context);
+        $this->driverInstance->notice($message, $context);
     }
 
     /**
@@ -187,7 +187,7 @@ class Logger
      */
     public function info($message, array $context = array())
     {
-        $this->_driverInstance->info($message, $context);
+        $this->driverInstance->info($message, $context);
     }
 
     /**
@@ -200,7 +200,7 @@ class Logger
      */
     public function debug($message, array $context = array())
     {
-        $this->_driverInstance->debug($message, $context);
+        $this->driverInstance->debug($message, $context);
     }
 
     /**
@@ -214,6 +214,6 @@ class Logger
      */
     public function log($level, $message, array $context = array())
     {
-        $this->_driverInstance->log($level, $message, $context);
+        $this->driverInstance->log($level, $message, $context);
     }
 }

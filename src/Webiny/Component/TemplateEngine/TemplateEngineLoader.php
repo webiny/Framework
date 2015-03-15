@@ -20,7 +20,7 @@ class TemplateEngineLoader
     /**
      * @var array
      */
-    private static $_instances = [];
+    private static $instances = [];
 
     /**
      * Returns an instance of template engine driver.
@@ -35,8 +35,8 @@ class TemplateEngineLoader
     static function getInstance($driver)
     {
 
-        if (isset(self::$_instances[$driver])) {
-            return self::$_instances[$driver];
+        if (isset(self::$instances[$driver])) {
+            return self::$instances[$driver];
         }
 
         $driverConfig = TemplateEngine::getConfig()->get('Engines.' . $driver, false);
@@ -45,9 +45,9 @@ class TemplateEngineLoader
         }
 
         try {
-            self::$_instances[$driver] = TemplateEngineBridge::getInstance($driver, $driverConfig);
+            self::$instances[$driver] = TemplateEngineBridge::getInstance($driver, $driverConfig);
 
-            return self::$_instances[$driver];
+            return self::$instances[$driver];
         } catch (\Exception $e) {
             throw $e;
         }

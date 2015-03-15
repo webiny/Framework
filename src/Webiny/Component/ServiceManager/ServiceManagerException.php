@@ -26,7 +26,7 @@ class ServiceManagerException extends ExceptionAbstract
     const SERVICE_NAME_ALREADY_EXISTS = 108;
     const PARAMETER_NOT_FOUND = 109;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Service "%s" is not defined in services configuration file.',
         102 => 'Service "%s" must contain `abstract` key in order to be available for inheritance.',
         103 => 'Service "%s" must contain `class` or `factory` parameter!',

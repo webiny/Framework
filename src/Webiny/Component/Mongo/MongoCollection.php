@@ -17,30 +17,30 @@ class MongoCollection
     /**
      * @var \MongoCollection
      */
-    private $_collection;
+    private $collection;
 
     public function __construct(\MongoCollection $collection)
     {
-        $this->_collection = $collection;
+        $this->collection = $collection;
     }
 
-    function __call($name, $arguments)
+    public function _call($name, $arguments)
     {
         return call_user_func([
-                                  $this->_collection,
+                                  $this->collection,
                                   $name
                               ], $arguments
         );
     }
 
-    function __get($name)
+    public function _get($name)
     {
-        return $this->_collection->$name;
+        return $this->collection->$name;
     }
 
-    function __set($name, $value)
+    public function _set($name, $value)
     {
-        $this->_collection->$name = $value;
+        $this->collection->$name = $value;
     }
 
 

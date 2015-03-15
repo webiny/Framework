@@ -49,17 +49,17 @@ class Crypt implements CryptInterface
     /**
      * @var string Name of the password algorithm.
      */
-    private $_passwordAlgo;
+    private $passwordAlgo;
 
     /**
      * @var string Cipher block.
      */
-    private $_cipherBlock;
+    private $cipherBlock;
 
     /**
      * @var string Cipher mode.
      */
-    private $_cipherMode;
+    private $cipherMode;
 
 
     /**
@@ -69,11 +69,11 @@ class Crypt implements CryptInterface
      * @param string $cipherMode   Cipher mode.
      * @param string $cipherBlock  Cipher block size.
      */
-    function __construct($passwordAlgo, $cipherMode, $cipherBlock)
+    public function __construct($passwordAlgo, $cipherMode, $cipherBlock)
     {
-        $this->_passwordAlgo = $passwordAlgo;
-        $this->_cipherMode = $cipherMode;
-        $this->_cipherBlock = $cipherBlock;
+        $this->passwordAlgo = $passwordAlgo;
+        $this->cipherMode = $cipherMode;
+        $this->cipherBlock = $cipherBlock;
     }
 
     /**
@@ -84,7 +84,7 @@ class Crypt implements CryptInterface
      *
      * @return int Random number between $min and $max.
      */
-    function generateRandomInt($min = 1, $max = PHP_INT_MAX)
+    public function generateRandomInt($min = 1, $max = PHP_INT_MAX)
     {
         // get the range
         $range = $max - $min;
@@ -124,17 +124,17 @@ class Crypt implements CryptInterface
      *
      * @return string Random string with the given $length containing only the provided set of $chars.
      */
-    function generateRandomString($length, $chars = '')
+    public function generateRandomString($length, $chars = '')
     {
         // generate a random string
-        $random = $this->_generator($length);
+        $random = $this->generator($length);
 
         // define the character map
         if ($chars == '') {
             $chars = self::CHARS . self::NUMBERS . self::SYMBOLS;
         }
 
-        $len = $this->_strLen($chars);
+        $len = $this->strLen($chars);
         $mask = 256 - (256 % $len);
 
         // build a string by converting the generated random string
@@ -151,8 +151,8 @@ class Crypt implements CryptInterface
         }
 
         // check if we under-generated
-        if ($this->_strLen($string) < $length) {
-            $string .= $this->generateRandomString(($length - $this->_strLen($string)), $chars);
+        if ($this->strLen($string) < $length) {
+            $string .= $this->generateRandomString(($length - $this->strLen($string)), $chars);
         }
 
         return $string;
@@ -166,7 +166,7 @@ class Crypt implements CryptInterface
      *
      * @return string Random string with the given $length.
      */
-    function generateUserReadableString($length)
+    public function generateUserReadableString($length)
     {
         return $this->generateRandomString($length, self::CHARS . self::NUMBERS);
     }
@@ -179,7 +179,7 @@ class Crypt implements CryptInterface
      *
      * @return string Random string with the given $length.
      */
-    function generateHardReadableString($length)
+    public function generateHardReadableString($length)
     {
         return $this->generateRandomString($length, self::SYMBOLS . self::CHARS . self::NUMBERS . self::SYMBOLS);
     }
@@ -192,9 +192,9 @@ class Crypt implements CryptInterface
      *
      * @return string Hash of the given string.
      */
-    function createPasswordHash($password)
+    public function createPasswordHash($password)
     {
-        return password_hash($password, $this->_passwordAlgo);
+        return password_hash($password, $this->passwordAlgo);
     }
 
     /**
@@ -205,7 +205,7 @@ class Crypt implements CryptInterface
      *
      * @return bool True if $password matches the $hash, otherwise false is returned.
      */
-    function verifyPasswordHash($password, $hash)
+    public function verifyPasswordHash($password, $hash)
     {
         return password_verify($password, $hash);
     }
@@ -219,23 +219,23 @@ class Crypt implements CryptInterface
      * @return string Encrypted string.
      * @throws CryptException
      */
-    function encrypt($string, $key)
+    public function encrypt($string, $key)
     {
         // hash the key, so we have the required key size
-        $key = $this->_getKeyHash($key);
+        $key = $this->getKeyHash($key);
 
         // mac key
-        $macKey = $this->_hkdf($key, self::HASH);
+        $macKey = $this->hkdf($key, self::HASH);
 
         // create initialization vector
-        $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
+        $ivSize = mcrypt_get_iv_size($this->cipherBlock, $this->cipherMode);
         if (!$ivSize) {
             return false; // don't throw the exception, so we don't expose the key
         }
         $iv = $this->generateRandomString($ivSize);
 
         // encrypt the message
-        $cipherText = mcrypt_encrypt($this->_cipherBlock, $key, $string, $this->_cipherMode, $iv);
+        $cipherText = mcrypt_encrypt($this->cipherBlock, $key, $string, $this->cipherMode, $iv);
 
         // verify if we managed to encrypt the message
         if (!$cipherText) {
@@ -260,13 +260,13 @@ class Crypt implements CryptInterface
      * @return string Decrypted string.
      * @throws CryptException
      */
-    function decrypt($string, $key)
+    public function decrypt($string, $key)
     {
         // hash the key
-        $key = $this->_getKeyHash($key);
+        $key = $this->getKeyHash($key);
 
         // mac key
-        $macKey = $this->_hkdf($key, self::HASH);
+        $macKey = $this->hkdf($key, self::HASH);
 
         // decode the string
         $string = base64_decode($string);
@@ -275,26 +275,26 @@ class Crypt implements CryptInterface
         }
 
         // we need to know the IV size
-        $ivSize = mcrypt_get_iv_size($this->_cipherBlock, $this->_cipherMode);
+        $ivSize = mcrypt_get_iv_size($this->cipherBlock, $this->cipherMode);
         if (!$ivSize) {
             return false; // don't throw the exception, so we don't expose the key
         }
 
         // extract the iv from the message
-        $iv = $this->_subStr($string, 0, $ivSize);
-        if ($this->_strLen($iv) != $ivSize) {
+        $iv = $this->subStr($string, 0, $ivSize);
+        if ($this->strLen($iv) != $ivSize) {
             return false;
         }
 
         // extract the string hash from the message
-        $stringHash = $this->_subStr($string, -64);
-        if ($this->_strLen($stringHash) != 64) {
+        $stringHash = $this->subStr($string, -64);
+        if ($this->strLen($stringHash) != 64) {
             return false;
         }
 
         // extract cipher text
-        $cipherText = $this->_subStr($string, $ivSize, -64);
-        if ($this->_strLen($string) <= ($ivSize + 64)) {
+        $cipherText = $this->subStr($string, $ivSize, -64);
+        if ($this->strLen($string) <= ($ivSize + 64)) {
             return false;
         }
 
@@ -306,7 +306,7 @@ class Crypt implements CryptInterface
         }
 
         // decrypt the message
-        $plainText = mcrypt_decrypt($this->_cipherBlock, $key, $cipherText, $this->_cipherMode, $iv);
+        $plainText = mcrypt_decrypt($this->cipherBlock, $key, $cipherText, $this->cipherMode, $iv);
 
         // verify if the message was decrypted correctly
         if (!$plainText) {
@@ -324,7 +324,7 @@ class Crypt implements CryptInterface
      *
      * @return string
      */
-    private function _generator($size)
+    private function generator($size)
     {
         // seed: mcrypt
         return mcrypt_create_iv($size, MCRYPT_DEV_URANDOM);
@@ -337,15 +337,15 @@ class Crypt implements CryptInterface
      *
      * @return string
      */
-    private function _getKeyHash($key)
+    private function getKeyHash($key)
     {
         // get key size based on the block and mode
-        $keySize = mcrypt_get_key_size($this->_cipherBlock, $this->_cipherMode);
+        $keySize = mcrypt_get_key_size($this->cipherBlock, $this->cipherMode);
 
         // generate and return the key hash
         $key = hash(self::HASH, $key, true);
 
-        return $this->_subStr($key, 0, $keySize);
+        return $this->subStr($key, 0, $keySize);
     }
 
     /**
@@ -357,12 +357,12 @@ class Crypt implements CryptInterface
      *
      * @return string
      */
-    private function _subStr($str, $start, $len = null)
+    private function subStr($str, $start, $len = null)
     {
         return mb_substr($str, $start, $len, '8bit');
     }
 
-    private function _strLen($str)
+    private function strLen($str)
     {
         return mb_strlen($str, '8bit');
     }
@@ -381,7 +381,7 @@ class Crypt implements CryptInterface
      *
      * @return string A pseudo-random key
      */
-    private function _hkdf($key, $digest = 'sha512', $salt = null, $length = null, $info = '')
+    private function hkdf($key, $digest = 'sha512', $salt = null, $length = null, $info = '')
     {
         if (!in_array($digest, array(
             'sha224',

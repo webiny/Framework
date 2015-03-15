@@ -26,12 +26,12 @@ class OAuth2BridgeMock extends OAuth2Abstract
      */
     public function __construct($clientId, $clientSecret, $redirectUri)
     {
-        $this->_clientId = $clientId;
-        $this->_clientSecret = $clientSecret;
-        $this->_redirectUri = $redirectUri;
-        $this->_accessToken = 'access_token';
-        $this->_certificate = 'certificate_path';
-        $this->_accessTokenName = 'test_token';
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->redirectUri = $redirectUri;
+        $this->accessToken = 'access_token';
+        $this->certificate = 'certificate_path';
+        $this->accessTokenName = 'test_token';
 
         $this->setOAuth2Server('\Webiny\Component\OAuth2\Tests\Mocks\ServerMock');
     }
@@ -57,7 +57,7 @@ class OAuth2BridgeMock extends OAuth2Abstract
      */
     public function getAccessToken()
     {
-        return $this->_accessToken;
+        return $this->accessToken;
     }
 
     /**
@@ -69,7 +69,7 @@ class OAuth2BridgeMock extends OAuth2Abstract
      */
     public function setAccessToken($accessToken)
     {
-        $this->_accessToken = $accessToken;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -81,7 +81,7 @@ class OAuth2BridgeMock extends OAuth2Abstract
      */
     public function setCertificate($pathToCertificate)
     {
-        $this->_certificate = $pathToCertificate;
+        $this->certificate = $pathToCertificate;
     }
 
     /**
@@ -91,6 +91,6 @@ class OAuth2BridgeMock extends OAuth2Abstract
      */
     public function getCertificate()
     {
-        return $this->_certificate;
+        return $this->certificate;
     }
 }

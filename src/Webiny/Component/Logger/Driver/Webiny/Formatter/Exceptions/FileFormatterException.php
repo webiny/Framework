@@ -21,7 +21,7 @@ class FileFormatterException extends ExceptionAbstract
 {
     const CONFIG_NOT_FOUND = 101;
 
-    static protected $_messages = [
+    protected static $messages = [
         101 => 'File formatter config was not found!',
     ];
 }

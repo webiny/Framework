@@ -16,7 +16,7 @@ use Webiny\Component\ServiceManager\Tests\Classes\MainService;
 class ServiceManagerTest extends PHPUnit_Framework_TestCase
 {
 
-    protected static $_services = [
+    protected static $services = [
         'Parameters'    => [
             'MainService.Class' => '\Webiny\Component\ServiceManager\Tests\Classes\MainService'
         ],
@@ -47,9 +47,9 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
 
     public function testServiceManager()
     {
-        $mainServiceConfig = new ConfigObject(self::$_services['MainService']);
-        $secondServiceConfig = new ConfigObject(self::$_services['SecondService']);
-        ServiceManager::getInstance()->registerParameters(self::$_services['Parameters']);
+        $mainServiceConfig = new ConfigObject(self::$services['MainService']);
+        $secondServiceConfig = new ConfigObject(self::$services['SecondService']);
+        ServiceManager::getInstance()->registerParameters(self::$services['Parameters']);
         ServiceManager::getInstance()->registerService('MainService', $mainServiceConfig);
         ServiceManager::getInstance()->registerService('SecondService', $secondServiceConfig);
 

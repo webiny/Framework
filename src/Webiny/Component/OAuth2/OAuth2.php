@@ -24,12 +24,12 @@ class OAuth2
     /**
      * @var OAuth2Abstract
      */
-    private $_instance;
+    private $instance;
 
     /**
      * @var ServerAbstract
      */
-    private $_server;
+    private $server;
 
 
     /**
@@ -40,10 +40,10 @@ class OAuth2
      */
     public function __construct(OAuth2Abstract $instance)
     {
-        $this->_instance = $instance;
+        $this->instance = $instance;
 
         $server = $instance->getServerClassName();
-        $this->_server = new $server($this);
+        $this->server = new $server($this);
 
     }
 
@@ -52,7 +52,7 @@ class OAuth2
      */
     public function request()
     {
-        return $this->_server;
+        return $this->server;
     }
 
     /**
@@ -62,7 +62,7 @@ class OAuth2
      */
     public function getClientId()
     {
-        return $this->_instance->getClientId();
+        return $this->instance->getClientId();
     }
 
     /**
@@ -72,7 +72,7 @@ class OAuth2
      */
     public function getClientSecret()
     {
-        return $this->_instance->getClientSecret();
+        return $this->instance->getClientSecret();
     }
 
     /**
@@ -84,9 +84,9 @@ class OAuth2
      */
     public function requestAccessToken()
     {
-        $tokenUrl = $this->_processUrl($this->_server->getAccessTokenUrl());
-        $accessToken = $this->_instance->requestAccessToken($tokenUrl);
-        $this->_instance->setAccessToken($accessToken);
+        $tokenUrl = $this->processUrl($this->server->getAccessTokenUrl());
+        $accessToken = $this->instance->requestAccessToken($tokenUrl);
+        $this->instance->setAccessToken($accessToken);
 
         return $accessToken;
     }
@@ -98,7 +98,7 @@ class OAuth2
      */
     public function getAccessToken()
     {
-        return $this->_instance->getAccessToken();
+        return $this->instance->getAccessToken();
     }
 
     /**
@@ -108,7 +108,7 @@ class OAuth2
      */
     public function getRedirectURI()
     {
-        return $this->_instance->getRedirectURI();
+        return $this->instance->getRedirectURI();
     }
 
     /**
@@ -120,7 +120,7 @@ class OAuth2
      */
     public function setAccessToken($accessToken)
     {
-        $this->_instance->setAccessToken($accessToken);
+        $this->instance->setAccessToken($accessToken);
     }
 
     /**
@@ -132,7 +132,7 @@ class OAuth2
      */
     public function setCertificate($pathToCertificate)
     {
-        $this->_instance->setCertificate($pathToCertificate);
+        $this->instance->setCertificate($pathToCertificate);
     }
 
     /**
@@ -142,7 +142,7 @@ class OAuth2
      */
     public function getCertificate()
     {
-        return $this->_instance->getCertificate();
+        return $this->instance->getCertificate();
     }
 
     /**
@@ -154,7 +154,7 @@ class OAuth2
      */
     public function setScope($scope)
     {
-        $this->_instance->setScope($scope);
+        $this->instance->setScope($scope);
     }
 
     /**
@@ -164,7 +164,7 @@ class OAuth2
      */
     public function getScope()
     {
-        return $this->_instance->getScope();
+        return $this->instance->getScope();
     }
 
     /**
@@ -176,7 +176,7 @@ class OAuth2
      */
     public function setState($state)
     {
-        $this->_instance->setState($state);
+        $this->instance->setState($state);
     }
 
     /**
@@ -186,7 +186,7 @@ class OAuth2
      */
     public function getState()
     {
-        return $this->_instance->getState();
+        return $this->instance->getState();
     }
 
     /**
@@ -196,7 +196,7 @@ class OAuth2
      */
     public function getAccessTokenName()
     {
-        return $this->_instance->getAccessTokenName();
+        return $this->instance->getAccessTokenName();
     }
 
     /**
@@ -206,7 +206,7 @@ class OAuth2
      */
     public function getAuthenticationUrl()
     {
-        return $this->_processUrl($this->_server->getAuthorizeUrl());
+        return $this->processUrl($this->server->getAuthorizeUrl());
     }
 
     /**
@@ -216,7 +216,7 @@ class OAuth2
      *
      * @return string Processed url.
      */
-    private function _processUrl($url)
+    private function processUrl($url)
     {
         $vars = [
             '{CLIENT_ID}'    => $this->getClientId(),

@@ -18,27 +18,27 @@ abstract class LoaderAbstract
     /**
      * @var bool|array A list of registered maps.
      */
-    protected $_maps = false;
+    protected $maps = false;
 
     /**
      * @var array Optional rules that are attached to the map.
      */
-    protected $_rules;
+    protected $rules;
 
     /**
      * Get an instance of Loader.
      *
      * @return $this
      */
-    static public function getInstance()
+    public static function getInstance()
     {
-        if (static::$_instance !== null) {
-            return static::$_instance;
+        if (static::$instance !== null) {
+            return static::$instance;
         }
 
-        static::$_instance = new static;
+        static::$instance = new static;
 
-        return static::$_instance;
+        return static::$instance;
     }
 
     /**
@@ -50,8 +50,8 @@ abstract class LoaderAbstract
      */
     public function unregisterMap($mapPrefix)
     {
-        if(isset($this->_maps[$mapPrefix])){
-            unset($this->_maps[$mapPrefix]);
+        if(isset($this->maps[$mapPrefix])){
+            unset($this->maps[$mapPrefix]);
         }
 
         return false;

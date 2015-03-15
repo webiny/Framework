@@ -16,8 +16,8 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
 
     const CONFIG = '/ExampleConfig.yaml';
 
-    private $_key = 'testFile.txt';
-    private $_newKey = 'newKey.txt';
+    private $key = 'testFile.txt';
+    private $newKey = 'newKey.txt';
 
     /**
      * @dataProvider driverSet
@@ -32,10 +32,10 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSave(Storage $storage)
     {
-        $storage->setContents($this->_key, 'Test contents');
-        $this->assertSame('Test contents', $storage->getContents($this->_key));
-        $storage->setContents($this->_key, 'Appended contents', true);
-        $contents = $storage->getContents($this->_key);
+        $storage->setContents($this->key, 'Test contents');
+        $this->assertSame('Test contents', $storage->getContents($this->key));
+        $storage->setContents($this->key, 'Appended contents', true);
+        $contents = $storage->getContents($this->key);
         $this->assertTrue(strpos($contents, 'Test contents') === 0);
         $this->assertTrue(strpos($contents, 'Appended contents') > 0);
     }
@@ -45,8 +45,8 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testRename(Storage $storage)
     {
-        $storage->renameKey($this->_key, $this->_newKey);
-        $this->assertTrue($storage->keyExists($this->_newKey));
+        $storage->renameKey($this->key, $this->newKey);
+        $this->assertTrue($storage->keyExists($this->newKey));
     }
 
     /**
@@ -55,8 +55,8 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
     public function testDelete(Storage $storage)
     {
 
-        $storage->deleteKey($this->_newKey);
-        $this->assertFalse($storage->keyExists($this->_newKey));
+        $storage->deleteKey($this->newKey);
+        $this->assertFalse($storage->keyExists($this->newKey));
 
     }
 

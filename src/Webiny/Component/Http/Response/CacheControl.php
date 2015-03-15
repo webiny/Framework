@@ -22,12 +22,12 @@ class CacheControl
     /**
      * @var \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject
      */
-    private $_cacheControl;
+    private $cacheControl;
 
     /**
      * @var array A list of valid cache control headers.
      */
-    private static $_cacheControlHeaders = [
+    private static $cacheControlHeaders = [
         'cache-control',
         'expires',
         'vary',
@@ -44,7 +44,7 @@ class CacheControl
      */
     public function __construct()
     {
-        $this->_cacheControl = $this->arr([]);
+        $this->cacheControl = $this->arr([]);
     }
 
     /**
@@ -55,9 +55,9 @@ class CacheControl
      */
     public function setAsDontCache()
     {
-        $this->_cacheControl->key('Expires', -1);
-        $this->_cacheControl->key('Pragma', 'no-cache');
-        $this->_cacheControl->key('Cache-Control', 'no-cache, must-revalidate');
+        $this->cacheControl->key('Expires', -1);
+        $this->cacheControl->key('Pragma', 'no-cache');
+        $this->cacheControl->key('Cache-Control', 'no-cache, must-revalidate');
 
         return $this;
     }
@@ -73,11 +73,11 @@ class CacheControl
     {
         $expirationDateFormatted = date('D, d M Y H:i:s', $expirationDate->getTimestamp());
 
-        $this->_cacheControl->key('Expires', $expirationDateFormatted . ' GMT');
+        $this->cacheControl->key('Expires', $expirationDateFormatted . ' GMT');
 
         $maxAge = $expirationDate->getTimestamp() - time();
-        $this->_cacheControl->key('Cache-Control', 'private, max-age=' . $maxAge);
-        $this->_cacheControl->key('Last-Modified', date('D, d M Y H:i:s') . ' GMT');
+        $this->cacheControl->key('Cache-Control', 'private, max-age=' . $maxAge);
+        $this->cacheControl->key('Last-Modified', date('D, d M Y H:i:s') . ' GMT');
 
         return $this;
     }
@@ -89,7 +89,7 @@ class CacheControl
      */
     public function getCacheControl()
     {
-        return $this->_cacheControl->val();
+        return $this->cacheControl->val();
     }
 
     /**
@@ -104,12 +104,12 @@ class CacheControl
     {
         //validate headers
         foreach ($cacheControl as $k => $v) {
-            if (!$this->_validateCacheControlHeader($k)) {
+            if (!$this->validateCacheControlHeader($k)) {
                 throw new ResponseException('Invalid cache control header "' . $v . '".');
             }
         }
 
-        $this->_cacheControl = $this->arr($cacheControl);
+        $this->cacheControl = $this->arr($cacheControl);
 
         return $this;
     }
@@ -125,11 +125,11 @@ class CacheControl
      */
     public function setCacheControlEntry($key, $value)
     {
-        if (!$this->_validateCacheControlHeader($key)) {
+        if (!$this->validateCacheControlHeader($key)) {
             throw new ResponseException('Invalid cache control header "' . $key . '".');
         }
 
-        $this->_cacheControl->key($key, $value);
+        $this->cacheControl->key($key, $value);
 
         return $this;
     }
@@ -141,9 +141,9 @@ class CacheControl
      *
      * @return bool
      */
-    private function _validateCacheControlHeader($header)
+    private function validateCacheControlHeader($header)
     {
-        if (!in_array(strtolower($header), self::$_cacheControlHeaders)) {
+        if (!in_array(strtolower($header), self::$cacheControlHeaders)) {
             return false;
         }
 

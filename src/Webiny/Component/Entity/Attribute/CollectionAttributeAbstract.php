@@ -21,12 +21,12 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
 {
     use StdLibTrait;
 
-    protected $_entityClass;
+    protected $entityClass;
 
     /**
      * @var null|EntityCollection
      */
-    protected $_value = null;
+    protected $value = null;
 
     /**
      * Get string of masked entity values when array of instances is being converted to string
@@ -99,7 +99,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
             $parts = $entityClass->explode('.');
             $entityClass = '\\WebinyPlatform\\Apps\\' . $parts[0] . '\\Components\\' . $parts[1] . '\\Entities\\' . $parts[2];
         }
-        $this->_entityClass = StdObjectWrapper::toString($entityClass);
+        $this->entityClass = StdObjectWrapper::toString($entityClass);
 
         return $this;
     }
@@ -111,7 +111,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
      */
     public function getEntity()
     {
-        return $this->_entityClass;
+        return $this->entityClass;
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
      */
     public function getParentEntity()
     {
-        return $this->_entity;
+        return $this->entity;
     }
 
     /**

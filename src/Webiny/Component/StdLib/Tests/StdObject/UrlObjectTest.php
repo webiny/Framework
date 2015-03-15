@@ -12,64 +12,64 @@ use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
 class UrlObjectTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $_url = 'http://www.webiny.com:666/some-page/some-subpage/?param1&param2=null
+    private $url = 'http://www.webiny.com:666/some-page/some-subpage/?param1&param2=null
 					&paramArray[]=somevalue&paramArray[]=somevalue2';
 
-    private $_url2 = 'http://www.webiny.com/path/?query=something';
+    private $url2 = 'http://www.webiny.com/path/?query=something';
 
 
-    function testConstructor()
+    public function testConstructor()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
     }
 
     /**
      * @expectedException \Webiny\Component\StdLib\StdObject\StdObjectException
      * @expectedExceptionMessage Unable to parse
      */
-    function testConstuctor2()
+    public function testConstuctor2()
     {
         $u = new UrlObject(false);
     }
 
-    function testGetHost()
+    public function testGetHost()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
 
         $this->assertSame('www.webiny.com', $u->getHost());
     }
 
-    function testGetScheme()
+    public function testGetScheme()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
 
         $this->assertSame('http', $u->getScheme());
     }
 
-    function testGetPort()
+    public function testGetPort()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
 
         $this->assertSame(666, $u->getPort());
     }
 
-    function testGetDomain()
+    public function testGetDomain()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
 
         $this->assertSame('http://www.webiny.com', $u->getDomain());
     }
 
-    function testGetPath()
+    public function testGetPath()
     {
-        $u = new UrlObject($this->_url);
+        $u = new UrlObject($this->url);
 
         $this->assertSame('/some-page/some-subpage/', $u->getPath());
     }
 
-    function testSetters()
+    public function testSetters()
     {
-        $u = new UrlObject($this->_url2);
+        $u = new UrlObject($this->url2);
 
         $u->setScheme('ftp')
           ->setHost('google.com////')
@@ -80,18 +80,18 @@ class UrlObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('ftp://google.com:45/new-path/over-me?name=John', $u->val());
     }
 
-    function testSetters2()
+    public function testSetters2()
     {
-        $u = new UrlObject($this->_url2);
+        $u = new UrlObject($this->url2);
 
         $u->setQuery(['name' => 'John'], true);
 
         $this->assertSame('http://www.webiny.com/path/?query=something&name=John', $u->val());
     }
 
-    function testSetters3()
+    public function testSetters3()
     {
-        $u = new UrlObject($this->_url2);
+        $u = new UrlObject($this->url2);
 
         $u->setQuery([
                          'name'  => 'John',

@@ -18,14 +18,14 @@ class Payload
 {
     use StdLibTrait;
 
-    private $_payloadBag;
+    private $payloadBag;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->_payloadBag = $this->arr(json_decode(file_get_contents("php://input"), true));
+        $this->payloadBag = $this->arr(json_decode(file_get_contents("php://input"), true));
     }
 
     /**
@@ -38,7 +38,7 @@ class Payload
      */
     public function get($key, $value = null)
     {
-        return $this->_payloadBag->key($key, $value, true);
+        return $this->payloadBag->key($key, $value, true);
     }
 
     /**
@@ -48,6 +48,6 @@ class Payload
      */
     public function getAll()
     {
-        return $this->_payloadBag->val();
+        return $this->payloadBag->val();
     }
 }

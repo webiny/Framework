@@ -15,7 +15,7 @@ use Webiny\Component\ServiceManager\ServiceManager;
 class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
 {
 
-    protected static $_services = [
+    protected static $services = [
         'First'  => [
             'Class' => '%ExceptionService.Class%'
         ],
@@ -33,7 +33,7 @@ class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        $servicesConfig = new ConfigObject(self::$_services);
+        $servicesConfig = new ConfigObject(self::$services);
         ServiceManager::getInstance()->registerServices('Exception', $servicesConfig);
     }
 

@@ -25,12 +25,12 @@ class Mongo implements MongoInterface
     /**
      * @var MongoDB
      */
-    private $_db = null;
+    private $db = null;
 
     /**
      * @var MongoClient
      */
-    private $_connection = null;
+    private $connection = null;
 
     public function connect($host, $database, $user = null, $password = null, array $options = [])
     {
@@ -47,8 +47,8 @@ class Mongo implements MongoInterface
 
         $server = 'mongodb://' . $host;
         try {
-            $this->_connection = new MongoClient($server, $config);
-            $this->_db = $this->_connection->selectDB($database);
+            $this->connection = new MongoClient($server, $config);
+            $this->db = $this->connection->selectDB($database);
         } catch (\MongoException $e) {
             throw new MongoException($e->getMessage());
         }
@@ -64,7 +64,7 @@ class Mongo implements MongoInterface
      */
     public function getCollectionNames($includeSystemCollections = false)
     {
-        return $this->_db->getCollectionNames($includeSystemCollections);
+        return $this->db->getCollectionNames($includeSystemCollections);
     }
 
     /**
@@ -75,7 +75,7 @@ class Mongo implements MongoInterface
      * @return array
      */
     public function getIndexInfo($collectionName){
-        return $this->_getCollection($collectionName)->getIndexInfo();
+        return $this->getCollection($collectionName)->getIndexInfo();
     }
 
     /**
@@ -90,7 +90,7 @@ class Mongo implements MongoInterface
      */
     public function insert($collectionName, array $data, $options = [])
     {
-        return $this->_getCollection($collectionName)->insert($data, $options);
+        return $this->getCollection($collectionName)->insert($data, $options);
     }
 
     /**
@@ -108,7 +108,7 @@ class Mongo implements MongoInterface
     {
         $reduce = new \MongoCode($reduce);
 
-        return $this->_getCollection($collectionName)->group($keys, $initial, $reduce, $condition);
+        return $this->getCollection($collectionName)->group($keys, $initial, $reduce, $condition);
     }
 
     /**
@@ -120,7 +120,7 @@ class Mongo implements MongoInterface
      */
     public function getReference(array $ref)
     {
-        return $this->_db->getDBRef($ref);
+        return $this->db->getDBRef($ref);
     }
 
     /**
@@ -134,7 +134,7 @@ class Mongo implements MongoInterface
      */
     public function ensureIndex($collectionName, $keys, $options = [])
     {
-        return $this->_getCollection($collectionName)->ensureIndex($keys, $options);
+        return $this->getCollection($collectionName)->ensureIndex($keys, $options);
     }
 
     /**
@@ -149,7 +149,7 @@ class Mongo implements MongoInterface
      */
     public function deleteIndex($collectionName, $index)
     {
-        return $this->_db->command([
+        return $this->db->command([
                                        "deleteIndexes" => $collectionName,
                                        "index"         => $index,
                                    ]);
@@ -164,7 +164,7 @@ class Mongo implements MongoInterface
      */
     public function deleteAllIndexes($collectionName)
     {
-        return $this->_getCollection($collectionName)->deleteIndexes();
+        return $this->getCollection($collectionName)->deleteIndexes();
     }
 
     /**
@@ -177,7 +177,7 @@ class Mongo implements MongoInterface
      */
     public function execute($code, array $args = [])
     {
-        return $this->_db->execute($code, $args);
+        return $this->db->execute($code, $args);
     }
 
     /**
@@ -193,7 +193,7 @@ class Mongo implements MongoInterface
      */
     public function find($collectionName, array $query = [], array $fields = [])
     {
-        return $this->_getCollection($collectionName)->find($query, $fields);
+        return $this->getCollection($collectionName)->find($query, $fields);
     }
 
     /**
@@ -208,7 +208,7 @@ class Mongo implements MongoInterface
      */
     public function createCollection($name, $capped = false, $size = 0, $max = 0)
     {
-        return $this->_db->createCollection($name, $capped, $size, $max);
+        return $this->db->createCollection($name, $capped, $size, $max);
     }
 
     /**
@@ -220,7 +220,7 @@ class Mongo implements MongoInterface
      */
     public function dropCollection($collectionName)
     {
-        return $this->_db->dropCollection($collectionName);
+        return $this->db->dropCollection($collectionName);
     }
 
     /**
@@ -232,7 +232,7 @@ class Mongo implements MongoInterface
      */
     public function command(array $data)
     {
-        return $this->_db->command($data);
+        return $this->db->command($data);
     }
 
     /**
@@ -244,7 +244,7 @@ class Mongo implements MongoInterface
      */
     public function distinct(array $data)
     {
-        return $this->_db->command($data);
+        return $this->db->command($data);
     }
 
     /**
@@ -258,7 +258,7 @@ class Mongo implements MongoInterface
      */
     public function findOne($collectionName, array $query = [], array $fields = [])
     {
-        return $this->_getCollection($collectionName)->findOne($query, $fields);
+        return $this->getCollection($collectionName)->findOne($query, $fields);
     }
 
     /**
@@ -271,7 +271,7 @@ class Mongo implements MongoInterface
      */
     public function count($collectionName, array $query = [])
     {
-        return $this->_getCollection($collectionName)->count($query);
+        return $this->getCollection($collectionName)->count($query);
     }
 
     /**
@@ -287,7 +287,7 @@ class Mongo implements MongoInterface
      */
     public function remove($collectionName, array $criteria, $options = [])
     {
-        return $this->_getCollection($collectionName)->remove($criteria, $options);
+        return $this->getCollection($collectionName)->remove($criteria, $options);
     }
 
     /**
@@ -303,7 +303,7 @@ class Mongo implements MongoInterface
      */
     public function save($collectionName, array $data, $options = [])
     {
-        return $this->_getCollection($collectionName)->save($data, $options);
+        return $this->getCollection($collectionName)->save($data, $options);
     }
 
     /**
@@ -320,7 +320,7 @@ class Mongo implements MongoInterface
      */
     public function update($collectionName, array $criteria, array $newObj, $options = [])
     {
-        return $this->_getCollection($collectionName)->update($criteria, $newObj, $options);
+        return $this->getCollection($collectionName)->update($criteria, $newObj, $options);
     }
 
     /**
@@ -328,8 +328,8 @@ class Mongo implements MongoInterface
      *
      * @return \MongoCollection
      */
-    private function _getCollection($collection)
+    private function getCollection($collection)
     {
-        return $this->_connection->selectCollection($this->_db, $collection);
+        return $this->connection->selectCollection($this->db, $collection);
     }
 }

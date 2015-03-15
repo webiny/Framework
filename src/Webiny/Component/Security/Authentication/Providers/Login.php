@@ -20,31 +20,31 @@ class Login
     /**
      * @var string
      */
-    private $_username = '';
+    private $username = '';
     /**
      * @var string
      */
-    private $_password = '';
+    private $password = '';
 
     /**
      * @var bool
      */
-    private $_rememberMe = false;
+    private $rememberMe = false;
 
     /**
      * @var array
      */
-    private $_attributes = [];
+    private $attributes = [];
 
     /**
      * @var integer
      */
-    private $_timeZoneOffset = 0;
+    private $timeZoneOffset = 0;
 
     /**
      * @var string Name of the auth provider.
      */
-    protected $_authProviderName = '';
+    protected $authProviderName = '';
 
     /**
      * Base constructor.
@@ -57,9 +57,9 @@ class Login
      */
     public function __construct($username, $password, $rememberMe = false)
     {
-        $this->_username = $username;
-        $this->_password = $password;
-        $this->_rememberMe = $rememberMe;
+        $this->username = $username;
+        $this->password = $password;
+        $this->rememberMe = $rememberMe;
     }
 
     /**
@@ -70,7 +70,7 @@ class Login
      */
     public function setAttribute($name, $value)
     {
-        $this->_attributes[$name] = $value;
+        $this->attributes[$name] = $value;
     }
 
     /**
@@ -82,7 +82,7 @@ class Login
      */
     public function getAttribute($name)
     {
-        return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+        return isset($this->attributes[$name]) ? $this->attributes[$name] : null;
     }
 
     /**
@@ -92,7 +92,7 @@ class Login
      */
     public function getUsername()
     {
-        return $this->_username;
+        return $this->username;
     }
 
     /**
@@ -102,7 +102,7 @@ class Login
      */
     public function getPassword()
     {
-        return $this->_password;
+        return $this->password;
     }
 
     /**
@@ -112,7 +112,7 @@ class Login
      */
     public function setTimeZoneOffset($offset)
     {
-        $this->_timeZoneOffset = intval($offset);
+        $this->timeZoneOffset = intval($offset);
     }
 
     /**
@@ -122,7 +122,7 @@ class Login
      */
     public function getTimeZoneOffset()
     {
-        return $this->_timeZoneOffset;
+        return $this->timeZoneOffset;
     }
 
     /**
@@ -132,7 +132,7 @@ class Login
      */
     public function getRememberMe()
     {
-        return $this->_rememberMe;
+        return $this->rememberMe;
     }
 
     /**
@@ -142,7 +142,7 @@ class Login
      */
     public function setAuthProviderName($authProviderName)
     {
-        $this->_authProviderName = $authProviderName;
+        $this->authProviderName = $authProviderName;
     }
 
     /**
@@ -152,6 +152,6 @@ class Login
      */
     public function getAuthProviderName()
     {
-        return $this->_authProviderName;
+        return $this->authProviderName;
     }
 }

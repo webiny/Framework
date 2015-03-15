@@ -16,7 +16,7 @@ use Webiny\Component\Storage\Storage;
  */
 class S3Mock extends \PHPUnit_Framework_TestCase
 {
-    private $_instance;
+    private $instance;
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
@@ -28,26 +28,26 @@ class S3Mock extends \PHPUnit_Framework_TestCase
         $mock->expects($this->any())->method('deleteObject')->willReturn([]);
         $mock->expects($this->any())->method('putObject')->willReturn([]);
         $mock->expects($this->any())->method('doesObjectExist')->will($this->onConsecutiveCalls(true, false));
-        $this->_instance = $mock;
+        $this->instance = $mock;
     }
 
     public function getObject($bucket, $key, array $params = [])
     {
-        return $this->_instance->getObject($bucket, $key, $params);
+        return $this->instance->getObject($bucket, $key, $params);
     }
 
     public function deleteObject($bucket, $key, array $params = [])
     {
-        return $this->_instance->deleteObject($bucket, $key, $params);
+        return $this->instance->deleteObject($bucket, $key, $params);
     }
 
     public function putObject($bucket, $key, $content, array $params = [])
     {
-        return $this->_instance->putObject($bucket, $key, $content, $params);
+        return $this->instance->putObject($bucket, $key, $content, $params);
     }
 
     public function doesObjectExist($bucket, $key, array $params = [])
     {
-        return $this->_instance->doesObjectExist($bucket, $key, $params);
+        return $this->instance->doesObjectExist($bucket, $key, $params);
     }
 }

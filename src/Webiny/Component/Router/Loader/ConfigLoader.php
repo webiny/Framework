@@ -24,12 +24,12 @@ class ConfigLoader
     /**
      * @var \Webiny\Component\Config\ConfigObject
      */
-    private $_config;
+    private $config;
 
     /**
      * @var \Webiny\Component\Router\Route\RouteCollection
      */
-    private $_routeCollection;
+    private $routeCollection;
 
 
     /**
@@ -37,10 +37,10 @@ class ConfigLoader
      *
      * @param ConfigObject $config Instance of config object containing route definitions.
      */
-    function __construct(ConfigObject $config)
+    public function __construct(ConfigObject $config)
     {
-        $this->_config = $config;
-        $this->_routeCollection = new RouteCollection();
+        $this->config = $config;
+        $this->routeCollection = new RouteCollection();
     }
 
     /**
@@ -48,15 +48,15 @@ class ConfigLoader
      *
      * @return RouteCollection
      */
-    function getRouteCollection()
+    public function getRouteCollection()
     {
-        foreach ($this->_config as $name => $routeConfig) {
-            $this->_routeCollection->add($name, $this->processRoute($routeConfig));
+        foreach ($this->config as $name => $routeConfig) {
+            $this->routeCollection->add($name, $this->processRoute($routeConfig));
         }
 
-        unset($this->_config);
+        unset($this->config);
 
-        return $this->_routeCollection;
+        return $this->routeCollection;
     }
 
     /**
@@ -66,7 +66,7 @@ class ConfigLoader
      *
      * @return Route
      */
-    function processRoute(ConfigObject $routeConfig)
+    public function processRoute(ConfigObject $routeConfig)
     {
         // base route
         $callback = $this->isString($routeConfig->Callback) ? $routeConfig->Callback : $routeConfig->Callback->toArray();

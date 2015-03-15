@@ -24,7 +24,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getFunctions()
+    public function getFunctions()
     {
         return [];
     }
@@ -38,7 +38,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getModifiers()
+    public function getModifiers()
     {
         return [];
     }
@@ -52,7 +52,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getBlockFunctions()
+    public function getBlockFunctions()
     {
         return [];
     }
@@ -66,7 +66,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getCompilerFunctions()
+    public function getCompilerFunctions()
     {
         return [];
     }
@@ -79,7 +79,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getPreFilters()
+    public function getPreFilters()
     {
         return [];
     }
@@ -93,7 +93,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getPostFilters()
+    public function getPostFilters()
     {
         return [];
     }
@@ -107,7 +107,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getOutputFilters()
+    public function getOutputFilters()
     {
         return [];
     }
@@ -121,7 +121,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getResources()
+    public function getResources()
     {
         return [];
     }
@@ -134,7 +134,7 @@ abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getInserts()
+    public function getInserts()
     {
         return [];
     }

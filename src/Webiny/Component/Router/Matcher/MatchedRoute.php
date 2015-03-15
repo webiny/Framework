@@ -18,12 +18,12 @@ class MatchedRoute
     /**
      * @var string Callback of the matched route.
      */
-    private $_callback;
+    private $callback;
 
     /**
      * @var array Params extracted from the matched route.
      */
-    private $_params;
+    private $params;
 
 
     /**
@@ -32,8 +32,8 @@ class MatchedRoute
      */
     public function __construct($callback, $params)
     {
-        $this->_callback = $callback;
-        $this->_params = $params;
+        $this->callback = $callback;
+        $this->params = $params;
     }
 
     /**
@@ -43,7 +43,7 @@ class MatchedRoute
      */
     public function getCallback()
     {
-        return $this->_callback;
+        return $this->callback;
     }
 
     /**
@@ -53,6 +53,6 @@ class MatchedRoute
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->params;
     }
 }

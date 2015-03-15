@@ -17,7 +17,7 @@ class Psr0 extends LoaderAbstract
     /**
      * @var LoaderAbstract Holds the loader instance.
      */
-    protected static $_instance = null;
+    protected static $instance = null;
 
     /**
      * Register a map.
@@ -36,12 +36,12 @@ class Psr0 extends LoaderAbstract
         // check the structure of location if it contains metadata
         if (is_array($library)) {
             $path = $library['Path'];
-            $this->_rules[$prefix] = $library;
+            $this->rules[$prefix] = $library;
         } else {
             $path = $library;
         }
 
-        $this->_maps[$prefix] = $path;
+        $this->maps[$prefix] = $path;
     }
 
     /**
@@ -55,7 +55,7 @@ class Psr0 extends LoaderAbstract
      */
     public function findClass($class)
     {
-        if (!$this->_maps) {
+        if (!$this->maps) {
             return false;
         }
 
@@ -68,7 +68,7 @@ class Psr0 extends LoaderAbstract
                                                                                                                   $className
             ) . '.php';
 
-        foreach ($this->_maps as $ns => $dir) {
+        foreach ($this->maps as $ns => $dir) {
             $pos = stripos($class, $ns);
             if ($pos === false || $pos > 1) {
                 continue;

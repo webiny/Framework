@@ -25,14 +25,14 @@ interface YamlInterface
      *
      * @return string
      */
-    function getString($indent = 4);
+    public function getString($indent = 4);
 
     /**
      * Get Yaml value as array
      *
      * @return array
      */
-    function getArray();
+    public function getArray();
 
 
     /**
@@ -42,6 +42,6 @@ interface YamlInterface
      *
      * @return $this
      */
-    function setResource($resource);
+    public function setResource($resource);
 
 }

@@ -20,9 +20,9 @@ class EventListener
 {
     use StdLibTrait;
 
-    private $_handler = null;
-    private $_method = 'handle';
-    private $_priority = 101;
+    private $handler = null;
+    private $method = 'handle';
+    private $priority = 101;
 
     /**
      * Set handler for event. Can be a callable, class name or class instance.
@@ -46,7 +46,7 @@ class EventListener
             }
             $handler = new $handler;
         }
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         return $this;
     }
@@ -74,7 +74,7 @@ class EventListener
         if ($priority <= 100 || $priority >= 1000) {
             throw new EventManagerException(EventManagerException::INVALID_PRIORITY_VALUE);
         }
-        $this->_priority = $priority;
+        $this->priority = $priority;
 
         return $this;
     }
@@ -98,7 +98,7 @@ class EventListener
                 ]
             );
         }
-        $this->_method = StdObjectWrapper::toString($method);
+        $this->method = StdObjectWrapper::toString($method);
 
         return $this;
     }
@@ -109,7 +109,7 @@ class EventListener
      */
     public function getHandler()
     {
-        return $this->_handler;
+        return $this->handler;
     }
 
     /**
@@ -118,7 +118,7 @@ class EventListener
      */
     public function getMethod()
     {
-        return $this->_method;
+        return $this->method;
     }
 
     /**
@@ -127,7 +127,7 @@ class EventListener
      */
     public function getPriority()
     {
-        return $this->_priority;
+        return $this->priority;
     }
 
 

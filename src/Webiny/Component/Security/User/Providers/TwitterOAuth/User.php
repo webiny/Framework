@@ -27,7 +27,7 @@ class User extends UserAbstract
      *
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Firewall $firewall)
+    public function authenticate(Login $login, Firewall $firewall)
     {
         return true; // twitter oauth users are always authenticated
     }

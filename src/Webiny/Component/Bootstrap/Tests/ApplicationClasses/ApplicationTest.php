@@ -12,7 +12,7 @@ use Webiny\Component\Http\Request;
  */
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
-    function setUp()
+    public function setUp()
     {
         Request::getInstance()->setCurrentUrl('http://www.myapp.com/');
     }

@@ -20,7 +20,7 @@ trait CryptTrait
      *
      * @return Crypt
      */
-    function crypt()
+    public function crypt()
     {
         return new Crypt();
     }

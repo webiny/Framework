@@ -27,10 +27,10 @@ if (!defined('DS')) {
 class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterface, AbsolutePathInterface, TouchableInterface
 {
 
-    protected $_dateFolderStructure;
-    protected $_recentKey = null;
-    protected $_directory;
-    protected $_create;
+    protected $dateFolderStructure;
+    protected $recentKey = null;
+    protected $directory;
+    protected $create;
 
     /**
      * Constructor
@@ -45,11 +45,11 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function __construct($directory, $publicUrl = '', $dateFolderStructure = false, $create = false)
     {
-        $this->_helper = LocalHelper::getInstance();
-        $this->_directory = $this->_helper->normalizeDirectoryPath($directory);
-        $this->_publicUrl = $publicUrl;
-        $this->_dateFolderStructure = $dateFolderStructure;
-        $this->_create = $create;
+        $this->helper = LocalHelper::getInstance();
+        $this->directory = $this->helper->normalizeDirectoryPath($directory);
+        $this->publicUrl = $publicUrl;
+        $this->dateFolderStructure = $dateFolderStructure;
+        $this->create = $create;
     }
 
     /**
@@ -57,10 +57,10 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getTimeModified($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
         if ($this->keyExists($key)) {
-            return filemtime($this->_buildPath($key));
+            return filemtime($this->buildPath($key));
         }
 
         return false;
@@ -71,9 +71,9 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getSize($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
         if ($this->keyExists($key)) {
-            return filesize($this->_buildPath($key));
+            return filesize($this->buildPath($key));
         }
 
         return false;
@@ -84,9 +84,9 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function touchKey($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
-        return touch($this->_buildPath($key));
+        return touch($this->buildPath($key));
     }
 
     /**
@@ -94,12 +94,12 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function renameKey($sourceKey, $targetKey)
     {
-        $this->_recentKey = $sourceKey;
+        $this->recentKey = $sourceKey;
         if ($this->keyExists($sourceKey)) {
-            $targetPath = $this->_buildPath($targetKey);
-            $this->_helper->ensureDirectoryExists(dirname($targetPath), true);
+            $targetPath = $this->buildPath($targetKey);
+            $this->helper->ensureDirectoryExists(dirname($targetPath), true);
 
-            return rename($this->_buildPath($sourceKey), $targetPath);
+            return rename($this->buildPath($sourceKey), $targetPath);
         }
         throw new StorageException(StorageException::FILE_NOT_FOUND);
     }
@@ -109,8 +109,8 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getContents($key)
     {
-        $this->_recentKey = $key;
-        $data = file_get_contents($this->_buildPath($key));
+        $this->recentKey = $key;
+        $data = file_get_contents($this->buildPath($key));
         if ($data === false) {
             throw new StorageException(StorageException::FAILED_TO_READ);
         }
@@ -123,16 +123,16 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function setContents($key, $contents, $append = false)
     {
-        if ($this->_dateFolderStructure) {
+        if ($this->dateFolderStructure) {
             if (!$this->keyExists($key)) {
                 $key = new StringObject($key);
                 $key = date('Y' . DS . 'm' . DS . 'd') . DS . $key->trimLeft(DS);
             }
         }
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
-        $path = $this->_buildPath($key);
-        $this->_helper->ensureDirectoryExists(dirname($path), true);
+        $path = $this->buildPath($key);
+        $this->helper->ensureDirectoryExists(dirname($path), true);
 
         return file_put_contents($path, $contents, $append ? FILE_APPEND : null);
     }
@@ -142,9 +142,9 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function keyExists($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
-        return file_exists($this->_buildPath($key));
+        return file_exists($this->buildPath($key));
     }
 
 
@@ -162,12 +162,12 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
         if ($key != '') {
             $key = ltrim($key, DS);
             $key = rtrim($key, DS);
-            $path = $this->_directory . DS . $key;
+            $path = $this->directory . DS . $key;
         } else {
-            $path = $this->_directory;
+            $path = $this->directory;
         }
 
-        $this->_helper->ensureDirectoryExists($path, $this->_create);
+        $this->helper->ensureDirectoryExists($path, $this->create);
 
         if ($recursive) {
             try {
@@ -198,7 +198,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
 
 
         foreach ($files as $file) {
-            $keys[] = $this->_helper->getKey($file, $this->_directory);
+            $keys[] = $this->helper->getKey($file, $this->directory);
         }
         sort($keys);
 
@@ -211,8 +211,8 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function deleteKey($key)
     {
-        $this->_recentKey = $key;
-        $path = $this->_buildPath($key);
+        $this->recentKey = $key;
+        $path = $this->buildPath($key);
 
         if ($this->isDirectory($key)) {
             return @rmdir($path);
@@ -226,9 +226,9 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getAbsolutePath($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
-        return $this->_buildPath($key);
+        return $this->buildPath($key);
     }
 
     /**
@@ -238,7 +238,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
     {
         $key = str_replace('\\', '/', $key);
 
-        return $this->_publicUrl . '/' . ltrim($key, "/");
+        return $this->publicUrl . '/' . ltrim($key, "/");
     }
 
 
@@ -247,7 +247,7 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function getRecentKey()
     {
-        return $this->_recentKey;
+        return $this->recentKey;
     }
 
     /**
@@ -255,16 +255,16 @@ class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterf
      */
     public function isDirectory($key)
     {
-        return is_dir($this->_buildPath($key));
+        return is_dir($this->buildPath($key));
     }
 
-    private function _buildPath($key)
+    private function buildPath($key)
     {
-        $path = $this->_helper->buildPath($key, $this->_directory, $this->_create);
-        if (strpos($path, $this->_directory) !== 0) {
+        $path = $this->helper->buildPath($key, $this->directory, $this->create);
+        if (strpos($path, $this->directory) !== 0) {
             throw new StorageException(StorageException::PATH_IS_OUT_OF_STORAGE_ROOT, [
                                                                                         $path,
-                                                                                        $this->_directory
+                                                                                        $this->directory
                                                                                     ]
             );
         }

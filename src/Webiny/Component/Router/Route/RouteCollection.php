@@ -22,15 +22,15 @@ class RouteCollection
     /**
      * @var \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject
      */
-    private $_routes;
+    private $routes;
 
 
     /**
      * Base constructor.
      */
-    function __construct()
+    public function __construct()
     {
-        $this->_routes = $this->arr([]);
+        $this->routes = $this->arr([]);
     }
 
     /**
@@ -39,9 +39,9 @@ class RouteCollection
      * @param string $name  Route name.
      * @param Route  $route Instance of Route.
      */
-    function add($name, Route $route)
+    public function add($name, Route $route)
     {
-        $this->_routes[$name] = $route;
+        $this->routes[$name] = $route;
     }
 
     /**
@@ -50,9 +50,9 @@ class RouteCollection
      * @param string $name  Route name.
      * @param Route  $route Instance of Route.
      */
-    function prepend($name, Route $route)
+    public function prepend($name, Route $route)
     {
-        $this->_routes->prepend($name, $route);
+        $this->routes->prepend($name, $route);
     }
 
     /**
@@ -62,9 +62,9 @@ class RouteCollection
      *
      * @return $this
      */
-    function remove($name)
+    public function remove($name)
     {
-        return $this->_routes->removeKey($name);
+        return $this->routes->removeKey($name);
     }
 
     /**
@@ -72,9 +72,9 @@ class RouteCollection
      *
      * @return int
      */
-    function count()
+    public function count()
     {
-        return $this->_routes->count();
+        return $this->routes->count();
     }
 
     /**
@@ -84,9 +84,9 @@ class RouteCollection
      *
      * @return Route
      */
-    function get($name)
+    public function get($name)
     {
-        return $this->_routes->key($name, null, true);
+        return $this->routes->key($name, null, true);
     }
 
     /**
@@ -94,9 +94,9 @@ class RouteCollection
      *
      * @return array
      */
-    function all()
+    public function all()
     {
-        return $this->_routes->val();
+        return $this->routes->val();
     }
 
     /**
@@ -104,12 +104,12 @@ class RouteCollection
      *
      * @param string $host Host name. Example: www.webiny.com
      */
-    function setHost($host)
+    public function setHost($host)
     {
         /**
          * @var Route $route
          */
-        foreach ($this->_routes as $route) {
+        foreach ($this->routes as $route) {
             $route->setHost($host);
         }
     }
@@ -119,12 +119,12 @@ class RouteCollection
      *
      * @param array|string $schemes Url scheme. Example: https
      */
-    function setSchemes($schemes)
+    public function setSchemes($schemes)
     {
         /**
          * @var Route $route
          */
-        foreach ($this->_routes as $route) {
+        foreach ($this->routes as $route) {
             $route->setSchemes($schemes);
         }
     }
@@ -134,12 +134,12 @@ class RouteCollection
      *
      * @param array|string $methods Url method. Example: POST | GET
      */
-    function setMethods($methods)
+    public function setMethods($methods)
     {
         /**
          * @var Route $route
          */
-        foreach ($this->_routes as $route) {
+        foreach ($this->routes as $route) {
             $route->setMethods($methods);
         }
     }
@@ -150,12 +150,12 @@ class RouteCollection
      * @param string $name       Name of the route parameter.
      * @param array  $attributes Parameter attributes.
      */
-    function addOption($name, array $attributes)
+    public function addOption($name, array $attributes)
     {
         /**
          * @var Route $route
          */
-        foreach ($this->_routes as $route) {
+        foreach ($this->routes as $route) {
             $route->addOption($name, $attributes);
         }
     }

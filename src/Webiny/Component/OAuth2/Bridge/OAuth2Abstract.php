@@ -25,56 +25,56 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @var string
      */
-    protected $_scope = '';
+    protected $scope = '';
 
     /**
      * Request state.
      *
      * @var string
      */
-    protected $_state = '';
+    protected $state = '';
 
     /**
      * OAuth2 Client ID.
      *
      * @var string
      */
-    protected $_clientId = '';
+    protected $clientId = '';
 
     /**
      * Client secret for defined Client ID.
      *
      * @var string
      */
-    protected $_clientSecret = '';
+    protected $clientSecret = '';
 
     /**
      * A URI where the user will be redirected after OAuth2 authorization.
      *
      * @var string
      */
-    protected $_redirectUri = '';
+    protected $redirectUri = '';
 
     /**
      * Name of the OAuth2 server class.
      *
      * @var string
      */
-    private $_serverClassName = '';
+    private $serverClassName = '';
 
     /**
      * Optional array that is provided in case of 'custom' server name.
      *
      * @var null
      */
-    private $_serverOptions = null;
+    private $serverOptions = null;
 
     /**
      * Name of the access token.
      *
      * @var string
      */
-    protected $_accessTokenName = 'access_token';
+    protected $accessTokenName = 'access_token';
 
 
     /**
@@ -89,10 +89,10 @@ abstract class OAuth2Abstract implements OAuth2Interface
      * @param string     $serverName Name of the OAuth2 server for which you wish to get the auth_url and token_url.
      * @param null|array $options    Optional array that you must provide in case of 'custom' server name.
      */
-    function setOAuth2Server($serverName, $options = null)
+    public function setOAuth2Server($serverName, $options = null)
     {
-        $this->_serverClassName = $serverName;
-        $this->_serverOptions = $options;
+        $this->serverClassName = $serverName;
+        $this->serverOptions = $options;
     }
 
     /**
@@ -102,9 +102,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return void
      */
-    function setScope($scope)
+    public function setScope($scope)
     {
-        $this->_scope = $scope;
+        $this->scope = $scope;
     }
 
     /**
@@ -112,9 +112,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string A comma separated list of parameters.
      */
-    function getScope()
+    public function getScope()
     {
-        return $this->_scope;
+        return $this->scope;
     }
 
     /**
@@ -124,9 +124,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return void.
      */
-    function setState($state)
+    public function setState($state)
     {
-        $this->_state = $state;
+        $this->state = $state;
     }
 
     /**
@@ -134,9 +134,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string State parameter
      */
-    function getState()
+    public function getState()
     {
-        return $this->_state;
+        return $this->state;
     }
 
     /**
@@ -144,9 +144,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string Client id.
      */
-    function getClientId()
+    public function getClientId()
     {
-        return $this->_clientId;
+        return $this->clientId;
     }
 
     /**
@@ -154,9 +154,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string Client secret.
      */
-    function getClientSecret()
+    public function getClientSecret()
     {
-        return $this->_clientSecret;
+        return $this->clientSecret;
     }
 
 
@@ -165,9 +165,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string Redirect URI.
      */
-    function getRedirectURI()
+    public function getRedirectURI()
     {
-        return $this->str($this->_redirectUri)->urlDecode()->val();
+        return $this->str($this->redirectUri)->urlDecode()->val();
     }
 
 
@@ -176,9 +176,9 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string
      */
-    function getAccessTokenName()
+    public function getAccessTokenName()
     {
-        return $this->_accessTokenName;
+        return $this->accessTokenName;
     }
 
     /**
@@ -186,8 +186,8 @@ abstract class OAuth2Abstract implements OAuth2Interface
      *
      * @return string
      */
-    function getServerClassName()
+    public function getServerClassName()
     {
-        return $this->_serverClassName;
+        return $this->serverClassName;
     }
 }

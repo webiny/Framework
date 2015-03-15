@@ -25,7 +25,7 @@ class Memcache
      *
      * @return CacheStorageInterface
      */
-    static function getInstance($host = '127.0.0.1', $port = 11211)
+    public static function getInstance($host = '127.0.0.1', $port = 11211)
     {
         return \Webiny\Component\Cache\Bridge\Memcache::getInstance($host, $port);
     }

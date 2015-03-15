@@ -25,12 +25,12 @@ class OAuth2 extends OAuth2Abstract
     /**
      * @var null|\OAuth2\Client
      */
-    private $_provider = null;
+    private $provider = null;
 
     /**
      * @var string
      */
-    private $_accessToken = '';
+    private $accessToken = '';
 
 
     /**
@@ -40,11 +40,11 @@ class OAuth2 extends OAuth2Abstract
      * @param string $clientSecret Client secret.
      * @param string $redirectUri  Target url where to redirect after authentication.
      */
-    function __construct($clientId, $clientSecret, $redirectUri)
+    public function __construct($clientId, $clientSecret, $redirectUri)
     {
-        $this->_clientId = $clientId;
-        $this->_clientSecret = $clientSecret;
-        $this->_redirectUri = $redirectUri;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->redirectUri = $redirectUri;
     }
 
     /**
@@ -56,9 +56,9 @@ class OAuth2 extends OAuth2Abstract
      * @throws \Webiny\Component\OAuth2\Bridge\OAuth2Exception
      * @return string Access token.
      */
-    function requestAccessToken($tokenUrl)
+    public function requestAccessToken($tokenUrl)
     {
-        $token = $this->_getProviderInstance()->getAccessToken('AuthorizationCode', [
+        $token = $this->getProviderInstance()->getAccessToken('AuthorizationCode', [
                                                                           'code' => $this->httpRequest()->query('code', '')
                                                                       ]
         );
@@ -72,14 +72,14 @@ class OAuth2 extends OAuth2Abstract
      * @return string Access token.
      * @throws OAuth2Exception
      */
-    function getAccessToken()
+    public function getAccessToken()
     {
-        if ($this->_accessToken == '') {
+        if ($this->accessToken == '') {
             throw new OAuth2Exception('Before you can get the access token, you first must request it from the OAuth2 server.'
             );
         }
 
-        return $this->_accessToken;
+        return $this->accessToken;
     }
 
     /**
@@ -89,9 +89,9 @@ class OAuth2 extends OAuth2Abstract
      *
      * @return void
      */
-    function setAccessToken($accessToken)
+    public function setAccessToken($accessToken)
     {
-        $this->_accessToken = $accessToken;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -101,7 +101,7 @@ class OAuth2 extends OAuth2Abstract
      *
      * @return void
      */
-    function setCertificate($pathToCertificate)
+    public function setCertificate($pathToCertificate)
     {
         return false;
     }
@@ -111,7 +111,7 @@ class OAuth2 extends OAuth2Abstract
      *
      * @return string Path to certificate.
      */
-    function getCertificate()
+    public function getCertificate()
     {
         return false;
     }
@@ -119,24 +119,24 @@ class OAuth2 extends OAuth2Abstract
     /**
      * @return null|AbstractProvider
      */
-    private function _getProviderInstance()
+    private function getProviderInstance()
     {
-        if (!is_null($this->_provider)) {
-            return $this->_provider;
+        if (!is_null($this->provider)) {
+            return $this->provider;
         }
 
         $provider = $this->str($this->getServerClassName())->explode('\\')->last();
 
         $providerName = '\League\OAuth2\Client\Provider\\'.$provider;
-        $this->_provider = new $providerName([
-                                                 'clientId'     => $this->_clientId,
-                                                 'clientSecret' => $this->_clientSecret,
-                                                 'redirectUri'  => $this->_redirectUri,
+        $this->provider = new $providerName([
+                                                 'clientId'     => $this->clientId,
+                                                 'clientSecret' => $this->clientSecret,
+                                                 'redirectUri'  => $this->redirectUri,
                                                  'scopes'       => $this->getScope(),
                                              ]
         );
 
-        return $this->_provider;
+        return $this->provider;
     }
 
 }

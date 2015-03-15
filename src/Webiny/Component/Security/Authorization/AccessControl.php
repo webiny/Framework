@@ -40,19 +40,19 @@ class AccessControl
      * Access control configuration
      * @var \Webiny\Component\Config\ConfigObject
      */
-    private $_config;
+    private $config;
 
     /**
      * Selected decision strategy.
      * @var string
      */
-    private $_strategy;
+    private $strategy;
 
     /**
      * Current path - based on current request.
      * @var \Webiny\Component\StdLib\StdObject\StringObject\StringObject
      */
-    protected $_currentPath;
+    protected $currentPath;
 
 
     /**
@@ -63,9 +63,9 @@ class AccessControl
      */
     public function __construct(UserAbstract $user, ConfigObject $config)
     {
-        $this->_config = $config;
-        $this->_user = $user;
-        $this->_setDecisionStrategy();
+        $this->config = $config;
+        $this->user = $user;
+        $this->setDecisionStrategy();
     }
 
     /**
@@ -75,14 +75,14 @@ class AccessControl
      */
     public function isUserAllowedAccess()
     {
-        $requestedRoles = $this->_getRequestedRoles();
+        $requestedRoles = $this->getRequestedRoles();
 
         // we allow access if there are no requested roles that the user must have
         if (count($requestedRoles) < 1) {
             return true;
         }
 
-        return $this->_getAccessDecision($requestedRoles);
+        return $this->getAccessDecision($requestedRoles);
     }
 
     /**
@@ -90,7 +90,7 @@ class AccessControl
      *
      * @return array Array of registered voters.
      */
-    private function _getVoters()
+    private function getVoters()
     {
         // we have 2 built in voters
         $voters = $this->servicesByTag('Security.Voter',
@@ -108,9 +108,9 @@ class AccessControl
      *
      * @return array
      */
-    private function _getRequestedRoles()
+    private function getRequestedRoles()
     {
-        $rules = $this->_config->get('Rules', false);
+        $rules = $this->config->get('Rules', false);
         if (!$rules) {
             return [];
         }
@@ -119,7 +119,7 @@ class AccessControl
         $returnRoles = [];
         foreach ($rules as $r) {
             $path = $r->get('Path', false);
-            if ($path && $this->_testPath($path)) {
+            if ($path && $this->testPath($path)) {
                 $roles = $r->get('Roles', []);
                 if ($this->isString($roles)) {
                     $roles = (array)$roles;
@@ -146,9 +146,9 @@ class AccessControl
      *
      * @return bool True if path is within the current request, otherwise false.
      */
-    private function _testPath($path)
+    private function testPath($path)
     {
-        return $this->_getCurrentPath()->match($path);
+        return $this->getCurrentPath()->match($path);
     }
 
     /**
@@ -156,16 +156,16 @@ class AccessControl
      *
      * @throws AccessControlException
      */
-    private function _setDecisionStrategy()
+    private function setDecisionStrategy()
     {
-        $strategy = $this->_config->get('DecisionStrategy', 'unanimous');
+        $strategy = $this->config->get('DecisionStrategy', 'unanimous');
         if ($strategy != self::VOTER_STR_AFFIRMATIVE && $strategy != self::VOTER_STR_CONSENSUS && $strategy != self::VOTER_STR_UNANIMOUS
         ) {
 
             throw new AccessControlException('Invalid access control decision strategy "' . $strategy . '"');
         }
 
-        $this->_strategy = $strategy;
+        $this->strategy = $strategy;
     }
 
     /**
@@ -176,10 +176,10 @@ class AccessControl
      *
      * @return bool True if access is allowed to the current user, otherwise false.
      */
-    private function _getAccessDecision(array $requestedRoles)
+    private function getAccessDecision(array $requestedRoles)
     {
-        $voters = $this->_getVoters();
-        $userClassName = get_class($this->_user);
+        $voters = $this->getVoters();
+        $userClassName = get_class($this->user);
 
         $voteScore = 0;
         $maxScore = 0;
@@ -188,14 +188,14 @@ class AccessControl
              * @var $v VoterInterface
              */
             if ($v->supportsUserClass($userClassName)) {
-                $vote = $v->vote($this->_user, $requestedRoles);
-                if ($this->_strategy == self::VOTER_STR_AFFIRMATIVE) {
+                $vote = $v->vote($this->user, $requestedRoles);
+                if ($this->strategy == self::VOTER_STR_AFFIRMATIVE) {
                     if ($vote > 0) {
                         $maxScore++;
                         $voteScore += $vote;
                     }
                 } else {
-                    if ($this->_strategy == self::VOTER_STR_CONSENSUS) {
+                    if ($this->strategy == self::VOTER_STR_CONSENSUS) {
                         if ($vote > 0) {
                             $voteScore += $vote;
                         }
@@ -210,7 +210,7 @@ class AccessControl
             }
         }
 
-        return $this->_whatsTheRuling($voteScore, $maxScore);
+        return $this->whatsTheRuling($voteScore, $maxScore);
     }
 
     /**
@@ -221,9 +221,9 @@ class AccessControl
      *
      * @return bool True if access is allowed, otherwise false.
      */
-    private function _whatsTheRuling($votes, $maxVotes)
+    private function whatsTheRuling($votes, $maxVotes)
     {
-        switch ($this->_strategy) {
+        switch ($this->strategy) {
             case self::VOTER_STR_UNANIMOUS:
                 return ($votes == $maxVotes);
                 break;
@@ -245,12 +245,12 @@ class AccessControl
      *
      * @return \Webiny\Component\StdLib\StdObject\StringObject\StringObject
      */
-    private function _getCurrentPath()
+    private function getCurrentPath()
     {
-        if (is_null($this->_currentPath)) {
-            $this->_currentPath = $this->str($this->httpRequest()->getCurrentUrl(true)->getPath());
+        if (is_null($this->currentPath)) {
+            $this->currentPath = $this->str($this->httpRequest()->getCurrentUrl(true)->getPath());
         }
 
-        return $this->_currentPath;
+        return $this->currentPath;
     }
 }

@@ -20,15 +20,14 @@ class S3 implements S3ClientInterface
     /**
      * @var \Aws\S3\S3Client
      */
-    private $_instance;
+    private $instance;
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
-        $this->_instance = S3Client::factory([
-                                                 'key'    => $accessKeyId,
-                                                 'secret' => $secretAccessKey,
-                                             ]
-        );
+        $this->instance = S3Client::factory([
+                'key'    => $accessKeyId,
+                'secret' => $secretAccessKey,
+            ]);
     }
 
 
@@ -46,7 +45,7 @@ class S3 implements S3ClientInterface
         $params['Bucket'] = $bucket;
         $params['Key'] = $key;
 
-        return $this->_instance->getObject($params);
+        return $this->instance->getObject($params);
     }
 
     /**
@@ -60,7 +59,7 @@ class S3 implements S3ClientInterface
     {
         $params['Bucket'] = $bucket;
 
-        return $this->_instance->getBucketAcl($params);
+        return $this->instance->getBucketAcl($params);
     }
 
     /**
@@ -75,7 +74,7 @@ class S3 implements S3ClientInterface
     {
         $params['Bucket'] = $bucket;
 
-        return $this->_instance->deleteBucket($params);
+        return $this->instance->deleteBucket($params);
     }
 
     /**
@@ -89,7 +88,7 @@ class S3 implements S3ClientInterface
      */
     public function doesBucketExist($bucket, $accept403 = true, array $params = [])
     {
-        return $this->_instance->doesBucketExist($bucket, $accept403, $params);
+        return $this->instance->doesBucketExist($bucket, $accept403, $params);
     }
 
     /**
@@ -107,7 +106,7 @@ class S3 implements S3ClientInterface
             'Acl'    => $acl
         ];
 
-        return $this->_instance->putBucketAcl($params);
+        return $this->instance->putBucketAcl($params);
     }
 
     /**
@@ -120,7 +119,7 @@ class S3 implements S3ClientInterface
      */
     public function getListBucketsIterator(array $params = [])
     {
-        return $this->_instance->getListBucketsIterator($params);
+        return $this->instance->getListBucketsIterator($params);
     }
 
     /**
@@ -140,7 +139,7 @@ class S3 implements S3ClientInterface
             'Acl'    => $acl
         ];
 
-        return $this->_instance->putObjectAcl($params);
+        return $this->instance->putObjectAcl($params);
     }
 
     /**
@@ -161,7 +160,7 @@ class S3 implements S3ClientInterface
      */
     public function deleteMatchingObjects($bucket, $prefix = '', $regex = '', array $options = [])
     {
-        return $this->_instance->deleteMatchingObjects($bucket, $prefix, $regex, $options);
+        return $this->instance->deleteMatchingObjects($bucket, $prefix, $regex, $options);
     }
 
     /**
@@ -177,7 +176,7 @@ class S3 implements S3ClientInterface
             'Bucket' => $bucket
         ];
 
-        return $this->_instance->getBucketLocation($params);
+        return $this->instance->getBucketLocation($params);
     }
 
     /**
@@ -199,7 +198,7 @@ class S3 implements S3ClientInterface
             'Days'   => $days
         ];
 
-        return $this->_instance->restoreObject($params);
+        return $this->instance->restoreObject($params);
     }
 
     /**
@@ -215,7 +214,7 @@ class S3 implements S3ClientInterface
     {
         $params['Bucket'] = $bucket;
 
-        return $this->_instance->getListObjectsIterator($params);
+        return $this->instance->getListObjectsIterator($params);
     }
 
     /**
@@ -232,7 +231,7 @@ class S3 implements S3ClientInterface
     {
         $params['Bucket'] = $bucket;
 
-        return $this->_instance->listObjects($params);
+        return $this->instance->listObjects($params);
     }
 
     /**
@@ -245,7 +244,7 @@ class S3 implements S3ClientInterface
      */
     public function clearBucket($bucket)
     {
-        return $this->_instance->clearBucket($bucket);
+        return $this->instance->clearBucket($bucket);
     }
 
     /**
@@ -263,7 +262,7 @@ class S3 implements S3ClientInterface
         $params['Bucket'] = $bucket;
         $params['Key'] = $key;
 
-        return $this->_instance->deleteObject($params);
+        return $this->instance->deleteObject($params);
     }
 
     /**
@@ -282,7 +281,7 @@ class S3 implements S3ClientInterface
         $params['Key'] = $key;
         $params['Body'] = $content;
 
-        return $this->_instance->putObject($params);
+        return $this->instance->putObject($params);
     }
 
     /**
@@ -297,7 +296,7 @@ class S3 implements S3ClientInterface
     {
         $params['Bucket'] = $bucket;
 
-        return $this->_instance->createBucket($params);
+        return $this->instance->createBucket($params);
     }
 
     /**
@@ -319,7 +318,7 @@ class S3 implements S3ClientInterface
      */
     public function uploadDirectory($directory, $bucket, $keyPrefix = null, array $options = [])
     {
-        return $this->_instance->uploadDirectory($directory, $bucket, $keyPrefix, $options);
+        return $this->instance->uploadDirectory($directory, $bucket, $keyPrefix, $options);
     }
 
     /**
@@ -339,7 +338,7 @@ class S3 implements S3ClientInterface
         $params['Key'] = $targetKey;
         $params['CopySource'] = urlencode($sourceBucket . '/' . $sourceKey);
 
-        return $this->_instance->copyObject($params);
+        return $this->instance->copyObject($params);
     }
 
     /**
@@ -353,7 +352,7 @@ class S3 implements S3ClientInterface
      */
     public function doesObjectExist($bucket, $key, array $params = [])
     {
-        return $this->_instance->doesObjectExist($bucket, $key, $params);
+        return $this->instance->doesObjectExist($bucket, $key, $params);
     }
 
     /**
@@ -369,7 +368,7 @@ class S3 implements S3ClientInterface
             'Bucket' => $bucket
         ];
 
-        return $this->_instance->getBucketPolicy($params);
+        return $this->instance->getBucketPolicy($params);
     }
 
     /**
@@ -387,7 +386,7 @@ class S3 implements S3ClientInterface
             'Key'    => $key
         ];
 
-        return $this->_instance->getObjectAcl($params);
+        return $this->instance->getObjectAcl($params);
     }
 
     /**
@@ -411,7 +410,7 @@ class S3 implements S3ClientInterface
             ];
         }
 
-        return $this->_instance->deleteObjects($params);
+        return $this->instance->deleteObjects($params);
     }
 
     /**
@@ -421,7 +420,7 @@ class S3 implements S3ClientInterface
      */
     public function listBuckets()
     {
-        return $this->_instance->listBuckets();
+        return $this->instance->listBuckets();
     }
 
     /**
@@ -438,7 +437,7 @@ class S3 implements S3ClientInterface
      */
     public function getObjectUrl($bucket, $key, $expires = null, array $args = [])
     {
-        return $this->_instance->getObjectUrl($bucket, $key, $expires, $args);
+        return $this->instance->getObjectUrl($bucket, $key, $expires, $args);
     }
 
     /**
@@ -458,6 +457,6 @@ class S3 implements S3ClientInterface
      */
     public function downloadBucket($directory, $bucket, $keyPrefix = '', array $options = [])
     {
-        return $this->_instance->downloadBucket($directory, $bucket, $keyPrefix, $options);
+        return $this->instance->downloadBucket($directory, $bucket, $keyPrefix, $options);
     }
 }

@@ -25,7 +25,7 @@ class Loader
     /**
      * @var string Default Image bridge.
      */
-    private static $_library = '\Webiny\Component\Image\Bridge\Imagine\Imagine';
+    private static $library = '\Webiny\Component\Image\Bridge\Imagine\Imagine';
 
 
     /**
@@ -39,7 +39,7 @@ class Loader
      */
     public static function getImageLoader(ConfigObject $config)
     {
-        $lib = self::_getLibrary();
+        $lib = self::getLibrary();
 
         /** @var ImageLoaderInterface $libInstance */
         $instance = self::factory($lib, '\Webiny\Component\Image\Bridge\ImageLoaderInterface', [$config]);
@@ -58,9 +58,9 @@ class Loader
      *
      * @return string
      */
-    private static function _getLibrary()
+    private static function getLibrary()
     {
-        return Image::getConfig()->get('Bridge', self::$_library);
+        return Image::getConfig()->get('Bridge', self::$library);
     }
 
     /**
@@ -70,6 +70,6 @@ class Loader
      */
     public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 }

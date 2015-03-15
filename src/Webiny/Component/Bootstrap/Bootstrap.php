@@ -21,17 +21,17 @@ class Bootstrap
     /**
      * @var string Application absolute root path.
      */
-    private $_absolutePath;
+    private $absolutePath;
 
     /**
      * @var Environment
      */
-    private $_environment;
+    private $environment;
 
     /**
      * @var Router
      */
-    private $_router;
+    private $router;
 
 
     /**
@@ -52,8 +52,8 @@ class Bootstrap
         }
 
         // save the root path
-        $this->_absolutePath = realpath($rootPath) . DIRECTORY_SEPARATOR;
-        $this->initializeEnvironment($this->_absolutePath);
+        $this->absolutePath = realpath($rootPath) . DIRECTORY_SEPARATOR;
+        $this->initializeEnvironment($this->absolutePath);
         $this->initializeRouter();
     }
 
@@ -69,8 +69,8 @@ class Bootstrap
     {
         try {
             // initialize the environment and its configurations
-            $this->_environment = Environment::getInstance();
-            $this->_environment->initializeEnvironment($appPath);
+            $this->environment = Environment::getInstance();
+            $this->environment->initializeEnvironment($appPath);
         } catch (BootstrapException $e) {
             throw $e;
         }
@@ -86,10 +86,10 @@ class Bootstrap
     {
         try {
             // initialize router
-            $this->_router = Router::getInstance();
+            $this->router = Router::getInstance();
 
             // if a route is matched, a dispatcher instance is returned, and the callback is issued
-            $this->_router->initializeRouter()->issueCallback();
+            $this->router->initializeRouter()->issueCallback();
         } catch (BootstrapException $e) {
             throw $e;
         }
@@ -102,6 +102,6 @@ class Bootstrap
      */
     public function getEnvironment()
     {
-        return $this->_environment;
+        return $this->environment;
     }
 }

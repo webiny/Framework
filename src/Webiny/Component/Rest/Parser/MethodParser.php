@@ -22,22 +22,22 @@ class MethodParser
     /**
      * @var string Name of the class, where the method is, that we are parsing.
      */
-    private $_class;
+    private $class;
 
     /**
      * @var \ReflectionMethod Method that will be parsed.
      */
-    private $_method;
+    private $method;
 
     /**
      * @var ConfigObject Class annotations that act as default values for method annotations.
      */
-    private $_classDefaults;
+    private $classDefaults;
 
     /**
      * @var bool Should the class name and the method name be normalized.
      */
-    private $_normalize;
+    private $normalize;
 
 
     /**
@@ -49,9 +49,9 @@ class MethodParser
      */
     public function __construct($class, \ReflectionMethod $method, $normalize)
     {
-        $this->_class = $class;
-        $this->_method = $method;
-        $this->_normalize = $normalize;
+        $this->class = $class;
+        $this->method = $method;
+        $this->normalize = $normalize;
     }
 
     /**
@@ -61,11 +61,11 @@ class MethodParser
      */
     public function parse()
     {
-        $annotations = $this->annotationsFromClass($this->_class);
-        $this->_classDefaults = $annotations->get('rest', new ConfigObject([]));
+        $annotations = $this->annotationsFromClass($this->class);
+        $this->classDefaults = $annotations->get('rest', new ConfigObject([]));
 
         // get method annotations
-        $annotations = $this->annotationsFromMethod($this->_class, $this->_method->name);
+        $annotations = $this->annotationsFromMethod($this->class, $this->method->name);
         $restAnnotations = $annotations->get('rest', new ConfigObject([]));
         $paramAnnotations = $annotations->get('param', new ConfigObject([]));
 
@@ -75,26 +75,26 @@ class MethodParser
         }
 
         // create api url
-        $url = $this->_getUrl();
+        $url = $this->getUrl();
 
         // create ApiMethod instance
-        $parsedMethod = new ParsedMethod($this->_method->name, $url);
+        $parsedMethod = new ParsedMethod($this->method->name, $url);
 
         // method
-        $parsedMethod->method = $this->_getMethod($restAnnotations);
+        $parsedMethod->method = $this->getMethod($restAnnotations);
         // role
-        $parsedMethod->role = $this->_getRole($restAnnotations);
+        $parsedMethod->role = $this->getRole($restAnnotations);
         // cache.ttl
-        $parsedMethod->cache = $this->_getCache($restAnnotations);
+        $parsedMethod->cache = $this->getCache($restAnnotations);
         // header.cache.expires
-        $parsedMethod->header = $this->_getHeader($restAnnotations);
+        $parsedMethod->header = $this->getHeader($restAnnotations);
         // default
-        $parsedMethod->default = $this->_getDefault($restAnnotations);
+        $parsedMethod->default = $this->getDefault($restAnnotations);
         // rateControl.ignore
-        $parsedMethod->rateControl = $this->_getRateControl($restAnnotations);
+        $parsedMethod->rateControl = $this->getRateControl($restAnnotations);
 
         // parse method parameters
-        $parameterParser = new ParameterParser($this->_method->getParameters(), $paramAnnotations);
+        $parameterParser = new ParameterParser($this->method->getParameters(), $paramAnnotations);
         $parameters = $parameterParser->parse();
         foreach ($parameters as $p) {
             $parsedMethod->addParameter($p);
@@ -108,13 +108,13 @@ class MethodParser
      *
      * @return string
      */
-    private function _getUrl()
+    private function getUrl()
     {
-        if($this->_normalize){
-            return PathTransformations::methodNameToUrl($this->_method->name);
+        if($this->normalize){
+            return PathTransformations::methodNameToUrl($this->method->name);
         }
 
-        return $this->_method->name;
+        return $this->method->name;
     }
 
     /**
@@ -124,9 +124,9 @@ class MethodParser
      *
      * @return string Name of the http method, like post, get, etc.
      */
-    private function _getMethod(ConfigObject $annotations)
+    private function getMethod(ConfigObject $annotations)
     {
-        return strtolower($annotations->get('method', $this->_classDefaults->get('method', 'get')));
+        return strtolower($annotations->get('method', $this->classDefaults->get('method', 'get')));
     }
 
     /**
@@ -136,9 +136,9 @@ class MethodParser
      *
      * @return string|boolean Name of the role, or false if there is no access rule defined.
      */
-    private function _getRole(ConfigObject $annotations)
+    private function getRole(ConfigObject $annotations)
     {
-        return $annotations->get('role', $this->_classDefaults->get('role', false));
+        return $annotations->get('role', $this->classDefaults->get('role', false));
     }
 
     /**
@@ -148,10 +148,10 @@ class MethodParser
      *
      * @return array An array containing cache settings.
      */
-    private function _getCache(ConfigObject $annotations)
+    private function getCache(ConfigObject $annotations)
     {
         return [
-            'ttl' => $annotations->get('cache.ttl', $this->_classDefaults->get('cache.ttl', 0))
+            'ttl' => $annotations->get('cache.ttl', $this->classDefaults->get('cache.ttl', 0))
         ];
     }
 
@@ -162,7 +162,7 @@ class MethodParser
      *
      * @return bool
      */
-    private function _getDefault(ConfigObject $annotations)
+    private function getDefault(ConfigObject $annotations)
     {
         return $annotations->get('default', false);
     }
@@ -174,15 +174,15 @@ class MethodParser
      *
      * @return array
      */
-    private function _getHeader(ConfigObject $annotations)
+    private function getHeader(ConfigObject $annotations)
     {
         // headers status code depends on the request method type, unless it's forced on the class or method
         $successStatus = $annotations->get('header.status.success', false);
         if (!$successStatus) {
-            $successStatus = $this->_classDefaults->get('header.status.success', false);
+            $successStatus = $this->classDefaults->get('header.status.success', false);
 
             if (!$successStatus) {
-                $method = strtolower($annotations->get('method', $this->_classDefaults->get('method', 'get')));
+                $method = strtolower($annotations->get('method', $this->classDefaults->get('method', 'get')));
                 if ($method == 'post') {
                     $successStatus = 201;
                 } else {
@@ -194,18 +194,18 @@ class MethodParser
         return [
             'cache'  => [
                 'expires' => $annotations->get('header.cache.expires',
-                                               $this->_classDefaults->get('header.cache.expires', 0
+                                               $this->classDefaults->get('header.cache.expires', 0
                                                )
                 )
             ],
             'status' => [
                 'success'      => $successStatus,
                 'error'        => $annotations->get('header.status.error',
-                                                    $this->_classDefaults->get('header.status.error', 404
+                                                    $this->classDefaults->get('header.status.error', 404
                                                     )
                 ),
                 'errorMessage' => $annotations->get('header.status.errorMessage',
-                                                    $this->_classDefaults->get('header.status.errorMessage', ''
+                                                    $this->classDefaults->get('header.status.errorMessage', ''
                                                     )
                 )
             ]
@@ -219,7 +219,7 @@ class MethodParser
      *
      * @return array
      */
-    private function _getRateControl(ConfigObject $annotations)
+    private function getRateControl(ConfigObject $annotations)
     {
         return $annotations->get('rateControl', [], true);
     }

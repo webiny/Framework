@@ -25,11 +25,11 @@ class Mongo
     /**
      * @var MongoInterface
      */
-    private $_driver = null;
+    private $driver = null;
 
-    private $_collectionPrefix = '';
+    private $collectionPrefix = '';
 
-    private $_resultClass = '';
+    private $resultClass = '';
 
     /**
      * Check if given string is a potentially valid MongoId string<br>
@@ -59,15 +59,15 @@ class Mongo
     public function __construct($host, $database, $user = null, $password = null, $collectionPrefix = '', $options = [])
     {
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Driver\Mongo');
-        $this->_driver = new $mongoBridge();
-        $this->_driver->connect($host, $database, $user, $password, $options);
-        $this->_collectionPrefix = $collectionPrefix;
+        $this->driver = new $mongoBridge();
+        $this->driver->connect($host, $database, $user, $password, $options);
+        $this->collectionPrefix = $collectionPrefix;
 
         // Result class
         $baseResultClass = '\Webiny\Component\Mongo\MongoResult';
-        $this->_resultClass = $this->getConfig()->get('ResultClass', $baseResultClass);
+        $this->resultClass = $this->getConfig()->get('ResultClass', $baseResultClass);
 
-        if ($this->_resultClass != $baseResultClass && !$this->isSubClassOf($this->_resultClass, $baseResultClass)) {
+        if ($this->resultClass != $baseResultClass && !$this->isSubClassOf($this->resultClass, $baseResultClass)) {
             throw new MongoException(MongoException::INVALID_RESULT_CLASS_PROVIDED);
         }
     }
@@ -94,11 +94,11 @@ class Mongo
      */
     public function createIndex($collectionName, IndexInterface $index)
     {
-        $collectionName = $this->_collectionPrefix . $collectionName;
+        $collectionName = $this->collectionPrefix . $collectionName;
 
-        $result = $this->_driver->ensureIndex($collectionName, $index->getFields(), $index->getOptions());
+        $result = $this->driver->ensureIndex($collectionName, $index->getFields(), $index->getOptions());
 
-        return $this->_mongoResult('ensureIndex', $result);
+        return $this->mongoResult('ensureIndex', $result);
     }
 
     /**
@@ -111,11 +111,11 @@ class Mongo
      */
     public function deleteIndex($collectionName, $index)
     {
-        $collectionName = $this->_collectionPrefix . $collectionName;
+        $collectionName = $this->collectionPrefix . $collectionName;
 
-        $result = $this->_driver->deleteIndex($collectionName, $index);
+        $result = $this->driver->deleteIndex($collectionName, $index);
 
-        return $this->_mongoResult('deleteIndex', $result);
+        return $this->mongoResult('deleteIndex', $result);
     }
 
     /**
@@ -127,9 +127,9 @@ class Mongo
      */
     public function deleteAllIndexes($collectionName)
     {
-        $result = $this->_driver->deleteAllIndexes($this->_collectionPrefix . $collectionName);
+        $result = $this->driver->deleteAllIndexes($this->collectionPrefix . $collectionName);
 
-        return $this->_mongoResult('deleteAllIndexes', $result);
+        return $this->mongoResult('deleteAllIndexes', $result);
     }
 
     /**
@@ -141,9 +141,9 @@ class Mongo
      */
     public function getIndexInfo($collectionName)
     {
-        $result = $this->_driver->getIndexInfo($this->_collectionPrefix . $collectionName);
+        $result = $this->driver->getIndexInfo($this->collectionPrefix . $collectionName);
 
-        return $this->_mongoResult('getIndexInfo', $result);
+        return $this->mongoResult('getIndexInfo', $result);
     }
 
     /**
@@ -153,7 +153,7 @@ class Mongo
      */
     public function getCollectionPrefix()
     {
-        return $this->_collectionPrefix;
+        return $this->collectionPrefix;
     }
 
     /**
@@ -165,9 +165,9 @@ class Mongo
      */
     public function getCollectionNames($includeSystemCollections = false)
     {
-        $result = $this->_driver->getCollectionNames($includeSystemCollections);
+        $result = $this->driver->getCollectionNames($includeSystemCollections);
 
-        return $this->_mongoResult('getCollectionNames', $result);
+        return $this->mongoResult('getCollectionNames', $result);
     }
 
 
@@ -183,9 +183,9 @@ class Mongo
      */
     public function insert($collectionName, array $data, $options = [])
     {
-        $result = $this->_driver->insert($this->_collectionPrefix . $collectionName, $data, $options);
+        $result = $this->driver->insert($this->collectionPrefix . $collectionName, $data, $options);
         if ($this->isArray($result)) {
-            return $this->_mongoResult('insert', $result);
+            return $this->mongoResult('insert', $result);
         }
 
         return $result;
@@ -206,10 +206,10 @@ class Mongo
      */
     public function group($collectionName, $keys, array $initial, $reduce, array $condition = [])
     {
-        $result = $this->_driver->group($this->_collectionPrefix . $collectionName, $keys, $initial, $reduce,
+        $result = $this->driver->group($this->collectionPrefix . $collectionName, $keys, $initial, $reduce,
                                         $condition);
 
-        return $this->_mongoResult('group', $result);
+        return $this->mongoResult('group', $result);
     }
 
     /**
@@ -223,9 +223,9 @@ class Mongo
      */
     public function ensureIndex($collectionName, $keys, $options = [])
     {
-        $result = $this->_driver->ensureIndex($this->_collectionPrefix . $collectionName, $keys, $options);
+        $result = $this->driver->ensureIndex($this->collectionPrefix . $collectionName, $keys, $options);
 
-        return $this->_mongoResult('ensureIndex', $result);
+        return $this->mongoResult('ensureIndex', $result);
     }
 
     /**
@@ -241,9 +241,9 @@ class Mongo
      */
     public function execute($code, array $args = [])
     {
-        $result = $this->_driver->execute($code, $args);
+        $result = $this->driver->execute($code, $args);
 
-        return $this->_mongoResult('execute', $result);
+        return $this->mongoResult('execute', $result);
     }
 
     /**
@@ -259,12 +259,12 @@ class Mongo
     public function find($collectionName, array $query = [], array $fields = [])
     {
         /* @var $result \MongoCursor */
-        $result = $this->_driver->find($this->_collectionPrefix . $collectionName, $query, $fields);
+        $result = $this->driver->find($this->collectionPrefix . $collectionName, $query, $fields);
         if ($this->isInstanceOf($result, '\MongoCursor')) {
             return new MongoCursor($result);
         }
 
-        return $this->_mongoResult('find', $result);
+        return $this->mongoResult('find', $result);
     }
 
     /**
@@ -280,12 +280,12 @@ class Mongo
     public function createCollection($name, $capped = false, $size = 0, $max = 0)
     {
         /* @var $collection \MongoCollection */
-        $result = $this->_driver->createCollection($this->_collectionPrefix . $name, $capped, $size, $max);
+        $result = $this->driver->createCollection($this->collectionPrefix . $name, $capped, $size, $max);
         if ($this->isInstanceOf($result, '\MongoCollection')) {
             return new MongoCollection($result);
         }
 
-        return $this->_mongoResult('createCollection', $result);
+        return $this->mongoResult('createCollection', $result);
     }
 
     /**
@@ -297,9 +297,9 @@ class Mongo
      */
     public function dropCollection($collectionName)
     {
-        $result = $this->_driver->dropCollection($this->_collectionPrefix . $collectionName);
+        $result = $this->driver->dropCollection($this->collectionPrefix . $collectionName);
 
-        return $this->_mongoResult('dropCollection', $result);
+        return $this->mongoResult('dropCollection', $result);
     }
 
     /**
@@ -313,9 +313,9 @@ class Mongo
      */
     public function command(array $data)
     {
-        $result = $this->_driver->command($data);
+        $result = $this->driver->command($data);
 
-        return $this->_mongoResult('command', $result);
+        return $this->mongoResult('command', $result);
     }
 
     /**
@@ -329,9 +329,9 @@ class Mongo
      */
     public function distinct(array $data)
     {
-        $result = $this->_driver->distinct($data);
+        $result = $this->driver->distinct($data);
         if ($result) {
-            return $this->_mongoResult('distinct', $result);
+            return $this->mongoResult('distinct', $result);
         }
 
         return false;
@@ -349,9 +349,9 @@ class Mongo
      */
     public function findOne($collectionName, array $query = [], array $fields = [])
     {
-        $result = $this->_driver->findOne($this->_collectionPrefix . $collectionName, $query, $fields);
+        $result = $this->driver->findOne($this->collectionPrefix . $collectionName, $query, $fields);
         if ($result) {
-            return $this->_mongoResult('findOne', $result);
+            return $this->mongoResult('findOne', $result);
         }
 
         return null;
@@ -367,7 +367,7 @@ class Mongo
      */
     public function count($collectionName, array $query = [])
     {
-        return $this->_driver->count($this->_collectionPrefix . $collectionName, $query);
+        return $this->driver->count($this->collectionPrefix . $collectionName, $query);
     }
 
     /**
@@ -382,9 +382,9 @@ class Mongo
      */
     public function remove($collectionName, array $criteria, $options = [])
     {
-        $result = $this->_driver->remove($this->_collectionPrefix . $collectionName, $criteria, $options);
+        $result = $this->driver->remove($this->collectionPrefix . $collectionName, $criteria, $options);
 
-        return $this->_mongoResult('remove', $result);
+        return $this->mongoResult('remove', $result);
     }
 
     /**
@@ -400,9 +400,9 @@ class Mongo
      */
     public function save($collectionName, array $data, $options = [])
     {
-        $result = $this->_driver->save($this->_collectionPrefix . $collectionName, $data, $options);
+        $result = $this->driver->save($this->collectionPrefix . $collectionName, $data, $options);
         if ($this->isArray($result)) {
-            return $this->_mongoResult('save', $result);
+            return $this->mongoResult('save', $result);
         }
 
         return $result;
@@ -421,9 +421,9 @@ class Mongo
      */
     public function update($collectionName, array $criteria, array $newObj, $options = [])
     {
-        $result = $this->_driver->update($this->_collectionPrefix . $collectionName, $criteria, $newObj, $options);
+        $result = $this->driver->update($this->collectionPrefix . $collectionName, $criteria, $newObj, $options);
 
-        return $this->_mongoResult('update', $result);
+        return $this->mongoResult('update', $result);
     }
 
     /**
@@ -436,8 +436,8 @@ class Mongo
      * @throws MongoException
      * @return MongoResult
      */
-    private function _mongoResult($method, $data)
+    private function mongoResult($method, $data)
     {
-        return new $this->_resultClass($method, $data);
+        return new $this->resultClass($method, $data);
     }
 }

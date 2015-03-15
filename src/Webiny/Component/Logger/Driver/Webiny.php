@@ -29,17 +29,17 @@ class Webiny implements LoggerDriverInterface
      * Name of the logger which will appear in your log records
      * @var string
      */
-    private $_name;
+    private $name;
 
     /**
      * Handlers to use when logging a message
      * @var ArrayObject
      */
-    private $_handlers;
+    private $handlers;
 
-    function __construct()
+    public function __construct()
     {
-        $this->_handlers = $this->arr();
+        $this->handlers = $this->arr();
     }
 
     /**
@@ -49,7 +49,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -60,7 +60,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function addHandler(HandlerAbstract $handler)
     {
-        $this->_handlers->prepend($handler);
+        $this->handlers->prepend($handler);
     }
 
     /**
@@ -73,7 +73,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function emergency($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::EMERGENCY, $message, $context);
+        $this->addRecord(LoggerLevel::EMERGENCY, $message, $context);
     }
 
     /**
@@ -89,7 +89,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function alert($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::ALERT, $message, $context);
+        $this->addRecord(LoggerLevel::ALERT, $message, $context);
     }
 
     /**
@@ -104,7 +104,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function critical($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::CRITICAL, $message, $context);
+        $this->addRecord(LoggerLevel::CRITICAL, $message, $context);
     }
 
     /**
@@ -118,7 +118,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function error($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::ERROR, $message, $context);
+        $this->addRecord(LoggerLevel::ERROR, $message, $context);
     }
 
     /**
@@ -134,7 +134,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function warning($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::WARNING, $message, $context);
+        $this->addRecord(LoggerLevel::WARNING, $message, $context);
     }
 
     /**
@@ -147,7 +147,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function notice($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::NOTICE, $message, $context);
+        $this->addRecord(LoggerLevel::NOTICE, $message, $context);
     }
 
     /**
@@ -162,7 +162,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function info($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::INFO, $message, $context);
+        $this->addRecord(LoggerLevel::INFO, $message, $context);
     }
 
     /**
@@ -175,7 +175,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function debug($message, array $context = array())
     {
-        $this->_addRecord(LoggerLevel::DEBUG, $message, $context);
+        $this->addRecord(LoggerLevel::DEBUG, $message, $context);
     }
 
     /**
@@ -189,7 +189,7 @@ class Webiny implements LoggerDriverInterface
      */
     public function log($level, $message, array $context = array())
     {
-        $this->_addRecord($level, $message, $context);
+        $this->addRecord($level, $message, $context);
     }
 
     /**
@@ -202,15 +202,15 @@ class Webiny implements LoggerDriverInterface
      * @throws LoggerException
      * @return Boolean Whether the record has been processed
      */
-    protected function _addRecord($level, $message, array $context = array())
+    protected function addRecord($level, $message, array $context = array())
     {
-        if ($this->_handlers->count() < 1) {
+        if ($this->handlers->count() < 1) {
             throw new LoggerException('To log a record you must add at least one HandlerAbstract object to handle the messages.'
             );
         }
 
         $record = new Record();
-        $record->setLoggerName($this->_name);
+        $record->setLoggerName($this->name);
         $record->setMessage((string)$message);
         $record->setContext($context);
         $record->setLevel($level);
@@ -218,7 +218,7 @@ class Webiny implements LoggerDriverInterface
 
         // check if any handler will handle this message
         $canHandle = false;
-        foreach ($this->_handlers as $handler) {
+        foreach ($this->handlers as $handler) {
             if ($handler->canHandle($record)) {
                 $canHandle = true;
                 break;
@@ -230,7 +230,7 @@ class Webiny implements LoggerDriverInterface
         }
 
         /* @var $handler Webiny\HandlerAbstract */
-        foreach ($this->_handlers as $handler) {
+        foreach ($this->handlers as $handler) {
             if ($handler->canHandle($record)) {
                 $bubble = $handler->process(clone $record);
                 if (!$bubble) {

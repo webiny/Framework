@@ -19,7 +19,7 @@ class EventManagerException extends ExceptionAbstract
     const INVALID_EVENT_HANDLER = 102;
     const INVALID_EVENT_NAME = 103;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Event listener priority must be greater than 100 and smaller than 1000.',
         102 => 'Event handler must be a valid callable, class name or class instance.',
         103 => 'Event name must be a string at least 1 character long.'

@@ -19,12 +19,12 @@ class ServiceManager
 {
     use StdLibTrait, SingletonTrait;
 
-    private $_compiledConfig;
-    private $_instantiatedServices;
-    private $_registeredServices;
-    private $_parameters;
-    private $_taggedServices;
-    private $_references;
+    private $compiledConfig;
+    private $instantiatedServices;
+    private $registeredServices;
+    private $parameters;
+    private $taggedServices;
+    private $references;
 
     /**
      * Get service instance by given name nad optional arguments
@@ -37,14 +37,14 @@ class ServiceManager
     public function getService($serviceName)
     {
         $serviceName = $this->str($serviceName)->trimLeft("@")->val();
-        if (!$this->_registeredServices->keyExists($serviceName)) {
+        if (!$this->registeredServices->keyExists($serviceName)) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_DEFINITION_NOT_FOUND, [$serviceName]);
         }
-        if (!$this->_instantiatedServices->keyExists($serviceName)) {
-            $this->_instantiateService($serviceName);
+        if (!$this->instantiatedServices->keyExists($serviceName)) {
+            $this->instantiateService($serviceName);
         }
 
-        return $this->_instantiatedServices->key($serviceName);
+        return $this->instantiatedServices->key($serviceName);
     }
 
     /**
@@ -58,7 +58,7 @@ class ServiceManager
     public function getServicesByTag($tag, $forceType = null)
     {
         $services = [];
-        foreach ($this->_taggedServices->key($tag, [], true) as $serviceName) {
+        foreach ($this->taggedServices->key($tag, [], true) as $serviceName) {
             $service = $this->getService($serviceName);
             if (!$this->isNull($forceType) && !$this->isInstanceOf($service, $forceType)) {
                 continue;
@@ -85,18 +85,18 @@ class ServiceManager
         /**
          * Check if service instance already exists
          */
-        if ($this->_registeredServices->keyExists($serviceName) && !$overwrite) {
+        if ($this->registeredServices->keyExists($serviceName) && !$overwrite) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_NAME_ALREADY_EXISTS, [$serviceName]);
         }
-        $this->_registeredServices[$serviceName] = $config;
+        $this->registeredServices[$serviceName] = $config;
 
         /**
          * Tagify service
          */
         foreach ($config->get('Tags', []) as $tag) {
-            $tagServices = $this->_taggedServices->key($tag, [], true);
+            $tagServices = $this->taggedServices->key($tag, [], true);
             $tagServices[] = $serviceName;
-            $this->_taggedServices->key($tag, $tagServices);
+            $this->taggedServices->key($tag, $tagServices);
         }
 
         return $this;
@@ -126,7 +126,7 @@ class ServiceManager
      */
     public function registerParameter($name, $value)
     {
-        $this->_parameters->key($name, $value);
+        $this->parameters->key($name, $value);
 
         return $this;
     }
@@ -157,11 +157,11 @@ class ServiceManager
      */
     public function getServiceConfig($serviceName)
     {
-        if (!$this->_registeredServices->keyExists($serviceName)) {
+        if (!$this->registeredServices->keyExists($serviceName)) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_DEFINITION_NOT_FOUND, [$serviceName]);
         }
 
-        return $this->_registeredServices[$serviceName];
+        return $this->registeredServices[$serviceName];
     }
 
     /**
@@ -169,12 +169,12 @@ class ServiceManager
      */
     protected function init()
     {
-        $this->_instantiatedServices = $this->arr();
-        $this->_registeredServices = $this->arr();
-        $this->_compiledConfig = $this->arr();
-        $this->_parameters = $this->arr();
-        $this->_references = $this->arr();
-        $this->_taggedServices = $this->arr();
+        $this->instantiatedServices = $this->arr();
+        $this->registeredServices = $this->arr();
+        $this->compiledConfig = $this->arr();
+        $this->parameters = $this->arr();
+        $this->references = $this->arr();
+        $this->taggedServices = $this->arr();
     }
 
     /**
@@ -185,43 +185,43 @@ class ServiceManager
      * @return object
      * @throws ServiceManagerException
      */
-    private function _instantiateService($serviceName)
+    private function instantiateService($serviceName)
     {
         // Make sure service is registered
-        if (!$this->_registeredServices->keyExists($serviceName)) {
+        if (!$this->registeredServices->keyExists($serviceName)) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_DEFINITION_NOT_FOUND, [$serviceName]);
         }
 
         // Get service config from registered services array
-        $config = $this->_registeredServices->key($serviceName);
+        $config = $this->registeredServices->key($serviceName);
 
         // Check circular referencing
-        if ($this->_references->keyExists($serviceName)) {
+        if ($this->references->keyExists($serviceName)) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_CIRCULAR_REFERENCE, [$serviceName]);
         }
 
         // Set service name reference for circular referencing checks
-        $this->_references->key($serviceName, $serviceName);
+        $this->references->key($serviceName, $serviceName);
 
         // Compile ConfigObject into ServiceConfig
-        $configCompiler = new ConfigCompiler($serviceName, $config, $this->_parameters);
-        $this->_compiledConfig->key($serviceName, $configCompiler->compile());
+        $configCompiler = new ConfigCompiler($serviceName, $config, $this->parameters);
+        $this->compiledConfig->key($serviceName, $configCompiler->compile());
 
         /**
          * @var $config ServiceConfig
          */
-        $config = $this->_compiledConfig->key($serviceName);
+        $config = $this->compiledConfig->key($serviceName);
 
         // Construct service container and get service instance
         $serviceCreator = new ServiceCreator($config);
         $service = $serviceCreator->getService();
 
         // Unset service name reference
-        $this->_references->removeKey($serviceName);
+        $this->references->removeKey($serviceName);
 
         // Store instance if this service has a CONTAINER scope
         if ($config->getScope() == ServiceScope::CONTAINER) {
-            $this->_instantiatedServices->key($serviceName, $service);
+            $this->instantiatedServices->key($serviceName, $service);
         }
 
         return $service;

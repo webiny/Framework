@@ -30,7 +30,7 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
     /**
      * @var Page
      */
-    private static $_page;
+    private static $page;
 
     public static function setUpBeforeClass()
     {
@@ -79,7 +79,7 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
                                                $label2
                                            ]
         );
-        self::$_page = $page;
+        self::$page = $page;
     }
 
     public static function tearDownAfterClass()
@@ -91,9 +91,9 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         self::mongo()->dropCollection('Label2Page');
     }
 
-    function testEntity()
+    public function testEntity()
     {
-        $page = self::$_page;
+        $page = self::$page;
         $page->save();
 
         // Test default toArray()
@@ -122,14 +122,14 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Pavel Denisjuk', $data['author']['name']);
     }
 
-    function testParentEntity()
+    public function testParentEntity()
     {
         // Create parent page
         $parentPage = new Page();
         $parentPage->title = 'Parent page';
         $parentPage->save();
 
-        $page = self::$_page;
+        $page = self::$page;
         $page->parent = $parentPage;
         $page->save();
 

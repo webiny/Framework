@@ -20,15 +20,15 @@ class Files
 {
     use StdLibTrait;
 
-    private $_fileBag;
-    private $_fileObject;
+    private $fileBag;
+    private $fileObject;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->_fileBag = $this->arr($_FILES);
+        $this->fileBag = $this->arr($_FILES);
     }
 
     /**
@@ -45,22 +45,22 @@ class Files
     public function get($name, $arrayOffset = null)
     {
         // first some validations
-        if (!$this->_fileBag->keyExists($name)) {
+        if (!$this->fileBag->keyExists($name)) {
             throw new FilesException('Upload field with name "' . $name . '" was not found in the $_FILES array.');
         }
 
         // check to see if we have already created the file object
-        if (isset($this->_fileObject[$name])) {
-            $fileObject = $this->_getFileObject($name, $arrayOffset);
+        if (isset($this->fileObject[$name])) {
+            $fileObject = $this->getFileObject($name, $arrayOffset);
             if ($fileObject) {
                 return $fileObject;
             }
         }
 
         // create and return File object
-        $file = $this->_fileBag->key($name);
+        $file = $this->fileBag->key($name);
         if (is_null($arrayOffset)) {
-            $fileObject = $this->_createFileObject($file, $arrayOffset);
+            $fileObject = $this->createFileObject($file, $arrayOffset);
 
             return $fileObject;
         } else {
@@ -70,7 +70,7 @@ class Files
                 );
             }
 
-            $fileObject = $this->_createFileObject($file, $arrayOffset);
+            $fileObject = $this->createFileObject($file, $arrayOffset);
 
             return $fileObject;
         }
@@ -84,17 +84,17 @@ class Files
      *
      * @return File
      */
-    private function _createFileObject($file, $arrayOffset = null)
+    private function createFileObject($file, $arrayOffset = null)
     {
         if (!is_null($arrayOffset)) {
             $fileObject = new File($file['name'][$arrayOffset], $file['tmp_name'][$arrayOffset],
                                    $file['type'][$arrayOffset], $file['error'][$arrayOffset],
                                    $file['size'][$arrayOffset]
             );
-            $this->_fileObject[$file['name']][$arrayOffset] = $fileObject;
+            $this->fileObject[$file['name']][$arrayOffset] = $fileObject;
         } else {
             $fileObject = new File($file['name'], $file['tmp_name'], $file['type'], $file['error'], $file['size']);
-            $this->_fileObject[$file['name']] = $fileObject;
+            $this->fileObject[$file['name']] = $fileObject;
         }
 
         return $fileObject;
@@ -108,22 +108,22 @@ class Files
      *
      * @return bool|File False if the object is not created, otherwise File is returned.
      */
-    private function _getFileObject($name, $arrayOffset = null)
+    private function getFileObject($name, $arrayOffset = null)
     {
         if (!is_null($arrayOffset)) {
-            if (isset($this->_fileObject[$name]) && $this->isArray($this->_fileObject[$name]
-                ) && isset($this->_fileObject[$name][$arrayOffset]) && $this->isInstanceOf($this->_fileObject[$name][$arrayOffset],
+            if (isset($this->fileObject[$name]) && $this->isArray($this->fileObject[$name]
+                ) && isset($this->fileObject[$name][$arrayOffset]) && $this->isInstanceOf($this->fileObject[$name][$arrayOffset],
                                                                                            'Webiny\Component\Http\Request\Files\File'
                 )
             ) {
-                return $this->_fileObject[$name][$arrayOffset];
+                return $this->fileObject[$name][$arrayOffset];
             }
         } else {
-            if (isset($this->_fileObject[$name]) && $this->isInstanceOf($this->_fileObject[$name],
+            if (isset($this->fileObject[$name]) && $this->isInstanceOf($this->fileObject[$name],
                                                                         'Webiny\Component\Http\Request\Files\File'
                 )
             ) {
-                return $this->_fileObject[$name];
+                return $this->fileObject[$name];
             }
         }
 

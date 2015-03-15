@@ -18,7 +18,7 @@ class UrlObjectException extends StdObjectException
 {
     const MSG_INVALID_URL = 101;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Unable to parse "%s" as a valid url.'
     ];
 }

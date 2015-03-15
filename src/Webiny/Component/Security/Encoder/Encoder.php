@@ -24,7 +24,7 @@ class Encoder
     /**
      * @var EncoderInterface
      */
-    private $_encoderProviderInstance;
+    private $encoderProviderInstance;
 
 
     /**
@@ -33,10 +33,10 @@ class Encoder
      *
      * @throws EncoderException
      */
-    function __construct($driver, $params = null)
+    public function __construct($driver, $params = null)
     {
         try {
-            $this->_encoderProviderInstance = $this->factory($driver,
+            $this->encoderProviderInstance = $this->factory($driver,
                                                              '\Webiny\Component\Security\Encoder\EncoderDriverInterface',
                                                              $params
             );
@@ -52,9 +52,9 @@ class Encoder
      *
      * @return string Password hash.
      */
-    function createPasswordHash($password)
+    public function createPasswordHash($password)
     {
-        return $this->_encoderProviderInstance->createPasswordHash($password);
+        return $this->encoderProviderInstance->createPasswordHash($password);
     }
 
     /**
@@ -65,8 +65,8 @@ class Encoder
      *
      * @return bool True if $password matches $hash. Otherwise false is returned.
      */
-    function verifyPasswordHash($password, $hash)
+    public function verifyPasswordHash($password, $hash)
     {
-        return $this->_encoderProviderInstance->verifyPasswordHash($password, $hash);
+        return $this->encoderProviderInstance->verifyPasswordHash($password, $hash);
     }
 }

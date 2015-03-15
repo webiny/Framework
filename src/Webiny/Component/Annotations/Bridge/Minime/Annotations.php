@@ -18,7 +18,7 @@ use Webiny\Component\Annotations\Bridge\AnnotationsInterface;
 class Annotations implements AnnotationsInterface
 {
 
-    private function _parseAnnotations(\Reflector $reflector)
+    private function parseAnnotations(\Reflector $reflector)
     {
         $rules = new ParserRules();
         $annotations = (new Parser($reflector->getDocComment(), $rules))->parse();
@@ -35,7 +35,7 @@ class Annotations implements AnnotationsInterface
      */
     public function getClassAnnotations($class)
     {
-        return $this->_parseAnnotations(new \ReflectionClass($class));
+        return $this->parseAnnotations(new \ReflectionClass($class));
     }
 
     /**
@@ -48,7 +48,7 @@ class Annotations implements AnnotationsInterface
      */
     public function getPropertyAnnotations($class, $property)
     {
-        return $this->_parseAnnotations(new \ReflectionProperty($class, $property));
+        return $this->parseAnnotations(new \ReflectionProperty($class, $property));
     }
 
     /**
@@ -61,6 +61,6 @@ class Annotations implements AnnotationsInterface
      */
     public function getMethodAnnotations($class, $method)
     {
-        return $this->_parseAnnotations(new \ReflectionMethod($class, $method));
+        return $this->parseAnnotations(new \ReflectionMethod($class, $method));
     }
 }

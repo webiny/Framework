@@ -32,7 +32,7 @@ class StorageException extends ExceptionAbstract
     const DIRECTORY_OBJECT_CAN_NOT_READ_FILE_PATHS = 110;
     const PATH_IS_OUT_OF_STORAGE_ROOT = 111;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'File not found!',
         102 => 'Failed to read file! Make sure the file exists and you have permissions to access it!',
         103 => 'Storage driver `%s` does not support touching of files!',

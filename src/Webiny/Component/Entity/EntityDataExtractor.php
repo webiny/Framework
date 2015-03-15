@@ -25,23 +25,23 @@ class EntityDataExtractor
     /**
      * @var EntityAbstract
      */
-    protected $_entity;
+    protected $entity;
 
-    protected static $_loadedEntities = null;
+    protected static $loadedEntities = null;
 
-    protected static $_currentLevel = 0;
-    protected $_nestedLevel = 1;
+    protected static $currentLevel = 0;
+    protected $nestedLevel = 1;
 
     public function __construct(EntityAbstract $entity, $nestedLevel = 1)
     {
         if ($nestedLevel < 0) {
             $nestedLevel = 1;
         }
-        $this->_entity = $entity;
-        $this->_nestedLevel = $nestedLevel;
+        $this->entity = $entity;
+        $this->nestedLevel = $nestedLevel;
 
-        if (!self::$_loadedEntities) {
-            self::$_loadedEntities = $this->arr();
+        if (!self::$loadedEntities) {
+            self::$loadedEntities = $this->arr();
         }
     }
 
@@ -56,26 +56,26 @@ class EntityDataExtractor
      */
     public function extractData($attributes = [])
     {
-        $checkKey = get_class($this->_entity) . '-' . $this->_entity->getId();
-        if (self::$_loadedEntities->keyExists($checkKey)) {
+        $checkKey = get_class($this->entity) . '-' . $this->entity->getId();
+        if (self::$loadedEntities->keyExists($checkKey)) {
             return [
                 '__reference__' => true,
-                'class'         => get_class($this->_entity),
-                'id'            => $this->_entity->getId()->getValue()
+                'class'         => get_class($this->entity),
+                'id'            => $this->entity->getId()->getValue()
             ];
         } else {
-            self::$_loadedEntities->key($checkKey, true);
+            self::$loadedEntities->key($checkKey, true);
         }
 
         if ($this->isEmpty($attributes)) {
-            $attributes = $this->_getDefaultAttributes();
+            $attributes = $this->getDefaultAttributes();
         }
 
         $data = [];
-        $attributes = $this->_buildEntityFields($attributes);
+        $attributes = $this->buildEntityFields($attributes);
 
         foreach ($attributes as $attr => $subAttributes) {
-            $entityAttribute = $this->_entity->getAttribute($attr);
+            $entityAttribute = $this->entity->getAttribute($attr);
             $entityAttributeValue = $entityAttribute->getValue();
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
@@ -86,27 +86,27 @@ class EntityDataExtractor
                     $data[$attr] = null;
                     continue;
                 }
-                if (self::$_currentLevel < $this->_nestedLevel) {
-                    self::$_currentLevel++;
-                    $attrDataExtractor = new EntityDataExtractor($entityAttributeValue, $this->_nestedLevel);
+                if (self::$currentLevel < $this->nestedLevel) {
+                    self::$currentLevel++;
+                    $attrDataExtractor = new EntityDataExtractor($entityAttributeValue, $this->nestedLevel);
                     $data[$attr] = $attrDataExtractor->extractData($subAttributes);
-                    self::$_currentLevel--;
+                    self::$currentLevel--;
                 }
             } elseif ($isOne2Many || $isMany2Many) {
                 $data[$attr] = [];
                 foreach ($entityAttributeValue as $item) {
-                    if (self::$_currentLevel < $this->_nestedLevel) {
-                        self::$_currentLevel++;
-                        $attrDataExtractor = new EntityDataExtractor($item, $this->_nestedLevel);
+                    if (self::$currentLevel < $this->nestedLevel) {
+                        self::$currentLevel++;
+                        $attrDataExtractor = new EntityDataExtractor($item, $this->nestedLevel);
                         $data[$attr][] = $attrDataExtractor->extractData($subAttributes);
-                        self::$_currentLevel--;
+                        self::$currentLevel--;
                     }
                 }
             } else {
                 $data[$attr] = $entityAttribute->getToArrayValue();
             }
         }
-        self::$_loadedEntities->removeKey($checkKey);
+        self::$loadedEntities->removeKey($checkKey);
 
         return $data;
     }
@@ -119,7 +119,7 @@ class EntityDataExtractor
      *
      * @return array
      */
-    private function _buildEntityFields($fields)
+    private function buildEntityFields($fields)
     {
         if (!$this->isArray($fields)) {
             $fields = $this->str($fields)->explode(',')->filter()->map('trim')->val();
@@ -127,7 +127,7 @@ class EntityDataExtractor
             // Check if asterisk is present and replace it with actual attribute names
             if ($this->arr($fields)->keyExists('*')) {
                 unset($fields['*']);
-                $defaultFields = $this->str($this->_getDefaultAttributes())
+                $defaultFields = $this->str($this->getDefaultAttributes())
                                       ->explode(',')
                                       ->filter()
                                       ->map('trim')
@@ -142,13 +142,13 @@ class EntityDataExtractor
 
         foreach ($fields as $f) {
             if ($f == '*') {
-                $defaultFields = $this->str($this->_getDefaultAttributes())->explode(',')->filter()->map('trim')->val();
+                $defaultFields = $this->str($this->getDefaultAttributes())->explode(',')->filter()->map('trim')->val();
                 foreach ($defaultFields as $df) {
-                    $this->_buildFields($parsedFields, $df);
+                    $this->buildFields($parsedFields, $df);
                 }
                 continue;
             }
-            $this->_buildFields($parsedFields, $f);
+            $this->buildFields($parsedFields, $f);
         }
 
         return $parsedFields;
@@ -160,7 +160,7 @@ class EntityDataExtractor
      * @param $parsedFields Reference to array of parsed fields
      * @param $key          Current key to parse
      */
-    private function _buildFields(&$parsedFields, $key)
+    private function buildFields(&$parsedFields, $key)
     {
         if ($this->str($key)->contains('.')) {
             $parts = $this->str($key)->explode('.', 2)->val();
@@ -168,7 +168,7 @@ class EntityDataExtractor
                 $parsedFields[$parts[0]] = [];
             }
 
-            $this->_buildFields($parsedFields[$parts[0]], $parts[1]);
+            $this->buildFields($parsedFields[$parts[0]], $parts[1]);
         } else {
             $parsedFields[$key] = '';
         }
@@ -180,10 +180,10 @@ class EntityDataExtractor
      *
      * @return string
      */
-    private function _getDefaultAttributes()
+    private function getDefaultAttributes()
     {
         $attributes = [];
-        foreach ($this->_entity->getAttributes() as $name => $attribute) {
+        foreach ($this->entity->getAttributes() as $name => $attribute) {
             $isOne2Many = $this->isInstanceOf($attribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($attribute, AttributeType::MANY2MANY);
 

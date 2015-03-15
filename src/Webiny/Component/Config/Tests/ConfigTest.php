@@ -13,7 +13,7 @@ use Webiny\Component\Config\ConfigException;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-    function testYamlConfig()
+    public function testYamlConfig()
     {
         $yamlConfig = __DIR__ . '/Configs/config.yaml';
         $config = Config::getInstance()->yaml($yamlConfig);
@@ -21,7 +21,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Royal Oak', $config->get('bill-to.address.city'));
     }
 
-    function testJsonConfig()
+    public function testJsonConfig()
     {
         $jsonConfig = __DIR__ . '/Configs/config.json';
         $config = Config::getInstance()->json($jsonConfig);
@@ -32,7 +32,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Webiny\Component\Config\ConfigException
      */
-    function testMissingFile()
+    public function testMissingFile()
     {
         $jsonConfig = __DIR__ . '/Configs/configMissing.json';
         Config::getInstance()->json($jsonConfig);
@@ -41,7 +41,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Webiny\Component\Config\ConfigException
      */
-    function testInvalidFilePath()
+    public function testInvalidFilePath()
     {
         $jsonConfig = __DIR__ . '/Configs';
         Config::getInstance()->json($jsonConfig);
@@ -50,7 +50,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Webiny\Component\Config\ConfigException
      */
-    function testPhpConfig()
+    public function testPhpConfig()
     {
         $phpConfig = __DIR__ . '/Configs/config.php';
         $config = Config::getInstance()->php($phpConfig);
@@ -58,14 +58,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('www.webiny.com', $config->get('default.url'));
     }
 
-    function testPhpArrayConfig()
+    public function testPhpArrayConfig()
     {
         $config = Config::getInstance()->php(['key' => 'value']);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('value', $config->get('key'));
     }
 
-    function testIniConfig()
+    public function testIniConfig()
     {
         $iniConfig = __DIR__ . '/Configs/config.ini';
         $config = Config::getInstance()->ini($iniConfig);
@@ -73,7 +73,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('coolProperty', $config->group2->newProperty);
     }
 
-    function testParseResource()
+    public function testParseResource()
     {
         $resource = ['application' => 'development'];
         $config = Config::getInstance()->parseResource($resource);

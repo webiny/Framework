@@ -17,10 +17,10 @@ class IntegerAttribute extends AttributeAbstract
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($this->isNull($this->_value)){
-            $this->_value = $value;
+        if($this->isNull($this->value)){
+            $this->value = $value;
         }
-        return new \MongoInt32($this->_value);
+        return new \MongoInt32($this->value);
     }
 
     /**
@@ -41,7 +41,7 @@ class IntegerAttribute extends AttributeAbstract
 
         if (!$this->isInteger($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->_attribute,
+                    $this->attribute,
                     'integer',
                     gettype($value)
                 ]

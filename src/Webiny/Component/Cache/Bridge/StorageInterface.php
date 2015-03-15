@@ -20,12 +20,12 @@ interface StorageInterface
      *
      * @return string
      */
-    static function _getLibrary();
+    public static function getLibrary();
 
     /**
      * Change the default library used for the driver.
      *
      * @param string $pathToClass Path to the new driver class. Must be an instance of \Webiny\Component\Cache\Bridge\CacheInterface
      */
-    static function setLibrary($pathToClass);
+    public static function setLibrary($pathToClass);
 }

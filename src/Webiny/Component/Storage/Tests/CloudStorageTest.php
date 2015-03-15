@@ -16,7 +16,7 @@ class CloudStorageTest extends \PHPUnit_Framework_TestCase
 
     const CONFIG = '/ExampleConfig.yaml';
 
-    private $_key = 'testFile.txt';
+    private $key = 'testFile.txt';
 
     /**
      * @dataProvider driverSet
@@ -31,13 +31,13 @@ class CloudStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testStorage(Storage $storage)
     {
-        $storage->setContents($this->_key, 'Test contents');
-        $this->assertTrue($storage->keyExists($this->_key));
+        $storage->setContents($this->key, 'Test contents');
+        $this->assertTrue($storage->keyExists($this->key));
 
-        $this->assertSame('Test contents', $storage->getContents($this->_key));
+        $this->assertSame('Test contents', $storage->getContents($this->key));
 
-        $storage->deleteKey($this->_key);
-        $this->assertFalse($storage->keyExists($this->_key));
+        $storage->deleteKey($this->key);
+        $this->assertFalse($storage->keyExists($this->key));
     }
 
     public function driverSet()

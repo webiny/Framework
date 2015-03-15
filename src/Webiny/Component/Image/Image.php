@@ -22,7 +22,7 @@ class Image
     /**
      * @var array Default configuration params.
      */
-    private static $_defaultConfig = [
+    private static $defaultConfig = [
         'Library' => 'gd',
         'Quality' => 90
     ];

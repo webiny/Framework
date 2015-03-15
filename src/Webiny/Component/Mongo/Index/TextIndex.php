@@ -18,7 +18,7 @@ use Webiny\Component\Mongo\MongoException;
  */
 class TextIndex extends IndexAbstract
 {
-    private $_language;
+    private $language;
 
     /**
      * @param string $name           Index name
@@ -33,7 +33,7 @@ class TextIndex extends IndexAbstract
     public function __construct($name, array $fields, $sparse = false, $unique = false, $dropDuplicates = false,
                                 $language = 'english')
     {
-        $this->_language = $language;
+        $this->language = $language;
 
         if(count($fields) < 2) {
             throw new MongoException(MongoException::COMPOUND_INDEX_NOT_ENOUGH_FIELDS);
@@ -45,33 +45,33 @@ class TextIndex extends IndexAbstract
     public function getOptions()
     {
         $options = parent::getOptions();
-        $options['default_language'] = $this->_language;
+        $options['default_language'] = $this->language;
 
         return $options;
     }
 
     public function setDefaultLanguage($language)
     {
-        $this->_language = $language;
+        $this->language = $language;
 
         return $this;
     }
 
     public function getDefaultLanguage()
     {
-        return $this->_language;
+        return $this->language;
     }
 
-    protected function _normalizeFields()
+    protected function normalizeFields()
     {
         $normalizedFields = [];
-        foreach ($this->_fields as $key => $field) {
+        foreach ($this->fields as $key => $field) {
             if($this->isNumber($key)) {
                 $normalizedFields[$this->str($field)->trimLeft('-+')->val()] = 'text';
             } else {
                 $normalizedFields[$key] = 'text';
             }
         }
-        $this->_fields = $normalizedFields;
+        $this->fields = $normalizedFields;
     }
 }

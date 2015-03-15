@@ -17,7 +17,7 @@ class Pear extends LoaderAbstract
     /**
      * @var LoaderAbstract Holds the loader instance.
      */
-    protected static $_instance = null;
+    protected static $instance = null;
 
     /**
      * Register a map.
@@ -32,12 +32,12 @@ class Pear extends LoaderAbstract
         // check the structure of location if it contains metadata
         if (is_array($library)) {
             $path = $library['Path'];
-            $this->_rules[$prefix] = $library;
+            $this->rules[$prefix] = $library;
         } else {
             $path = $library;
         }
 
-        $this->_maps[$prefix] = $path;
+        $this->maps[$prefix] = $path;
     }
 
     /**
@@ -51,25 +51,25 @@ class Pear extends LoaderAbstract
      */
     public function findClass($class)
     {
-        if (!$this->_maps) {
+        if (!$this->maps) {
             return false;
         }
 
         // PEAR-like class name
         $normalizedClass = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
 
-        foreach ($this->_maps as $prefix => $dir) {
+        foreach ($this->maps as $prefix => $dir) {
             if (0 !== strpos($class, $prefix)) {
                 continue;
             }
 
-            if (isset($this->_rules[$prefix])) {
-                if (isset($this->_rules[$prefix]['Normalize'])) {
+            if (isset($this->rules[$prefix])) {
+                if (isset($this->rules[$prefix]['Normalize'])) {
                     $normalizedClass = $class . '.php';
                 }
 
-                if (isset($this->_rules[$prefix]['Case'])) {
-                    if ($this->_rules[$prefix]['Case'] == 'lower') {
+                if (isset($this->rules[$prefix]['Case'])) {
+                    if ($this->rules[$prefix]['Case'] == 'lower') {
                         $normalizedClass = strtolower($normalizedClass);
                     }
                 }

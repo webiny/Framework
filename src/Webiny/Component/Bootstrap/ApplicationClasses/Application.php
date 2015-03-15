@@ -24,10 +24,10 @@ class Application
     /**
      * @var View View instance.
      */
-    private $_view;
+    private $view;
 
 
-    private $_environment;
+    private $environment;
 
     /**
      * Base constructor.
@@ -37,8 +37,8 @@ class Application
      */
     public function __construct(Environment $environment)
     {
-        $this->_view = new View();
-        $this->_environment = $environment;
+        $this->view = new View();
+        $this->environment = $environment;
     }
 
     /**
@@ -48,7 +48,7 @@ class Application
      */
     public function getNamespace()
     {
-        return $this->_environment->getApplicationConfig()->get('Namespace');
+        return $this->environment->getApplicationConfig()->get('Namespace');
     }
 
     /**
@@ -58,7 +58,7 @@ class Application
      */
     public function getAbsolutePath()
     {
-        return $this->_environment->getApplicationAbsolutePath();
+        return $this->environment->getApplicationAbsolutePath();
     }
 
     /**
@@ -68,7 +68,7 @@ class Application
      */
     public function getWebPath()
     {
-        $webPath = $this->_environment->getCurrentEnvironmentConfig()->get('Domain', false);
+        $webPath = $this->environment->getCurrentEnvironmentConfig()->get('Domain', false);
         if (!$webPath) {
             $webPath = Request::getInstance()->getCurrentUrl(true)->getDomain() . '/';
         }
@@ -84,7 +84,7 @@ class Application
      */
     public function getEnvironmentName()
     {
-        return $this->_environment->getCurrentEnvironmentName();
+        return $this->environment->getCurrentEnvironmentName();
     }
 
     /**
@@ -123,9 +123,9 @@ class Application
     public function getApplicationConfig($query = '', $default = null)
     {
         if ($query == '') {
-            return $this->_environment->getApplicationConfig();
+            return $this->environment->getApplicationConfig();
         } else {
-            return $this->_environment->getApplicationConfig()->get($query, $default);
+            return $this->environment->getApplicationConfig()->get($query, $default);
         }
     }
 
@@ -140,9 +140,9 @@ class Application
     public function getEnvironmentConfig($query = '', $default = null)
     {
         if ($query == '') {
-            return $this->_environment->getCurrentEnvironmentConfig();
+            return $this->environment->getCurrentEnvironmentConfig();
         } else {
-            return $this->_environment->getCurrentEnvironmentConfig()->get($query, $default);
+            return $this->environment->getCurrentEnvironmentConfig()->get($query, $default);
         }
     }
 
@@ -157,7 +157,7 @@ class Application
      */
     public function getComponentConfig($component, $query = '', $default = null)
     {
-        $componentConfig = $this->_environment->getComponentConfigs()->get($component, false);
+        $componentConfig = $this->environment->getComponentConfigs()->get($component, false);
 
         if (!$componentConfig) {
             return $default;
@@ -177,7 +177,7 @@ class Application
      */
     public function view()
     {
-        return $this->_view;
+        return $this->view;
     }
 
     /**
@@ -204,14 +204,14 @@ class Application
         // assign application data to view
         $viewData['App'] = [
             'Config'       => $this->getEnvironmentConfig(),
-            'Components'   => $this->_environment->getComponentConfigs()->toArray(),
+            'Components'   => $this->environment->getComponentConfigs()->toArray(),
             'Environment'  => $this->getEnvironmentName(),
             'AbsolutePath' => $this->getAbsolutePath(),
             'WebPath'      => $this->getWebPath()
         ];
 
         // render the view and assign it to the response object
-        return new Response($this->_getTemplateEngineInstance()->fetch($this->view()->getTemplate(), $viewData));
+        return new Response($this->getTemplateEngineInstance()->fetch($this->view()->getTemplate(), $viewData));
     }
 
     /**
@@ -223,7 +223,7 @@ class Application
      * @throws \Webiny\Component\StdLib\Exception\Exception
      * @throws \Webiny\Component\TemplateEngine\TemplateEngineException
      */
-    private function _getTemplateEngineInstance()
+    private function getTemplateEngineInstance()
     {
         $teConfig = $this->getComponentConfig('TemplateEngine', 'Engines', false);
 

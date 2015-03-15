@@ -22,7 +22,7 @@ class TemplateEngine
     /**
      * @var string Default TemplateEngine bridge library.
      */
-    private static $_library = ['Smarty' => '\Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty'];
+    private static $library = ['Smarty' => '\Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty'];
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -31,15 +31,15 @@ class TemplateEngine
      *
      * @return string
      */
-    private static function _getLibrary($engineName)
+    private static function getLibrary($engineName)
     {
         $bridges = \Webiny\Component\TemplateEngine\TemplateEngine::getConfig()->get('Bridges', false);
         if (!$bridges) {
-            if (!isset(self::$_library[$engineName])) {
+            if (!isset(self::$library[$engineName])) {
                 return false;
             }
 
-            return self::$_library[$engineName];
+            return self::$library[$engineName];
         }
 
         return $bridges->get($engineName, false);
@@ -53,7 +53,7 @@ class TemplateEngine
      */
     public static function setLibrary($engineName, $pathToClass)
     {
-        self::$_library[$engineName] = $pathToClass;
+        self::$library[$engineName] = $pathToClass;
     }
 
     /**
@@ -68,7 +68,7 @@ class TemplateEngine
      */
     public static function getInstance($engineName, ConfigObject $config)
     {
-        $driver = static::_getLibrary($engineName);
+        $driver = static::getLibrary($engineName);
 
         if (!self::isString($driver)) {
             throw new TemplateEngineException('Invalid driver returned for ' . $engineName . ' engine');

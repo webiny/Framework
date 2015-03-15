@@ -33,12 +33,12 @@ abstract class StdObjectAbstract implements StdObjectInterface
     public function val($value = null)
     {
         if (!$this->isNull($value)) {
-            $this->_value = $value;
+            $this->value = $value;
 
             return $this;
         }
 
-        return $this->_value;
+        return $this->value;
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class StdObjectAbstract implements StdObjectInterface
      *
      * @return $this
      */
-    protected function _getObject()
+    protected function getObject()
     {
         return $this;
     }

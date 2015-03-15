@@ -9,11 +9,11 @@ use Webiny\Component\Security\User\UserProviderInterface;
 class Entity implements UserProviderInterface
 {
 
-    private $_params;
+    private $params;
 
     public function __construct($params)
     {
-        $this->_params = $params;
+        $this->params = $params;
     }
     
     /**
@@ -24,10 +24,10 @@ class Entity implements UserProviderInterface
      * @return UserAbstract
      * @throws UserNotFoundException
      */
-    function getUser(Login $login)
+    public function getUser(Login $login)
     {
         $user = new User();
-        $user->setParams($this->_params);
+        $user->setParams($this->params);
         $user->populate($login->getUsername(), $login->getPassword(), []);
 
         return $user;

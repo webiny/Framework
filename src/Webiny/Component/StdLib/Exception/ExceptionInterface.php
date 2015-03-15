@@ -23,7 +23,7 @@ interface ExceptionInterface
      * Current line and file will be set as exception origin.
      *
      * Make sure you return:
-     * parent::_construct($message, $params);
+     * parent::construct($message, $params);
      *
      * @param string|int $message       Message you what to throw. If $message is type of integer,
      *                                  than the method will treat that as an exception code.

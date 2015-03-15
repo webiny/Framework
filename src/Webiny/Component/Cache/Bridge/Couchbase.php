@@ -23,16 +23,16 @@ class Couchbase extends CacheAbstract
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\Cache\Bridge\Memory\Couchbase';
+    private static $library = '\Webiny\Component\Cache\Bridge\Memory\Couchbase';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    static function _getLibrary()
+    public static function getLibrary()
     {
-        return Cache::getConfig()->get('Bridges.Couchbase', self::$_library);
+        return Cache::getConfig()->get('Bridges.Couchbase', self::$library);
     }
 
     /**
@@ -40,9 +40,9 @@ class Couchbase extends CacheAbstract
      *
      * @param string $pathToClass Path to the new driver class. Must be an instance of \Webiny\Component\Cache\Bridge\CacheInterface
      */
-    static function setLibrary($pathToClass)
+    public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -60,9 +60,9 @@ class Couchbase extends CacheAbstract
      *
      * @return void|CacheStorageInterface
      */
-    static function getInstance($user = '', $password = '', $bucket = '', $host = '127.0.0.1:8091')
+    public static function getInstance($user = '', $password = '', $bucket = '', $host = '127.0.0.1:8091')
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         // check if Couchbase extension is loaded
         if (!class_exists('Couchbase', true)) {

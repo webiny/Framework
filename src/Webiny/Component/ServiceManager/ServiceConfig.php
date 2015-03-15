@@ -18,21 +18,21 @@ class ServiceConfig
 {
     use StdLibTrait;
 
-    private $_class = null;
-    private $_arguments = null;
-    private $_calls = null;
-    private $_scope = ServiceScope::CONTAINER;
-    private $_factory = null;
-    private $_static = true;
-    private $_method = null;
-    private $_methodArguments = null;
+    private $class = null;
+    private $arguments = null;
+    private $calls = null;
+    private $scope = ServiceScope::CONTAINER;
+    private $factory = null;
+    private $static = true;
+    private $method = null;
+    private $methodArguments = null;
 
     /**
      * @param null $calls
      */
     public function setCalls($calls)
     {
-        $this->_calls = $calls;
+        $this->calls = $calls;
     }
 
     /**
@@ -40,7 +40,7 @@ class ServiceConfig
      */
     public function setClass($class)
     {
-        $this->_class = $class;
+        $this->class = $class;
     }
 
     /**
@@ -48,7 +48,7 @@ class ServiceConfig
      */
     public function setFactory($factory)
     {
-        $this->_factory = $factory;
+        $this->factory = $factory;
     }
 
     /**
@@ -56,7 +56,7 @@ class ServiceConfig
      */
     public function getFactory()
     {
-        return $this->_factory;
+        return $this->factory;
     }
 
     /**
@@ -64,7 +64,7 @@ class ServiceConfig
      */
     public function setMethod($method)
     {
-        $this->_method = $method;
+        $this->method = $method;
     }
 
     /**
@@ -72,7 +72,7 @@ class ServiceConfig
      */
     public function getMethod()
     {
-        return $this->_method;
+        return $this->method;
     }
 
     /**
@@ -80,7 +80,7 @@ class ServiceConfig
      */
     public function setMethodArguments($methodArguments)
     {
-        $this->_methodArguments = $methodArguments;
+        $this->methodArguments = $methodArguments;
     }
 
     /**
@@ -88,7 +88,7 @@ class ServiceConfig
      */
     public function getMethodArguments()
     {
-        return $this->_methodArguments;
+        return $this->methodArguments;
     }
 
     /**
@@ -96,7 +96,7 @@ class ServiceConfig
      */
     public function setStatic($static)
     {
-        $this->_static = $static;
+        $this->static = $static;
     }
 
     /**
@@ -104,7 +104,7 @@ class ServiceConfig
      */
     public function getStatic()
     {
-        return $this->_static;
+        return $this->static;
     }
 
     /**
@@ -112,7 +112,7 @@ class ServiceConfig
      */
     public function setArguments($arguments)
     {
-        $this->_arguments = $arguments;
+        $this->arguments = $arguments;
     }
 
     /**
@@ -120,7 +120,7 @@ class ServiceConfig
      */
     public function getArguments()
     {
-        return $this->_arguments;
+        return $this->arguments;
     }
 
     /**
@@ -131,7 +131,7 @@ class ServiceConfig
         if ($this->isNull($scope) || !ServiceScope::exists($scope)) {
             $scope = ServiceScope::CONTAINER;
         }
-        $this->_scope = $scope;
+        $this->scope = $scope;
     }
 
     /**
@@ -139,7 +139,7 @@ class ServiceConfig
      */
     public function getScope()
     {
-        return $this->_scope;
+        return $this->scope;
     }
 
     /**
@@ -147,7 +147,7 @@ class ServiceConfig
      */
     public function getCalls()
     {
-        return $this->_calls;
+        return $this->calls;
     }
 
     /**
@@ -155,6 +155,6 @@ class ServiceConfig
      */
     public function getClass()
     {
-        return $this->_class;
+        return $this->class;
     }
 }

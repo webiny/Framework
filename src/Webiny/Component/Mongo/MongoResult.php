@@ -22,23 +22,23 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      * Result object data
      * @var ArrayObject
      */
-    protected $_data;
+    protected $data;
 
     /**
      * Mongo driver command that produced this result
      * @var string
      */
-    protected $_command;
+    protected $command;
 
     public function __construct($command, array $data)
     {
-        $this->_command = $command;
-        $this->_data = new ArrayObject($data);
+        $this->command = $command;
+        $this->data = new ArrayObject($data);
     }
 
-    function __get($name)
+    public function _get($name)
     {
-        return $this->_data->key($name);
+        return $this->data->key($name);
     }
 
     /**
@@ -47,7 +47,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      * @return array
      */
     public function toArray(){
-        return $this->_data->val();
+        return $this->data->val();
     }
 
     /**
@@ -59,7 +59,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->_data->val());
+        return new \ArrayIterator($this->data->val());
     }
 
     /**
@@ -78,7 +78,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function offsetExists($offset)
     {
-        return $this->_data->keyExists($offset);
+        return $this->data->keyExists($offset);
     }
 
     /**
@@ -94,7 +94,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function offsetGet($offset)
     {
-        return $this->_data->key($offset);
+        return $this->data->key($offset);
     }
 
     /**
@@ -113,7 +113,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function offsetSet($offset, $value)
     {
-        $this->_data->key($offset, $value);
+        $this->data->key($offset, $value);
     }
 
     /**
@@ -129,7 +129,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function offsetUnset($offset)
     {
-        $this->_data->removeKey($offset);
+        $this->data->removeKey($offset);
     }
 
     /**
@@ -143,6 +143,6 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function count()
     {
-        return $this->_data->count();
+        return $this->data->count();
     }
 }

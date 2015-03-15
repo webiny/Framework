@@ -22,7 +22,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider DriverSet
      */
-    function testConstructor($logger)
+    public function testConstructor($logger)
     {
         $this->assertInstanceOf('\Webiny\Component\Logger\Logger', $logger);
     }
@@ -30,7 +30,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider DriverSet
      */
-    function testLogger(Logger $logger)
+    public function testLogger(Logger $logger)
     {
         $fileLocation = __DIR__.'/UnitTest.log';
         $logger->error('Test error message!', ['customValue' => 'Webiny']);
@@ -48,7 +48,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         @unlink($fileLocation);
     }
 
-    function DriverSet()
+    public function DriverSet()
     {
         Storage::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
         Logger::setConfig(realpath(__DIR__ . '/' . self::CONFIG));

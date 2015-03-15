@@ -28,18 +28,18 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      * Name of the token.
      * @var string
      */
-    private $_tokenName;
+    private $tokenName;
 
     /**
      * Security key used for encrypting the token data.
      * @var string
      */
-    private $_securityKey;
+    private $securityKey;
 
     /**
      * @var string Name of the crypt service.
      */
-    private $_crypt;
+    private $crypt;
 
 
     /**
@@ -49,7 +49,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function setTokenName($tokenName)
     {
-        $this->_tokenName = $tokenName;
+        $this->tokenName = $tokenName;
     }
 
     /**
@@ -59,7 +59,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function getTokenName()
     {
-        return $this->_tokenName;
+        return $this->tokenName;
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function setCrypt(CryptDriverInterface $crypt)
     {
-        $this->_crypt = $crypt;
+        $this->crypt = $crypt;
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function getCrypt()
     {
-        return $this->_crypt;
+        return $this->crypt;
     }
 
     /**
@@ -177,7 +177,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      */
     public function setSecurityKey($securityKey)
     {
-        $this->_securityKey = $securityKey;
+        $this->securityKey = $securityKey;
     }
 
     /**
@@ -189,7 +189,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     public function getEncryptionKey()
     {
         // initial key
-        $securityKey = $this->_securityKey;
+        $securityKey = $this->securityKey;
 
         // append current session id
         $securityKey .= $this->httpSession()->getSessionId();

@@ -24,7 +24,7 @@ class Memcache extends MemcacheObject implements CacheStorageInterface
      * @param string $host
      * @param string $port
      */
-    function __construct($host, $port)
+    public function __construct($host, $port)
     {
         parent::__construct('webiny', $host, $port);
     }

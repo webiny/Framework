@@ -34,7 +34,7 @@ class Form implements AuthenticationInterface
      *
      * @return Login
      */
-    function getLoginObject(ConfigObject $config)
+    public function getLoginObject(ConfigObject $config)
     {
         $payloadUsername = $this->httpRequest()->payload('username', '');
         $payloadPassword = $this->httpRequest()->payload('password', '');
@@ -51,7 +51,7 @@ class Form implements AuthenticationInterface
      * Use this callback to clear the submit data from the previous request so that you don't get stuck in an
      * infinitive loop between login page and login submit page.
      */
-    function invalidLoginProvidedCallback()
+    public function invalidLoginProvidedCallback()
     {
         // nothing to do...post data is not forwarded so we don't have to clear it
     }
@@ -61,7 +61,7 @@ class Form implements AuthenticationInterface
      *
      * @param UserAbstract $user
      */
-    function loginSuccessfulCallback(UserAbstract $user)
+    public function loginSuccessfulCallback(UserAbstract $user)
     {
         // nothing to do
     }
@@ -75,7 +75,7 @@ class Form implements AuthenticationInterface
      *
      * @return mixed
      */
-    function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
+    public function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
     {
         // nothing to do
     }
@@ -83,7 +83,7 @@ class Form implements AuthenticationInterface
     /**
      * Logout callback is called when user auth token was deleted.
      */
-    function logoutCallback()
+    public function logoutCallback()
     {
         // nothing to do
     }

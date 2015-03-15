@@ -24,7 +24,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider driverSet
      */
-    function testSingleIndex(Mongo $mongo)
+    public function testSingleIndex(Mongo $mongo)
     {
         $collection = 'TestIndexCollection';
         $mongo->dropCollection($collection);
@@ -42,7 +42,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(4, count($indexes));
     }
 
-    function driverSet()
+    public function driverSet()
     {
         Mongo::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
 

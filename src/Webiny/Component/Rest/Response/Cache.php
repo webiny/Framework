@@ -25,7 +25,7 @@ class Cache
     /**
      * @var RequestBag
      */
-    private $_requestBag;
+    private $requestBag;
 
 
     /**
@@ -93,7 +93,7 @@ class Cache
      */
     public function __construct(RequestBag $requestBag)
     {
-        $this->_requestBag = $requestBag;
+        $this->requestBag = $requestBag;
     }
 
     /**
@@ -107,11 +107,11 @@ class Cache
     public function getCallbackResultFromCache()
     {
         // get cache key
-        $cacheKey = $this->_getCacheKey();
+        $cacheKey = $this->getCacheKey();
 
         // check if cached
         try {
-            $cache = $this->cache($this->_requestBag->getApiConfig()->get('Cache'));
+            $cache = $this->cache($this->requestBag->getApiConfig()->get('Cache'));
 
             return $cache->read($cacheKey);
         } catch (\Exception $e) {
@@ -130,13 +130,13 @@ class Cache
     public function saveCallbackResult($result)
     {
         // get cache key
-        $cacheKey = $this->_getCacheKey();
+        $cacheKey = $this->getCacheKey();
 
         // cache the result
         try {
-            $cache = $this->cache($this->_requestBag->getApiConfig()->get('Cache'));
+            $cache = $this->cache($this->requestBag->getApiConfig()->get('Cache'));
 
-            return $cache->save($cacheKey, $result, $this->_requestBag->getMethodData()['cache']['ttl']);
+            return $cache->save($cacheKey, $result, $this->requestBag->getMethodData()['cache']['ttl']);
         } catch (\Exception $e) {
             throw new RestException('Unable to save the result into cache. ' . $e->getMessage());
         }
@@ -151,11 +151,11 @@ class Cache
     public function purgeCacheResult()
     {
         // get cache key
-        $cacheKey = $this->_getCacheKey();
+        $cacheKey = $this->getCacheKey();
 
         // cache the result
         try {
-            $cache = $this->cache($this->_requestBag->getApiConfig()->get('Cache'));
+            $cache = $this->cache($this->requestBag->getApiConfig()->get('Cache'));
 
             return $cache->delete($cacheKey);
         } catch (\Exception $e) {
@@ -168,10 +168,10 @@ class Cache
      *
      * @return string Cache key.
      */
-    private function _getCacheKey()
+    private function getCacheKey()
     {
-        if ($this->_requestBag->getClassData()['cacheKeyInterface']) {
-            $cacheKey = $this->_requestBag->getClassInstance()->getCacheKey();
+        if ($this->requestBag->getClassData()['cacheKeyInterface']) {
+            $cacheKey = $this->requestBag->getClassInstance()->getCacheKey();
         } else {
             $url = $this->httpRequest()->getCurrentUrl(true);
             $cacheKey = 'path-' . $url->getPath();
@@ -179,7 +179,7 @@ class Cache
             $cacheKey .= 'method-' . $this->httpRequest()->getRequestMethod();
             $cacheKey .= 'post-' . $this->serialize($this->httpRequest()->getPost()->getAll());
             $cacheKey .= 'payload-' . $this->serialize($this->httpRequest()->getPayload()->getAll());
-            $cacheKey .= 'version-' . $this->_requestBag->getClassData()['version'];
+            $cacheKey .= 'version-' . $this->requestBag->getClassData()['version'];
             $cacheKey = md5($cacheKey);
         }
 

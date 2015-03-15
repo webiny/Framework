@@ -31,7 +31,7 @@ class TwitterOAuth implements UserProviderInterface
      * @return UserAbstract
      * @throws UserNotFoundException
      */
-    function getUser(Login $login)
+    public function getUser(Login $login)
     {
         // check if we have the tw_oauth_server attribute
         if (!$login->getAttribute('tw_oauth_server')) {

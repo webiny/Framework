@@ -23,27 +23,27 @@ class Plugin
     /**
      * @var string
      */
-    private $_name;
+    private $name;
 
     /**
      * @var string
      */
-    private $_type;
+    private $type;
 
     /**
      * @var callable|string
      */
-    private $_callbackFunction;
+    private $callbackFunction;
 
     /**
      * @var array
      */
-    private $_params;
+    private $params;
 
     /**
      * @var \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject
      */
-    private $_attributes;
+    private $attributes;
 
 
     /**
@@ -58,11 +58,11 @@ class Plugin
      */
     public function __construct($name, $type, $callbackFunction, $params = [])
     {
-        $this->_name = $name;
-        $this->_type = $type;
-        $this->_callbackFunction = $callbackFunction;
-        $this->_params = $params;
-        $this->_attributes = $this->arr([]);
+        $this->name = $name;
+        $this->type = $type;
+        $this->callbackFunction = $callbackFunction;
+        $this->params = $params;
+        $this->attributes = $this->arr([]);
     }
 
     /**
@@ -73,7 +73,7 @@ class Plugin
      */
     public function setAttribute($key, $value)
     {
-        $this->_attributes->key($key, $value);
+        $this->attributes->key($key, $value);
     }
 
     /**
@@ -86,7 +86,7 @@ class Plugin
      */
     public function getAttribute($key, $defaultValue = false)
     {
-        return $this->_attributes->key($key, $defaultValue, true);
+        return $this->attributes->key($key, $defaultValue, true);
     }
 
     /**
@@ -96,7 +96,7 @@ class Plugin
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -106,7 +106,7 @@ class Plugin
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -116,7 +116,7 @@ class Plugin
      */
     public function getCallbackFunction()
     {
-        return $this->_callbackFunction;
+        return $this->callbackFunction;
     }
 
     /**
@@ -126,6 +126,6 @@ class Plugin
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->params;
     }
 }

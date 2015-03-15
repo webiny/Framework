@@ -50,7 +50,7 @@ abstract class ExceptionAbstract extends \Exception implements ExceptionInterfac
      *
      * @var array
      */
-    private static $_coreMessages = [
+    private static $coreMessages = [
         1 => 'Bad function call.',
         2 => 'Bad method call.',
         3 => 'Invalid argument provided. %s must be type of %s.',
@@ -74,14 +74,14 @@ abstract class ExceptionAbstract extends \Exception implements ExceptionInterfac
             $code = $message;
             if ($code < 100) {
                 // built-in range
-                if ($this->is(self::$_coreMessages[$code])) {
-                    $message = self::$_coreMessages[$code];
+                if ($this->is(self::$coreMessages[$code])) {
+                    $message = self::$coreMessages[$code];
                 } else {
                     $message = 'Unknown exception message for the given code "' . $code . '".';
                 }
             } else {
-                if ($this->is(static::$_messages[$code])) {
-                    $message = static::$_messages[$code];
+                if ($this->is(static::$messages[$code])) {
+                    $message = static::$messages[$code];
                 } else {
                     $message = 'Unknown exception message for the given code "' . $code . '".';
                 }

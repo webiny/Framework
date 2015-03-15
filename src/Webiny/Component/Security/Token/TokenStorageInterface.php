@@ -22,7 +22,7 @@ interface TokenStorageInterface
      *
      * @param string $tokenName Token name.
      */
-    function setTokenName($tokenName);
+    public function setTokenName($tokenName);
 
     /**
      * Save user authentication token.
@@ -31,26 +31,26 @@ interface TokenStorageInterface
      *
      * @return bool
      */
-    function saveUserToken(UserAbstract $user);
+    public function saveUserToken(UserAbstract $user);
 
     /**
      * Check if auth token is present, if true, try to load the right user and return it's username.
      *
      * @return bool|UserAbstract False it user token is not available, otherwise the UserAbstract object is returned.
      */
-    function loadUserFromToken();
+    public function loadUserFromToken();
 
     /**
      * Deletes the current auth token.
      *
      * @return bool
      */
-    function deleteUserToken();
+    public function deleteUserToken();
 
     /**
      * Sets the security key that will be used for encryption of token data.
      *
      * @param string $securityKey Must have 16/32/64 chars.
      */
-    function setSecurityKey($securityKey);
+    public function setSecurityKey($securityKey);
 }

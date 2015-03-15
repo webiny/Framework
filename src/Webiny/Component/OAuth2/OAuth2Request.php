@@ -22,32 +22,32 @@ class OAuth2Request
     /**
      * @var OAuth2Abstract
      */
-    private $_oauth2;
+    private $oauth2;
 
     /**
      * @var string Request url.
      */
-    private $_url;
+    private $url;
 
     /**
      * @var string Request type.
      */
-    private $_requestType = 'GET';
+    private $requestType = 'GET';
 
     /**
      * @var array Request parameters.
      */
-    private $_params = [];
+    private $params = [];
 
     /**
      * @var array Request headers.
      */
-    private $_headers = [];
+    private $headers = [];
 
     /**
      * @var string Certificate file
      */
-    private $_certificateFile = '';
+    private $certificateFile = '';
 
 
     /**
@@ -57,9 +57,9 @@ class OAuth2Request
      */
     public function __construct(OAuth2 $oauth2)
     {
-        $this->_oauth2 = $oauth2;
+        $this->oauth2 = $oauth2;
 
-        $this->_certificateFile = $oauth2->getCertificate();
+        $this->certificateFile = $oauth2->getCertificate();
     }
 
     /**
@@ -69,7 +69,7 @@ class OAuth2Request
      */
     public function setUrl($url)
     {
-        $this->_url = $url;
+        $this->url = $url;
     }
 
     /**
@@ -79,7 +79,7 @@ class OAuth2Request
      */
     public function getUrl()
     {
-        return $this->_url;
+        return $this->url;
     }
 
     /**
@@ -99,7 +99,7 @@ class OAuth2Request
             );
         }
 
-        $this->_requestType = $requestType->val();
+        $this->requestType = $requestType->val();
     }
 
     /**
@@ -109,7 +109,7 @@ class OAuth2Request
      */
     public function getRequestType()
     {
-        return $this->_requestType;
+        return $this->requestType;
     }
 
     /**
@@ -119,7 +119,7 @@ class OAuth2Request
      */
     public function setParams(array $params)
     {
-        $this->_params = $params;
+        $this->params = $params;
     }
 
     /**
@@ -129,7 +129,7 @@ class OAuth2Request
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->params;
     }
 
     /**
@@ -139,7 +139,7 @@ class OAuth2Request
      */
     public function setHeaders(array $headers)
     {
-        $this->_headers = $headers;
+        $this->headers = $headers;
     }
 
     /**
@@ -149,7 +149,7 @@ class OAuth2Request
      */
     public function getHeaders()
     {
-        return $this->_headers;
+        return $this->headers;
     }
 
     /**
@@ -166,17 +166,17 @@ class OAuth2Request
         $curl_options = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_CUSTOMREQUEST  => $this->_requestType
+            CURLOPT_CUSTOMREQUEST  => $this->requestType
         ];
 
         // set to post
-        if ($this->_requestType == 'POST') {
+        if ($this->requestType == 'POST') {
             $curl_options[CURLOPT_POST] = true;
         }
 
         // build url and append query params
         $url = $this->url($this->getUrl());
-        $this->_params[$this->_oauth2->getAccessTokenName()] = $this->_oauth2->getAccessToken();
+        $this->params[$this->oauth2->getAccessTokenName()] = $this->oauth2->getAccessToken();
         if (count($this->getParams()) > 0) {
             $url->setQuery($this->getParams());
         }
@@ -196,10 +196,10 @@ class OAuth2Request
         curl_setopt_array($ch, $curl_options);
 
         // https handling
-        if ($this->_certificateFile != '') {
+        if ($this->certificateFile != '') {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($ch, CURLOPT_CAINFO, $this->_certificateFile);
+            curl_setopt($ch, CURLOPT_CAINFO, $this->certificateFile);
         } else {
             // bypass ssl verification
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

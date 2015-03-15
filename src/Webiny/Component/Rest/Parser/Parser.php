@@ -26,7 +26,7 @@ class Parser
      */
     public function parseApi($class, $normalize)
     {
-        $versions = $this->_getVersions($class);
+        $versions = $this->getVersions($class);
 
         $parsedApi = new ParsedApi($class);
         foreach ($versions['versions'] as $v => $versionClass) {
@@ -47,7 +47,7 @@ class Parser
      *
      * @return array
      */
-    private function _getVersions($class)
+    private function getVersions($class)
     {
         $versions = [
             'versions' => [

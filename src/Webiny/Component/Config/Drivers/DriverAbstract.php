@@ -30,20 +30,20 @@ abstract class DriverAbstract
      * Contains config data which needs to be parsed and converted to ConfigObject
      * @var null|string|array Resource given to config driver
      */
-    protected $_resource = null;
+    protected $resource = null;
 
     /**
      * Get config data as string
      *
      * @return string Formatted config data
      */
-    abstract protected function _getString();
+    abstract protected function getStringInternal();
 
     /**
      * Parse config resource and build config array
      * @return array|ArrayObject Config data
      */
-    abstract protected function _getArray();
+    abstract protected function getArrayInternal();
 
     /**
      * Create config driver instance
@@ -55,25 +55,25 @@ abstract class DriverAbstract
      */
     public function __construct($resource = null)
     {
-        $this->_resource = $resource;
+        $this->resource = $resource;
 
-        if (self::isNull($this->_resource) || !$this->_resource) {
+        if (self::isNull($this->resource) || !$this->resource) {
             throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.'
             );
         }
 
         if($this->isStdObject($resource)){
-            $this->_resource = $resource->val();
+            $this->resource = $resource->val();
         }
 
-        if ($this->isArray($this->_resource)) {
+        if ($this->isArray($this->resource)) {
             return;
         }
 
         /**
          * Perform string checks
          */
-        if ($this->str($this->_resource)->trim()->length() == 0) {
+        if ($this->str($this->resource)->trim()->length() == 0) {
             throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
             );
         }
@@ -81,13 +81,13 @@ abstract class DriverAbstract
         /**
          * If it's a file - get its contents
          */
-        if ($this->_isFilepath($this->_resource)) {
-            if (!$this->isFile($this->_resource)) {
+        if ($this->isFilepath($this->resource)) {
+            if (!$this->isFile($this->resource)) {
                 throw new ConfigException('Invalid config file path given!');
             }
-            $path = dirname($this->_resource);
-            $this->_resource = file_get_contents($this->_resource);
-            $this->_resource = str_replace('__DIR__', $path, $this->_resource);
+            $path = dirname($this->resource);
+            $this->resource = file_get_contents($this->resource);
+            $this->resource = str_replace('__DIR__', $path, $this->resource);
         }
     }
 
@@ -99,7 +99,7 @@ abstract class DriverAbstract
      */
     final public function getString()
     {
-        $res = $this->_getString();
+        $res = $this->getStringInternal();
         if (!$this->isString($res) && !$this->isStringObject($res)) {
             throw new ConfigException('DriverAbstract method _getString() must return string or StringObject.');
         }
@@ -115,7 +115,7 @@ abstract class DriverAbstract
      */
     final public function getArray()
     {
-        $res = $this->_getArray();
+        $res = $this->getArrayInternal();
         if (!$this->isArray($res) && !$this->isArrayObject($res)) {
             $errorMessage = 'DriverAbstract method _getArray() must return array or ArrayObject.';
             $errorMessage .= ' Make sure you have provided a valid config file path with file extension.';
@@ -132,10 +132,10 @@ abstract class DriverAbstract
     final public function getResource()
 
     {
-        return $this->_resource;
+        return $this->resource;
     }
 
-    private function _isFilepath($string)
+    private function isFilepath($string)
     {
         if (!$this->isString($string)) {
             return false;

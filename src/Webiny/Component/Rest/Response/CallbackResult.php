@@ -24,7 +24,7 @@ class CallbackResult
     /**
      * @var array An array of default messages based on http response status code.
      */
-    private static $_defaultMessages = [
+    private static $defaultMessages = [
         200 => 'OK',
         // Response to a successful GET, PUT, PATCH or DELETE.
 
@@ -69,32 +69,32 @@ class CallbackResult
     /**
      * @var int Default status code.
      */
-    private $_statusCode = 200;
+    private $statusCode = 200;
 
     /**
      * @var string Default status code message
      */
-    private $_message = 'OK';
+    private $message = 'OK';
 
     /**
      * @var array List of attached debug headers.
      */
-    private $_debugHeaders = [];
+    private $debugHeaders = [];
 
     /**
      * @var array Array containing output data.
      */
-    private $_outputArray;
+    private $outputArray;
 
     /**
      * @var string string Environment.
      */
-    private $_env = 'production';
+    private $env = 'production';
 
     /**
      * @var int Number of seconds that defines the Expires cache header.
      */
-    private $_expiresIn = 0;
+    private $expiresIn = 0;
 
 
     /**
@@ -108,13 +108,13 @@ class CallbackResult
      */
     public function setHeaderResponse($statusCode, $message = '')
     {
-        $this->_statusCode = $statusCode;
-        $this->_message = $message;
+        $this->statusCode = $statusCode;
+        $this->message = $message;
         if ($message == '') {
-            $this->_message = self::$_defaultMessages[$statusCode];
+            $this->message = self::$defaultMessages[$statusCode];
         }
 
-        if (empty($this->_message)) {
+        if (empty($this->message)) {
             throw new RestException('Invalid http response status code: ' . $statusCode);
         }
 
@@ -132,14 +132,14 @@ class CallbackResult
      */
     public function setErrorResponse($message, $description = '', $code = '')
     {
-        $this->_outputArray['errorReport']['message'] = $message;
+        $this->outputArray['errorReport']['message'] = $message;
 
         if (!empty($description)) {
-            $this->_outputArray['errorReport']['description'] = $description;
+            $this->outputArray['errorReport']['description'] = $description;
         }
 
         if (!empty($code)) {
-            $this->_outputArray['errorReport']['code'] = $code;
+            $this->outputArray['errorReport']['code'] = $code;
         }
 
         return $this;
@@ -154,7 +154,7 @@ class CallbackResult
      */
     public function addErrorMessage(array $error)
     {
-        $this->_outputArray['errorReport']['errors'][] = $error;
+        $this->outputArray['errorReport']['errors'][] = $error;
 
         return $this;
     }
@@ -166,7 +166,7 @@ class CallbackResult
      */
     public function getError()
     {
-        return empty($this->_outputArray['errorReport']) ? false : $this->_outputArray['errorReport'];
+        return empty($this->outputArray['errorReport']) ? false : $this->outputArray['errorReport'];
     }
 
     /**
@@ -178,7 +178,7 @@ class CallbackResult
      */
     public function addDebugMessage($message)
     {
-        $this->_outputArray['debug'][] = $message;
+        $this->outputArray['debug'][] = $message;
 
         return $this;
     }
@@ -192,7 +192,7 @@ class CallbackResult
      */
     public function setData($data)
     {
-        $this->_outputArray['data'] = $data;
+        $this->outputArray['data'] = $data;
 
         return $this;
     }
@@ -204,7 +204,7 @@ class CallbackResult
      */
     public function getData()
     {
-        return $this->_outputArray['data'];
+        return $this->outputArray['data'];
     }
 
     /**
@@ -219,7 +219,7 @@ class CallbackResult
     public function attachDebugHeader($name, $value, $ignoreEnv = false)
     {
 
-        if ($this->_env != 'development' && !$ignoreEnv) {
+        if ($this->env != 'development' && !$ignoreEnv) {
             return $this;
         }
 
@@ -227,7 +227,7 @@ class CallbackResult
             $name = 'X-Webiny-Rest-' . $name;
         }
 
-        $this->_debugHeaders[$name] = $value;
+        $this->debugHeaders[$name] = $value;
 
         return $this;
     }
@@ -239,7 +239,7 @@ class CallbackResult
      */
     public function getOutput()
     {
-        return $this->_outputArray;
+        return $this->outputArray;
     }
 
     /**
@@ -249,7 +249,7 @@ class CallbackResult
      */
     public function setEnvToDevelopment()
     {
-        $this->_env = 'development';
+        $this->env = 'development';
 
         return $this;
     }
@@ -263,7 +263,7 @@ class CallbackResult
      */
     public function setExpiresIn($expiresIn)
     {
-        $this->_expiresIn = $expiresIn;
+        $this->expiresIn = $expiresIn;
 
         return $this;
     }
@@ -275,29 +275,29 @@ class CallbackResult
     {
         // check environment to see what and how to do the output
         $prettyPrint = false;
-        if ($this->_env == 'development') {
+        if ($this->env == 'development') {
             $prettyPrint = true;
-            unset($this->_outputArray['debug']);
+            unset($this->outputArray['debug']);
         }
 
         // if there is an error, we always dump the content
-        if (!empty($this->_outputArray['errorReport'])) {
-            unset($this->_outputArray['data']);
+        if (!empty($this->outputArray['errorReport'])) {
+            unset($this->outputArray['data']);
         }
 
         // build response
-        if (empty($this->_outputArray)) {
+        if (empty($this->outputArray)) {
             $response = $this->httpResponse();
         } else {
-            $response = new JsonResponse($this->_outputArray, $this->_debugHeaders, $prettyPrint);
+            $response = new JsonResponse($this->outputArray, $this->debugHeaders, $prettyPrint);
         }
 
         // set proper status code to the response
-        $response->setStatusCode($this->_statusCode, $this->_message);
+        $response->setStatusCode($this->statusCode, $this->message);
 
         // check the expires header
-        if ($this->_expiresIn > 0) {
-            $expiration = $this->dateTime()->add('PT' . $this->_expiresIn . 'S');
+        if ($this->expiresIn > 0) {
+            $expiration = $this->dateTime()->add('PT' . $this->expiresIn . 'S');
             $response->cacheControl()->setAsCache($expiration);
         }
 

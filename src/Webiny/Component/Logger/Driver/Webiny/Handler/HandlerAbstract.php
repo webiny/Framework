@@ -19,19 +19,19 @@ abstract class HandlerAbstract
 {
     use StdLibTrait;
 
-    protected $_levels = [];
-    protected $_bubble = true;
-    protected $_buffer = false;
+    protected $levels = [];
+    protected $bubble = true;
+    protected $buffer = false;
 
     /**
      * @var FormatterInterface
      */
-    protected $_formatter = null;
-    protected $_processors = [];
-    protected $_records = [];
+    protected $formatter = null;
+    protected $processors = [];
+    protected $records = [];
 
-    private $_processorInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Processor\ProcessorInterface';
-    private $_formatterInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterInterface';
+    private $processorInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Processor\ProcessorInterface';
+    private $formatterInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterInterface';
 
     /**
      * Writes the record down to the log of the implementing handler
@@ -47,7 +47,7 @@ abstract class HandlerAbstract
      *
      * @return FormatterAbstract
      */
-    abstract protected function _getDefaultFormatter();
+    abstract protected function getDefaultFormatter();
 
     /**
      * @param array|ArrayObject $levels The minimum logging level at which this handler will be triggered
@@ -58,10 +58,10 @@ abstract class HandlerAbstract
      */
     public function __construct($levels = [], $bubble = true, $buffer = false)
     {
-        $this->_levels = $this->arr($levels);
-        $this->_bubble = $bubble;
-        $this->_buffer = $buffer;
-        $this->_processors = $this->arr();
+        $this->levels = $this->arr($levels);
+        $this->bubble = $bubble;
+        $this->buffer = $buffer;
+        $this->processors = $this->arr();
     }
 
     /**
@@ -85,11 +85,11 @@ abstract class HandlerAbstract
      */
     public function canHandle(Record $record)
     {
-        if ($this->_levels->count() < 1) {
+        if ($this->levels->count() < 1) {
             return true;
         }
 
-        return $this->_levels->inArray($record->getLevel());
+        return $this->levels->inArray($record->getLevel());
     }
 
     /**
@@ -100,8 +100,8 @@ abstract class HandlerAbstract
      */
     public function stopHandling()
     {
-        if ($this->_buffer) {
-            $this->_processRecords($this->_records);
+        if ($this->buffer) {
+            $this->processRecords($this->records);
         }
     }
 
@@ -117,15 +117,15 @@ abstract class HandlerAbstract
      */
     public function addProcessor($callback, $processBufferRecord = false)
     {
-        if (!is_callable($callback) && !$this->isInstanceOf($callback, $this->_processorInterfaceClass)) {
-            throw new \InvalidArgumentException('Processor must be valid callable or an instance of ' . $this->_processorInterfaceClass
+        if (!is_callable($callback) && !$this->isInstanceOf($callback, $this->processorInterfaceClass)) {
+            throw new \InvalidArgumentException('Processor must be valid callable or an instance of ' . $this->processorInterfaceClass
             );
         }
 
         if ($processBufferRecord) {
-            $this->_bufferProcessors->prepend($callback);
+            $this->bufferProcessors->prepend($callback);
         } else {
-            $this->_processors->prepend($callback);
+            $this->processors->prepend($callback);
         }
 
 
@@ -134,7 +134,7 @@ abstract class HandlerAbstract
 
     public function setFormatter(FormatterInterface $formatter)
     {
-        $this->_formatter = $formatter;
+        $this->formatter = $formatter;
 
         return $this;
     }
@@ -150,18 +150,18 @@ abstract class HandlerAbstract
     public function process(Record $record)
     {
 
-        if ($this->_buffer) {
-            $this->_processRecord($record);
-            $this->_records[] = $record;
+        if ($this->buffer) {
+            $this->processRecord($record);
+            $this->records[] = $record;
 
-            return $this->_bubble;
+            return $this->bubble;
         }
 
-        $this->_processRecord($record);
-        $this->_getFormatter()->formatRecord($record);
+        $this->processRecord($record);
+        $this->getFormatter()->formatRecord($record);
         $this->write($record);
 
-        return $this->_bubble;
+        return $this->bubble;
     }
 
     /**
@@ -171,11 +171,11 @@ abstract class HandlerAbstract
      *
      * @return Record Processed Record object
      */
-    protected function _processRecord(Record $record)
+    protected function processRecord(Record $record)
     {
 
-        foreach ($this->_processors as $processor) {
-            if ($this->isInstanceOf($processor, $this->_processorInterfaceClass)) {
+        foreach ($this->processors as $processor) {
+            if ($this->isInstanceOf($processor, $this->processorInterfaceClass)) {
                 $processor->processRecord($record);
             } else {
                 call_user_func($processor, $record);
@@ -190,32 +190,32 @@ abstract class HandlerAbstract
      *
      * @return bool Bubble flag (this either continues propagation of the Record to other handlers, or stops the logger from processing this record any further)
      */
-    protected function _processRecords(array $records)
+    protected function processRecords(array $records)
     {
         $record = new Record();
-        $formatter = $this->_getFormatter();
-        if ($this->isInstanceOf($formatter, $this->_formatterInterfaceClass)) {
+        $formatter = $this->getFormatter();
+        if ($this->isInstanceOf($formatter, $this->formatterInterfaceClass)) {
             $formatter->formatRecords($records, $record);
         }
 
         $this->write($record);
 
-        return $this->_bubble;
+        return $this->bubble;
     }
 
     /**
      * @throws \Webiny\Component\Logger\LoggerException
      * @return FormatterInterface Instance of formatter to use for record formatting
      */
-    private function _getFormatter()
+    private function getFormatter()
     {
-        if ($this->isNull($this->_formatter)) {
-            $this->_formatter = $this->_getDefaultFormatter();
-            if (!$this->isInstanceOf($this->_formatter, $this->_formatterInterfaceClass)) {
-                throw new LoggerException('Formatter must be an instance of ' . $this->_formatterInterfaceClass);
+        if ($this->isNull($this->formatter)) {
+            $this->formatter = $this->getDefaultFormatter();
+            if (!$this->isInstanceOf($this->formatter, $this->formatterInterfaceClass)) {
+                throw new LoggerException('Formatter must be an instance of ' . $this->formatterInterfaceClass);
             }
         }
 
-        return $this->_formatter;
+        return $this->formatter;
     }
 }

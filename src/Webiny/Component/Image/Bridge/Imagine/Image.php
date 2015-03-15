@@ -32,7 +32,7 @@ class Image extends ImageAbstract
     /**
      * @var \Imagine\Imagick\Image
      */
-    private $_image;
+    private $image;
 
     /**
      * Base constructor.
@@ -41,7 +41,7 @@ class Image extends ImageAbstract
      */
     public function __construct(\Imagine\Image\ImageInterface $image)
     {
-        $this->_image = $image;
+        $this->image = $image;
     }
 
     /**
@@ -55,7 +55,7 @@ class Image extends ImageAbstract
     {
         $options['quality'] = isset($options['quality']) ? $options['quality'] : self::QUALITY;
 
-        return $this->_image->get($this->getFormat(), $options);
+        return $this->image->get($this->getFormat(), $options);
     }
 
     /**
@@ -65,7 +65,7 @@ class Image extends ImageAbstract
      */
     public function getSize()
     {
-        $size = $this->_image->getSize();
+        $size = $this->image->getSize();
 
         return $this->arr([
                               'width'  => $size->getWidth(),
@@ -89,7 +89,7 @@ class Image extends ImageAbstract
         $pointer = new Point($offestX, $offestY);
         $size = new Box($width, $height);
 
-        $this->_image->crop($pointer, $size);
+        $this->image->crop($pointer, $size);
 
         return $this;
     }
@@ -124,7 +124,7 @@ class Image extends ImageAbstract
 
         $size = new Box($width, $height);
 
-        $this->_image->resize($size);
+        $this->image->resize($size);
 
         return $this;
     }
@@ -145,7 +145,7 @@ class Image extends ImageAbstract
     {
         $color = new Color($bgColor);
 
-        $this->_image->rotate($angle, $color);
+        $this->image->rotate($angle, $color);
 
         return $this;
     }
@@ -157,7 +157,7 @@ class Image extends ImageAbstract
      */
     public function show()
     {
-        $this->_image->show($this->getFormat());
+        $this->image->show($this->getFormat());
     }
 
     /**
@@ -231,7 +231,7 @@ class Image extends ImageAbstract
             $this->resize($newWidth, $newHeight);
 
             $image->paste($this, $offsetX, $offsetY);
-            $this->_image = $image->getInstance();
+            $this->image = $image->getInstance();
             unset($image);
         }
 
@@ -251,7 +251,7 @@ class Image extends ImageAbstract
     {
         $point = new Point($offsetX, $offsetY);
 
-        $this->_image->paste($image->getInstance(), $point);
+        $this->image->paste($image->getInstance(), $point);
 
         return $this;
     }
@@ -264,6 +264,6 @@ class Image extends ImageAbstract
      */
     public function getInstance()
     {
-        return $this->_image;
+        return $this->image;
     }
 }

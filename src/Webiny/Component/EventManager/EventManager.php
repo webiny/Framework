@@ -25,18 +25,18 @@ class EventManager
      * Suppress EventManager events
      * @var bool
      */
-    private $_suppressEvents = false;
+    private $suppressEvents = false;
 
     /**
      * Registered events and event subscribers
      * @var ArrayObject
      */
-    private $_events;
+    private $events;
 
     /**
      * @var EventProcessor
      */
-    private $_eventProcessor;
+    private $eventProcessor;
 
     /**
      * Subscribe to event
@@ -58,9 +58,9 @@ class EventManager
             $eventListener = new EventListener();
         }
 
-        $eventListeners = $this->_events->key($eventName, [], true);
+        $eventListeners = $this->events->key($eventName, [], true);
         $eventListeners[] = $eventListener;
-        $this->_events->key($eventName, $eventListeners);
+        $this->events->key($eventName, $eventListeners);
 
         return $eventListener;
     }
@@ -91,24 +91,24 @@ class EventManager
     public function fire($eventName, $data = null, $resultType = null)
     {
 
-        if ($this->_suppressEvents) {
+        if ($this->suppressEvents) {
             return null;
         }
 
         if ($this->str($eventName)->endsWith('*')) {
-            return $this->_fireWildcardEvents($eventName, $data, $resultType);
+            return $this->fireWildcardEvents($eventName, $data, $resultType);
         }
 
-        if (!$this->_events->keyExists($eventName)) {
+        if (!$this->events->keyExists($eventName)) {
             return null;
         }
 
-        $eventListeners = $this->_events->key($eventName);
+        $eventListeners = $this->events->key($eventName);
         if (!$this->isInstanceOf($data, '\Webiny\Component\EventManager\Event')) {
             $data = new Event($data);
         }
 
-        return $this->_eventProcessor->process($eventListeners, $data, $resultType);
+        return $this->eventProcessor->process($eventListeners, $data, $resultType);
     }
 
     /**
@@ -120,7 +120,7 @@ class EventManager
      */
     public function enable()
     {
-        $this->_suppressEvents = false;
+        $this->suppressEvents = false;
 
         return $this;
     }
@@ -134,7 +134,7 @@ class EventManager
      */
     public function disable()
     {
-        $this->_suppressEvents = true;
+        $this->suppressEvents = true;
 
         return $this;
     }
@@ -148,7 +148,7 @@ class EventManager
      */
     public function getEventListeners($eventName)
     {
-        return $this->_events->key($eventName, [], true);
+        return $this->events->key($eventName, [], true);
     }
 
     /**
@@ -156,8 +156,8 @@ class EventManager
      */
     protected function init()
     {
-        $this->_events = $this->arr();
-        $this->_eventProcessor = EventProcessor::getInstance();
+        $this->events = $this->arr();
+        $this->eventProcessor = EventProcessor::getInstance();
     }
 
     /**
@@ -169,13 +169,13 @@ class EventManager
      *
      * @return null|array
      */
-    private function _fireWildcardEvents($eventName, $data, $resultType)
+    private function fireWildcardEvents($eventName, $data, $resultType)
     {
         // Get event prefix
         $eventPrefix = $this->str($eventName)->subString(0, -1)->val();
         // Find events starting with the prefix
         $events = [];
-        foreach ($this->_events as $eventName => $eventListeners) {
+        foreach ($this->events as $eventName => $eventListeners) {
             if ($this->str($eventName)->startsWith($eventPrefix)) {
                 $events[$eventName] = $eventListeners;
             }
@@ -188,7 +188,7 @@ class EventManager
 
             $results = $this->arr();
             foreach ($events as $eventListeners) {
-                $result = $this->_eventProcessor->process($eventListeners, $data, $resultType);
+                $result = $this->eventProcessor->process($eventListeners, $data, $resultType);
                 $results->merge($result);
             }
 

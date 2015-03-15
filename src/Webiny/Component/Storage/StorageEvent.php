@@ -35,17 +35,17 @@ class StorageEvent extends Event
     /**
      * @var File
      */
-    protected $_file;
+    protected $file;
 
     /**
      * @var Storage
      */
-    protected $_storage;
+    protected $storage;
 
     public function __construct(File $file)
     {
-        $this->_file = $file;
-        $this->_storage = $file->getStorage();
+        $this->file = $file;
+        $this->storage = $file->getStorage();
         parent::__construct();
     }
 
@@ -55,7 +55,7 @@ class StorageEvent extends Event
      */
     public function getFile()
     {
-        return $this->_file;
+        return $this->file;
     }
 
     /**
@@ -63,6 +63,6 @@ class StorageEvent extends Event
      */
     public function getStorage()
     {
-        return $this->_storage;
+        return $this->storage;
     }
 }

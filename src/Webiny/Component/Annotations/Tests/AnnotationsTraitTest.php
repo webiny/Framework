@@ -41,7 +41,7 @@ class AnnotationsTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPropertyAnnotations2()
     {
-        $annotations = $this->annotationsFromProperty('\Webiny\Component\Annotations\Tests\TestClass', '$_anotherVar');
+        $annotations = $this->annotationsFromProperty('\Webiny\Component\Annotations\Tests\TestClass', '$anotherVar');
 
         $this->assertSame("ADMIN", $annotations->access->role);
         $this->assertSame("3", $annotations->access->level);

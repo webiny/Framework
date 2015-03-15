@@ -23,7 +23,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getFunctions();
+    public function getFunctions();
 
     /**
      * Register modifiers.
@@ -34,7 +34,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getModifiers();
+    public function getModifiers();
 
     /**
      * Register block functions.
@@ -45,7 +45,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getBlockFunctions();
+    public function getBlockFunctions();
 
     /**
      * Register compiler functions.
@@ -56,7 +56,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getCompilerFunctions();
+    public function getCompilerFunctions();
 
     /**
      * Register pre filters.
@@ -66,7 +66,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getPreFilters();
+    public function getPreFilters();
 
     /**
      * Register post filters.
@@ -77,7 +77,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getPostFilters();
+    public function getPostFilters();
 
     /**
      * Register output filters.
@@ -88,7 +88,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getOutputFilters();
+    public function getOutputFilters();
 
     /**
      * Register resources.
@@ -99,7 +99,7 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getResources();
+    public function getResources();
 
     /**
      * Register insets.
@@ -109,12 +109,12 @@ interface SmartyExtensionInterface
      *
      * @return array of SmartySimplePlugin
      */
-    function getInserts();
+    public function getInserts();
 
     /**
      * Returns the name of the plugin.
      *
      * @return string
      */
-    function getName();
+    public function getName();
 }

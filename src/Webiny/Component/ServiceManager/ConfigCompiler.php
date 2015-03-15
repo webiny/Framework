@@ -23,9 +23,9 @@ class ConfigCompiler
 {
     use StdLibTrait;
 
-    private $_serviceName;
-    private $_serviceConfig;
-    private $_parameters;
+    private $serviceName;
+    private $serviceConfig;
+    private $parameters;
 
     /**
      * @param string       $serviceName Service name
@@ -34,9 +34,9 @@ class ConfigCompiler
      */
     public function __construct($serviceName, ConfigObject $config, $parameters)
     {
-        $this->_serviceName = $serviceName;
-        $this->_serviceConfig = $config->toArray(true);
-        $this->_parameters = $parameters;
+        $this->serviceName = $serviceName;
+        $this->serviceConfig = $config->toArray(true);
+        $this->parameters = $parameters;
     }
 
     /**
@@ -47,14 +47,14 @@ class ConfigCompiler
      */
     public function compile()
     {
-        $this->_manageInheritance();
-        $this->_serviceConfig = $this->_insertParameters($this->_serviceConfig);
-        $this->_buildArguments('Arguments');
-        $this->_buildArguments('MethodArguments');
-        $this->_buildCallsArguments();
-        $this->_buildFactoryArgument();
+        $this->manageInheritance();
+        $this->serviceConfig = $this->insertParameters($this->serviceConfig);
+        $this->buildArguments('Arguments');
+        $this->buildArguments('MethodArguments');
+        $this->buildCallsArguments();
+        $this->buildFactoryArgument();
 
-        return $this->_buildServiceConfig();
+        return $this->buildServiceConfig();
     }
 
     /**
@@ -62,9 +62,9 @@ class ConfigCompiler
      *
      * @throws ServiceManagerException
      */
-    private function _manageInheritance()
+    private function manageInheritance()
     {
-        $config = $this->_serviceConfig;
+        $config = $this->serviceConfig;
         if ($config->keyExists('Parent')) {
             $parentServiceName = $this->str($config->key('Parent'))->trimLeft('@')->val();
             $parentConfig = ServiceManager::getInstance()->getServiceConfig($parentServiceName)->toArray(true);
@@ -73,17 +73,17 @@ class ConfigCompiler
                                                   [$config->key('Parent')]
                 );
             }
-            $config = $this->_extendConfig($config, $parentConfig);
+            $config = $this->extendConfig($config, $parentConfig);
         }
 
         // Check if it's a potentially valid service definition
         if (!$config->keyExists('Class') && !$config->keyExists('Factory')) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_CLASS_KEY_NOT_FOUND,
-                                              [$this->_serviceName]
+                                              [$this->serviceName]
             );
         }
 
-        $this->_serviceConfig = $config;
+        $this->serviceConfig = $config;
     }
 
     /**
@@ -95,21 +95,21 @@ class ConfigCompiler
      *
      * @throws ServiceManagerException
      */
-    private function _insertParameters($config)
+    private function insertParameters($config)
     {
         foreach ($config as $k => $v) {
             if ($this->isArray($v)) {
-                $config[$k] = $this->_insertParameters($v);
+                $config[$k] = $this->insertParameters($v);
             } elseif ($this->isString($v)) {
                 $str = $this->str($v)->trim();
                 if ($str->startsWith('%') && $str->endsWith('%')) {
                     $parameter = $str->trim('%')->val();
-                    if (isset($this->_parameters[$parameter])) {
-                        $config[$k] = $this->_parameters[$parameter];
+                    if (isset($this->parameters[$parameter])) {
+                        $config[$k] = $this->parameters[$parameter];
                     } else {
                         throw new ServiceManagerException(ServiceManagerException::PARAMETER_NOT_FOUND, [
                                 $parameter,
-                                $this->_serviceName
+                                $this->serviceName
                             ]
                         );
                     }
@@ -129,7 +129,7 @@ class ConfigCompiler
      *
      * @return ArrayObject
      */
-    private function _extendConfig(ArrayObject $config, ArrayObject $parentConfig)
+    private function extendConfig(ArrayObject $config, ArrayObject $parentConfig)
     {
 
         $configCalls = null;
@@ -183,49 +183,49 @@ class ConfigCompiler
      *
      * @throws ServiceManagerException
      */
-    private function _buildArguments($key)
+    private function buildArguments($key)
     {
         $newArguments = [];
-        if ($this->_serviceConfig->keyExists($key)) {
-            $arguments = $this->_serviceConfig->key($key);
+        if ($this->serviceConfig->keyExists($key)) {
+            $arguments = $this->serviceConfig->key($key);
             if (!$this->isArray($arguments)) {
                 throw new ServiceManagerException(ServiceManagerException::INVALID_SERVICE_ARGUMENTS_TYPE,
-                                                  [$this->_serviceName]
+                                                  [$this->serviceName]
                 );
             }
             foreach ($arguments as $arg) {
                 $newArguments[] = new Argument($arg);
             }
         }
-        $this->_serviceConfig->key($key, $newArguments);
+        $this->serviceConfig->key($key, $newArguments);
     }
 
     /**
      * Convert factory service arguments into FactoryArgument objects
      */
-    private function _buildFactoryArgument()
+    private function buildFactoryArgument()
     {
-        if ($this->_serviceConfig->keyExists('Factory')) {
-            $factory = $this->str($this->_serviceConfig->key('Factory'));
-            $arguments = $this->_serviceConfig->key('Arguments', null, true);
+        if ($this->serviceConfig->keyExists('Factory')) {
+            $factory = $this->str($this->serviceConfig->key('Factory'));
+            $arguments = $this->serviceConfig->key('Arguments', null, true);
             // If it's a STATIC method call - unset all arguments
-            if ($this->_serviceConfig->key('Static', true, true) && !$factory->startsWith('@')) {
+            if ($this->serviceConfig->key('Static', true, true) && !$factory->startsWith('@')) {
                 $arguments = [];
             }
-            $factoryArgument = new FactoryArgument($this->_serviceConfig->key('Factory'), $arguments,
-                                                   $this->_serviceConfig->key('Static')
+            $factoryArgument = new FactoryArgument($this->serviceConfig->key('Factory'), $arguments,
+                                                   $this->serviceConfig->key('Static')
             );
-            $this->_serviceConfig->key('Factory', $factoryArgument);
+            $this->serviceConfig->key('Factory', $factoryArgument);
         }
     }
 
     /**
      * Build arguments for "Calls" methods
      */
-    private function _buildCallsArguments()
+    private function buildCallsArguments()
     {
-        if ($this->_serviceConfig->keyExists('Calls')) {
-            $calls = $this->_serviceConfig->key('Calls');
+        if ($this->serviceConfig->keyExists('Calls')) {
+            $calls = $this->serviceConfig->key('Calls');
             foreach ($calls as $callKey => $call) {
                 if ($this->isArray($call[1])) {
                     $newArguments = [];
@@ -235,7 +235,7 @@ class ConfigCompiler
                     $calls[$callKey][1] = $newArguments;
                 }
             }
-            $this->_serviceConfig->key('Calls', $calls);
+            $this->serviceConfig->key('Calls', $calls);
         }
     }
 
@@ -246,23 +246,23 @@ class ConfigCompiler
      *
      * @throws ServiceManagerException
      */
-    private function _buildServiceConfig()
+    private function buildServiceConfig()
     {
-        if ($this->_serviceConfig->keyExists('Factory') && !$this->_serviceConfig->keyExists('Method')) {
+        if ($this->serviceConfig->keyExists('Factory') && !$this->serviceConfig->keyExists('Method')) {
             throw new ServiceManagerException(ServiceManagerException::FACTORY_SERVICE_METHOD_KEY_MISSING,
-                                              [$this->_serviceName]
+                                              [$this->serviceName]
             );
         }
 
         $config = new ServiceConfig();
-        $config->setClass($this->_serviceConfig->key('Class', null, true));
-        $config->setArguments($this->_serviceConfig->key('Arguments', [], true));
-        $config->setCalls($this->_serviceConfig->key('Calls', [], true));
-        $config->setScope($this->_serviceConfig->key('Scope', ServiceScope::CONTAINER, true));
-        $config->setFactory($this->_serviceConfig->key('Factory', null, true));
-        $config->setMethod($this->_serviceConfig->key('Method', null, true));
-        $config->setMethodArguments($this->_serviceConfig->key('MethodArguments'));
-        $config->setStatic($this->_serviceConfig->key('Static', true, true));
+        $config->setClass($this->serviceConfig->key('Class', null, true));
+        $config->setArguments($this->serviceConfig->key('Arguments', [], true));
+        $config->setCalls($this->serviceConfig->key('Calls', [], true));
+        $config->setScope($this->serviceConfig->key('Scope', ServiceScope::CONTAINER, true));
+        $config->setFactory($this->serviceConfig->key('Factory', null, true));
+        $config->setMethod($this->serviceConfig->key('Method', null, true));
+        $config->setMethodArguments($this->serviceConfig->key('MethodArguments'));
+        $config->setStatic($this->serviceConfig->key('Static', true, true));
 
         return $config;
     }

@@ -12,14 +12,14 @@ use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
 class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
 {
 
-    function testConstruct()
+    public function testConstruct()
     {
         $dt = new DateTimeObject();
 
         $this->assertSame(time(), $dt->getTimestamp());
     }
 
-    function testConstructor2()
+    public function testConstructor2()
     {
         $dt = new DateTimeObject('14.02.2013');
         $dt->setFormat('d.m.Y');
@@ -35,14 +35,14 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($timestamp, $dt->getTimestamp());
     }
 
-    function testCreateFromFormat()
+    public function testCreateFromFormat()
     {
         $dt = DateTimeObject::createFromFormat('15-Feb-2009', 'j-M-Y');
 
         $this->assertSame('15-Feb-2009', $dt->val());
     }
 
-    function testDiff()
+    public function testDiff()
     {
         $start = new DateTimeObject('14.02.2013');
         $end = new DateTimeObject('03.03.2013');
@@ -52,28 +52,30 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(17, $diff->key('d'));
     }
 
-    function testGetOffset()
+    public function testGetOffset()
     {
-        $ny = $dt = new DateTimeObject("now", 'America/New_York');
+        $ny = new DateTimeObject("now", 'America/New_York');
 
-        $this->assertSame(-18000, $ny->getOffset());
+        if($ny->getOffset()!=-18000 && $ny->getOffset()!=-14400){ // based on daylight saving time
+            $this->assertFalse(true);
+        }
     }
 
-    function testGetTimezone()
+    public function testGetTimezone()
     {
         $dt = new DateTimeObject("now", 'Europe/Zagreb');
 
         $this->assertSame('Europe/Zagreb', $dt->getTimezone());
     }
 
-    function testGetDate()
+    public function testGetDate()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertSame("2013-02-14T00:00:00+00:00", $dt->getDate());
     }
 
-    function testGetYear()
+    public function testGetYear()
     {
         $dt = new DateTimeObject('14.02.2013');
 
@@ -84,70 +86,70 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Webiny\Component\StdLib\StdObject\StdObjectException
      * @expectedExceptionMessage Invalid format m for getYear
      */
-    function testGetYear2()
+    public function testGetYear2()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertSame("13", $dt->getYear('m'));
     }
 
-    function testGetMonth()
+    public function testGetMonth()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertSame("02", $dt->getMonth());
     }
 
-    function testGetWeek()
+    public function testGetWeek()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertSame("07", $dt->getWeek());
     }
 
-    function testGetDay()
+    public function testGetDay()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertSame("14", $dt->getDay());
     }
 
-    function testGetTime()
+    public function testGetTime()
     {
         $dt = new DateTimeObject('14.02.2013 14:33:18');
 
         $this->assertSame("14:33:18", $dt->getTime());
     }
 
-    function testGetHours()
+    public function testGetHours()
     {
         $dt = new DateTimeObject('14.02.2013 14:33:18');
 
         $this->assertSame("14", $dt->getHours());
     }
 
-    function testGetMinutes()
+    public function testGetMinutes()
     {
         $dt = new DateTimeObject('14.02.2013 14:33:18');
 
         $this->assertSame("33", $dt->getMinutes());
     }
 
-    function testGetSeconds()
+    public function testGetSeconds()
     {
         $dt = new DateTimeObject('14.02.2013 14:33:18');
 
         $this->assertSame("18", $dt->getSeconds());
     }
 
-    function testGetMeridiem()
+    public function testGetMeridiem()
     {
         $dt = new DateTimeObject('14.02.2013 14:33:18');
 
         $this->assertSame("pm", $dt->getMeridiem());
     }
 
-    function testAdd()
+    public function testAdd()
     {
         $dt = new DateTimeObject('14.02.2013');
         $dt->add("5 days");
@@ -155,7 +157,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('19.02.2013', $dt->format('d.m.Y'));
     }
 
-    function testAdd2()
+    public function testAdd2()
     {
         $dt = new DateTimeObject('14.02.2013');
         $dt->add("P5D");
@@ -163,7 +165,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('19.02.2013', $dt->format('d.m.Y'));
     }
 
-    function testSetDate()
+    public function testSetDate()
     {
         $dt = new DateTimeObject('14.02.2013');
         $dt->setDate('2014', '01', '15');
@@ -171,7 +173,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('15.01.2014', $dt->format('d.m.Y'));
     }
 
-    function testSetTime()
+    public function testSetTime()
     {
         $dt = new DateTimeObject('14.02.2013 12:00:00');
         $dt->setDate('2014', '01', '15')->setTime('14', '25');
@@ -179,7 +181,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('14:25:00', $dt->format('H:i:s'));
     }
 
-    function testSub()
+    public function testSub()
     {
         $dt = new DateTimeObject('14.02.2013');
         $dt->sub("5 days");
@@ -187,70 +189,70 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('09.02.2013', $dt->format('d.m.Y'));
     }
 
-    function testIsLeap()
+    public function testIsLeap()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertFalse($dt->isLeap());
     }
 
-    function testIsLeap2()
+    public function testIsLeap2()
     {
         $dt = new DateTimeObject('01.01.2012');
 
         $this->assertTrue($dt->isLeap());
     }
 
-    function testIsFuture()
+    public function testIsFuture()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertFalse($dt->isFuture());
     }
 
-    function testIsFuture2()
+    public function testIsFuture2()
     {
         $dt = new DateTimeObject('01.01.2020');
 
         $this->assertTrue($dt->isFuture());
     }
 
-    function testIsPast()
+    public function testIsPast()
     {
         $dt = new DateTimeObject('14.02.2020');
 
         $this->assertFalse($dt->isPast());
     }
 
-    function testIsPast2()
+    public function testIsPast2()
     {
         $dt = new DateTimeObject('01.01.2002');
 
         $this->assertTrue($dt->isPast());
     }
 
-    function testLargerThan()
+    public function testLargerThan()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertTrue($dt->largerThan('13.02.2013'));
     }
 
-    function testLargerThan2()
+    public function testLargerThan2()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertFalse($dt->largerThan('15.02.2013'));
     }
 
-    function testSmallerThan()
+    public function testSmallerThan()
     {
         $dt = new DateTimeObject('14.02.2013');
 
         $this->assertTrue($dt->smallerThan('15.02.2013'));
     }
 
-    function testSmallerThan2()
+    public function testSmallerThan2()
     {
         $dt = new DateTimeObject('14.02.2013');
 

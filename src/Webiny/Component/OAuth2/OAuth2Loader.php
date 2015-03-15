@@ -20,7 +20,7 @@ class OAuth2Loader
 {
     use StdLibTrait, HttpTrait;
 
-    private static $_instances = [];
+    private static $instances = [];
 
     /**
      * Returns an instance to OAuth2 server based on the current configuration.
@@ -32,8 +32,8 @@ class OAuth2Loader
      */
     public static function getInstance($key)
     {
-        if (isset(self::$_instances[$key])) {
-            return self::$_instances;
+        if (isset(self::$instances[$key])) {
+            return self::$instances;
         }
 
         $oauth2Config = OAuth2::getConfig()->get($key, false);

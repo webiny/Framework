@@ -21,14 +21,14 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 {
     use StdLibTrait;
 
-    protected $_relatedAttribute = null;
-    protected $_filter = [];
-    protected $_onDelete = 'cascade';
+    protected $relatedAttribute = null;
+    protected $filter = [];
+    protected $onDelete = 'cascade';
 
     /**
      * @var null|\Webiny\Component\Entity\EntityAbstract
      */
-    protected $_entity = null;
+    protected $entity = null;
 
     /**
      * @param string         $attribute
@@ -37,7 +37,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      */
     public function __construct($attribute, EntityAbstract $entity, $relatedAttribute)
     {
-        $this->_relatedAttribute = $relatedAttribute;
+        $this->relatedAttribute = $relatedAttribute;
         parent::__construct($attribute, $entity);
     }
 
@@ -50,7 +50,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      */
     public function setFilter(array $filter)
     {
-        $this->_filter = $filter;
+        $this->filter = $filter;
 
         return $this;
     }
@@ -62,7 +62,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      */
     public function getOnDelete()
     {
-        return $this->_onDelete;
+        return $this->onDelete;
     }
 
     /**
@@ -78,7 +78,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             $action = 'cascade';
         }
 
-        $this->_onDelete = $action;
+        $this->onDelete = $action;
 
         return $this;
     }
@@ -88,16 +88,16 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      */
     public function getRelatedAttribute()
     {
-        return $this->_relatedAttribute;
+        return $this->relatedAttribute;
     }
 
     public function setValue($value = null)
     {
-        if(!$this->_canAssign()){
+        if(!$this->canAssign()){
             return $this;
         }
 
-        $this->_value = $value;
+        $this->value = $value;
 
         return $this;
     }
@@ -109,20 +109,20 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      */
     public function getValue()
     {
-        if ($this->isNull($this->_value)) {
+        if ($this->isNull($this->value)) {
             $query = [
-                $this->_relatedAttribute => $this->_entity->getId()->getValue()
+                $this->relatedAttribute => $this->entity->getId()->getValue()
             ];
 
-            $query = array_merge($query, $this->_filter);
+            $query = array_merge($query, $this->filter);
 
             $callable = [
-                $this->_entityClass,
+                $this->entityClass,
                 'find'
             ];
-            $this->_value = call_user_func_array($callable, [$query]);
+            $this->value = call_user_func_array($callable, [$query]);
         }
 
-        return $this->_value;
+        return $this->value;
     }
 }

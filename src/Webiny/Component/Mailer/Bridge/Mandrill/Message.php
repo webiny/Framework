@@ -25,7 +25,7 @@ class Message implements MessageInterface
 {
     use StdLibTrait;
 
-    private $_message = [
+    private $message = [
         'html'                      => '',
         'subject'                   => '',
         'from_email'                => '',
@@ -62,14 +62,14 @@ class Message implements MessageInterface
     {
         if ($config) {
             // Overwrite default message params with those in config
-            foreach ($this->_message as $param => $value) {
+            foreach ($this->message as $param => $value) {
                 $cParam = $this->str($param)->replace('_', ' ')->caseWordUpper()->replace(' ', '')->val();
                 $cValue = $config->get('Message.' . $cParam);
                 if ($cValue !== null) {
                     if ($cValue instanceof ConfigObject) {
                         $cValue = $cValue->toArray();
                     }
-                    $this->_message[$param] = $cValue;
+                    $this->message[$param] = $cValue;
                 }
             }
         }
@@ -77,7 +77,7 @@ class Message implements MessageInterface
 
     public function __invoke()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -89,7 +89,7 @@ class Message implements MessageInterface
      */
     public function setSubject($subject)
     {
-        $this->_message['subject'] = $subject;
+        $this->message['subject'] = $subject;
 
         return $this;
     }
@@ -101,7 +101,7 @@ class Message implements MessageInterface
      */
     public function getSubject()
     {
-        return $this->_message['subject'];
+        return $this->message['subject'];
     }
 
     /**
@@ -114,8 +114,8 @@ class Message implements MessageInterface
      */
     public function setFrom(Email $from)
     {
-        $this->_message['from_name'] = $from->name;
-        $this->_message['from_email'] = $from->email;
+        $this->message['from_name'] = $from->name;
+        $this->message['from_email'] = $from->email;
 
         return $this;
     }
@@ -127,7 +127,7 @@ class Message implements MessageInterface
      */
     public function getFrom()
     {
-        return new Email($this->_message['from_email'], $this->_message['from_name']);
+        return new Email($this->message['from_email'], $this->message['from_name']);
     }
 
     /**
@@ -184,7 +184,7 @@ class Message implements MessageInterface
      */
     public function getTo()
     {
-        return $this->_getRecipients('to');
+        return $this->getRecipients('to');
     }
 
     /**
@@ -196,7 +196,7 @@ class Message implements MessageInterface
      */
     public function addTo(Email $email)
     {
-        $this->_message['to'][] = [
+        $this->message['to'][] = [
             'email' => $email->email,
             'name'  => $email->name,
             'type'  => 'to'
@@ -236,7 +236,7 @@ class Message implements MessageInterface
      */
     public function getCc()
     {
-        return $this->_getRecipients('cc');
+        return $this->getRecipients('cc');
     }
 
     /**
@@ -248,7 +248,7 @@ class Message implements MessageInterface
      */
     public function addCc(Email $email)
     {
-        $this->_message['to'][] = [
+        $this->message['to'][] = [
             'email' => $email->email,
             'name'  => $email->name,
             'type'  => 'cc'
@@ -289,7 +289,7 @@ class Message implements MessageInterface
      */
     public function getBcc()
     {
-        return $this->_getRecipients('bcc');
+        return $this->getRecipients('bcc');
     }
 
     /**
@@ -301,7 +301,7 @@ class Message implements MessageInterface
      */
     public function addBcc(Email $email)
     {
-        $this->_message['to'][] = [
+        $this->message['to'][] = [
             'email' => $email->email,
             'name'  => $email->name,
             'type'  => 'bcc'
@@ -331,7 +331,7 @@ class Message implements MessageInterface
      */
     public function getReplyTo()
     {
-        return isset($this->_message['headers']['Reply-To']) ? new Email($this->_message['headers']['Reply-To']) : null;
+        return isset($this->message['headers']['Reply-To']) ? new Email($this->message['headers']['Reply-To']) : null;
     }
 
     /**
@@ -345,7 +345,7 @@ class Message implements MessageInterface
      */
     public function setBody($content, $type = 'text/html', $charset = 'utf-8')
     {
-        $this->_message['html'] = $content;
+        $this->message['html'] = $content;
 
         return $this;
     }
@@ -357,7 +357,7 @@ class Message implements MessageInterface
      */
     public function getBody()
     {
-        return $this->_message['html'];
+        return $this->message['html'];
     }
 
     /**
@@ -371,7 +371,7 @@ class Message implements MessageInterface
      */
     public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
     {
-        $this->_message['attachments'][] = [
+        $this->message['attachments'][] = [
             'type'    => $type,
             'name'    => $fileName,
             'content' => base64_encode($file->getContents())
@@ -390,7 +390,7 @@ class Message implements MessageInterface
      */
     public function setReturnPath($returnPath)
     {
-        $this->_message['return_path_domain'] = $returnPath;
+        $this->message['return_path_domain'] = $returnPath;
 
         return $this;
     }
@@ -402,7 +402,7 @@ class Message implements MessageInterface
      */
     public function getReturnPath()
     {
-        return $this->_message['return_path_domain'];
+        return $this->message['return_path_domain'];
     }
 
     /**
@@ -460,7 +460,7 @@ class Message implements MessageInterface
      */
     public function addHeader($name, $value, $params = null)
     {
-        $this->_message['headers'][$name] = $value;
+        $this->message['headers'][$name] = $value;
 
         return $this;
     }
@@ -475,7 +475,7 @@ class Message implements MessageInterface
     public function setHeaders($headers)
     {
         $headers = StdObjectWrapper::toArray($headers);
-        $this->_message['headers'] = $headers;
+        $this->message['headers'] = $headers;
 
         return $this;
     }
@@ -489,7 +489,7 @@ class Message implements MessageInterface
      */
     public function getHeader($name)
     {
-        return isset($this->_message['headers'][$name]) ? $this->_message['headers'][$name] : null;
+        return isset($this->message['headers'][$name]) ? $this->message['headers'][$name] : null;
     }
 
     /**
@@ -499,13 +499,13 @@ class Message implements MessageInterface
      */
     public function getHeaders()
     {
-        return $this->_message['headers'];
+        return $this->message['headers'];
     }
 
-    private function _getRecipients($type)
+    private function getRecipients($type)
     {
         $recipients = [];
-        foreach ($this->_message['to'] as $rcpt) {
+        foreach ($this->message['to'] as $rcpt) {
             if ($rcpt['type'] == $type) {
                 $recipients[] = new Email($rcpt['email'], $rcpt['name']);
             }

@@ -70,14 +70,4 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame("2048", $testFile->getSize());
     }
-
-    /*function testStore()
-    {
-        $files = new Files();
-        $testFile = $files->get("test_file");
-
-        $result = $testFile->store(__DIR__, "webiny_logo_stored.jpg");
-
-        $this->assertTrue($result);
-    }*/
 }

@@ -18,7 +18,7 @@ use Webiny\Component\Mongo\MongoException;
  */
 class SingleIndex extends IndexAbstract
 {
-    protected $_ttl = false;
+    protected $ttl = false;
 
     /**
      * @param string $name           Index name
@@ -32,7 +32,7 @@ class SingleIndex extends IndexAbstract
      */
     public function __construct($name, $field, $sparse = false, $unique = false, $dropDuplicates = false, $ttl = false)
     {
-        $this->_ttl = $ttl;
+        $this->ttl = $ttl;
         $fields = $this->isArray($field) ? $field : [$field];
 
         if(count($fields) != 1) {
@@ -45,8 +45,8 @@ class SingleIndex extends IndexAbstract
     public function getOptions()
     {
         $options = parent::getOptions();
-        if($this->isNumber($this->_ttl)) {
-            $options['ttl'] = $this->_ttl;
+        if($this->isNumber($this->ttl)) {
+            $options['ttl'] = $this->ttl;
         }
 
         return $options;

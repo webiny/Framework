@@ -18,7 +18,7 @@ class Headers
 {
     use StdLibTrait;
 
-    private $_headerBag;
+    private $headerBag;
 
     /**
      * Constructor.
@@ -28,10 +28,10 @@ class Headers
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
         } else {
-            $headers = $this->_getAllHeaders();
+            $headers = $this->getAllHeaders();
         }
 
-        $this->_headerBag = $this->arr($headers);
+        $this->headerBag = $this->arr($headers);
     }
 
     /**
@@ -44,7 +44,7 @@ class Headers
      */
     public function get($key, $value = null)
     {
-        return $this->_headerBag->key($key, $value, true);
+        return $this->headerBag->key($key, $value, true);
     }
 
     /**
@@ -54,7 +54,7 @@ class Headers
      */
     public function getAll()
     {
-        return $this->_headerBag->val();
+        return $this->headerBag->val();
     }
 
     /**
@@ -62,7 +62,7 @@ class Headers
      *
      * @return array
      */
-    private function _getAllHeaders()
+    private function getAllHeaders()
     {
         $headers = [];
         foreach ($_SERVER as $name => $value) {

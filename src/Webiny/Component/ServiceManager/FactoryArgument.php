@@ -23,9 +23,9 @@ class FactoryArgument
     /**
      * Simple value, class name or service name
      */
-    private $_value;
-    private $_arguments;
-    private $_static;
+    private $value;
+    private $arguments;
+    private $static;
 
     /**
      * @param string $resource
@@ -34,9 +34,9 @@ class FactoryArgument
      */
     public function __construct($resource, $arguments = [], $static = true)
     {
-        $this->_value = $this->str($resource);
-        $this->_arguments = $this->arr($arguments);
-        $this->_static = $static;
+        $this->value = $this->str($resource);
+        $this->arguments = $this->arr($arguments);
+        $this->static = $static;
     }
 
     /**
@@ -50,28 +50,28 @@ class FactoryArgument
 
         // Get real arguments values from Argument instances
         $arguments = [];
-        foreach ($this->_arguments as $arg) {
+        foreach ($this->arguments as $arg) {
             $arguments[] = $arg->value();
         }
-        $this->_arguments = $arguments;
+        $this->arguments = $arguments;
 
-        if ($this->_value->startsWith('@')) {
+        if ($this->value->startsWith('@')) {
             // Service can only be called in a NON-STATIC context
-            $arguments = $this->arr($this->_arguments)->count() > 0 ? $this->_arguments : null;
+            $arguments = $this->arr($this->arguments)->count() > 0 ? $this->arguments : null;
 
-            return ServiceManager::getInstance()->getService($this->_value->val(), $arguments);
+            return ServiceManager::getInstance()->getService($this->value->val(), $arguments);
         } else {
             // CLASS can be instantiated or called statically
-            $value = $this->_value->val();
-            if (class_exists($value) && !$this->_static) {
+            $value = $this->value->val();
+            if (class_exists($value) && !$this->static) {
                 $reflection = new \ReflectionClass($value);
 
-                return $reflection->newInstanceArgs($this->_arguments);
-            } elseif (class_exists($value) && $this->_static) {
+                return $reflection->newInstanceArgs($this->arguments);
+            } elseif (class_exists($value) && $this->static) {
                 // Return class name for static call
-                return $this->_value->val();
+                return $this->value->val();
             }
-            throw new ServiceManagerException(ServiceManagerException::SERVICE_CLASS_DOES_NOT_EXIST, [$this->_value]);
+            throw new ServiceManagerException(ServiceManagerException::SERVICE_CLASS_DOES_NOT_EXIST, [$this->value]);
         }
     }
 }

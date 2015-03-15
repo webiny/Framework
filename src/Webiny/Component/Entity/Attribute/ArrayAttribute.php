@@ -20,15 +20,15 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function __construct($attribute, EntityAbstract $entity)
     {
         parent::__construct($attribute, $entity);
-        $this->_value = new ArrayObject();
-        $this->_defaultValue = new ArrayObject();
+        $this->value = new ArrayObject();
+        $this->defaultValue = new ArrayObject();
     }
 
     public function getDbValue()
     {
         $value = $this->getToArrayValue();
-        if($this->_value->count() == 0){
-            $this->_value = $this->arr($value);
+        if($this->value->count() == 0){
+            $this->value = $this->arr($value);
         }
         return $value;
     }
@@ -60,7 +60,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
         if(!$this->isArray($value) && !$this->isArrayObject($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->_attribute,
+                    $this->attribute,
                     'array or ArrayObject',
                     gettype($value)
                 ]
@@ -72,11 +72,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
     public function getToArrayValue()
     {
-        if($this->_value->count() == 0) {
-            return $this->isStdObject($this->_defaultValue) ? $this->_defaultValue->val() : $this->_defaultValue;
+        if($this->value->count() == 0) {
+            return $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
         }
 
-        return $this->_value->val();
+        return $this->value->val();
     }
 
 
@@ -91,7 +91,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function get($key, $default = null)
     {
-        return $this->_value->keyNested($key, $default, true);
+        return $this->value->keyNested($key, $default, true);
     }
 
     /**
@@ -102,7 +102,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function set($key, $value)
     {
-        $this->_value->keyNested($key, $value);
+        $this->value->keyNested($key, $value);
     }
 
     /**
@@ -114,7 +114,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function prepend($value)
     {
-        $this->_value->prepend($value);
+        $this->value->prepend($value);
 
         return $this;
     }
@@ -128,12 +128,12 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function append($value)
     {
-        $this->_value->append($value);
+        $this->value->append($value);
 
         return $this;
     }
 
-    function __set($name, $value)
+    public function _set($name, $value)
     {
         $this->offsetSet($name, $value);
     }
@@ -148,7 +148,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->_value->val());
+        return new \ArrayIterator($this->value->val());
     }
 
     /**
@@ -167,7 +167,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function offsetExists($offset)
     {
-        return isset($this->_value[$offset]);
+        return isset($this->value[$offset]);
     }
 
     /**
@@ -183,7 +183,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function offsetGet($offset)
     {
-        return $this->_value[$offset];
+        return $this->value[$offset];
     }
 
     /**
@@ -203,9 +203,9 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function offsetSet($offset, $value)
     {
         if($this->isNull($offset)) {
-            $this->_value[] = $value;
+            $this->value[] = $value;
         } else {
-            $this->_value[$offset] = $value;
+            $this->value[$offset] = $value;
         }
     }
 
@@ -222,6 +222,6 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function offsetUnset($offset)
     {
-        unset($this->_value[$offset]);
+        unset($this->value[$offset]);
     }
 }

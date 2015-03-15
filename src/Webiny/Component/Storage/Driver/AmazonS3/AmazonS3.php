@@ -31,12 +31,12 @@ class AmazonS3 implements DriverInterface
     /**
      * @var S3
      */
-    protected $_s3Client;
-    protected $_dateFolderStructure;
-    protected $_recentKey = null;
-    protected $_bucket;
-    protected $_recentFiles = [];
-    protected $_cdnDomain = false;
+    protected $s3Client;
+    protected $dateFolderStructure;
+    protected $recentKey = null;
+    protected $bucket;
+    protected $recentFiles = [];
+    protected $cdnDomain = false;
 
     /**
      * Constructor
@@ -52,11 +52,11 @@ class AmazonS3 implements DriverInterface
     public function __construct($accessKeyId, $secretAccessKey, $bucket, $dateFolderStructure = false, $cdnDomain = false)
     {
         $bridge = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
-        $this->_s3Client = new $bridge($accessKeyId, $secretAccessKey);
+        $this->s3Client = new $bridge($accessKeyId, $secretAccessKey);
 
-        $this->_bucket = $bucket;
-        $this->_dateFolderStructure = $dateFolderStructure;
-        $this->_cdnDomain = $cdnDomain;
+        $this->bucket = $bucket;
+        $this->dateFolderStructure = $dateFolderStructure;
+        $this->cdnDomain = $cdnDomain;
     }
 
 
@@ -65,7 +65,7 @@ class AmazonS3 implements DriverInterface
      */
     public function getTimeModified($key)
     {
-        $data = $this->_s3Client->getObject($this->_bucket, $key);
+        $data = $this->s3Client->getObject($this->bucket, $key);
 
         return strtotime($data['LastModified']);
     }
@@ -75,7 +75,7 @@ class AmazonS3 implements DriverInterface
      */
     public function getSize($key)
     {
-        return $this->_s3Client->getObject($this->_bucket, $key)['ContentLength'];
+        return $this->s3Client->getObject($this->bucket, $key)['ContentLength'];
     }
 
     /**
@@ -91,9 +91,9 @@ class AmazonS3 implements DriverInterface
      */
     public function getContents($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
         try {
-            $data = (string)$this->_s3Client->getObject($this->_bucket, $key)['Body'];
+            $data = (string)$this->s3Client->getObject($this->bucket, $key)['Body'];
         } catch (NoSuchKeyException $e) {
             throw new StorageException(StorageException::FAILED_TO_READ);
         }
@@ -106,17 +106,17 @@ class AmazonS3 implements DriverInterface
      */
     public function setContents($key, $contents, $append = false)
     {
-        if ($this->_dateFolderStructure) {
+        if ($this->dateFolderStructure) {
             if (!$this->keyExists($key)) {
                 $key = new StringObject($key);
                 $key = date('Y/m/d') . '/' . $key->trimLeft('/');
             }
         }
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
         $params = [
             'ACL' => 'public-read'
         ];
-        $this->_recentFiles[$key] = $this->_s3Client->putObject($this->_bucket, $key, $contents, $params);
+        $this->recentFiles[$key] = $this->s3Client->putObject($this->bucket, $key, $contents, $params);
 
         return true;
     }
@@ -126,9 +126,9 @@ class AmazonS3 implements DriverInterface
      */
     public function keyExists($key)
     {
-        $this->_recentKey = $key;
+        $this->recentKey = $key;
 
-        return $this->_s3Client->doesObjectExist($this->_bucket, $key);
+        return $this->s3Client->doesObjectExist($this->bucket, $key);
     }
 
 
@@ -141,7 +141,7 @@ class AmazonS3 implements DriverInterface
             'Prefix' => $key
         ];
 
-        $iterator = $this->_s3Client->getListObjectsIterator($this->_bucket, $s3Data);
+        $iterator = $this->s3Client->getListObjectsIterator($this->bucket, $s3Data);
         $files = [];
         foreach ($iterator as $file) {
             $files[] = $file['Key'];
@@ -155,7 +155,7 @@ class AmazonS3 implements DriverInterface
      */
     public function deleteKey($key)
     {
-        $this->_s3Client->deleteObject($this->_bucket, $key);
+        $this->s3Client->deleteObject($this->bucket, $key);
 
         return true;
     }
@@ -165,18 +165,18 @@ class AmazonS3 implements DriverInterface
      */
     public function getURL($key)
     {
-        if (!$this->arr($this->_recentFiles)->keyExists($key)) {
-            $this->_recentFiles[$key]['ObjectURL'] = $this->_s3Client->getObjectUrl($this->_bucket, $key);
+        if (!$this->arr($this->recentFiles)->keyExists($key)) {
+            $this->recentFiles[$key]['ObjectURL'] = $this->s3Client->getObjectUrl($this->bucket, $key);
         }
 
-        if($this->_cdnDomain){
-            $objectUrl = $this->url($this->_recentFiles[$key]['ObjectURL']);
-            $cdnDomain = $this->url($this->_cdnDomain);
+        if($this->cdnDomain){
+            $objectUrl = $this->url($this->recentFiles[$key]['ObjectURL']);
+            $cdnDomain = $this->url($this->cdnDomain);
 
             $objectUrl->setHost($cdnDomain->getHost())->setScheme($cdnDomain->getScheme());
             return $objectUrl->val();
         }
-        return $this->_recentFiles[$key]['ObjectURL'];
+        return $this->recentFiles[$key]['ObjectURL'];
     }
 
 
@@ -185,6 +185,6 @@ class AmazonS3 implements DriverInterface
      */
     public function getRecentKey()
     {
-        return $this->_recentKey;
+        return $this->recentKey;
     }
 }

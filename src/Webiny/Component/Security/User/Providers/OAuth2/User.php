@@ -28,7 +28,7 @@ class User extends UserAbstract
      * @throws OAuth2Exception
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Firewall $firewall)
+    public function authenticate(Login $login, Firewall $firewall)
     {
         return true; // oauth2 users are always authenticated
     }

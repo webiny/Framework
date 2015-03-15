@@ -24,12 +24,12 @@ class OAuth2Event extends Event
     /**
      * @var \Webiny\Component\OAuth2\OAuth2User
      */
-    private $_oauth2User;
+    private $oauth2User;
 
     /**
      * @var \Webiny\Component\OAuth2\OAuth2
      */
-    private $_oauth2;
+    private $oauth2;
 
     /**
      * Base constructor.
@@ -39,8 +39,8 @@ class OAuth2Event extends Event
      */
     public function __construct(OAuth2User $OAuth2User, OAuth2 $OAuth2)
     {
-        $this->_oauth2User = $OAuth2User;
-        $this->_oauth2 = $OAuth2;
+        $this->oauth2User = $OAuth2User;
+        $this->oauth2 = $OAuth2;
     }
 
     /**
@@ -50,7 +50,7 @@ class OAuth2Event extends Event
      */
     public function getUser()
     {
-        return $this->_oauth2User;
+        return $this->oauth2User;
     }
 
     /**
@@ -61,6 +61,6 @@ class OAuth2Event extends Event
      */
     public function getOAuth2Instance()
     {
-        return $this->_oauth2;
+        return $this->oauth2;
     }
 }

@@ -43,8 +43,8 @@ trait ManipulatorTrait
         }
 
         // set the scheme
-        $this->_scheme = $scheme->trimRight('://')->val();
-        $this->_buildUrl();
+        $this->scheme = $scheme->trimRight('://')->val();
+        $this->rebuildUrl();
 
         return $this;
     }
@@ -65,9 +65,9 @@ trait ManipulatorTrait
             throw new UrlObjectException($e->getMessage());
         }
 
-        $this->_host = $host->stripTrailingSlash()->trim()->val();
+        $this->host = $host->stripTrailingSlash()->trim()->val();
 
-        $this->_buildUrl();
+        $this->rebuildUrl();
 
         return $this;
     }
@@ -81,8 +81,8 @@ trait ManipulatorTrait
      */
     public function setPort($port)
     {
-        $this->_port = StdObjectWrapper::toString($port);
-        $this->_buildUrl();
+        $this->port = StdObjectWrapper::toString($port);
+        $this->rebuildUrl();
 
         return $this;
     }
@@ -105,12 +105,12 @@ trait ManipulatorTrait
 
         if ($path != '') {
             $path->trimLeft('/');
-            $this->_path = '/' . $path->val();
+            $this->path = '/' . $path->val();
         } else {
-            $this->_path = $path->val();
+            $this->path = $path->val();
         }
 
-        $this->_buildUrl();
+        $this->rebuildUrl();
 
         return $this;
     }
@@ -133,13 +133,13 @@ trait ManipulatorTrait
             $query = $query->val();
         }
 
-        if ($append && $this->_query != '') {
+        if ($append && $this->query != '') {
 
-            if ($this->isString($this->_query)) {
-                $currentQuery = new StringObject($this->_query);
+            if ($this->isString($this->query)) {
+                $currentQuery = new StringObject($this->query);
                 $currentQuery = $currentQuery->parseString();
             } else {
-                $currentQuery = new ArrayObject($this->_query);
+                $currentQuery = new ArrayObject($this->query);
             }
 
             if ($this->isStdObject($query)) {
@@ -167,8 +167,8 @@ trait ManipulatorTrait
             $query = $currentQuery->val();
         }
 
-        $this->_query = $query;
-        $this->_buildUrl();
+        $this->query = $query;
+        $this->rebuildUrl();
 
         return $this;
     }

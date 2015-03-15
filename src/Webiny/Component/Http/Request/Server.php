@@ -19,19 +19,19 @@ class Server
 {
     use StdLibTrait;
 
-    private $_serverBag;
+    private $serverBag;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->_serverBag = $this->arr($_SERVER);
+        $this->serverBag = $this->arr($_SERVER);
     }
 
     public function getAll()
     {
-        return $this->_serverBag->val();
+        return $this->serverBag->val();
     }
 
     /**
@@ -41,7 +41,7 @@ class Server
      */
     public function get($key)
     {
-        return $this->_serverBag->key($key, false, true);
+        return $this->serverBag->key($key, false, true);
     }
 
     /**

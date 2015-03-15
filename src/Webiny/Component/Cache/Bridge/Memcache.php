@@ -22,16 +22,16 @@ class Memcache extends CacheAbstract
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\Cache\Bridge\Memory\Memcache';
+    private static $library = '\Webiny\Component\Cache\Bridge\Memory\Memcache';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    static function _getLibrary()
+    public static function getLibrary()
     {
-        return Cache::getConfig()->get('Bridges.Memcache', self::$_library);
+        return Cache::getConfig()->get('Bridges.Memcache', self::$library);
     }
 
     /**
@@ -39,9 +39,9 @@ class Memcache extends CacheAbstract
      *
      * @param string $pathToClass Path to the new driver class. Must be an instance of \Webiny\Component\Cache\Bridge\CacheInterface
      */
-    static function setLibrary($pathToClass)
+    public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -55,9 +55,9 @@ class Memcache extends CacheAbstract
      * @throws CacheException
      * @return void|CacheStorageInterface
      */
-    static function getInstance($host = '127.0.0.1', $port = 11211)
+    public static function getInstance($host = '127.0.0.1', $port = 11211)
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = new $driver($host, $port);

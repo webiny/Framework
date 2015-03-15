@@ -20,13 +20,13 @@ use Webiny\Component\Entity\EntityException;
  */
 class Many2ManyAttribute extends CollectionAttributeAbstract
 {
-    protected $_intermediateCollection;
+    protected $intermediateCollection;
 
-    protected $_addedItems = [];
+    protected $addedItems = [];
 
     public function __construct($attribute, EntityAbstract $entity, $collectionName)
     {
-        $this->_intermediateCollection = $collectionName;
+        $this->intermediateCollection = $collectionName;
         parent::__construct($attribute, $entity);
     }
 
@@ -51,7 +51,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
         foreach ($item as $i) {
             if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isMongoId($i)) {
                 throw new EntityException(EntityException::INVALID_MANY2MANY_VALUE, [
-                        $this->_attribute,
+                        $this->attribute,
                         'entity ID or instance of ' . $this->getEntity() . ' or null',
                         get_class($i)
                     ]
@@ -63,7 +63,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
          * Assign items
          */
         foreach ($item as $i) {
-            $this->_addedItems[] = $i;
+            $this->addedItems[] = $i;
         }
 
         return $this;
@@ -81,8 +81,8 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
         // Unlink item
         $deleted = Many2ManyStorage::getInstance()->unlink($this, $item);
         // If values are already loaded - remove deleted item from loaded data set
-        if (!$this->isNull($this->_value)) {
-            $this->_value->removeItem($item);
+        if (!$this->isNull($this->value)) {
+            $this->value->removeItem($item);
         }
 
         return $deleted;
@@ -93,7 +93,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function getIntermediateCollection()
     {
-        return $this->_intermediateCollection;
+        return $this->intermediateCollection;
     }
 
     /**
@@ -105,11 +105,11 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function setValue($value = null)
     {
-        if(!$this->_canAssign()){
+        if(!$this->canAssign()){
             return $this;
         }
 
-        $this->_value = $value;
+        $this->value = $value;
 
         return $this;
     }
@@ -121,15 +121,15 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function getValue()
     {
-        if ($this->isNull($this->_value)) {
-            $this->_value = Many2ManyStorage::getInstance()->load($this);
+        if ($this->isNull($this->value)) {
+            $this->value = Many2ManyStorage::getInstance()->load($this);
             // Add new items to _value and unset these new items
-            foreach ($this->_addedItems as $item) {
-                $this->_value->add($item);
+            foreach ($this->addedItems as $item) {
+                $this->value->add($item);
             }
-            $this->_addedItems = [];
+            $this->addedItems = [];
         }
 
-        return $this->_value;
+        return $this->value;
     }
 }

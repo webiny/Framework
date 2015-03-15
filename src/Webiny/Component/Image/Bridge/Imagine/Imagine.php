@@ -25,7 +25,7 @@ class Imagine implements ImageLoaderInterface
     /**
      * @var \Imagine\Gd\Imagine|\Imagine\Gmagick\Imagine|\Imagine\Imagick\Imagine
      */
-    private $_instance;
+    private $instance;
 
 
     /**
@@ -36,7 +36,7 @@ class Imagine implements ImageLoaderInterface
     public function __construct(ConfigObject $config)
     {
         $library = $this->str($config->get('Library', 'gd'))->caseLower()->val();
-        $this->_instance = $this->_getLibraryInstance($library);
+        $this->instance = $this->getLibraryInstance($library);
     }
 
     /**
@@ -47,7 +47,7 @@ class Imagine implements ImageLoaderInterface
      * @return \Imagine\Gd\Imagine|\Imagine\Gmagick\Imagine|\Imagine\Imagick\Imagine
      * @throws ImagineException
      */
-    private function _getLibraryInstance($library)
+    private function getLibraryInstance($library)
     {
         switch ($library) {
             case 'gd':
@@ -89,7 +89,7 @@ class Imagine implements ImageLoaderInterface
         $color = $palette->color($bgColor, $alpha);
 
 
-        return new Image($this->_instance->create($size, $color));
+        return new Image($this->instance->create($size, $color));
     }
 
     /**
@@ -101,7 +101,7 @@ class Imagine implements ImageLoaderInterface
      */
     public function open(LocalFile $image)
     {
-        return new Image($this->_instance->open($image->getAbsolutePath()));
+        return new Image($this->instance->open($image->getAbsolutePath()));
     }
 
     /**
@@ -113,7 +113,7 @@ class Imagine implements ImageLoaderInterface
      */
     public function load($string)
     {
-        return new Image($this->_instance->load($string));
+        return new Image($this->instance->load($string));
     }
 
     /**
@@ -125,6 +125,6 @@ class Imagine implements ImageLoaderInterface
      */
     public function resource($resource)
     {
-        return new Image($this->_instance->read($resource));
+        return new Image($this->instance->read($resource));
     }
 }

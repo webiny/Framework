@@ -27,7 +27,7 @@ class Loader
     /**
      * @var string Default Mailer bridge.
      */
-    private static $_library = '\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer';
+    private static $library = '\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer';
 
     /**
      * Returns an instance of MessageInterface based on current bridge.
@@ -48,7 +48,7 @@ class Loader
         if ($config) {
             $mailerConfig->mergeWith($config);
         }
-        $lib = self::_getLibrary($mailer);
+        $lib = self::getLibrary($mailer);
 
         /** @var MailerInterface $libInstance */
         $libInstance = self::factory($lib, '\Webiny\Component\Mailer\Bridge\MailerInterface');
@@ -77,7 +77,7 @@ class Loader
             throw new MailerException(MailerException::INVALID_CONFIGURATION, [$mailer]);
         }
 
-        $lib = self::_getLibrary($mailer);
+        $lib = self::getLibrary($mailer);
 
         /** @var MailerInterface $libInstance */
         $libInstance = self::factory($lib, '\Webiny\Component\Mailer\Bridge\MailerInterface');
@@ -97,7 +97,7 @@ class Loader
      */
     public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -107,8 +107,8 @@ class Loader
      *
      * @return string
      */
-    protected static function _getLibrary($mailer)
+    protected static function getLibrary($mailer)
     {
-        return Mailer::getConfig()->get('Bridge.' . $mailer, self::$_library);
+        return Mailer::getConfig()->get('Bridge.' . $mailer, self::$library);
     }
 }

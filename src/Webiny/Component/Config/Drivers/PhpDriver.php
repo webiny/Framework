@@ -21,9 +21,9 @@ class PhpDriver extends DriverAbstract
      *
      * @return string
      */
-    protected function _getString()
+    protected function getStringInternal()
     {
-        return "<?php\n" . "return " . var_export($this->_getArray(), true) . ";\n";
+        return "<?php\n" . "return " . var_export($this->getArray(), true) . ";\n";
     }
 
 
@@ -32,10 +32,10 @@ class PhpDriver extends DriverAbstract
      * @return array
      * @throws ConfigException
      */
-    protected function _getArray()
+    protected function getArrayInternal()
     {
-        if ($this->isArray($this->_resource)) {
-            return $this->_resource;
+        if ($this->isArray($this->resource)) {
+            return $this->resource;
         }
         throw new ConfigException('PhpDriver can only work with array resources!');
     }

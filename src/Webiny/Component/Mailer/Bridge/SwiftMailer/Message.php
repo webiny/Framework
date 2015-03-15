@@ -27,25 +27,25 @@ class Message implements MessageInterface
     /**
      * @var \Swift_Message
      */
-    private $_message;
+    private $message;
 
     public function __construct(ConfigObject $config = null)
     {
-        $this->_message = new \Swift_Message();
+        $this->message = new \Swift_Message();
 
         if ($config) {
-            $this->_message->setCharset($config->get('CharacterSet', 'utf-8'));
-            $this->_message->setMaxLineLength($config->get('MaxLineLength', 78));
+            $this->message->setCharset($config->get('CharacterSet', 'utf-8'));
+            $this->message->setMaxLineLength($config->get('MaxLineLength', 78));
 
             if ($config->get('Priority', false)) {
-                $this->_message->setPriority($config->get('Priority', 3));
+                $this->message->setPriority($config->get('Priority', 3));
             }
         }
     }
 
     public function __invoke()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -57,7 +57,7 @@ class Message implements MessageInterface
      */
     public function setSubject($subject)
     {
-        $this->_message->setSubject($subject);
+        $this->message->setSubject($subject);
 
         return $this;
     }
@@ -69,7 +69,7 @@ class Message implements MessageInterface
      */
     public function getSubject()
     {
-        return $this->_message->getSubject();
+        return $this->message->getSubject();
     }
 
     /**
@@ -79,7 +79,7 @@ class Message implements MessageInterface
      */
     public function getFrom()
     {
-        return $this->_message->getFrom();
+        return $this->message->getFrom();
     }
 
     /**
@@ -89,7 +89,7 @@ class Message implements MessageInterface
      */
     public function getSender()
     {
-        return new Email($this->_message->getSender());
+        return new Email($this->message->getSender());
     }
 
     /**
@@ -100,7 +100,7 @@ class Message implements MessageInterface
     public function getTo()
     {
         $recipients = [];
-        foreach ($this->_message->getTo() as $email => $name) {
+        foreach ($this->message->getTo() as $email => $name) {
             $recipients[] = new Email($email, $name);
         }
 
@@ -115,7 +115,7 @@ class Message implements MessageInterface
     public function getCc()
     {
         $recipients = [];
-        foreach ($this->_message->getCc() as $email => $name) {
+        foreach ($this->message->getCc() as $email => $name) {
             $recipients[] = new Email($email, $name);
         }
 
@@ -130,7 +130,7 @@ class Message implements MessageInterface
     public function getBcc()
     {
         $recipients = [];
-        foreach ($this->_message->getBcc() as $email => $name) {
+        foreach ($this->message->getBcc() as $email => $name) {
             $recipients[] = new Email($email, $name);
         }
 
@@ -144,7 +144,7 @@ class Message implements MessageInterface
      */
     public function getReplyTo()
     {
-        $replyTo = $this->_message->getReplyTo();
+        $replyTo = $this->message->getReplyTo();
 
         return new Email($replyTo);
     }
@@ -160,7 +160,7 @@ class Message implements MessageInterface
      */
     public function setBody($content, $type = 'text/html', $charset = 'utf-8')
     {
-        $this->_message->setBody($content, $type, $charset);
+        $this->message->setBody($content, $type, $charset);
 
         return $this;
     }
@@ -172,7 +172,7 @@ class Message implements MessageInterface
      */
     public function getBody()
     {
-        return $this->_message->getBody();
+        return $this->message->getBody();
     }
 
     /**
@@ -185,7 +185,7 @@ class Message implements MessageInterface
      */
     public function setReturnPath($returnPath)
     {
-        $this->_message->setReturnPath($returnPath);
+        $this->message->setReturnPath($returnPath);
 
         return $this;
     }
@@ -197,7 +197,7 @@ class Message implements MessageInterface
      */
     public function getReturnPath()
     {
-        return $this->_message->getReturnPath();
+        return $this->message->getReturnPath();
     }
 
     /**
@@ -209,7 +209,7 @@ class Message implements MessageInterface
      */
     public function setContentType($contentType)
     {
-        $this->_message->setContentType($contentType);
+        $this->message->setContentType($contentType);
 
         return $this;
     }
@@ -221,7 +221,7 @@ class Message implements MessageInterface
      */
     public function getContentType()
     {
-        return $this->_message->getContentType();
+        return $this->message->getContentType();
     }
 
     /**
@@ -236,7 +236,7 @@ class Message implements MessageInterface
     public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
     {
         $attachment = new \Swift_Attachment($file->getContents(), $fileName, $type);
-        $this->_message->attach($attachment);
+        $this->message->attach($attachment);
 
         return $this;
     }
@@ -275,7 +275,7 @@ class Message implements MessageInterface
                 break;
         }
 
-        $this->_message->setEncoder($encoder);
+        $this->message->setEncoder($encoder);
 
         return $this;
     }
@@ -287,26 +287,26 @@ class Message implements MessageInterface
      */
     public function getContentTransferEncoding()
     {
-        return $this->_message->getEncoder()->getName();
+        return $this->message->getEncoder()->getName();
     }
 
     public function setSender(Email $sender)
     {
-        $this->_message->setSender($sender->email, $sender->name);
+        $this->message->setSender($sender->email, $sender->name);
 
         return $this;
     }
 
     public function setFrom(Email $from)
     {
-        $this->_message->setFrom($from->email, $from->name);
+        $this->message->setFrom($from->email, $from->name);
 
         return $this;
     }
 
     public function setReplyTo(Email $replyTo)
     {
-        $this->_message->setReplyTo($replyTo->email, $replyTo->name);
+        $this->message->setReplyTo($replyTo->email, $replyTo->name);
 
         return $this;
     }
@@ -361,28 +361,28 @@ class Message implements MessageInterface
 
     public function addTo(Email $email)
     {
-        $this->_message->addTo($email->email, $email->name);
+        $this->message->addTo($email->email, $email->name);
 
         return $this;
     }
 
     public function addFrom(Email $email)
     {
-        $this->_message->addFrom($email->email, $email->name);
+        $this->message->addFrom($email->email, $email->name);
 
         return $this;
     }
 
     public function addCc(Email $email)
     {
-        $this->_message->addCc($email->email, $email->name);
+        $this->message->addCc($email->email, $email->name);
 
         return $this;
     }
 
     public function addBcc(Email $email)
     {
-        $this->_message->addBcc($email->email, $email->name);
+        $this->message->addBcc($email->email, $email->name);
 
         return $this;
     }
@@ -415,9 +415,9 @@ class Message implements MessageInterface
     public function addHeader($name, $value, $params = null)
     {
         if (is_array($params)) {
-            $this->_message->getHeaders()->addParameterizedHeader($name, $value, $params);
+            $this->message->getHeaders()->addParameterizedHeader($name, $value, $params);
         } else {
-            $this->_message->getHeaders()->addTextHeader($name, $value);
+            $this->message->getHeaders()->addTextHeader($name, $value);
         }
 
         return $this;
@@ -432,7 +432,7 @@ class Message implements MessageInterface
      */
     public function getHeader($name)
     {
-        return $this->_message->getHeaders()->get($name)->getFieldBody();
+        return $this->message->getHeaders()->get($name)->getFieldBody();
     }
 
     /**
@@ -442,7 +442,7 @@ class Message implements MessageInterface
      */
     public function getHeaders()
     {
-        $swiftHeaders = $this->_message->getHeaders()->listAll();
+        $swiftHeaders = $this->message->getHeaders()->listAll();
         $headers = [];
         foreach ($swiftHeaders as $headerName) {
             $headers[$headerName] = $this->getHeader($headerName);
@@ -453,6 +453,6 @@ class Message implements MessageInterface
 
     public function getChildren()
     {
-        return $this->_message->getChildren();
+        return $this->message->getChildren();
     }
 }

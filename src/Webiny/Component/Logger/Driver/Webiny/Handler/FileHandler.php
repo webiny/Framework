@@ -24,13 +24,13 @@ class FileHandler extends HandlerAbstract
     /**
      * @var LocalFile
      */
-    private $_file;
+    private $file;
 
     public function __construct(LocalFile $file, $levels = [], $bubble = true, $buffer = false)
     {
         parent::__construct($levels, $bubble, $buffer);
         try {
-            $this->_file = $file;
+            $this->file = $file;
         } catch (StdObjectException $e) {
             throw new LoggerException($e->getMessage());
         }
@@ -46,7 +46,7 @@ class FileHandler extends HandlerAbstract
      */
     protected function write(Record $record)
     {
-        $this->_file->setContents($record->getFormattedRecord(), true);
+        $this->file->setContents($record->getFormattedRecord(), true);
     }
 
     /**
@@ -54,7 +54,7 @@ class FileHandler extends HandlerAbstract
      *
      * @return FormatterAbstract
      */
-    protected function _getDefaultFormatter()
+    protected function getDefaultFormatter()
     {
         return new FileFormatter();
     }

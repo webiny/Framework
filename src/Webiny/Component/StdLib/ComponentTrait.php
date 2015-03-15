@@ -21,12 +21,12 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  */
 trait ComponentTrait
 {
-    private static $_componentConfig;
+    private static $componentConfig;
 
     /**
      * Set the configuration file.
      * The root of your yaml config file must match the component class name, or an exception will be thrown.
-     * If you wish to define a default config, just create a static array called $_defaultConfig.
+     * If you wish to define a default config, just create a static array called $defaultConfig.
      * When setting/updating a config, it is always merged with the default config and current loaded config.
      *
      * @param string|ConfigObject $componentConfig Path to the configuration YAML file or ConfigObject instance
@@ -40,15 +40,15 @@ trait ComponentTrait
         $component = $component->explode('\\')->last();
 
         // check if we already have a config
-        if (!self::$_componentConfig) {
+        if (!self::$componentConfig) {
             $defaultConfigArray = [];
 
             // check if we have default config
-            if (isset(self::$_defaultConfig)) {
-                $defaultConfigArray = self::$_defaultConfig;
+            if (isset(self::$defaultConfig)) {
+                $defaultConfigArray = self::$defaultConfig;
             }
 
-            self::$_componentConfig = new ConfigObject($defaultConfigArray);
+            self::$componentConfig = new ConfigObject($defaultConfigArray);
         }
 
         // validate config
@@ -63,25 +63,25 @@ trait ComponentTrait
         }
 
         // merge current config with new config
-        self::$_componentConfig->mergeWith($config);
+        self::$componentConfig->mergeWith($config);
 
         // automatically assign parameters to ServiceManager
-        if (self::$_componentConfig->get('Parameters', false)) {
-            ServiceManager::getInstance()->registerParameters(self::$_componentConfig->get('Parameters'));
+        if (self::$componentConfig->get('Parameters', false)) {
+            ServiceManager::getInstance()->registerParameters(self::$componentConfig->get('Parameters'));
         }
 
         // automatically register services
-        if (self::$_componentConfig->get('Services', false)) {
-            ServiceManager::getInstance()->registerServices($component, self::$_componentConfig->get('Services'), true);
+        if (self::$componentConfig->get('Services', false)) {
+            ServiceManager::getInstance()->registerServices($component, self::$componentConfig->get('Services'), true);
         }
 
         // automatically register class loader libraries
-        if (self::$_componentConfig->get('ClassLoader', false)) {
-            ClassLoader::getInstance()->registerMap(self::$_componentConfig->get('ClassLoader')->toArray());
+        if (self::$componentConfig->get('ClassLoader', false)) {
+            ClassLoader::getInstance()->registerMap(self::$componentConfig->get('ClassLoader')->toArray());
         }
 
         // trigger callback
-        self::_postSetConfig();
+        self::postSetConfig();
     }
 
     /**
@@ -91,23 +91,23 @@ trait ComponentTrait
      */
     public static function getConfig()
     {
-        if (!is_object(self::$_componentConfig)) {
+        if (!is_object(self::$componentConfig)) {
             $config = [];
 
             // check if we have default config
-            if (isset(self::$_defaultConfig)) {
-                $config = self::$_defaultConfig;
+            if (isset(self::$defaultConfig)) {
+                $config = self::$defaultConfig;
             }
-            self::$_componentConfig = new ConfigObject($config);
+            self::$componentConfig = new ConfigObject($config);
         }
 
-        return self::$_componentConfig;
+        return self::$componentConfig;
     }
 
     /**
      * Callback that is called once the config is set.
      */
-    protected static function _postSetConfig()
+    protected static function postSetConfig()
     {
         // Override to implement
     }

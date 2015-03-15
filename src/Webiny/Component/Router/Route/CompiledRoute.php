@@ -18,27 +18,27 @@ class CompiledRoute
     /**
      * @var string
      */
-    private $_staticPrefix;
+    private $staticPrefix;
 
     /**
      * @var string
      */
-    private $_regex;
+    private $regex;
 
     /**
      * @var array
      */
-    private $_variables;
+    private $variables;
 
     /**
      * @var array
      */
-    private $_extractedRegexes = [];
+    private $extractedRegexes = [];
 
     /**
      * @var array
      */
-    private $_defaultRoute = [];
+    private $defaultRoute = [];
 
 
     /**
@@ -52,11 +52,11 @@ class CompiledRoute
      */
     public function __construct($staticPrefix, $regex, array $variables, array $extractedRegexes, $defaultRoute)
     {
-        $this->_staticPrefix = $staticPrefix;
-        $this->_regex = $regex;
-        $this->_variables = $variables;
-        $this->_extractedRegexes = $extractedRegexes;
-        $this->_defaultRoute = $defaultRoute;
+        $this->staticPrefix = $staticPrefix;
+        $this->regex = $regex;
+        $this->variables = $variables;
+        $this->extractedRegexes = $extractedRegexes;
+        $this->defaultRoute = $defaultRoute;
     }
 
     /**
@@ -66,7 +66,7 @@ class CompiledRoute
      */
     public function getStaticPrefix()
     {
-        return $this->_staticPrefix;
+        return $this->staticPrefix;
     }
 
     /**
@@ -76,7 +76,7 @@ class CompiledRoute
      */
     public function getRegex()
     {
-        return $this->_regex;
+        return $this->regex;
     }
 
     /**
@@ -86,7 +86,7 @@ class CompiledRoute
      */
     public function getVariables()
     {
-        return $this->_variables;
+        return $this->variables;
     }
 
     /**
@@ -96,7 +96,7 @@ class CompiledRoute
      */
     public function getExtractedRegexes()
     {
-        return $this->_extractedRegexes;
+        return $this->extractedRegexes;
     }
 
     /**
@@ -106,6 +106,6 @@ class CompiledRoute
      */
     public function getDefaultRoute()
     {
-        return $this->_defaultRoute;
+        return $this->defaultRoute;
     }
 }

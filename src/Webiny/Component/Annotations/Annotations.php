@@ -30,7 +30,7 @@ class Annotations
     public static function getClassAnnotations($class)
     {
         $annotationBag = Bridge\Loader::getInstance()->getClassAnnotations($class);
-        $annotationBag = self::_explodeNamespaces($annotationBag);
+        $annotationBag = self::explodeNamespaces($annotationBag);
 
         return new ConfigObject($annotationBag);
     }
@@ -46,7 +46,7 @@ class Annotations
     public static function getPropertyAnnotations($class, $property)
     {
         $annotationBag = Bridge\Loader::getInstance()->getPropertyAnnotations($class, str_replace('$', '', $property));
-        $annotationBag = self::_explodeNamespaces($annotationBag);
+        $annotationBag = self::explodeNamespaces($annotationBag);
 
         return new ConfigObject($annotationBag);
     }
@@ -62,7 +62,7 @@ class Annotations
     public static function getMethodAnnotations($class, $method)
     {
         $annotationBag = Bridge\Loader::getInstance()->getMethodAnnotations($class, $method);
-        $annotationBag = self::_explodeNamespaces($annotationBag);
+        $annotationBag = self::explodeNamespaces($annotationBag);
 
         return new ConfigObject($annotationBag);
     }
@@ -74,7 +74,7 @@ class Annotations
      *
      * @return array
      */
-    private static function _explodeNamespaces($annotationBag)
+    private static function explodeNamespaces($annotationBag)
     {
         foreach ($annotationBag as $k => $v) {
             // fix for empty newlines that cause that a "\n/" is appended to the annotation value
@@ -84,7 +84,7 @@ class Annotations
 
             if (strpos($k, ".") !== false) {
                 unset($annotationBag[$k]);
-                self::_setArrayValue($annotationBag, $k, $v);
+                self::setArrayValue($annotationBag, $k, $v);
             } else {
                 $annotationBag[$k] = $v;
             }
@@ -100,7 +100,7 @@ class Annotations
      * @param string $compositeKey The dotted key.
      * @param string $value        Value of the key.
      */
-    private static function _setArrayValue(&$root, $compositeKey, $value)
+    private static function setArrayValue(&$root, $compositeKey, $value)
     {
         $keys = explode('.', $compositeKey);
         while (count($keys) > 1) {

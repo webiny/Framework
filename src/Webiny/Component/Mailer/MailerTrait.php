@@ -16,7 +16,7 @@ namespace Webiny\Component\Mailer;
 trait MailerTrait
 {
 
-    private static $_mailerInstances;
+    private static $mailerInstances;
 
     /**
      * Returns an instance of Mailer.
@@ -27,12 +27,12 @@ trait MailerTrait
      */
     protected static function mailer($key = 'Default')
     {
-        if (isset(self::$_mailerInstances[$key])) {
-            return self::$_mailerInstances[$key];
+        if (isset(self::$mailerInstances[$key])) {
+            return self::$mailerInstances[$key];
         } else {
-            self::$_mailerInstances[$key] = new Mailer($key);
+            self::$mailerInstances[$key] = new Mailer($key);
 
-            return self::$_mailerInstances[$key];
+            return self::$mailerInstances[$key];
         }
     }
 

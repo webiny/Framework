@@ -25,7 +25,7 @@ class Smarty implements TemplateEngineInterface
     /**
      * @var \Smarty Holds smarty instance.
      */
-    private $_smarty;
+    private $smarty;
 
 
     /**
@@ -37,7 +37,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function __construct(ConfigObject $config)
     {
-        $this->_smarty = new \Smarty();
+        $this->smarty = new \Smarty();
 
         // compile dir
         $compileDir = $config->get('CompileDir', false);
@@ -72,9 +72,9 @@ class Smarty implements TemplateEngineInterface
 
         // mute expected errors
         if ($config->get('MuteExpectedErrors', false)) {
-            $this->_smarty->muteExpectedErrors();
+            $this->smarty->muteExpectedErrors();
         }else{
-            $this->_smarty->unmuteExpectedErrors();
+            $this->smarty->unmuteExpectedErrors();
         }
 
         // register extensions
@@ -92,7 +92,7 @@ class Smarty implements TemplateEngineInterface
             mkdir($compileDir, 0755, true);
         }
 
-        $this->_smarty->setCompileDir($compileDir);
+        $this->smarty->setCompileDir($compileDir);
     }
 
     /**
@@ -102,7 +102,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function getCompileDir()
     {
-        return realpath($this->_smarty->getCompileDir());
+        return realpath($this->smarty->getCompileDir());
     }
 
     /**
@@ -116,7 +116,7 @@ class Smarty implements TemplateEngineInterface
             mkdir($cacheDir, 0755, true);
         }
 
-        $this->_smarty->setCacheDir($cacheDir);
+        $this->smarty->setCacheDir($cacheDir);
     }
 
     /**
@@ -126,7 +126,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function getCacheDir()
     {
-        return realpath($this->_smarty->getCacheDir());
+        return realpath($this->smarty->getCacheDir());
     }
 
     /**
@@ -141,7 +141,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function setTemplateDir($templateDir)
     {
-        $this->_smarty->setTemplateDir($templateDir);
+        $this->smarty->setTemplateDir($templateDir);
         if (!$this->getTemplateDir()) {
             throw new SmartyException("The template dir '" . $templateDir . "' does not exist.");
         }
@@ -154,7 +154,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function getTemplateDir()
     {
-        return realpath($this->_smarty->getTemplateDir()[0]);
+        return realpath($this->smarty->getTemplateDir()[0]);
     }
 
     /**
@@ -164,7 +164,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function setForceCompile($forceCompile)
     {
-        $this->_smarty->force_compile = $forceCompile;
+        $this->smarty->force_compile = $forceCompile;
     }
 
     /**
@@ -174,7 +174,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function getForceCompile()
     {
-        return $this->_smarty->force_compile;
+        return $this->smarty->force_compile;
     }
 
     /**
@@ -184,7 +184,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function setMergeCompiledIncludes($mergeCompiledIncludes)
     {
-        $this->_smarty->inheritance_merge_compiled_includes = $mergeCompiledIncludes;
+        $this->smarty->inheritance_merge_compiled_includes = $mergeCompiledIncludes;
     }
 
     /**
@@ -194,7 +194,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function getMergeCompiledIncludes()
     {
-        return $this->_smarty->inheritance_merge_compiled_includes;
+        return $this->smarty->inheritance_merge_compiled_includes;
     }
 
     /**
@@ -210,10 +210,10 @@ class Smarty implements TemplateEngineInterface
     {
         try {
             if(count($parameters)>0){
-                $this->_smarty->assign($parameters);
+                $this->smarty->assign($parameters);
             }
 
-            return $this->_smarty->fetch($template);
+            return $this->smarty->fetch($template);
         } catch (\Exception $e) {
             throw new SmartyException($e->getMessage());
         }
@@ -232,7 +232,7 @@ class Smarty implements TemplateEngineInterface
         if(count($parameters)<1){
             $parameters = null;
         }
-        echo $this->_smarty->fetch($template, $parameters);
+        echo $this->smarty->fetch($template, $parameters);
     }
 
     /**
@@ -245,7 +245,7 @@ class Smarty implements TemplateEngineInterface
      */
     public function assign($var, $value)
     {
-        $this->_smarty->assign($var, $value);
+        $this->smarty->assign($var, $value);
     }
 
     /**
@@ -259,7 +259,7 @@ class Smarty implements TemplateEngineInterface
     public function registerPlugin(Plugin $plugin)
     {
         try {
-            $this->_smarty->registerPlugin($plugin->getType(), $plugin->getName(), $plugin->getCallbackFunction(),
+            $this->smarty->registerPlugin($plugin->getType(), $plugin->getName(), $plugin->getCallbackFunction(),
                                            $plugin->getAttribute('Cachable', true),
                                            $plugin->getAttribute('CacheAttr', null)
             );

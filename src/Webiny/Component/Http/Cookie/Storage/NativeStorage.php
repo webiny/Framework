@@ -22,8 +22,8 @@ class NativeStorage implements CookieStorageInterface
 {
     use HttpTrait;
 
-    private $_domain = '';
-    private $_https = false;
+    private $domain = '';
+    private $https = false;
 
     /**
      * Constructor.
@@ -32,8 +32,8 @@ class NativeStorage implements CookieStorageInterface
      */
     public function __construct(ConfigObject $config)
     {
-        $this->_domain = $this->httpRequest()->getHostName();
-        $this->_https = $this->httpRequest()->isRequestSecured();
+        $this->domain = $this->httpRequest()->getHostName();
+        $this->https = $this->httpRequest()->isRequestSecured();
     }
 
     /**
@@ -51,7 +51,7 @@ class NativeStorage implements CookieStorageInterface
     public function save($name, $value, $expiration, $httpOnly = true, $path = '/')
     {
         try {
-            return setcookie($name, $value, $expiration, $path, $this->_domain, $this->_https, $httpOnly);
+            return setcookie($name, $value, $expiration, $path, $this->domain, $this->https, $httpOnly);
         } catch (\ErrorException $e) {
             throw new CookieException($e->getMessage());
         }
@@ -76,6 +76,6 @@ class NativeStorage implements CookieStorageInterface
      */
     public function delete($name)
     {
-        return setcookie($name, '', (time() - 86400), '/', $this->_domain, $this->_https, true);
+        return setcookie($name, '', (time() - 86400), '/', $this->domain, $this->https, true);
     }
 }

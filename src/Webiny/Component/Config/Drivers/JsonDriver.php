@@ -22,22 +22,22 @@ class JsonDriver extends DriverAbstract
      *
      * @return string
      */
-    protected function _getString()
+    protected function getStringInternal()
     {
-        return json_encode($this->_getArray());
+        return json_encode($this->getArray());
     }
 
     /**
      * Parse config resource and build config array
      * @return array|ArrayObject
      */
-    protected function _getArray()
+    protected function getArrayInternal()
     {
-        if ($this->isArray($this->_resource)) {
-            return $this->_resource;
+        if ($this->isArray($this->resource)) {
+            return $this->resource;
         }
 
-        return $this->_parseJsonString($this->_resource);
+        return $this->parseJsonString($this->resource);
     }
 
     /**
@@ -48,7 +48,7 @@ class JsonDriver extends DriverAbstract
      * @throws ConfigException
      * @return array
      */
-    private function _parseJsonString($data)
+    private function parseJsonString($data)
     {
         try {
             return json_decode($data, true);

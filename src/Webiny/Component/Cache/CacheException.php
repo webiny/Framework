@@ -18,7 +18,7 @@ class CacheException extends ExceptionAbstract
 {
     const MSG_UNSUPPORTED_DRIVER = 101;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Driver "%s" is not a valida cache driver.'
     ];
 }

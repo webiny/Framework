@@ -31,7 +31,7 @@ class EventProcessor
     public function process($eventListeners, Event $event, $resultType = null)
     {
 
-        $eventListeners = $this->_orderByPriority($eventListeners);
+        $eventListeners = $this->orderByPriority($eventListeners);
 
         $results = [];
 
@@ -75,7 +75,7 @@ class EventProcessor
      *
      * @return mixed
      */
-    private function _orderByPriority($eventListeners)
+    private function orderByPriority($eventListeners)
     {
         /**
          * @param int $a

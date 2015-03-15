@@ -5,10 +5,10 @@ use Webiny\Component\Entity\EntityAbstract;
 
 class Comment extends EntityAbstract
 {
-    protected static $_entityCollection = "Comment";
-    protected static $_entityMask = "Comment #{id}";
+    protected static $entityCollection = "Comment";
+    protected static $entityMask = "Comment #{id}";
 
-    protected function _entityStructure()
+    protected function entityStructure()
     {
 
         // Char

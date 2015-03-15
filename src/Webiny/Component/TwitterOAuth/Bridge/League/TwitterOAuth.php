@@ -22,26 +22,26 @@ class TwitterOAuth implements TwitterOAuthInterface
     /**
      * @var null|\League\OAuth1\Client\Server\Twitter
      */
-    private $_instance = null;
+    private $instance = null;
 
     /**
      * OAuth2 Client ID.
      *
      * @var string
      */
-    protected $_clientId = '';
+    protected $clientId = '';
 
     /**
      * Client secret for defined Client ID.
      *
      * @var string
      */
-    protected $_clientSecret = '';
+    protected $clientSecret = '';
 
     /**
      * @var Array[oauth_token, oauth_token_secret]
      */
-    protected $_accessToken = [];
+    protected $accessToken = [];
 
 
 
@@ -54,11 +54,11 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function __construct($clientId, $clientSecret, $redirectUri)
     {
-        $this->_clientId = $clientId;
-        $this->_clientSecret = $clientSecret;
-        $this->_redirectUri = $redirectUri;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->redirectUri = $redirectUri;
 
-        $this->_instance = new \League\OAuth1\Client\Server\Twitter([
+        $this->instance = new \League\OAuth1\Client\Server\Twitter([
                                                                         'identifier'   => $clientId,
                                                                         'secret'       => $clientSecret,
                                                                         'callback_uri' => $redirectUri,
@@ -73,7 +73,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getClientId()
     {
-        return $this->_clientId;
+        return $this->clientId;
     }
 
     /**
@@ -83,7 +83,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getClientSecret()
     {
-        return $this->_clientSecret;
+        return $this->clientSecret;
     }
 
     /**
@@ -94,7 +94,7 @@ class TwitterOAuth implements TwitterOAuthInterface
     public function getRedirectUri()
     {
         //NOTE: this path is automatically translated to full path on TwitterOAuthLoader class
-        return $this->_redirectUri;
+        return $this->redirectUri;
     }
 
     /**
@@ -104,7 +104,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getRequestToken()
     {
-        $credentials = $this->_instance->getTemporaryCredentials();
+        $credentials = $this->instance->getTemporaryCredentials();
 
         return [
           'oauth_token'         => $credentials->getIdentifier(),
@@ -121,7 +121,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getAuthorizeUrl($requestToken)
     {
-        return $this->_instance->getAuthorizationUrl($requestToken);
+        return $this->instance->getAuthorizationUrl($requestToken);
     }
 
     /**
@@ -140,7 +140,7 @@ class TwitterOAuth implements TwitterOAuthInterface
         $ti->setIdentifier($requestToken);
         $ti->setSecret($requestTokenSecret);
 
-        $tc = $this->_instance->getTokenCredentials($ti, $oauthToken, $oauthTokenVerifier);
+        $tc = $this->instance->getTokenCredentials($ti, $oauthToken, $oauthTokenVerifier);
 
         $token = [
             'oauth_token'           => $tc->getIdentifier(),
@@ -162,7 +162,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function setAccessToken(array $accessToken)
     {
-        $this->_accessToken = $accessToken;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -172,7 +172,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function getAccessToken()
     {
-        return $this->_accessToken;
+        return $this->accessToken;
     }
 
     /**
@@ -187,7 +187,7 @@ class TwitterOAuth implements TwitterOAuthInterface
         $tc->setIdentifier($accessToken['oauth_token']);
         $tc->setSecret($accessToken['oauth_token_secret']);
 
-        $user = $this->_instance->getUserDetails($tc);
+        $user = $this->instance->getUserDetails($tc);
 
         $twUserObj = new TwitterOAuthUser($user->nickname);
         $twUserObj->setAvatarUrl($user->imageUrl);
@@ -212,7 +212,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function get($url,  array $headers = [], array $params = [])
     {
-        return $this->_instance->createHttpClient()->get($url, $headers, $params);
+        return $this->instance->createHttpClient()->get($url, $headers, $params);
     }
 
     /**
@@ -227,7 +227,7 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function post($url, array $postBody, array $headers = [], array $params = [])
     {
-        return $this->_instance->createHttpClient()->post($url, $headers, $postBody, $params);
+        return $this->instance->createHttpClient()->post($url, $headers, $postBody, $params);
     }
 
     /**
@@ -241,6 +241,6 @@ class TwitterOAuth implements TwitterOAuthInterface
      */
     public function delete($url, array $headers = [], array $params = [])
     {
-        return $this->_instance->createHttpClient()->delete($url, $headers, $params);
+        return $this->instance->createHttpClient()->delete($url, $headers, $params);
     }
 }

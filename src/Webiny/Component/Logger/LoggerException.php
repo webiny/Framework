@@ -21,7 +21,7 @@ class LoggerException extends ExceptionAbstract
     const FORMATTER_CONFIG_NOT_FOUND = 101;
     const HANDLER_CONFIG_NOT_FOUND = 102;
 
-    static protected $_messages = [
+    protected static $messages = [
         101 => 'Formatter `%s`config was not found!',
         102 => 'Handler `%s`config was not found!'
     ];

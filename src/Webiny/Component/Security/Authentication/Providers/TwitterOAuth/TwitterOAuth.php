@@ -31,12 +31,12 @@ class TwitterOAuth implements AuthenticationInterface
     /**
      * @var array
      */
-    private $_oauthRoles = [];
+    private $oauthRoles = [];
 
     /**
      * @var \Webiny\Component\TwitterOAuth\TwitterOAuth
      */
-    private $_connection;
+    private $connection;
 
 
     /**
@@ -47,11 +47,11 @@ class TwitterOAuth implements AuthenticationInterface
      *
      * @throws TwitterOAuthException
      */
-    function __construct($serverName, $roles)
+    public function __construct($serverName, $roles)
     {
         try {
-            $this->_connection = TwitterOAuthLoader::getInstance($serverName);
-            $this->_oauthRoles = (array)$roles;
+            $this->connection = TwitterOAuthLoader::getInstance($serverName);
+            $this->oauthRoles = (array)$roles;
         } catch (\Exception $e) {
             throw new TwitterOAuthException($e->getMessage());
         }
@@ -67,28 +67,28 @@ class TwitterOAuth implements AuthenticationInterface
      * @throws TwitterOAuthException
      * @return Login
      */
-    function getLoginObject(ConfigObject $config)
+    public function getLoginObject(ConfigObject $config)
     {
         try {
             // step1 -> get access token
 
             if (!$this->httpSession()->get('tw_oauth_token_secret', false)) {
 
-                $requestToken = $this->_connection->getRequestToken();
+                $requestToken = $this->connection->getRequestToken();
 
                 // save the session for later
                 $this->httpSession()->save('tw_oauth_token', $requestToken['oauth_token']);
                 $this->httpSession()->save('tw_oauth_token_secret', $requestToken['oauth_token_secret']);
 
                 // check response code
-                $authUrl = $this->_connection->getAuthorizeUrl($requestToken['oauth_token']);
+                $authUrl = $this->connection->getAuthorizeUrl($requestToken['oauth_token']);
 
                 header('Location: ' . $authUrl);
                 die('Redirect');
             } else {
                 // request access tokens from twitter
                 if ($this->httpRequest()->query('oauth_verifier', false)) {
-                    $access_token = $this->_connection->requestAccessToken($this->httpSession()->get('tw_oauth_token'),
+                    $access_token = $this->connection->requestAccessToken($this->httpSession()->get('tw_oauth_token'),
                                                                        $this->httpSession()->get('tw_oauth_token_secret'),
                                                                        $this->httpRequest()->query('oauth_token'),
                                                                        $this->httpRequest()->query('oauth_verifier')
@@ -117,8 +117,8 @@ class TwitterOAuth implements AuthenticationInterface
 
         // step2 -> return the login object with auth token
         $login = new Login('', '');
-        $login->setAttribute('tw_oauth_server', $this->_connection);
-        $login->setAttribute('tw_oauth_roles', $this->_oauthRoles);
+        $login->setAttribute('tw_oauth_server', $this->connection);
+        $login->setAttribute('tw_oauth_roles', $this->oauthRoles);
 
         return $login;
     }
@@ -128,7 +128,7 @@ class TwitterOAuth implements AuthenticationInterface
      * Use this callback to clear the submit data from the previous request so that you don't get stuck in an
      * infinitive loop between login page and login submit page.
      */
-    function invalidLoginProvidedCallback()
+    public function invalidLoginProvidedCallback()
     {
         // we don't need this method for TwitterOAuth
     }
@@ -138,7 +138,7 @@ class TwitterOAuth implements AuthenticationInterface
      *
      * @param UserAbstract $user
      */
-    function loginSuccessfulCallback(UserAbstract $user)
+    public function loginSuccessfulCallback(UserAbstract $user)
     {
         // we don't need this method for TwitterOAuth
     }
@@ -152,7 +152,7 @@ class TwitterOAuth implements AuthenticationInterface
      *
      * @return mixed
      */
-    function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
+    public function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
     {
         // we don't need this method for TwitterOAuth
     }
@@ -160,7 +160,7 @@ class TwitterOAuth implements AuthenticationInterface
     /**
      * Logout callback is called when user auth token was deleted.
      */
-    function logoutCallback()
+    public function logoutCallback()
     {
         // we don't need this method for TwitterOAuth
     }

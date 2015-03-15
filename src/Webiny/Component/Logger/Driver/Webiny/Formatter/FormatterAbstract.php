@@ -19,7 +19,7 @@ abstract class FormatterAbstract implements FormatterInterface
 {
     use StdLibTrait;
 
-    protected $_config = null;
+    protected $config = null;
 
     /**
      * Normalize record values, convert objects and resources to string representation, encode arrays to json, etc.
@@ -29,11 +29,11 @@ abstract class FormatterAbstract implements FormatterInterface
 
         foreach ($record as $key => $value) {
             $setter = 'set' . ucfirst($key);
-            $record->$setter($this->_normalizeValue($value));
+            $record->$setter($this->normalizeValue($value));
         }
     }
 
-    private function _normalizeValue($data)
+    private function normalizeValue($data)
     {
         if ($this->isNull($data) || $this->isScalar($data)) {
             return $data;
@@ -41,10 +41,10 @@ abstract class FormatterAbstract implements FormatterInterface
 
         if ($this->isStdObject($data)) {
             if ($this->isDateTimeObject($data)) {
-                if ($this->isNull($this->_config->DateFormat)) {
+                if ($this->isNull($this->config->DateFormat)) {
                     $format = Logger::getConfig()->Configs->Formatter->Default->DateFormat;
                 } else {
-                    $format = $this->_config->DateFormat;
+                    $format = $this->config->DateFormat;
                 }
 
                 return $data->format($format);
@@ -59,14 +59,14 @@ abstract class FormatterAbstract implements FormatterInterface
         if ($this->isArray($data) || $data instanceof \Traversable) {
             $normalized = array();
             foreach ($data as $key => $value) {
-                $normalized[$key] = $this->_normalizeValue($value);
+                $normalized[$key] = $this->normalizeValue($value);
             }
 
             return $normalized;
         }
 
         if ($this->isObject($data)) {
-            if (method_exists($data, '__toString')) {
+            if (method_exists($data, '___toString')) {
                 return '' . $data;
             }
 

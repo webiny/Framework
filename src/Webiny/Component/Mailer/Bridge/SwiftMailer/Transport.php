@@ -19,8 +19,8 @@ use Webiny\Component\Mailer\MessageInterface;
 class Transport implements TransportInterface
 {
 
-    private $_mailer = null;
-    private $_config;
+    private $mailer = null;
+    private $config;
 
     /**
      * Base constructor.
@@ -32,7 +32,7 @@ class Transport implements TransportInterface
      */
     public function __construct($config)
     {
-        $this->_config = $config;
+        $this->config = $config;
         $transportType = strtolower($config->get('Transport.Type', 'mail'));
         $disableDelivery = $config->get('DisableDelivery', false);
         if ($disableDelivery) {
@@ -75,10 +75,10 @@ class Transport implements TransportInterface
         }
 
         // create Mailer instance
-        $this->_mailer = \Swift_Mailer::newInstance($transport);
+        $this->mailer = \Swift_Mailer::newInstance($transport);
 
         // register plugins
-        $this->_registerPlugins($config);
+        $this->registerPlugins($config);
     }
 
 
@@ -92,7 +92,7 @@ class Transport implements TransportInterface
      */
     public function send(MessageInterface $message, &$failures = null)
     {
-        return $this->_mailer->send($message(), $failures);
+        return $this->mailer->send($message(), $failures);
     }
 
     /**
@@ -105,7 +105,7 @@ class Transport implements TransportInterface
      */
     public function setDecorators(array $replacements)
     {
-        $wrapper = $this->_config->get('Decorators.Wrapper');
+        $wrapper = $this->config->get('Decorators.Wrapper');
         if ($wrapper) {
             foreach ($replacements as $email => $vars) {
                 $decorators = [];
@@ -118,7 +118,7 @@ class Transport implements TransportInterface
         }
 
         $decoratorPlugin = new \Swift_Plugins_DecoratorPlugin($replacements);
-        $this->_mailer->registerPlugin($decoratorPlugin);
+        $this->mailer->registerPlugin($decoratorPlugin);
 
         return $this;
     }
@@ -130,7 +130,7 @@ class Transport implements TransportInterface
      */
     public function getTransportInstance()
     {
-        return $this->_mailer->getTransport();
+        return $this->mailer->getTransport();
     }
 
     /**
@@ -138,14 +138,14 @@ class Transport implements TransportInterface
      *
      * @param ConfigObject $config
      */
-    private function _registerPlugins(ConfigObject $config)
+    private function registerPlugins(ConfigObject $config)
     {
         // antiflood
         if ($config->get('AntiFlood', false)) {
             $antiflood = new \Swift_Plugins_AntiFloodPlugin($config->get('AntiFlood.Threshold', 99
             ), $config->get('AntiFlood.Sleep', 1)
             );
-            $this->_mailer->registerPlugin($antiflood);
+            $this->mailer->registerPlugin($antiflood);
         }
     }
 }

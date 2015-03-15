@@ -10,15 +10,15 @@ namespace Webiny\Component\ServiceManager\Tests\Classes;
 
 class AbstractService
 {
-    protected $_value;
+    protected $value;
 
     public function __construct($value)
     {
-        $this->_value = $value;
+        $this->value = $value;
     }
 
     public function getValue()
     {
-        return $this->_value;
+        return $this->value;
     }
 }

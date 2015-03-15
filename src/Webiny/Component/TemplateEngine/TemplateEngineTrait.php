@@ -23,7 +23,7 @@ trait TemplateEngineTrait
      *
      * @return \Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface
      */
-    function templateEngine($driver = 'Smarty')
+    public function templateEngine($driver = 'Smarty')
     {
         return TemplateEngineLoader::getInstance($driver);
     }

@@ -22,7 +22,7 @@ class TwitterOAuth
     /**
      * @var Bridge\TwitterOAuthInterface
      */
-    private $_instance;
+    private $instance;
 
     /**
      * Base constructor.
@@ -32,7 +32,7 @@ class TwitterOAuth
      */
     public function __construct(TwitterOAuthInterface $instance)
     {
-        $this->_instance = $instance;
+        $this->instance = $instance;
     }
 
     /**
@@ -42,7 +42,7 @@ class TwitterOAuth
      */
     public function getRequestToken()
     {
-        return $this->_instance->getRequestToken();
+        return $this->instance->getRequestToken();
     }
 
     /**
@@ -53,7 +53,7 @@ class TwitterOAuth
      */
     public function getResponseCode()
     {
-        return $this->_instance->getResponseCode();
+        return $this->instance->getResponseCode();
     }
 
     /**
@@ -65,7 +65,7 @@ class TwitterOAuth
      */
     public function getAuthorizeUrl($requestToken)
     {
-        return $this->_instance->getAuthorizeUrl($requestToken);
+        return $this->instance->getAuthorizeUrl($requestToken);
     }
 
     /**
@@ -80,7 +80,7 @@ class TwitterOAuth
      */
     public function requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier)
     {
-        return $this->_instance->requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier
+        return $this->instance->requestAccessToken($requestToken, $requestTokenSecret, $oauthToken, $oauthTokenVerifier
         );
     }
 
@@ -94,7 +94,7 @@ class TwitterOAuth
      */
     public function setAccessToken(array $accessToken)
     {
-        $this->_instance->setAccessToken($accessToken);
+        $this->instance->setAccessToken($accessToken);
     }
 
     /**
@@ -104,7 +104,7 @@ class TwitterOAuth
      */
     public function getAccessToken()
     {
-        return $this->_instance->getAccessToken();
+        return $this->instance->getAccessToken();
     }
 
     /**
@@ -116,7 +116,7 @@ class TwitterOAuth
     public function getUserDetails()
     {
         try {
-            return $this->_instance->getUserDetails();
+            return $this->instance->getUserDetails();
         } catch (\Exception $e) {
             throw new TwitterOAuthException($e->getMessage());
         }
@@ -132,7 +132,7 @@ class TwitterOAuth
      */
     public function get($url, array $params = [])
     {
-        return $this->_instance->get($url, $params);
+        return $this->instance->get($url, $params);
     }
 
     /**
@@ -145,7 +145,7 @@ class TwitterOAuth
      */
     public function post($url, array $params = [])
     {
-        return $this->_instance->post($url, $params);
+        return $this->instance->post($url, $params);
     }
 
     /**
@@ -158,6 +158,6 @@ class TwitterOAuth
      */
     public function delete($url, array $params = [])
     {
-        return $this->_instance->delete($url, $params);
+        return $this->instance->delete($url, $params);
     }
 }

@@ -18,37 +18,37 @@ class View
     /**
      * @var string Page title.
      */
-    private $_title;
+    private $title;
 
     /**
      * @var string Path to the template file.
      */
-    private $_template;
+    private $template;
 
     /**
      * @var array List of script files.
      */
-    private $_scripts = [];
+    private $scripts = [];
 
     /**
      * @var array List of stylesheets.
      */
-    private $_styles = [];
+    private $styles = [];
 
     /**
      * @var array List of html meta data.
      */
-    private $_meta = [];
+    private $meta = [];
 
     /**
      * @var array Assigned view data.
      */
-    private $_viewData = [];
+    private $viewData = [];
 
     /**
      * @var bool Should the view file be auto loaded or not.
      */
-    private $_autoloadViewTemplate = true;
+    private $autoloadViewTemplate = true;
 
 
     /**
@@ -60,7 +60,7 @@ class View
      */
     public function setTitle($title)
     {
-        $this->_title = $title;
+        $this->title = $title;
 
         return $this;
     }
@@ -75,7 +75,7 @@ class View
      */
     public function appendScript($path, $type = 'text/javascript')
     {
-        $this->_scripts[] = [
+        $this->scripts[] = [
             'path' => $path,
             'type' => $type
         ];
@@ -93,7 +93,7 @@ class View
      */
     public function prependScript($path, $type = 'text/javascript')
     {
-        array_unshift($this->_scripts, [
+        array_unshift($this->scripts, [
                                          'path' => $path,
                                          'type' => $type
                                      ]
@@ -111,7 +111,7 @@ class View
      */
     public function appendStyleSheet($path)
     {
-        $this->_styles[] = $path;
+        $this->styles[] = $path;
 
         return $this;
     }
@@ -125,7 +125,7 @@ class View
      */
     public function prependStyleSheet($path)
     {
-        array_unshift($this->_styles, $path);
+        array_unshift($this->styles, $path);
 
         return $this;
     }
@@ -140,7 +140,7 @@ class View
      */
     public function setMeta($name, $content)
     {
-        $this->_meta[$name] = $content;
+        $this->meta[$name] = $content;
 
         return $this;
     }
@@ -152,7 +152,7 @@ class View
      */
     public function getTitle()
     {
-        return $this->_title;
+        return $this->title;
     }
 
     /**
@@ -162,7 +162,7 @@ class View
      */
     public function getTitleHtml()
     {
-        return '<title>' . $this->_title . '</title>';
+        return '<title>' . $this->title . '</title>';
     }
 
     /**
@@ -172,7 +172,7 @@ class View
      */
     public function getScripts()
     {
-        return $this->_scripts;
+        return $this->scripts;
     }
 
     /**
@@ -183,11 +183,11 @@ class View
     public function getScriptsHtml()
     {
         $scripts = '';
-        if (!isset($this->_scripts)) {
+        if (!isset($this->scripts)) {
             return $scripts;
         }
 
-        foreach ($this->_scripts as $s) {
+        foreach ($this->scripts as $s) {
             $scripts .= '<script type="' . $s['type'] . '" src="' . $s['path'] . '"></script>' . "\n";
         }
 
@@ -201,7 +201,7 @@ class View
      */
     public function getStyleSheets()
     {
-        return $this->_styles;
+        return $this->styles;
     }
 
     /**
@@ -212,11 +212,11 @@ class View
     public function getStyleSheetsHtml()
     {
         $styleSheets = '';
-        if (!isset($this->_styles)) {
+        if (!isset($this->styles)) {
             return $styleSheets;
         }
 
-        foreach ($this->_styles as $s) {
+        foreach ($this->styles as $s) {
             $styleSheets .= '<link rel="stylesheet" type="text/css" href="' . $s . '"/>' . "\n";
         }
 
@@ -230,7 +230,7 @@ class View
      */
     public function getMeta()
     {
-        return $this->_meta;
+        return $this->meta;
     }
 
     /**
@@ -241,11 +241,11 @@ class View
     public function getMetaHtml()
     {
         $meta = '';
-        if (empty($this->_meta)) {
+        if (empty($this->meta)) {
             return $meta;
         }
 
-        foreach ($this->_meta as $name => $content) {
+        foreach ($this->meta as $name => $content) {
             $meta .= '<meta name="' . $name . '" content="' . $content . '"/>' . "\n";
         }
 
@@ -259,7 +259,7 @@ class View
      */
     public function setTemplate($template)
     {
-        $this->_template = $template;
+        $this->template = $template;
     }
 
     /**
@@ -269,7 +269,7 @@ class View
      */
     public function getTemplate()
     {
-        return $this->_template;
+        return $this->template;
     }
 
     /**
@@ -282,12 +282,12 @@ class View
     {
         foreach ($data as $k => $d) {
             if ($root != '') {
-                if (!isset($this->_viewData[$root])) {
-                    $this->_viewData[$root] = [];
+                if (!isset($this->viewData[$root])) {
+                    $this->viewData[$root] = [];
                 }
-                $this->_viewData[$root][$k] = $d;
+                $this->viewData[$root][$k] = $d;
             } else {
-                $this->_viewData[$k] = $d;
+                $this->viewData[$k] = $d;
             }
 
         }
@@ -301,7 +301,7 @@ class View
     public function getAssignedData()
     {
         // append the internal data to the view
-        $this->_viewData['View'] = [
+        $this->viewData['View'] = [
             'Title'           => $this->getTitle(),
             'TitleHtml'       => $this->getTitleHtml(),
             'Scripts'         => $this->getScripts(),
@@ -312,7 +312,7 @@ class View
             'MetaHtml'        => $this->getMetaHtml()
         ];
 
-        return $this->_viewData;
+        return $this->viewData;
     }
 
     /**
@@ -322,7 +322,7 @@ class View
      */
     public function setAutoload($autoload)
     {
-        $this->_autoloadViewTemplate = $autoload;
+        $this->autoloadViewTemplate = $autoload;
     }
 
     /**
@@ -332,6 +332,6 @@ class View
      */
     public function getAutoload()
     {
-        return $this->_autoloadViewTemplate;
+        return $this->autoloadViewTemplate;
     }
 }

@@ -31,8 +31,8 @@ trait ManipulatorTrait
     public function add($amount)
     {
         try {
-            $interval = $this->_parseDateInterval($amount);
-            $this->_getDateObject()->add($interval);
+            $interval = $this->parseDateInterval($amount);
+            $this->getDateObject()->add($interval);
         } catch (\Exception $e) {
             throw new DateTimeObjectException($e->getMessage());
         }
@@ -54,7 +54,7 @@ trait ManipulatorTrait
     public function setDate($year, $month, $day)
     {
         try {
-            $this->_getDateObject()->setDate($year, $month, $day);
+            $this->getDateObject()->setDate($year, $month, $day);
         } catch (\Exception $e) {
             throw new DateTimeObjectException($e->getMessage());
         }
@@ -75,7 +75,7 @@ trait ManipulatorTrait
     public function setTime($hour, $minute, $second = 0)
     {
         try {
-            $this->_getDateObject()->setTime($hour, $minute, $second);
+            $this->getDateObject()->setTime($hour, $minute, $second);
         } catch (\Exception $e) {
             throw new DateTimeObjectException($e->getMessage());
         }
@@ -94,7 +94,7 @@ trait ManipulatorTrait
     public function setTimestamp($timestamp)
     {
         try {
-            $this->_getDateObject()->setTimestamp($timestamp);
+            $this->getDateObject()->setTimestamp($timestamp);
         } catch (\Exception $e) {
             throw new DateTimeObjectException($e->getMessage());
         }
@@ -114,8 +114,8 @@ trait ManipulatorTrait
     public function sub($amount)
     {
         try {
-            $interval = $this->_parseDateInterval($amount);
-            $this->_getDateObject()->sub($interval);
+            $interval = $this->parseDateInterval($amount);
+            $this->getDateObject()->sub($interval);
         } catch (\Exception $e) {
             throw new DateTimeObjectException($e->getMessage());
         }
@@ -152,7 +152,7 @@ trait ManipulatorTrait
      * @return \DateInterval
      * @throws DateTimeObjectException
      */
-    private function _parseDateInterval($interval)
+    private function parseDateInterval($interval)
     {
         try {
             if (!$this->isInstanceOf($interval, 'DateInterval')) {

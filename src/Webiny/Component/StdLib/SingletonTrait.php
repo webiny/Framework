@@ -18,7 +18,7 @@ namespace Webiny\Component\StdLib;
 
 trait SingletonTrait
 {
-    protected static $_wfInstance;
+    protected static $wfInstance;
 
     /**
      * Return the current instance.
@@ -28,14 +28,13 @@ trait SingletonTrait
      */
     final public static function getInstance()
     {
-        if (isset(static::$_wfInstance)) {
-            return static::$_wfInstance;
+        if (isset(static::$wfInstance)) {
+            return static::$wfInstance;
         } else {
-            static::$_wfInstance = new static;
-            static::$_wfInstance->init();
-            static::$_wfInstance->_init();
+            static::$wfInstance = new static;
+            static::$wfInstance->init();
 
-            return static::$_wfInstance;
+            return static::$wfInstance;
         }
     }
 
@@ -44,7 +43,7 @@ trait SingletonTrait
      */
     final public static function deleteInstance()
     {
-        static::$_wfInstance = null;
+        static::$wfInstance = null;
     }
 
     /**
@@ -53,20 +52,12 @@ trait SingletonTrait
      */
     final private function __construct()
     {
-        //
     }
 
     /**
      * Override this if you wish to do some stuff once the singleton instance has been created.
      */
     protected function init()
-    {
-    }
-
-    /**
-     * Override this if you wish to do some stuff once the singleton instance has been created.
-     */
-    protected function _init()
     {
     }
 

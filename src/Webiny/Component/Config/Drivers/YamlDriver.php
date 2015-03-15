@@ -18,16 +18,16 @@ use Webiny\Component\Config\ConfigException;
  */
 class YamlDriver extends DriverAbstract
 {
-    private $_indent = 4;
+    private $indent = 4;
     /**
      * @var null|YamlInterface
      */
-    private $_yaml = null;
+    private $yaml = null;
 
     public function __construct($resource = null)
     {
         parent::__construct($resource);
-        $this->_yaml = Yaml::getInstance();
+        $this->yaml = Yaml::getInstance();
     }
 
     /**
@@ -47,7 +47,7 @@ class YamlDriver extends DriverAbstract
                                                                       ]
             );
         }
-        $this->_indent = $indent;
+        $this->indent = $indent;
 
         return $this;
     }
@@ -57,9 +57,9 @@ class YamlDriver extends DriverAbstract
      *
      * @return string
      */
-    protected function _getString()
+    protected function getStringInternal()
     {
-        return $this->_yaml->setResource($this->_resource)->getString($this->_indent);
+        return $this->yaml->setResource($this->resource)->getString($this->indent);
     }
 
     /**
@@ -68,10 +68,10 @@ class YamlDriver extends DriverAbstract
      * @throws ConfigException
      * @return array Config data array
      */
-    protected function _getArray()
+    protected function getArrayInternal()
     {
         try {
-            return $this->_yaml->setResource($this->_resource)->getArray();
+            return $this->yaml->setResource($this->resource)->getArray();
         } catch (\Exception $e) {
             throw new ConfigException($e->getMessage());
         }

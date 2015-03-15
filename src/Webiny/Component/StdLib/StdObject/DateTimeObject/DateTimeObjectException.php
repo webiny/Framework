@@ -25,7 +25,7 @@ class DateTimeObjectException extends StdObjectException
     const MSG_INVALID_FORMAT_FOR_ELEMENT = 107;
     const MSG_INVALID_DATE_INTERVAL = 108;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'Invalid timezone provided "%s".',
         102 => 'Unable to create date from the given $time and $format',
         103 => 'Unable to parse %s param.',

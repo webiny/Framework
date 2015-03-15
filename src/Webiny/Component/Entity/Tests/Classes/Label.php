@@ -5,10 +5,10 @@ use Webiny\Component\Entity\EntityAbstract;
 
 class Label extends EntityAbstract
 {
-    protected static $_entityCollection = "Label";
-    protected static $_entityMask = "{label} ({id})";
+    protected static $entityCollection = "Label";
+    protected static $entityMask = "{label} ({id})";
 
-    protected function _entityStructure()
+    protected function entityStructure()
     {
 
         // Char

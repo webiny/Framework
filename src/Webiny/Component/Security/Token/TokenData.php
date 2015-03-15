@@ -22,25 +22,25 @@ class TokenData
      * Users username.
      * @var string
      */
-    private $_username;
+    private $username;
 
     /**
      * Array of roles.
      * @var array
      */
-    private $_roles;
+    private $roles;
 
     /**
      * Timestamp until the token data is valid.
      * @var int
      */
-    private $_validUntil;
+    private $validUntil;
 
     /**
      * Name of the class that was used to provide the user authentication.
      * @var string
      */
-    private $_authProviderName;
+    private $authProviderName;
 
 
     /**
@@ -48,12 +48,12 @@ class TokenData
      *
      * @param array $tokenData Decrypted token data array.
      */
-    function __construct(array $tokenData)
+    public function __construct(array $tokenData)
     {
-        $this->_username = $tokenData['u'];
-        $this->_roles = $tokenData['r'];
-        $this->_validUntil = $tokenData['vu'];
-        $this->_authProviderName = $tokenData['ap'];
+        $this->username = $tokenData['u'];
+        $this->roles = $tokenData['r'];
+        $this->validUntil = $tokenData['vu'];
+        $this->authProviderName = $tokenData['ap'];
     }
 
     /**
@@ -61,9 +61,9 @@ class TokenData
      *
      * @return string
      */
-    function getUsername()
+    public function getUsername()
     {
-        return $this->_username;
+        return $this->username;
     }
 
     /**
@@ -71,9 +71,9 @@ class TokenData
      *
      * @return array
      */
-    function getRoles()
+    public function getRoles()
     {
-        return $this->_roles;
+        return $this->roles;
     }
 
     /**
@@ -81,8 +81,8 @@ class TokenData
      *
      * @return string
      */
-    function getAuthProviderName()
+    public function getAuthProviderName()
     {
-        return $this->_authProviderName;
+        return $this->authProviderName;
     }
 }

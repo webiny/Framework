@@ -24,7 +24,7 @@ class Http
      * Default component configuration
      * @var array
      */
-    private static $_defaultConfig = [
+    private static $defaultConfig = [
         'Session'        => [
             'Storage' => [
                 'Driver'     => '\Webiny\Component\Http\Session\Storage\NativeStorage',

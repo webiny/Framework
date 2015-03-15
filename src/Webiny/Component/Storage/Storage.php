@@ -28,17 +28,17 @@ class Storage
     /**
      * @var DriverInterface
      */
-    private $_driver = null;
+    private $driver = null;
 
     public function __construct(DriverInterface $driver)
     {
-        $this->_driver = $driver;
+        $this->driver = $driver;
     }
 
     public function getURL($key)
     {
         if (!$this->isDirectory($key)) {
-            return $this->_driver->getURL($key);
+            return $this->driver->getURL($key);
         }
 
         return false;
@@ -53,7 +53,7 @@ class Storage
      */
     public function getContents($key)
     {
-        return $this->_driver->getContents($key);
+        return $this->driver->getContents($key);
     }
 
     /**
@@ -68,7 +68,7 @@ class Storage
      */
     public function setContents($key, $contents, $append = false)
     {
-        return $this->_driver->setContents($key, $contents, $append);
+        return $this->driver->setContents($key, $contents, $append);
     }
 
     /**
@@ -80,7 +80,7 @@ class Storage
      */
     public function keyExists($key)
     {
-        return $this->_driver->keyExists($key);
+        return $this->driver->keyExists($key);
     }
 
     /**
@@ -94,7 +94,7 @@ class Storage
      */
     public function getKeys($key = '', $recursive = false)
     {
-        return $this->_driver->getKeys($key, $recursive);
+        return $this->driver->getKeys($key, $recursive);
     }
 
     /**
@@ -108,7 +108,7 @@ class Storage
      */
     public function getTimeModified($key, $asDateTimeObject = false)
     {
-        $time = $this->_driver->getTimeModified($key);
+        $time = $this->driver->getTimeModified($key);
         if ($asDateTimeObject) {
             $datetime = new DateTimeObject();
 
@@ -127,7 +127,7 @@ class Storage
      */
     public function deleteKey($key)
     {
-        return $this->_driver->deleteKey($key);
+        return $this->driver->deleteKey($key);
     }
 
     /**
@@ -140,7 +140,7 @@ class Storage
      */
     public function renameKey($sourceKey, $targetKey)
     {
-        return $this->_driver->renameKey($sourceKey, $targetKey);
+        return $this->driver->renameKey($sourceKey, $targetKey);
     }
 
     /**
@@ -155,7 +155,7 @@ class Storage
     public function isDirectory($key)
     {
         if ($this->supportsDirectories()) {
-            return $this->_driver->isDirectory($key);
+            return $this->driver->isDirectory($key);
         }
 
         return false;
@@ -173,9 +173,9 @@ class Storage
     public function touchKey($key)
     {
         if ($this->supportsTouching()) {
-            return $this->_driver->touchKey($key);
+            return $this->driver->touchKey($key);
         }
-        throw new StorageException(StorageException::DRIVER_DOES_NOT_SUPPORT_TOUCH, [get_class($this->_driver)]);
+        throw new StorageException(StorageException::DRIVER_DOES_NOT_SUPPORT_TOUCH, [get_class($this->driver)]);
     }
 
     /**
@@ -190,9 +190,9 @@ class Storage
     public function getSize($key)
     {
         if ($this->supportsSize()) {
-            return $this->_driver->getSize($key);
+            return $this->driver->getSize($key);
         }
-        throw new StorageException(StorageException::DRIVER_CAN_NOT_ACCESS_SIZE, [get_class($this->_driver)]);
+        throw new StorageException(StorageException::DRIVER_CAN_NOT_ACCESS_SIZE, [get_class($this->driver)]);
     }
 
     /**
@@ -207,10 +207,10 @@ class Storage
     public function getAbsolutePath($key = '')
     {
         if ($this->supportsAbsolutePaths()) {
-            return $this->_driver->getAbsolutePath($key);
+            return $this->driver->getAbsolutePath($key);
         }
         throw new StorageException(StorageException::DRIVER_DOES_NOT_SUPPORT_ABSOLUTE_PATHS, [
-                get_class($this->_driver
+                get_class($this->driver
                 )
             ]
         );
@@ -218,7 +218,7 @@ class Storage
 
     public function getRecentKey()
     {
-        return $this->_driver->getRecentKey();
+        return $this->driver->getRecentKey();
     }
 
     /**
@@ -227,7 +227,7 @@ class Storage
      */
     public function supportsDirectories()
     {
-        return $this->_driver instanceof DirectoryAwareInterface;
+        return $this->driver instanceof DirectoryAwareInterface;
     }
 
     /**
@@ -236,7 +236,7 @@ class Storage
      */
     public function supportsTouching()
     {
-        return $this->_driver instanceof TouchableInterface;
+        return $this->driver instanceof TouchableInterface;
     }
 
     /**
@@ -245,7 +245,7 @@ class Storage
      */
     public function supportsAbsolutePaths()
     {
-        return $this->_driver instanceof AbsolutePathInterface;
+        return $this->driver instanceof AbsolutePathInterface;
     }
 
     /**
@@ -254,6 +254,6 @@ class Storage
      */
     public function supportsSize()
     {
-        return $this->_driver instanceof SizeAwareInterface;
+        return $this->driver instanceof SizeAwareInterface;
     }
 }

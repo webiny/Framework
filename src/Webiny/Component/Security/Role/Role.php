@@ -20,7 +20,7 @@ class Role
      * Role name
      * @var string
      */
-    private $_role;
+    private $role;
 
 
     /**
@@ -30,7 +30,7 @@ class Role
      */
     public function __construct($role)
     {
-        $this->_role = (string)$role;
+        $this->role = (string)$role;
     }
 
     /**
@@ -40,6 +40,6 @@ class Role
      */
     public function getRole()
     {
-        return $this->_role;
+        return $this->role;
     }
 }

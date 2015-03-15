@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Http\Tests;
 
-
 use Webiny\Component\Http\Http;
+use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Session;
 
 class SessionTest extends \PHPUnit_Framework_TestCase
@@ -20,13 +20,13 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $this->assertInstanceOf('\Webiny\Component\Http\Session', $session);
     }
 
     public function testSave()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $session->save("some_id", 123);
         $this->assertArrayHasKey("some_id", $_SESSION);
         $this->assertSame(123, $_SESSION["some_id"]);
@@ -34,7 +34,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $session->save("some_id", 123);
         $this->assertSame(123, $session->get("some_id"));
         $this->assertNull($session->get("doesnt_exist"));
@@ -43,7 +43,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     public function testDelete()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $session->save("some_id", 123);
         $this->assertSame(123, $session->get("some_id"));
         $result = $session->delete("some_id");
@@ -53,14 +53,14 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     public function getAll()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $session->save("some_id", 123);
         $this->assertSame(["some_id" => 123], $session->getAll());
     }
 
     public function testGetSessionId()
     {
-        $session = Session::getInstance();;
+        $session = Session::getInstance();
         $this->assertSame(session_id(), $session->getSessionId());
     }
 }

@@ -19,9 +19,9 @@ use Webiny\Component\Logger\Logger;
  */
 class FileFormatter extends FormatterAbstract
 {
-    protected $_format;
+    protected $format;
 
-    protected $_dateFormat;
+    protected $dateFormat;
 
     /**
      * @param string $format     The format of the message
@@ -31,16 +31,16 @@ class FileFormatter extends FormatterAbstract
      */
     public function __construct($format = null, $dateFormat = null)
     {
-        $this->_config = Logger::getConfig()->get('Configs.Formatter.File');
-        if ($this->isNull($this->_config)) {
+        $this->config = Logger::getConfig()->get('Configs.Formatter.File');
+        if ($this->isNull($this->config)) {
             throw new FileFormatterException(FileFormatterException::CONFIG_NOT_FOUND);
         }
         if ($this->isNull($format)) {
-            $format = str_replace('\n', "\n", $this->_config->RecordFormat);
+            $format = str_replace('\n', "\n", $this->config->RecordFormat);
         }
 
-        $this->_format = $format;
-        $this->_dateFormat = $dateFormat !== null ? $dateFormat : $this->_config->DateFormat;
+        $this->format = $format;
+        $this->dateFormat = $dateFormat !== null ? $dateFormat : $this->config->DateFormat;
     }
 
     public function formatRecord(Record $record)
@@ -49,7 +49,7 @@ class FileFormatter extends FormatterAbstract
         // Call this to execute standard value normalization
         $this->normalizeValues($record);
 
-        $output = $this->str($this->_format);
+        $output = $this->str($this->format);
 
         // Handle extra values if case specific values are given in record format
         $extraData = $record->getExtra();
@@ -64,10 +64,10 @@ class FileFormatter extends FormatterAbstract
         // Handle main record values
         foreach ($record as $var => $val) {
             if ($this->isDateTimeObject($val)) {
-                $val = $val->format($this->_dateFormat);
+                $val = $val->format($this->dateFormat);
             }
             if (is_object($val)) {
-                if (method_exists($val, '__toString')) {
+                if (method_exists($val, '___toString')) {
                     $val = '' . $val;
                 }
             } elseif (is_array($val)) {

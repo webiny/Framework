@@ -22,16 +22,16 @@ class APC extends CacheAbstract
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\Cache\Bridge\Memory\APC';
+    private static $library = '\Webiny\Component\Cache\Bridge\Memory\APC';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    static function _getLibrary()
+    public static function getLibrary()
     {
-        return Cache::getConfig()->get('Bridges.Apc', self::$_library);
+        return Cache::getConfig()->get('Bridges.Apc', self::$library);
     }
 
     /**
@@ -39,9 +39,9 @@ class APC extends CacheAbstract
      *
      * @param string $pathToClass Path to the new driver class. Must be an instance of \Webiny\Component\Cache\Bridge\CacheInterface
      */
-    static function setLibrary($pathToClass)
+    public static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
 }

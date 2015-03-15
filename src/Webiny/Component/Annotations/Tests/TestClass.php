@@ -25,7 +25,7 @@ class TestClass
      * @access.level 3
      * @name SomeName
      */
-    private $_anotherVar;
+    private $anotherVar;
 
     /**
      * @post @get

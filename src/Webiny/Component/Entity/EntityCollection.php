@@ -25,32 +25,32 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     /**
      * @var \MongoCursor
      */
-    private $_cursor;
-    private $_entityClass;
-    private $_collectionName;
-    private $_conditions;
-    private $_order;
-    private $_offset;
-    private $_limit;
-    private $_count;
-    private $_value = [];
-    private $_loaded = false;
+    private $cursor;
+    private $entityClass;
+    private $collectionName;
+    private $conditions;
+    private $order;
+    private $offset;
+    private $limit;
+    private $count;
+    private $value = [];
+    private $loaded = false;
 
-    function __construct($entityClass, $entityCollection, $conditions, $order, $limit, $offset)
+    public function __construct($entityClass, $entityCollection, $conditions, $order, $limit, $offset)
     {
-        $this->_entityClass = $entityClass;
-        $this->_collectionName = $entityCollection;
-        $this->_conditions = $conditions;
-        $this->_order = $order;
-        $this->_offset = $offset;
-        $this->_limit = $limit;
+        $this->entityClass = $entityClass;
+        $this->collectionName = $entityCollection;
+        $this->conditions = $conditions;
+        $this->order = $order;
+        $this->offset = $offset;
+        $this->limit = $limit;
 
-        $this->_cursor = Entity::getInstance()
+        $this->cursor = Entity::getInstance()
                                ->getDatabase()
-                               ->find($this->_collectionName, $this->_conditions)
-                               ->sort($this->_order)
-                               ->skip($this->_offset)
-                               ->limit($this->_limit);
+                               ->find($this->collectionName, $this->conditions)
+                               ->sort($this->order)
+                               ->skip($this->offset)
+                               ->limit($this->limit);
     }
 
     /**
@@ -58,7 +58,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      *
      * @return mixed|null|string
      */
-    function __toString()
+    public function __toString()
     {
         $references = [];
         foreach ($this->getIterator() as $item) {
@@ -104,12 +104,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
         foreach ($item as $addItem) {
             if(!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
-                $class = $this->_entityClass;
+                $class = $this->entityClass;
                 $addItem = $class::findById($addItem);
             }
 
             if(!$this->contains($addItem)) {
-                $this->_value[] = $addItem;
+                $this->value[] = $addItem;
             }
         }
 
@@ -131,11 +131,11 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function totalCount()
     {
-        if(!$this->_count) {
-            $this->_count = Entity::getInstance()->getDatabase()->count($this->_collectionName, $this->_conditions);
+        if(!$this->count) {
+            $this->count = Entity::getInstance()->getDatabase()->count($this->collectionName, $this->conditions);
         }
 
-        return $this->_count;
+        return $this->count;
     }
 
     /**
@@ -170,7 +170,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     {
         foreach ($this->getIterator() as $index => $item) {
             $item->delete();
-            unset($this->_value[$index]);
+            unset($this->value[$index]);
         }
 
         return true;
@@ -183,13 +183,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function removeItem($item)
     {
-        if($this->_loaded) {
+        if($this->loaded) {
             if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
                 $item = $item->getId()->getValue();
             }
             foreach ($this->getIterator() as $index => $entity) {
                 if($entity->getId()->getValue() == $item) {
-                    unset($this->_value[$index]);
+                    unset($this->value[$index]);
 
                     return;
                 }
@@ -207,27 +207,27 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function getIterator()
     {
-        if($this->_loaded) {
-            return new \ArrayIterator($this->_value);
+        if($this->loaded) {
+            return new \ArrayIterator($this->value);
         }
 
         $dbItems = [];
-        foreach ($this->_cursor as $data) {
-            $instance = new $this->_entityClass;
-            $instance->populate(EntityMongoAdapter::getInstance()->adaptValues($data))->__setDirty(false);
+        foreach ($this->cursor as $data) {
+            $instance = new $this->entityClass;
+            $instance->populate(EntityMongoAdapter::getInstance()->adaptValues($data))->setDirty(false);
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */
-            if($itemInPool = EntityPool::getInstance()->get($this->_entityClass, $instance->getId()->getValue())) {
+            if($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->getId()->getValue())) {
                 $dbItems[] = $itemInPool;
             } else {
                 $dbItems[] = EntityPool::getInstance()->add($instance);
             }
         }
-        $this->_value = array_merge($dbItems, $this->_value);
-        $this->_loaded = true;
+        $this->value = array_merge($dbItems, $this->value);
+        $this->loaded = true;
 
-        return new \ArrayIterator($this->_value);
+        return new \ArrayIterator($this->value);
     }
 
     /**

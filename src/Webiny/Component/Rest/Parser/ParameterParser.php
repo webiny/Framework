@@ -21,12 +21,12 @@ class ParameterParser
     /**
      * @var array List of parameters that should be parsed.
      */
-    private $_paramList;
+    private $paramList;
 
     /**
      * @var ConfigObject List of phpDoc annotations describing parameters.
      */
-    private $_paramAnnotations;
+    private $paramAnnotations;
 
     /**
      * @var array List of default parameter type.
@@ -59,8 +59,8 @@ class ParameterParser
      */
     public function __construct($paramList, $paramAnnotations)
     {
-        $this->_paramList = $paramList;
-        $this->_paramAnnotations = (!is_object($paramAnnotations
+        $this->paramList = $paramList;
+        $this->paramAnnotations = (!is_object($paramAnnotations
         )) ? new ConfigObject([$paramAnnotations]) : $paramAnnotations;
     }
 
@@ -71,15 +71,15 @@ class ParameterParser
      */
     public function parse()
     {
-        if (!is_array($this->_paramList)) {
+        if (!is_array($this->paramList)) {
             return [];
         }
 
         $parsedParams = [];
-        foreach ($this->_paramList as $p) {
+        foreach ($this->paramList as $p) {
             $param = new ParsedParameter();
             $param->name = $p->name;
-            $param->type = $this->_getType($p->name, $this->_paramAnnotations);
+            $param->type = $this->getType($p->name, $this->paramAnnotations);
             try {
                 $param->default = $p->getDefaultValue();
                 if (is_bool($param->default)) {
@@ -106,7 +106,7 @@ class ParameterParser
      *
      * @return string Name of the parameter type, based on keys in static::$paramTypes.
      */
-    private function _getType($pName, $annotations)
+    private function getType($pName, $annotations)
     {
         $type = 'string';
         foreach ($annotations as $a) {

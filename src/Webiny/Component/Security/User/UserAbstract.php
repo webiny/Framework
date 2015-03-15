@@ -27,27 +27,27 @@ abstract class UserAbstract implements UserInterface
     /**
      * @var string Users username.
      */
-    private $_username = '';
+    private $username = '';
 
     /**
      * @var string Users password.
      */
-    private $_password = '';
+    private $password = '';
 
     /**
      * @var bool Is user authenticated flag.
      */
-    private $_isAuthenticated = false;
+    private $isAuthenticated = false;
 
     /**
      * @var ArrayObject An list of user roles.
      */
-    private $_roles;
+    private $roles;
 
     /**
      * @var string The name of the auth provider that has authenticated the current user.
      */
-    private $_authProviderName = '';
+    private $authProviderName = '';
 
 
     /**
@@ -71,21 +71,21 @@ abstract class UserAbstract implements UserInterface
     public function populate($username, $password, array $roles, $isAuthenticated = false)
     {
         // store general data
-        $this->_username = $username;
-        $this->_password = $password;
-        $this->_isAuthenticated = $isAuthenticated;
+        $this->username = $username;
+        $this->password = $password;
+        $this->isAuthenticated = $isAuthenticated;
 
-        $this->_roles = $this->arr([]);
+        $this->roles = $this->arr([]);
         foreach ($roles as $r) {
             if($this->isInstanceOf($r, '\Webiny\Component\Security\Role\Role')) {
-                $this->_roles->append($r);
+                $this->roles->append($r);
             } else {
-                $this->_roles->append(new Role($r));
+                $this->roles->append(new Role($r));
             }
         }
 
         // append anonymous role
-        $this->_roles->append(new Role('ROLE_ANONYMOUS'));
+        $this->roles->append(new Role('ROLE_ANONYMOUS'));
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function getUsername()
     {
-        return $this->_username;
+        return $this->username;
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function getPassword()
     {
-        return $this->_password;
+        return $this->password;
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function getRoles()
     {
-        return $this->_roles->val();
+        return $this->roles->val();
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function hasRole($role)
     {
-        foreach ($this->_roles as $roleObj) {
+        foreach ($this->roles as $roleObj) {
             if($role == $roleObj->getRole()){
                 return true;
             }
@@ -137,7 +137,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function isAuthenticated()
     {
-        return $this->_isAuthenticated;
+        return $this->isAuthenticated;
     }
 
     /**
@@ -147,7 +147,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function setIsAuthenticated($bool)
     {
-        $this->_isAuthenticated = $bool;
+        $this->isAuthenticated = $bool;
     }
 
     /**
@@ -161,7 +161,7 @@ abstract class UserAbstract implements UserInterface
     public function isTokenValid(TokenData $tokenData)
     {
         $roles = [];
-        foreach ($this->_roles as $role) {
+        foreach ($this->roles as $role) {
             $roles[] = $role->getRole();
         }
         $currentUser = $this->str($this->getUsername() . implode(',', $roles))->hash('md5');
@@ -182,7 +182,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function setRoles(array $roles)
     {
-        $this->_roles = $this->arr($roles);
+        $this->roles = $this->arr($roles);
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class UserAbstract implements UserInterface
      */
     public function setAuthProviderName($name)
     {
-        $this->_authProviderName = $name;
+        $this->authProviderName = $name;
     }
 
     /**
@@ -202,6 +202,6 @@ abstract class UserAbstract implements UserInterface
      */
     public function getAuthProviderName()
     {
-        return $this->_authProviderName;
+        return $this->authProviderName;
     }
 }

@@ -30,7 +30,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
     /**
      * @var array|null Current array.
      */
-    protected $_value;
+    protected $value;
 
     /**
      * Constructor.
@@ -47,7 +47,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
     {
         if(!$this->isInstanceOf($array, '\stdClass') && !$this->isArray($array) && !$this->isArrayObject($array)) {
             if($this->isNull($array)) {
-                $this->_value = array();
+                $this->value = array();
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
                                                                                           '$array',
@@ -56,7 +56,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
                 );
             }
         } else {
-            $array = $this->_objectToArray($array);
+            $array = $this->objectToArray($array);
             if($this->isInstanceOf($array, $this)) {
                 $this->val($array->val());
             } else {
@@ -65,9 +65,9 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
                     if(count($array) != count($values)) {
                         throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_COMBINE_COUNT);
                     }
-                    $this->_value = array_combine($array, $values);
+                    $this->value = array_combine($array, $values);
                 } else {
-                    $this->_value = $array;
+                    $this->value = $array;
                 }
             }
         }
@@ -183,7 +183,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->_value);
+        return new \ArrayIterator($this->value);
     }
 
     /**
@@ -218,7 +218,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function offsetGet($offset)
     {
-        return $this->_value[$offset];
+        return $this->value[$offset];
     }
 
     /**
@@ -238,9 +238,9 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
     public function offsetSet($offset, $value)
     {
         if($this->isNull($offset)){
-            $this->_value[] = $value;
+            $this->value[] = $value;
         } else {
-            $this->_value[$offset] = $value;
+            $this->value[$offset] = $value;
         }
     }
 
@@ -257,7 +257,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function offsetUnset($offset)
     {
-        unset($this->_value[$offset]);
+        unset($this->value[$offset]);
     }
 
     /**
@@ -267,7 +267,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      *
      * @return $this|mixed|StringObject
      */
-    function __get($name)
+    public function __get($name)
     {
         return $this->key($name);
     }
@@ -278,12 +278,12 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * @param $name
      * @param $value
      */
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         $this->key($name, $value);
     }
 
-    private function _objectToArray($object)
+    private function objectToArray($object)
     {
         if($this->isInstanceOf($object, '\stdClass')) {
             // Gets the properties of the given object
@@ -293,7 +293,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
 
         if(is_array($object)) {
             foreach ($object as $k => $v) {
-                $object[$k] = $this->_objectToArray($v);
+                $object[$k] = $this->objectToArray($v);
             }
 
             return $object;

@@ -20,7 +20,7 @@ class MailerException extends ExceptionAbstract
     const TRANSPORT_INTERFACE = 102;
     const INVALID_CONFIGURATION = 103;
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => 'The message library must implement "\Webiny\Component\Mailer\Bridge\MessageInterface".',
         102 => 'The transport library must implement "\Webiny\Component\Mailer\Bridge\TransportInterface".',
         103 => 'Unable to load the configuration for "%s" mailer.'

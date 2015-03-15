@@ -20,7 +20,7 @@ class MongoException extends ExceptionAbstract
     const COMPOUND_INDEX_NOT_ENOUGH_FIELDS = 102;
     const INVALID_RESULT_CLASS_PROVIDED = 103;
 
-    static protected $_messages = [
+    protected static $messages = [
         101 => 'SingleIndex can only accept one index field. %s fields given.',
         102 => 'CompoundIndex must contain at least 2 fields.',
         103 => 'Result class must be an instance or subclass of `\Webiny\Component\Mongo\MongoResult`.'

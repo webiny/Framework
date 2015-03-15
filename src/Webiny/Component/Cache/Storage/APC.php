@@ -22,7 +22,7 @@ class APC
      *
      * @return CacheStorageInterface
      */
-    static function getInstance()
+    public static function getInstance()
     {
         return \Webiny\Component\Cache\Bridge\APC::getInstance();
     }

@@ -17,17 +17,17 @@ class MongoCursor implements \Iterator
     /**
      * @var \MongoCursor
      */
-    private $_cursor;
+    private $cursor;
 
     public function __construct(\MongoCursor $cursor)
     {
-        $this->_cursor = $cursor;
+        $this->cursor = $cursor;
     }
 
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
         return call_user_func([
-                                  $this->_cursor,
+                                  $this->cursor,
                                   $name
                               ], $arguments
         );
@@ -42,7 +42,7 @@ class MongoCursor implements \Iterator
      */
     public function current()
     {
-        return $this->_cursor->current();
+        return $this->cursor->current();
     }
 
     /**
@@ -53,7 +53,7 @@ class MongoCursor implements \Iterator
      */
     public function next()
     {
-        $this->_cursor->next();
+        $this->cursor->next();
     }
 
     /**
@@ -64,7 +64,7 @@ class MongoCursor implements \Iterator
      */
     public function key()
     {
-        return $this->_cursor->key();
+        return $this->cursor->key();
     }
 
     /**
@@ -76,7 +76,7 @@ class MongoCursor implements \Iterator
      */
     public function valid()
     {
-        return $this->_cursor->valid();
+        return $this->cursor->valid();
     }
 
     /**
@@ -87,6 +87,6 @@ class MongoCursor implements \Iterator
      */
     public function rewind()
     {
-        $this->_cursor->rewind();
+        $this->cursor->rewind();
     }
 }

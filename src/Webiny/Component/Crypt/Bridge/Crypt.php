@@ -24,16 +24,16 @@ class Crypt
      *
      * @var string
      */
-    private static $_library = '\Webiny\Component\Crypt\Bridge\Webiny\Crypt';
+    private static $library = '\Webiny\Component\Crypt\Bridge\Webiny\Crypt';
 
     /**
      * Get the name of bridge library which will be used as the driver.
      *
      * @return string
      */
-    static function _getLibrary()
+    static function getLibrary()
     {
-        return \Webiny\Component\Crypt\Crypt::getConfig()->get('Bridge', self::$_library);
+        return \Webiny\Component\Crypt\Crypt::getConfig()->get('Bridge', self::$library);
     }
 
     /**
@@ -44,7 +44,7 @@ class Crypt
      */
     static function setLibrary($pathToClass)
     {
-        self::$_library = $pathToClass;
+        self::$library = $pathToClass;
     }
 
     /**
@@ -60,7 +60,7 @@ class Crypt
      */
     static function getInstance($passwordAlgo, $cipherMode, $cipherBlock)
     {
-        $driver = static::_getLibrary();
+        $driver = static::getLibrary();
 
         try {
             $instance = new $driver($passwordAlgo, $cipherMode, $cipherBlock);

@@ -22,10 +22,10 @@ class CacheStorage implements SessionStorageInterface
 {
     use CacheTrait;
 
-    private $_cacheDriver;
-    private $_cache;
-    private $_prefix;
-    private $_ttl;
+    private $cacheDriver;
+    private $cache;
+    private $prefix;
+    private $ttl;
 
     /**
      * @param ConfigObject $config Config options.
@@ -35,14 +35,14 @@ class CacheStorage implements SessionStorageInterface
     public function __construct(ConfigObject $config)
     {
 
-        $this->_prefix = $config->get('Storage.Prefix', 'wfs_');
-        $this->_ttl = $config->get('Storage.ExpireTime', 86400);
-        $this->_cache = $config->get('Storage.Params.Cache', false);
+        $this->prefix = $config->get('Storage.Prefix', '');
+        $this->ttl = $config->get('Storage.ExpireTime', 86400);
+        $this->cache = $config->get('Storage.Params.Cache', false);
 
         try {
-            $this->_cacheDriver = $this->cache($this->_cache);
+            $this->cacheDriver = $this->cache($this->cache);
         } catch (CacheException $e) {
-            throw new SessionException('Unable to get cache driver "' . $this->_cache . '" for session storage.');
+            throw new SessionException('Unable to get cache driver "' . $this->cache . '" for session storage.');
         }
     }
 
@@ -74,7 +74,7 @@ class CacheStorage implements SessionStorageInterface
      */
     public function destroy($session_id)
     {
-        return $this->_cacheDriver->delete($this->_prefix . $session_id);
+        return $this->cacheDriver->delete($this->prefix . $session_id);
     }
 
     /**
@@ -130,7 +130,7 @@ class CacheStorage implements SessionStorageInterface
      */
     public function read($session_id)
     {
-        return $this->_cacheDriver->read($this->_prefix . $session_id) ?: '';
+        return $this->cacheDriver->read($this->prefix . $session_id) ?: '';
     }
 
     /**
@@ -154,6 +154,6 @@ class CacheStorage implements SessionStorageInterface
      */
     public function write($session_id, $session_data)
     {
-        return $this->_cacheDriver->save($this->_prefix . $session_id, $session_data, $this->_ttl);
+        return $this->cacheDriver->save($this->prefix . $session_id, $session_data, $this->ttl);
     }
 }

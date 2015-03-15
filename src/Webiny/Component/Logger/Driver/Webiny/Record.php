@@ -11,13 +11,13 @@ use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
  */
 class Record implements \IteratorAggregate
 {
-    protected $_loggerName;
-    protected $_message;
-    protected $_level;
-    protected $_context;
-    protected $_datetime;
-    protected $_extra = [];
-    protected $_formattedRecord;
+    protected $loggerName;
+    protected $message;
+    protected $level;
+    protected $context;
+    protected $datetime;
+    protected $extra = [];
+    protected $formattedRecord;
 
     /**
      * Set log message context (can be any data you want to log with your message)
@@ -28,7 +28,7 @@ class Record implements \IteratorAggregate
      */
     public function setContext($context)
     {
-        $this->_context = $context;
+        $this->context = $context;
 
         return $this;
     }
@@ -39,7 +39,7 @@ class Record implements \IteratorAggregate
      */
     public function getContext()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -51,7 +51,7 @@ class Record implements \IteratorAggregate
      */
     public function setDatetime($datetime)
     {
-        $this->_datetime = $datetime;
+        $this->datetime = $datetime;
 
         return $this;
     }
@@ -63,7 +63,7 @@ class Record implements \IteratorAggregate
      */
     public function getDatetime()
     {
-        return $this->_datetime;
+        return $this->datetime;
     }
 
     /**
@@ -75,7 +75,7 @@ class Record implements \IteratorAggregate
      */
     public function setExtra(array $extra)
     {
-        $this->_extra = $extra;
+        $this->extra = $extra;
 
         return $this;
     }
@@ -86,7 +86,7 @@ class Record implements \IteratorAggregate
      */
     public function getExtra()
     {
-        return $this->_extra;
+        return $this->extra;
     }
 
     /**
@@ -98,7 +98,7 @@ class Record implements \IteratorAggregate
      */
     public function setFormattedRecord($formatted)
     {
-        $this->_formattedRecord = $formatted;
+        $this->formattedRecord = $formatted;
 
         return $this;
     }
@@ -110,7 +110,7 @@ class Record implements \IteratorAggregate
      */
     public function getFormattedRecord()
     {
-        return $this->_formattedRecord;
+        return $this->formattedRecord;
     }
 
     /**
@@ -122,7 +122,7 @@ class Record implements \IteratorAggregate
      */
     public function setLevel($level)
     {
-        $this->_level = $level;
+        $this->level = $level;
 
         return $this;
     }
@@ -134,7 +134,7 @@ class Record implements \IteratorAggregate
      */
     public function getLevel()
     {
-        return $this->_level;
+        return $this->level;
     }
 
     /**
@@ -146,7 +146,7 @@ class Record implements \IteratorAggregate
      */
     public function setMessage($message)
     {
-        $this->_message = $message;
+        $this->message = $message;
 
         return $this;
     }
@@ -158,7 +158,7 @@ class Record implements \IteratorAggregate
      */
     public function getMessage()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -170,7 +170,7 @@ class Record implements \IteratorAggregate
      */
     public function setLoggerName($name)
     {
-        $this->_loggerName = $name;
+        $this->loggerName = $name;
 
         return $this;
     }
@@ -182,7 +182,7 @@ class Record implements \IteratorAggregate
      */
     public function getLoggerName()
     {
-        return $this->_loggerName;
+        return $this->loggerName;
     }
 
 

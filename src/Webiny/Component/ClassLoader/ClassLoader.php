@@ -24,14 +24,17 @@ class ClassLoader
     /**
      * @var null Holds the ClassLoader instance.
      */
-    private static $_instance = null;
+    private static $instance = null;
 
     /**
      * @var bool|CacheInterface
      */
-    private $_cache = false;
+    private $cache = false;
 
-    private $_loaders = [
+    /**
+     * @var array List of built-in loaders
+     */
+    private $loaders = [
         'Psr4',
         'Psr0',
         'Pear'
@@ -51,16 +54,16 @@ class ClassLoader
      *
      * @return $this
      */
-    static public function getInstance()
+    public static function getInstance()
     {
-        if (self::$_instance !== null) {
-            return self::$_instance;
+        if (self::$instance !== null) {
+            return self::$instance;
         }
 
-        self::$_instance = new static;
-        self::_registerAutoloader();
+        self::$instance = new static;
+        self::registerAutoloader();
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
@@ -72,7 +75,7 @@ class ClassLoader
      */
     public function unregisterMap($mapPrefix)
     {
-        foreach($this->_loaders as $l)
+        foreach($this->loaders as $l)
         {
             $loader = "\\Webiny\\Component\\ClassLoader\\Loaders\\".$l;
             $result = $loader::getInstance()->unregisterMap($mapPrefix);
@@ -96,18 +99,18 @@ class ClassLoader
     public function registerCacheDriver(CacheStorage $cache)
     {
         // set cache
-        $this->_cache = $cache;
+        $this->cache = $cache;
 
         // unregister the old autoloader
         spl_autoload_unregister([
-                                    self::$_instance,
+                                    self::$instance,
                                     'getClass'
                                 ]
         );
 
         // prepend the new cache autoloader
         spl_autoload_register([
-                                  self::$_instance,
+                                  self::$instance,
                                   'getClassFromCache'
                               ], true, true
         );
@@ -167,13 +170,13 @@ class ClassLoader
     public function getClassFromCache($class)
     {
         // from cache
-        if (($file = $this->_cache->read($class))) {
+        if (($file = $this->cache->read($class))) {
             require $file;
         }
 
         // from disk
         if ($file = $this->findClass($class)) {
-            $this->_cache->save('wf.component.class_loader.' . $class, $file, 600, [
+            $this->cache->save('wf.component.class_loader.' . $class, $file, 600, [
                                                                          '_wf',
                                                                          '_component',
                                                                          '_class_loader'
@@ -207,10 +210,10 @@ class ClassLoader
     /**
      * Registers SPL autoload function.
      */
-    private static function _registerAutoloader()
+    private static function registerAutoloader()
     {
         spl_autoload_register([
-                                  self::$_instance,
+                                  self::$instance,
                                   'getClass'
                               ], true, true
         );

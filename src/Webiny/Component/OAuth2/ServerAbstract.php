@@ -23,7 +23,7 @@ abstract class ServerAbstract
     /**
      * @var OAuth2
      */
-    private $_oauth2;
+    private $oauth2;
 
     /**
      * Returns the path to OAuth2 authorize page.
@@ -53,7 +53,7 @@ abstract class ServerAbstract
      *
      * @return array
      */
-    abstract protected function _getUserDetailsTargetData();
+    abstract protected function getUserDetailsTargetData();
 
     /**
      * This method is called automatically when the OAuth2 server returns a response containing user details.
@@ -64,7 +64,7 @@ abstract class ServerAbstract
      * @return OAuth2User
      * @throws \OAuth2\Exception
      */
-    abstract protected function _processUserDetails($result);
+    abstract protected function processUserDetails($result);
 
 
     /**
@@ -74,7 +74,7 @@ abstract class ServerAbstract
      */
     public function __construct(OAuth2 $oauth2)
     {
-        $this->_oauth2 = $oauth2;
+        $this->oauth2 = $oauth2;
     }
 
     /**
@@ -86,11 +86,11 @@ abstract class ServerAbstract
      */
     public function getUserDetails()
     {
-        $requestData = $this->_getUserDetailsTargetData();
+        $requestData = $this->getUserDetailsTargetData();
 
         $result = $this->rawRequest($requestData['url'], $requestData['params']);
 
-        return $this->_processUserDetails($result);
+        return $this->processUserDetails($result);
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class ServerAbstract
      */
     private function rawRequest($url, $parameters = [])
     {
-        $request = new OAuth2Request($this->_oauth2);
+        $request = new OAuth2Request($this->oauth2);
 
         $request->setUrl($url);
         $request->setParams($parameters);

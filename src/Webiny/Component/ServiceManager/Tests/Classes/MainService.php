@@ -10,40 +10,40 @@ namespace Webiny\Component\ServiceManager\Tests\Classes;
 
 class MainService
 {
-    private $_value;
-    private $_firstArgument;
-    private $_injectedService;
+    private $value;
+    private $firstArgument;
+    private $injectedService;
 
     /**
      * @var ConstructorArgumentClass
      */
-    private $_someInstance;
+    private $someInstance;
 
     public function __construct($simpleArgument, $secondService, ConstructorArgumentClass $someInstance)
     {
-        $this->_firstArgument = $simpleArgument;
-        $this->_injectedService = $secondService;
-        $this->_someInstance = $someInstance;
+        $this->firstArgument = $simpleArgument;
+        $this->injectedService = $secondService;
+        $this->someInstance = $someInstance;
     }
 
     public function setCallValue($value)
     {
-        $this->_value = $value;
+        $this->value = $value;
     }
 
     public function getCallValue()
     {
-        return $this->_value;
+        return $this->value;
     }
 
     public function getFirstArgumentValue()
     {
-        return $this->_firstArgument;
+        return $this->firstArgument;
     }
 
     public function getInjectedServiceValue()
     {
-        return $this->_injectedService;
+        return $this->injectedService;
     }
 
     /**
@@ -51,6 +51,6 @@ class MainService
      */
     public function getSomeInstance()
     {
-        return $this->_someInstance;
+        return $this->someInstance;
     }
 }

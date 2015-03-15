@@ -34,7 +34,7 @@ class StringObject extends StdObjectAbstract implements \ArrayAccess
     /**
      * @var string
      */
-    protected $_value;
+    protected $value;
 
 
     /**
@@ -58,7 +58,7 @@ class StringObject extends StdObjectAbstract implements \ArrayAccess
                                                                                   ]
             );
         }
-        $this->_value = (string)$value;
+        $this->value = (string)$value;
     }
 
     /**

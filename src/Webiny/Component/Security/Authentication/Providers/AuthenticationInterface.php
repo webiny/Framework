@@ -28,21 +28,21 @@ interface AuthenticationInterface
      *
      * @return Login
      */
-    function getLoginObject(ConfigObject $config);
+    public function getLoginObject(ConfigObject $config);
 
     /**
      * This callback is triggered after we validate the given login data from getLoginObject, and the data IS NOT valid.
      * Use this callback to clear the submit data from the previous request so that you don't get stuck in an
      * infinitive loop between login page and login submit page.
      */
-    function invalidLoginProvidedCallback();
+    public function invalidLoginProvidedCallback();
 
     /**
      * This callback is triggered after we have validated user credentials and have created a user auth token.
      *
      * @param UserAbstract $user
      */
-    function loginSuccessfulCallback(UserAbstract $user);
+    public function loginSuccessfulCallback(UserAbstract $user);
 
     /**
      * This callback is triggered when the system has managed to retrieve the user from the stored token (either session)
@@ -53,10 +53,10 @@ interface AuthenticationInterface
      *
      * @return mixed
      */
-    function userAuthorizedByTokenCallback(UserAbstract $user, Token $token);
+    public function userAuthorizedByTokenCallback(UserAbstract $user, Token $token);
 
     /**
      * Logout callback is called when user auth token was deleted.
      */
-    function logoutCallback();
+    public function logoutCallback();
 }

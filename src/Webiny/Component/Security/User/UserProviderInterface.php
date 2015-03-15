@@ -27,5 +27,5 @@ interface UserProviderInterface
      * @return UserAbstract
      * @throws UserNotFoundException
      */
-    function getUser(Login $login);
+    public function getUser(Login $login);
 }

@@ -48,7 +48,7 @@ class ServerMock extends ServerAbstract
      *
      * @return array
      */
-    protected function _getUserDetailsTargetData()
+    protected function getUserDetailsTargetData()
     {
         // TODO: Implement _getUserDetailsTargetData() method.
     }
@@ -62,7 +62,7 @@ class ServerMock extends ServerAbstract
      * @return OAuth2User
      * @throws \OAuth2\Exception
      */
-    protected function _processUserDetails($result)
+    protected function processUserDetails($result)
     {
         // TODO: Implement _processUserDetails() method.
     }

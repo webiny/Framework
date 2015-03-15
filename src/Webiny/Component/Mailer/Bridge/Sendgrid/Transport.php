@@ -20,10 +20,10 @@ use Webiny\Component\Mailer\MessageInterface;
 class Transport implements TransportInterface
 {
 
-    private $_mailer = null;
-    private $_disableDelivery = false;
-    private $_decorators = [];
-    private $_config;
+    private $mailer = null;
+    private $disableDelivery = false;
+    private $decorators = [];
+    private $config;
 
     /**
      * Base constructor.
@@ -35,15 +35,15 @@ class Transport implements TransportInterface
      */
     public function __construct($config)
     {
-        $this->_config = $config;
-        $this->_disableDelivery = $config->get('DisableDelivery', false);
+        $this->config = $config;
+        $this->disableDelivery = $config->get('DisableDelivery', false);
 
         $apiKey = $config->get('ApiKey', false);
         $apiUser = $config->get('ApiUser', false);
         if (!$apiKey) {
             throw new SendgridException('`ApiKey` was not found in the mailer configuration!');
         }
-        $this->_mailer = new \SendGrid($apiUser, $apiKey);
+        $this->mailer = new \SendGrid($apiUser, $apiKey);
     }
 
 
@@ -57,14 +57,14 @@ class Transport implements TransportInterface
      */
     public function send(MessageInterface $message, &$failures = null)
     {
-        if ($this->_disableDelivery) {
+        if ($this->disableDelivery) {
             return true;
         }
 
         $data = [];
-        $ld = $this->_config->get('Decorators.Wrapper.0', '');
-        $rd = $this->_config->get('Decorators.Wrapper.1', '');
-        foreach ($this->_decorators as $email => $vars) {
+        $ld = $this->config->get('Decorators.Wrapper.0', '');
+        $rd = $this->config->get('Decorators.Wrapper.1', '');
+        foreach ($this->decorators as $email => $vars) {
             foreach ($vars as $name => $content) {
                 $data[$ld . $name . $rd][] = $content;
             }
@@ -74,7 +74,7 @@ class Transport implements TransportInterface
         /* @var $msg Email */
         $msg->setSubstitutions($data);
 
-        $res = $this->_mailer->send($message());
+        $res = $this->mailer->send($message());
 
         if ($res->message == 'success') {
             return true;
@@ -93,7 +93,7 @@ class Transport implements TransportInterface
      */
     public function setDecorators(array $replacements)
     {
-        $this->_decorators = $replacements;
+        $this->decorators = $replacements;
 
         return $this;
     }

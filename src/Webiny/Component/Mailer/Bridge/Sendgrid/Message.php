@@ -28,19 +28,19 @@ class Message implements MessageInterface
     /**
      * @var \SendGrid\Email
      */
-    private $_message;
-    private $_to = [];
-    private $_cc = [];
-    private $_bcc = [];
+    private $message;
+    private $to = [];
+    private $cc = [];
+    private $bcc = [];
 
     public function __construct(ConfigObject $config = null)
     {
-        $this->_message = new \SendGrid\Email();
+        $this->message = new \SendGrid\Email();
     }
 
     public function __invoke()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -52,7 +52,7 @@ class Message implements MessageInterface
      */
     public function setSubject($subject)
     {
-        $this->_message->setSubject($subject);
+        $this->message->setSubject($subject);
 
         return $this;
     }
@@ -64,7 +64,7 @@ class Message implements MessageInterface
      */
     public function getSubject()
     {
-        return $this->_message->getSubject();
+        return $this->message->getSubject();
     }
 
     /**
@@ -77,8 +77,8 @@ class Message implements MessageInterface
      */
     public function setFrom(Email $from)
     {
-        $this->_message->setFrom($from->email);
-        $this->_message->setFromName($from->name);
+        $this->message->setFrom($from->email);
+        $this->message->setFromName($from->name);
 
         return $this;
     }
@@ -90,7 +90,7 @@ class Message implements MessageInterface
      */
     public function getFrom()
     {
-        return new Email($this->_message->getFrom(), $this->_message->getFromName());
+        return new Email($this->message->getFrom(), $this->message->getFromName());
     }
 
     /**
@@ -147,7 +147,7 @@ class Message implements MessageInterface
      */
     public function getTo()
     {
-        return $this->_to;
+        return $this->to;
     }
 
     /**
@@ -159,8 +159,8 @@ class Message implements MessageInterface
      */
     public function addTo(Email $email)
     {
-        $this->_to[] = $email;
-        $this->_message->addTo($email->email, $email->name);
+        $this->to[] = $email;
+        $this->message->addTo($email->email, $email->name);
 
         return $this;
     }
@@ -196,7 +196,7 @@ class Message implements MessageInterface
      */
     public function getCc()
     {
-        return $this->_cc;
+        return $this->cc;
     }
 
     /**
@@ -208,7 +208,7 @@ class Message implements MessageInterface
      */
     public function addCc(Email $email)
     {
-        $this->_message->addCc($email->email);
+        $this->message->addCc($email->email);
 
         return $this;
     }
@@ -245,7 +245,7 @@ class Message implements MessageInterface
      */
     public function getBcc()
     {
-        return $this->_bcc;
+        return $this->bcc;
     }
 
     /**
@@ -257,7 +257,7 @@ class Message implements MessageInterface
      */
     public function addBcc(Email $email)
     {
-        $this->_message->addBcc($email->email);
+        $this->message->addBcc($email->email);
 
         return $this;
     }
@@ -271,7 +271,7 @@ class Message implements MessageInterface
      */
     public function setReplyTo(Email $replyTo)
     {
-        $this->_message->setReplyTo($replyTo->email);
+        $this->message->setReplyTo($replyTo->email);
 
         return $this;
     }
@@ -283,7 +283,7 @@ class Message implements MessageInterface
      */
     public function getReplyTo()
     {
-        $replyTo = $this->_message->getReplyTo();
+        $replyTo = $this->message->getReplyTo();
 
         return $replyTo ? new Email($replyTo) : null;
     }
@@ -299,7 +299,7 @@ class Message implements MessageInterface
      */
     public function setBody($content, $type = 'text/html', $charset = 'utf-8')
     {
-        $this->_message->setHtml($content);
+        $this->message->setHtml($content);
 
         return $this;
     }
@@ -311,7 +311,7 @@ class Message implements MessageInterface
      */
     public function getBody()
     {
-        return $this->_message->getHtml();
+        return $this->message->getHtml();
     }
 
     /**
@@ -325,7 +325,7 @@ class Message implements MessageInterface
      */
     public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text')
     {
-        $this->_message->addAttachment($file->getAbsolutePath(), $fileName);
+        $this->message->addAttachment($file->getAbsolutePath(), $fileName);
 
         return $this;
     }
@@ -408,7 +408,7 @@ class Message implements MessageInterface
      */
     public function addHeader($name, $value, $params = null)
     {
-        $this->_message->addHeader($name, $value);
+        $this->message->addHeader($name, $value);
 
         return $this;
     }
@@ -423,7 +423,7 @@ class Message implements MessageInterface
     public function setHeaders($headers)
     {
         $headers = StdObjectWrapper::toArray($headers);
-        $this->_message->setHeaders($headers);
+        $this->message->setHeaders($headers);
 
         return $this;
     }
@@ -437,7 +437,7 @@ class Message implements MessageInterface
      */
     public function getHeader($name)
     {
-        $headers = $this->_message->getHeaders();
+        $headers = $this->message->getHeaders();
         return isset($headers[$name]) ? $headers[$name] : null;
     }
 
@@ -448,6 +448,6 @@ class Message implements MessageInterface
      */
     public function getHeaders()
     {
-        return $this->_message->getHeaders();
+        return $this->message->getHeaders();
     }
 }

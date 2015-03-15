@@ -36,7 +36,7 @@ class SecurityEvent extends Event
     /**
      * @var User\UserAbstract
      */
-    private $_user;
+    private $user;
 
 
     /**
@@ -44,9 +44,9 @@ class SecurityEvent extends Event
      *
      * @param UserAbstract $user
      */
-    function __construct(UserAbstract $user)
+    public function __construct(UserAbstract $user)
     {
-        $this->_user = $user;
+        $this->user = $user;
 
         parent::__construct();
     }
@@ -56,8 +56,8 @@ class SecurityEvent extends Event
      *
      * @return UserAbstract
      */
-    function getUser()
+    public function getUser()
     {
-        return $this->_user;
+        return $this->user;
     }
 }

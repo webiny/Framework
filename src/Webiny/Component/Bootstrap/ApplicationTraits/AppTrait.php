@@ -19,7 +19,7 @@ trait AppTrait
     /**
      * @var Application Application instance.
      */
-    private $_app;
+    private $app;
 
 
     /**
@@ -29,7 +29,7 @@ trait AppTrait
      */
     public function app()
     {
-        return $this->_app;
+        return $this->app;
     }
 
     /**
@@ -39,7 +39,7 @@ trait AppTrait
      */
     public function setAppInstance(Application $app = null)
     {
-        $this->_app = $app;
+        $this->app = $app;
     }
 
     /**

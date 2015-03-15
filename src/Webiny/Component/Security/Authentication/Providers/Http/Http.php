@@ -40,7 +40,7 @@ class Http implements AuthenticationInterface
     /**
      * @var string
      */
-    private $_exitTrigger = 'die';
+    private $exitTrigger = 'die';
 
 
     /**
@@ -81,7 +81,7 @@ class Http implements AuthenticationInterface
             throw new HttpException(('Invalid exit trigger "' . $trigger . '".'));
         }
 
-        $this->_exitTrigger = $trigger;
+        $this->exitTrigger = $trigger;
     }
 
     /**
@@ -105,7 +105,7 @@ class Http implements AuthenticationInterface
 
         if ($this->httpSession()->get('login_retry') == 'true') {
             $this->httpSession()->delete('login_retry');
-            $this->_triggerExit();
+            $this->triggerExit();
         }
 
         // once we get the username and password, we store them into the session and redirect to login submit path
@@ -117,7 +117,7 @@ class Http implements AuthenticationInterface
             $password = $this->httpRequest()->server()->get(self::PASSWORD);
         } else {
             $this->httpSession()->delete('logout');
-            $this->_triggerExit();
+            $this->triggerExit();
         }
 
         $this->httpSession()->save('username', $username);
@@ -178,11 +178,11 @@ class Http implements AuthenticationInterface
      *
      * @throws HttpException
      */
-    private function _triggerExit()
+    private function triggerExit()
     {
         $msg = 'You are not authenticated';
 
-        switch ($this->_exitTrigger) {
+        switch ($this->exitTrigger) {
             case 'die':
                 die($msg);
                 break;

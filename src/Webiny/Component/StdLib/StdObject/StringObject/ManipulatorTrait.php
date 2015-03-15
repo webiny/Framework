@@ -896,7 +896,7 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    function urlEncode()
+    public function urlEncode()
     {
         $this->val(urlencode($this->val()));
 
@@ -908,7 +908,7 @@ trait ManipulatorTrait
      *
      * @return $this
      */
-    function urlDecode()
+    public function urlDecode()
     {
         $this->val(urldecode($this->val()));
 

@@ -22,6 +22,6 @@ interface TemplateEngineInterface extends \Webiny\Component\TemplateEngine\Templ
      *
      * @param ConfigObject $config Configuration for the template engine.
      */
-    function __construct(ConfigObject $config);
+    public function __construct(ConfigObject $config);
 
 }

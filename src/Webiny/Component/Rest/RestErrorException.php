@@ -20,23 +20,23 @@ class RestErrorException extends ExceptionAbstract
     /**
      * @var string Error message.
      */
-    private $_message = '';
+    protected $message = '';
 
     /**
      * @var string Error description.
      */
-    private $_description = '';
+    protected $description = '';
 
     /**
      * @var string Error code.
      */
-    private $_code = '';
+    protected $code = '';
 
     /**
      * @var array Additional error messages. Useful if you wish to return a validation error, this can be used to
      *            store errors per-field.
      */
-    private $_errors = [];
+    protected $errors = [];
 
 
     /**
@@ -48,9 +48,9 @@ class RestErrorException extends ExceptionAbstract
      */
     public function __construct($message, $description = '', $code = '')
     {
-        $this->_message = $message;
-        $this->_description = $description;
-        $this->_code = $code;
+        $this->message = $message;
+        $this->description = $description;
+        $this->code = $code;
     }
 
     /**
@@ -60,7 +60,7 @@ class RestErrorException extends ExceptionAbstract
      */
     public function addError(array $error)
     {
-        $this->_errors[] = $error;
+        $this->errors[] = $error;
     }
 
     /**
@@ -70,7 +70,7 @@ class RestErrorException extends ExceptionAbstract
      */
     public function getErrors()
     {
-        return $this->_errors;
+        return $this->errors;
     }
 
     /**
@@ -80,7 +80,7 @@ class RestErrorException extends ExceptionAbstract
      */
     public function getErrorMessage()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -90,7 +90,7 @@ class RestErrorException extends ExceptionAbstract
      */
     public function getErrorDescription()
     {
-        return $this->_description;
+        return $this->description;
     }
 
     /**
@@ -100,6 +100,6 @@ class RestErrorException extends ExceptionAbstract
      */
     public function getErrorCode()
     {
-        return $this->_code;
+        return $this->code;
     }
 }

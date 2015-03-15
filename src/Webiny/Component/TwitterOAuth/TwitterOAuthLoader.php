@@ -21,7 +21,7 @@ class TwitterOAuthLoader
 
     use StdLibTrait, HttpTrait;
 
-    private static $_instances = [];
+    private static $instances = [];
 
     /**
      * Returns an instance to TwitterOAuth server based on the current configuration.
@@ -33,8 +33,8 @@ class TwitterOAuthLoader
      */
     public static function getInstance($key)
     {
-        if (isset(self::$_instances[$key])) {
-            return self::$_instances;
+        if (isset(self::$instances[$key])) {
+            return self::$instances;
         }
 
         $config = TwitterOAuth::getConfig()->get($key, false);

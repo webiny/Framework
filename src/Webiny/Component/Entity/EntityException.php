@@ -23,9 +23,9 @@ class EntityException extends ExceptionAbstract
     const INVALID_MANY2MANY_VALUE = 105;
     const INVALID_ONE2MANY_VALUE = 106;
 
-    protected $_invalidAttributes = [];
+    protected $invalidAttributes = [];
 
-    protected static $_messages = [
+    protected static $messages = [
         101 => "Entity validation failed with '%s' errors.",
         102 => "Entity is linked with other entities via '%s' attribute and can not be deleted.",
         103 => "No matching Many2Many attribute was found between entities '%s' and '%s' for attribute '%s'.",
@@ -36,7 +36,7 @@ class EntityException extends ExceptionAbstract
 
     public function setInvalidAttributes($attributes)
     {
-        $this->_invalidAttributes = $attributes;
+        $this->invalidAttributes = $attributes;
 
         return $this;
     }
@@ -53,7 +53,7 @@ class EntityException extends ExceptionAbstract
      */
     public function getInvalidAttributes()
     {
-        return $this->_invalidAttributes;
+        return $this->invalidAttributes;
     }
 
 }

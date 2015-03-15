@@ -18,14 +18,14 @@ class Post
 {
     use StdLibTrait;
 
-    private $_postBag;
+    private $postBag;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->_postBag = $this->arr($_POST);
+        $this->postBag = $this->arr($_POST);
     }
 
     /**
@@ -38,7 +38,7 @@ class Post
      */
     public function get($key, $value = null)
     {
-        return $this->_postBag->key($key, $value, true);
+        return $this->postBag->key($key, $value, true);
     }
 
     /**
@@ -48,6 +48,6 @@ class Post
      */
     public function getAll()
     {
-        return $this->_postBag->val();
+        return $this->postBag->val();
     }
 }

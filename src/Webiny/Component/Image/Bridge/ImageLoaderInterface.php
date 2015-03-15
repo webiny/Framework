@@ -29,7 +29,7 @@ interface ImageLoaderInterface
      *
      * @return ImageInterface
      */
-    function create($width, $height, $bgColor = null);
+    public function create($width, $height, $bgColor = null);
 
     /**
      * Creates a new ImageInterface instance from the given image at the provided path.
@@ -38,7 +38,7 @@ interface ImageLoaderInterface
      *
      * @return ImageInterface
      */
-    function open(LocalFile $image);
+    public function open(LocalFile $image);
 
     /**
      * Create a new ImageInterface instance form the given binary string.
@@ -47,7 +47,7 @@ interface ImageLoaderInterface
      *
      * @return mixed
      */
-    function load($string);
+    public function load($string);
 
     /**
      * Create a new ImageInterface instance from the given resource.
@@ -56,5 +56,5 @@ interface ImageLoaderInterface
      *
      * @return ImageInterface
      */
-    function resource($resource);
+    public function resource($resource);
 }

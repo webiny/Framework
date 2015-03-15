@@ -19,10 +19,10 @@ use Webiny\Component\Mailer\MessageInterface;
 class Transport implements TransportInterface
 {
 
-    private $_mailer = null;
-    private $_disableDelivery = false;
-    private $_decorators = [];
-    private $_config;
+    private $mailer = null;
+    private $disableDelivery = false;
+    private $decorators = [];
+    private $config;
 
     /**
      * Base constructor.
@@ -34,14 +34,14 @@ class Transport implements TransportInterface
      */
     public function __construct($config)
     {
-        $this->_config = $config;
-        $this->_disableDelivery = $config->get('DisableDelivery', false);
+        $this->config = $config;
+        $this->disableDelivery = $config->get('DisableDelivery', false);
 
         $apiKey = $config->get('ApiKey', false);
         if (!$apiKey) {
             throw new MandrillException('`ApiKey` was not found in the mailer configuration!');
         }
-        $this->_mailer = new \Mandrill($apiKey);
+        $this->mailer = new \Mandrill($apiKey);
     }
 
 
@@ -55,13 +55,13 @@ class Transport implements TransportInterface
      */
     public function send(MessageInterface $message, &$failures = null)
     {
-        if ($this->_disableDelivery) {
+        if ($this->disableDelivery) {
             return true;
         }
 
         $template = $message->getBody();
         $message = $message();
-        foreach ($this->_decorators as $email => $vars) {
+        foreach ($this->decorators as $email => $vars) {
             $data = [];
             foreach ($vars as $name => $content) {
                 $data[] = [
@@ -75,11 +75,11 @@ class Transport implements TransportInterface
             ];
         }
 
-        if($this->_config->get('Mode', 'template') == 'template'){
+        if($this->config->get('Mode', 'template') == 'template'){
             unset($message['html']);
-            $res = $this->_mailer->messages->sendTemplate($template, [], $message);
+            $res = $this->mailer->messages->sendTemplate($template, [], $message);
         } else {
-            $res = $this->_mailer->messages->send($message);
+            $res = $this->mailer->messages->send($message);
         }
 
 
@@ -108,7 +108,7 @@ class Transport implements TransportInterface
      */
     public function setDecorators(array $replacements)
     {
-        $this->_decorators = $replacements;
+        $this->decorators = $replacements;
 
         return $this;
     }

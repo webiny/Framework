@@ -27,7 +27,7 @@ class User extends UserAbstract
      * @throws MemoryException
      * @return bool Return true if credentials are valid, otherwise return false.
      */
-    function authenticate(Login $login, Firewall $firewall)
+    public function authenticate(Login $login, Firewall $firewall)
     {
         try {
             $result = $firewall->verifyPasswordHash($login->getPassword(), $this->getPassword());

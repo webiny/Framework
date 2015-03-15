@@ -24,12 +24,12 @@ class Cookie
 {
     use StdLibTrait, FactoryLoaderTrait, SingletonTrait;
 
-    private static $_nativeDriver = '\Webiny\Component\Http\Cookie\Storage\NativeStorage';
+    private static $nativeDriver = '\Webiny\Component\Http\Cookie\Storage\NativeStorage';
 
-    private $_cookieBag;
-    private $_storage;
-    private $_cookiePrefix = '';
-    private $_defaultTtl = 86400;
+    private $cookieBag;
+    private $storage;
+    private $cookiePrefix = '';
+    private $defaultTtl = 86400;
 
 
     /**
@@ -37,7 +37,7 @@ class Cookie
      *
      * @throws \Webiny\Component\Http\Cookie\CookieException
      */
-    protected function _init()
+    protected function init()
     {
         try {
             // get config
@@ -45,17 +45,17 @@ class Cookie
 
 
             // create storage
-            $this->_getStorage($config);
+            $this->getStorage($config);
 
             // get all cookies from the driver
-            $cookies = $this->_getStorage()->getAll();
-            $this->_cookieBag = $this->arr($cookies);
+            $cookies = $this->getStorage()->getAll();
+            $this->cookieBag = $this->arr($cookies);
 
             // set cookie prefix
-            $this->_cookiePrefix = $config->get('Prefix', '');
+            $this->cookiePrefix = $config->get('Prefix', '');
 
             // set default ttl
-            $this->_defaultTtl = $config->get('ExpireTime', 86400);
+            $this->defaultTtl = $config->get('ExpireTime', 86400);
         } catch (\Exception $e) {
             throw new CookieException($e->getMessage());
         }
@@ -77,14 +77,14 @@ class Cookie
     {
 
         // prepare params
-        $name = $this->_cookiePrefix . $name;
-        $expiration = (is_null($expiration)) ? $this->_defaultTtl : $expiration;
+        $name = $this->cookiePrefix . $name;
+        $expiration = (is_null($expiration)) ? $this->defaultTtl : $expiration;
         $expiration += time();
 
         try {
-            $result = $this->_getStorage()->save($name, $value, $expiration, $httpOnly, $path);
+            $result = $this->getStorage()->save($name, $value, $expiration, $httpOnly, $path);
             if ($result) {
-                $this->_cookieBag->removeKey($name)->append($name, $value);
+                $this->cookieBag->removeKey($name)->append($name, $value);
             }
         } catch (\Exception $e) {
             throw new CookieException($e->getMessage());
@@ -102,7 +102,7 @@ class Cookie
      */
     public function get($name)
     {
-        return $this->_cookieBag->key($this->_cookiePrefix . $name, false, true);
+        return $this->cookieBag->key($this->cookiePrefix . $name, false, true);
     }
 
     /**
@@ -116,8 +116,8 @@ class Cookie
     public function delete($name)
     {
         try {
-            $result = $this->_getStorage()->delete($this->_cookiePrefix . $name);
-            $this->_cookieBag->removeKey($this->_cookiePrefix . $name);
+            $result = $this->getStorage()->delete($this->cookiePrefix . $name);
+            $this->cookieBag->removeKey($this->cookiePrefix . $name);
         } catch (\Exception $e) {
             throw new CookieException($e->getMessage());
         }
@@ -133,12 +133,12 @@ class Cookie
      * @return CookieStorageInterface
      * @throws \Webiny\Component\Http\Cookie\CookieException
      */
-    private function _getStorage(ConfigObject $config = null)
+    private function getStorage(ConfigObject $config = null)
     {
-        if (!isset($this->_storage)) {
+        if (!isset($this->storage)) {
             try {
-                $driver = $config->get('Storage.Driver', self::$_nativeDriver);
-                $this->_storage = $this->factory($driver, '\Webiny\Component\Http\Cookie\CookieStorageInterface',
+                $driver = $config->get('Storage.Driver', self::$nativeDriver);
+                $this->storage = $this->factory($driver, '\Webiny\Component\Http\Cookie\CookieStorageInterface',
                                                  [$config]
                 );
             } catch (Exception $e) {
@@ -146,7 +146,7 @@ class Cookie
             }
         }
 
-        return $this->_storage;
+        return $this->storage;
     }
 
     /**

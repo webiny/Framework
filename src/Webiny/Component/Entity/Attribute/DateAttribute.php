@@ -15,6 +15,6 @@ namespace Webiny\Component\Entity\Attribute;
 class DateAttribute extends DateAttributeAbstract
 {
 
-    protected $_attributeFormat = 'Y-m-d';
+    protected $attributeFormat = 'Y-m-d';
 
 }
