@@ -3,10 +3,7 @@ Crypt Component
 The `Crypt` component provides methods for generating random numbers and strings, also, password hashing and password
 hash verification and methods for encryption and decryption of strings.
 
-The component uses a combination of three different seeds for providing randomness:
-  - MCRYPT_DEV_URANDOM,
-  - mt_rand
-  - microtime
+The component uses MCRYPT_DEV_URANDOM for providing randomness.
 
 For mixing seeds we use a basic combination of `mt_rand`, `shuffle` and `str_shuffle`.
 
