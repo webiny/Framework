@@ -1,40 +1,45 @@
 {
-	"name": "webiny/class-loader",
-	"type": "library",
-	"description": "Webiny Class Loader Component",
-	"keywords": ["class loader", "autoloader", "psr-0", "psr-4"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9"
-	},
-	"suggest": {
-		"webiny/cache": "Install Webiny Cache component to add caching features to ClassLoader."
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"webiny/cache": "~1.2",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\ClassLoader\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.2-dev"
-		}
-	}
+    "name": "webiny/class-loader",
+    "type": "library",
+    "description": "Webiny Class Loader Component",
+    "keywords": [
+        "class loader",
+        "autoloader",
+        "psr-0",
+        "psr-4"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "suggest": {
+        "webiny/cache": "Install Webiny Cache component to add caching features to ClassLoader."
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "webiny/cache": "~1.2",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\ClassLoader\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }

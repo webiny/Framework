@@ -1,43 +1,51 @@
 {
-	"name": "webiny/mailer",
-	"type": "library",
-	"description": "Webiny Mail Component",
-	"keywords": ["mail", "sendmail", "email", "email attachment", "swift", "mandrill", "send grid"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"webiny/config": "~1.2",
-		"webiny/std-lib": "~1.2",
-		"webiny/storage": "~1.2",
-		"webiny/event-manager": "~1.2",
-		"swiftmailer/swiftmailer": "5.2.1",
-		"mandrill/mandrill": "~1.0",
-		"sendgrid/sendgrid": "~2.2"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\Mailer\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.2-dev"
-		}
-	}
+    "name": "webiny/mailer",
+    "type": "library",
+    "description": "Webiny Mail Component",
+    "keywords": [
+        "mail",
+        "sendmail",
+        "email",
+        "email attachment",
+        "swift",
+        "mandrill",
+        "send grid"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "webiny/config": "~1.2",
+        "webiny/std-lib": "~1.2",
+        "webiny/storage": "~1.2",
+        "webiny/event-manager": "~1.2",
+        "swiftmailer/swiftmailer": "5.2.1",
+        "mandrill/mandrill": "~1.0",
+        "sendgrid/sendgrid": "~2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\Mailer\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }

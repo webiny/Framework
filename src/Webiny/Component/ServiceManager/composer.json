@@ -1,38 +1,41 @@
 {
-	"name": "webiny/service-manager",
-	"type": "library",
-	"description": "Webiny Service Manager Component",
-	"keywords": ["service manager", "dependency injection"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"webiny/config": "~1.2",
-		"webiny/std-lib": "~1.2"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\ServiceManager\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.2-dev"
-		}
-	}
+    "name": "webiny/service-manager",
+    "type": "library",
+    "description": "Webiny Service Manager Component",
+    "keywords": [
+        "service manager",
+        "dependency injection"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "webiny/config": "~1.2",
+        "webiny/std-lib": "~1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\ServiceManager\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }

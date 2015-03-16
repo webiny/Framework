@@ -1,43 +1,47 @@
 {
-	"name": "webiny/oauth2",
-	"type": "library",
-	"description": "Webiny OAuth2 Component",
-	"keywords": ["oauth2", "facebook oauth2", "google oauth2"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"webiny/http": "~1.2",
-		"webiny/config": "~1.2",
-		"webiny/std-lib": "~1.2",
-		"league/oauth2-client": "0.8.*"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"suggest":{
-		"webiny/twitter-oauth": "Use Webiny TwitterOAuth component for OAuth v1.1."
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\OAuth2\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.2-dev"
-		}
-	}
+    "name": "webiny/oauth2",
+    "type": "library",
+    "description": "Webiny OAuth2 Component",
+    "keywords": [
+        "oauth2",
+        "facebook oauth2",
+        "google oauth2"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "webiny/http": "~1.2",
+        "webiny/config": "~1.2",
+        "webiny/std-lib": "~1.2",
+        "league/oauth2-client": "0.8.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "suggest": {
+        "webiny/twitter-oauth": "Use Webiny TwitterOAuth component for OAuth v1.1."
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\OAuth2\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }
