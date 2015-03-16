@@ -1,42 +1,48 @@
 {
-	"name": "webiny/security",
-	"type": "library",
-	"description": "Webiny Security Component",
-	"keywords": ["security", "login", "acl", "authorization", "authentication"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"webiny/http": "~1.2",
-		"webiny/crypt": "~1.2",
-		"webiny/oauth2": "~1.2",
-		"webiny/config": "~1.2",
-		"webiny/std-lib": "~1.2",
-		"webiny/event-manager": "~1.2"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\Security\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.3-dev"
-		}
-	}
+    "name": "webiny/security",
+    "type": "library",
+    "description": "Webiny Security Component",
+    "keywords": [
+        "security",
+        "login",
+        "acl",
+        "authorization",
+        "authentication"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "webiny/http": "~1.2",
+        "webiny/crypt": "~1.2",
+        "webiny/oauth2": "~1.2",
+        "webiny/config": "~1.2",
+        "webiny/std-lib": "~1.2",
+        "webiny/event-manager": "~1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\Security\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }

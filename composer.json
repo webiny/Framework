@@ -1,76 +1,79 @@
 {
-	"name": "webiny/framework",
-	"type": "library",
-	"description": "Webiny Framework",
-	"keywords": ["php", "framework"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"symfony/yaml": "2.5.*",
-		"smarty/smarty": "3.1.*",
-		"aws/aws-sdk-php": "2.6.*",
-		"imagine/imagine": "0.6.*",
-		"minime/annotations": "~1.13",
-		"swiftmailer/swiftmailer": "5.2.1",
-		"mandrill/mandrill": "~1.0",
-		"sendgrid/sendgrid": "~2.2",
-		"webiny/forked-jamm-memory": "~1.0",
-		"league/oauth1-client": "~1.0",
-		"league/oauth2-client": "0.8.*",
-		"psr/log": "~1.0",
-		"ext-mongo": "*",
-		"ext-memcache": "*",
-		"ext-gd": "*"
-	},
-	"replace": {
-		"webiny/amazon": "self.version",
-		"webiny/annotations": "self.version",
-		"webiny/bootstrap": "self.version",
-		"webiny/cache": "self.version",
-		"webiny/class-loader": "self.version",
-		"webiny/config": "self.version",
-		"webiny/crypt": "self.version",
-		"webiny/entity": "self.version",
-		"webiny/event-manager": "self.version",
-		"webiny/http": "self.version",
-		"webiny/image": "self.version",
-		"webiny/logger": "self.version",
-		"webiny/mailer": "self.version",
-		"webiny/mongo": "self.version",
-		"webiny/oauth2": "self.version",
-		"webiny/rest": "self.version",
-		"webiny/router": "self.version",
-		"webiny/security": "self.version",
-		"webiny/service-manager": "self.version",
-		"webiny/std-lib": "self.version",
-		"webiny/storage": "self.version",
-		"webiny/template-engine": "self.version",
-		"webiny/twitter-oauth": "self.version"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4",
-		"mybuilder/phpunit-accelerator": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\": "src/Webiny/Component/"
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.3-dev"
-		}
-	}
+    "name": "webiny/framework",
+    "type": "library",
+    "description": "Webiny Framework",
+    "keywords": [
+        "php",
+        "framework"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/yaml": "2.5.*",
+        "smarty/smarty": "3.1.*",
+        "aws/aws-sdk-php": "2.6.*",
+        "imagine/imagine": "0.6.*",
+        "minime/annotations": "~1.13",
+        "swiftmailer/swiftmailer": "5.2.1",
+        "mandrill/mandrill": "~1.0",
+        "sendgrid/sendgrid": "~2.2",
+        "webiny/forked-jamm-memory": "~1.3",
+        "league/oauth1-client": "~1.0",
+        "league/oauth2-client": "0.8.*",
+        "psr/log": "~1.0",
+        "ext-mongo": "*",
+        "ext-memcache": "*",
+        "ext-gd": "*"
+    },
+    "replace": {
+        "webiny/amazon": "self.version",
+        "webiny/annotations": "self.version",
+        "webiny/bootstrap": "self.version",
+        "webiny/cache": "self.version",
+        "webiny/class-loader": "self.version",
+        "webiny/config": "self.version",
+        "webiny/crypt": "self.version",
+        "webiny/entity": "self.version",
+        "webiny/event-manager": "self.version",
+        "webiny/http": "self.version",
+        "webiny/image": "self.version",
+        "webiny/logger": "self.version",
+        "webiny/mailer": "self.version",
+        "webiny/mongo": "self.version",
+        "webiny/oauth2": "self.version",
+        "webiny/rest": "self.version",
+        "webiny/router": "self.version",
+        "webiny/security": "self.version",
+        "webiny/service-manager": "self.version",
+        "webiny/std-lib": "self.version",
+        "webiny/storage": "self.version",
+        "webiny/template-engine": "self.version",
+        "webiny/twitter-oauth": "self.version"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4",
+        "mybuilder/phpunit-accelerator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\": "src/Webiny/Component/"
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }

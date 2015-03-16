@@ -1,45 +1,48 @@
 {
-	"name": "webiny/bootstrap",
-	"type": "library",
-	"description": "Webiny Bootstrap Component",
-	"keywords": ["bootstrap", "mvc"],
-	"homepage": "http://www.webiny.com/",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sven Al Hamad",
-			"email": "sven@webiny.com"
-		},
-		{
-			"name": "Pavel Denisjuk",
-			"email": "pavel@webiny.com"
-		},
-		{
-		  "name": "Bruno Skvorc",
-		  "email": "bruno@webiny.com"
-		}
-	],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.5.9",
-		"webiny/std-lib": "~1.2",
-		"webiny/config": "~1.2",
-	  	"webiny/class-loader": "~1.2",
-		"webiny/http": "~1.2",
-		"webiny/router": "~1.2",
-	  	"webiny/template-engine": "~1.2"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "4.1.*"
-	},
-	"autoload": {
-		"psr-4": {
-			"Webiny\\Component\\Bootstrap\\": ""
-		}
-	},
-	"extras": {
-		"branch-alias": {
-			"dev-master": "1.2-dev"
-		}
-	}
+    "name": "webiny/bootstrap",
+    "type": "library",
+    "description": "Webiny Bootstrap Component",
+    "keywords": [
+        "bootstrap",
+        "mvc"
+    ],
+    "homepage": "http://www.webiny.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Al Hamad",
+            "email": "sven@webiny.com"
+        },
+        {
+            "name": "Pavel Denisjuk",
+            "email": "pavel@webiny.com"
+        },
+        {
+            "name": "Bruno Skvorc",
+            "email": "bruno@webiny.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "webiny/std-lib": "~1.2",
+        "webiny/config": "~1.2",
+        "webiny/class-loader": "~1.2",
+        "webiny/http": "~1.2",
+        "webiny/router": "~1.2",
+        "webiny/template-engine": "~1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webiny\\Component\\Bootstrap\\": ""
+        }
+    },
+    "extras": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
 }
