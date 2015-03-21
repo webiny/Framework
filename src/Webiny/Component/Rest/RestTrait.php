@@ -27,7 +27,7 @@ trait RestTrait
     protected static function restGetPage($default = 1)
     {
         $page = Request::getInstance()->query('_page', $default);
-        if (!is_int($page) || $page < 1) {
+        if (!is_numeric($page) || $page < 1) {
             return $default;
         }
 
@@ -44,7 +44,7 @@ trait RestTrait
     protected static function restGetPerPage($default = 10)
     {
         $perPage = Request::getInstance()->query('_perPage', $default);
-        if (!is_int($perPage) || $perPage < 1 || $perPage > 1000) {
+        if (!is_numeric($perPage) || $perPage < 1 || $perPage > 1000) {
             return $default;
         }
 
