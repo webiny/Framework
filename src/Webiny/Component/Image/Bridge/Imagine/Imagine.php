@@ -11,7 +11,7 @@ use Imagine\Image\Box;
 use Webiny\Component\Image\Bridge\ImageLoaderInterface;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\StdLib\StdLibTrait;
-use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Storage\File\File;
 
 /**
  * This class is the main bridge to Imagine library.
@@ -95,11 +95,11 @@ class Imagine implements ImageLoaderInterface
     /**
      * Creates a new ImageInterface instance from the given image at the provided path.
      *
-     * @param LocalFile $image Path to an image on the disk.
+     * @param File $image Path to an image on the disk.
      *
      * @return \Webiny\Component\Image\ImageInterface
      */
-    public function open(LocalFile $image)
+    public function open(File $image)
     {
         return new Image($this->instance->open($image->getAbsolutePath()));
     }

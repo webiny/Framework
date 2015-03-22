@@ -10,7 +10,7 @@ namespace Webiny\Component\Image;
 use Webiny\Component\Image\Bridge\ImageLoaderInterface;
 use Webiny\Component\Image\Bridge\Loader;
 use Webiny\Component\StdLib\StdLibTrait;
-use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Storage\File\File;
 
 /**
  * Use this class to create an Image instance.
@@ -89,11 +89,11 @@ class ImageLoader
     /**
      * Creates a new ImageInterface instance from the given image at the provided path.
      *
-     * @param LocalFile $image Path to an image on the disk.
+     * @param File $image Path to an image on the disk.
      *
      * @return ImageInterface
      */
-    public static function open(LocalFile $image)
+    public static function open(File $image)
     {
         $img = self::getLoader()->open($image);
         $img->setDestination($image);
@@ -113,10 +113,10 @@ class ImageLoader
      * This method fixes that.
      * Method is called automatically on the `open` method.
      *
-     * @param LocalFile      $imageFile
+     * @param File      $imageFile
      * @param ImageInterface $image
      */
-    private static function fixImageOrientation(LocalFile $imageFile, ImageInterface $image)
+    private static function fixImageOrientation(File $imageFile, ImageInterface $image)
     {
         $format = $image->getFormat();
 

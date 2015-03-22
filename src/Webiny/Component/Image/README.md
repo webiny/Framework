@@ -41,7 +41,7 @@ Here is a usage example:
 ```php
 // storage
 $imageStorage = \Webiny\Component\ServiceManager\ServiceManager::getInstance()->getService('storage.local');
-$image = new \Webiny\Component\Storage\File\LocalFile('embed.jpg', $imageStorage);
+$image = new \Webiny\Component\Storage\File\File('embed.jpg', $imageStorage);
 
 // load the image using the `open` method
 $imgInstance = \Webiny\Component\Image\ImageLoader::open($image);
@@ -52,7 +52,7 @@ $imgInstance->resize(800, 800)
             ->rotate(30, 'bfbfbf');
 
 // save the new image
-$destination = new \Webiny\Component\Storage\File\LocalFile('embed-rotated.jpg', $imageStorage);
+$destination = new \Webiny\Component\Storage\File\File('embed-rotated.jpg', $imageStorage);
 $result = $imgInstance->save($destination); // if you don't set the destination, the original image will be overwritten
 ```
 

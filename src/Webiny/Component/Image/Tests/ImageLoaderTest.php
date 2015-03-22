@@ -47,8 +47,8 @@ class ImageLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testOpen()
     {
-        // build LocalFile mock
-        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\LocalFile')
+        // build File mock
+        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\File')
                      ->disableOriginalConstructor()
                      ->setMethods([
                                       'getAbsolutePath',

@@ -47,8 +47,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         Image::setConfig(realpath(__DIR__ . '/../../' . self::CONFIG));
 
-        // build LocalFile mock
-        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\LocalFile')
+        // build File mock
+        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\File')
                      ->disableOriginalConstructor()
                      ->setMethods([
                                       'getAbsolutePath',
