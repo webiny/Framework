@@ -8,7 +8,7 @@
 namespace Webiny\Component\Mailer;
 
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Storage\File\File;
 
 /**
  * This interface defines the structure of the message object.
@@ -187,13 +187,13 @@ interface MessageInterface
     /**
      * Attach a file to your message.
      *
-     * @param LocalFile $file     File instance
+     * @param File $file     File instance
      * @param string    $fileName Optional name that will be set for the attachment.
      * @param string    $type     Optional MIME type of the attachment
      *
      * @return $this
      */
-    public function addAttachment(LocalFile $file, $fileName = '', $type = 'plain/text');
+    public function addAttachment(File $file, $fileName = '', $type = 'plain/text');
 
     /**
      * Defines the return path for the email.

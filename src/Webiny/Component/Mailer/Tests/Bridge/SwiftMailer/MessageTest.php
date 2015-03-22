@@ -8,8 +8,8 @@
 namespace Webiny\Component\Mailer\Tests\Bridge\SwiftMailer;
 
 use Webiny\Component\Mailer\Bridge\SwiftMailer\Message;
-use Webiny\Component\Storage\Driver\Local\Local;
-use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Storage\Driver\Local\LocalStorageDriver;
+use Webiny\Component\Storage\File\File;
 use Webiny\Component\Storage\Storage;
 
 /**
@@ -39,8 +39,8 @@ class MessageTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddAttachment($message)
     {
-        $storage = new Storage(new Local(__DIR__.'/Attachments'));
-        $message->addAttachment(new LocalFile('Attachment.yaml', $storage), 'ExampleConfig.yaml', 'text/yaml');
+        $storage = new Storage(new LocalStorageDriver(__DIR__.'/Attachments'));
+        $message->addAttachment(new File('Attachment.yaml', $storage), 'ExampleConfig.yaml', 'text/yaml');
         $children = $message->getChildren();
 
         $this->assertSame('text/yaml', $children[0]->getContentType());
