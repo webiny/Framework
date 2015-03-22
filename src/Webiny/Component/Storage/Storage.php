@@ -35,6 +35,13 @@ class Storage
         $this->driver = $driver;
     }
 
+    /**
+     * @return DriverInterface
+     */
+    public function getDriver(){
+        return $this->driver;
+    }
+
     public function getURL($key)
     {
         if (!$this->isDirectory($key)) {

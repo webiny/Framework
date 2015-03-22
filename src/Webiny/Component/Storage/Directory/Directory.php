@@ -9,8 +9,7 @@ namespace Webiny\Component\Storage\Directory;
 
 use Traversable;
 use Webiny\Component\EventManager\EventManagerTrait;
-use Webiny\Component\Storage\Driver\Local\LocalHelper;
-use Webiny\Component\Storage\File\LocalFile;
+use Webiny\Component\Storage\File\File;
 use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageException;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -21,7 +20,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package Webiny\Component\Storage\Directory
  */
-class LocalDirectory implements DirectoryInterface, \IteratorAggregate
+class Directory implements DirectoryInterface, \IteratorAggregate
 {
     use StdLibTrait, EventManagerTrait;
 
@@ -44,6 +43,11 @@ class LocalDirectory implements DirectoryInterface, \IteratorAggregate
      */
     public function __construct($key, Storage $storage, $recursive = false, $filter = null)
     {
+        if(!$storage->supportsDirectories()){
+            $driver = get_class($storage->getDriver());
+            throw new StorageException(StorageException::DRIVER_CAN_NOT_WORK_WITH_DIRECTORIES, [$driver]);
+        }
+
         $this->key = $key;
         $this->recursive = $recursive;
         $this->storage = $storage;
@@ -66,7 +70,7 @@ class LocalDirectory implements DirectoryInterface, \IteratorAggregate
      *
      * @param string $condition
      *
-     * @return LocalDirectory
+     * @return Directory
      */
     public function filter($condition)
     {
@@ -165,7 +169,7 @@ class LocalDirectory implements DirectoryInterface, \IteratorAggregate
                 if ($this->storage->isDirectory($key)) {
                     $this->items[$key] = new static($key, $this->storage);
                 } else {
-                    $this->items[$key] = new LocalFile($key, $this->storage);
+                    $this->items[$key] = new File($key, $this->storage);
                 }
             }
         }

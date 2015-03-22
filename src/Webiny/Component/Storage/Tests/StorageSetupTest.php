@@ -25,7 +25,7 @@ class StorageSetupTest extends \PHPUnit_Framework_TestCase
 
     public function testConfigServices()
     {
-        $this->assertSame('%Storage.Class%', Storage::getConfig()->get('Services.LocalStorage.Class'));
+        $this->assertSame('%StorageClass%', Storage::getConfig()->get('Services.LocalStorage.Class'));
         $this->assertFalse(Storage::getConfig()->get('Bridges.FakeBridge', false));
     }
 }

@@ -48,7 +48,7 @@ Storage:
             Class: %Storage.Class%
             Arguments:
                 Driver:
-                    Object: \Webiny\Component\Storage\Driver\Local\Local
+                    Object: \Webiny\Component\Storage\Driver\Local\LocalStorageDriver
                     ObjectArguments:
                         - __DIR__/../../Public/Uploads # Absolute root path
                         - http://admin.w3.com/Uploads # Web root path
@@ -68,7 +68,7 @@ Storage:
 
 ## Using your new storage
 
-To make use of local storage easier and more flexible, there are 2 classes: `\Webiny\Component\Storage\File\LocalFile` and `\Webiny\Component\Storage\Directory\LocalDirectory`. These 2 classes serve as wrappers so you never need to make calls to storage directly. Besides, they contain common methods you will need to perform actions on files and directories.
+To make use of local storage easier and more flexible, there are 2 classes: `\Webiny\Component\Storage\File\File` and `\Webiny\Component\Storage\Directory\Directory`. These 2 classes serve as wrappers so you never need to make calls to storage directly. Besides, they contain common methods you will need to perform actions on files and directories.
 
 Let's take a look at how you would store a new file:
 
@@ -79,7 +79,7 @@ Let's take a look at how you would store a new file:
 $storage = $this->storage('local');
 
 // Create a file object with a key (file name) and a $storage instance
-$file = new LocalFile('file.txt', $storage);
+$file = new File('file.txt', $storage);
 
 $contents = file_get_contents('http://www.w3schools.com/images/w3schoolslogoNEW310113.gif');
 $file->setContents($contents);
@@ -91,7 +91,7 @@ After calling `setContents($contents)` the contents is written to the storage im
 ## Working with directories
 Sometimes you need to read the whole directory, filter files by name, extension, etc. There is a special interface for this type of manipulation, `\Webiny\Component\Storage\Directory\DirectoryInterface`.
 
-Since not all storage engines support directories, there is no generic implementation of this interface. There is, however, an implementation in form of `LocalDirectory` which works nicely with local file storage. There are 2 modes of reading a directory: `recursive` and `non-recursive`. 
+Since not all storage engines support directories, there is no generic implementation of this interface. There is, however, an implementation in form of `Directory` which works nicely with local file storage. There are 2 modes of reading a directory: `recursive` and `non-recursive`. 
 
 * `Recursive` will read the whole directory structure recursively and build a one-dimensional array of files (directory objects are not created but their children files are returned). This is very useful when you need to read all files at once or filter them by name, extension, etc.
 * `Non-recursive` will only read current directory and return both child `Directory` and `File` objects. You can then loop through child `Directory` object to go in-depth.
@@ -108,10 +108,10 @@ $dir = new Directory('2013', $storage);
 
 // Loop through directory object
 foreach($dir as $item){
-    if($this->isInstanceOf($item, 'LocalDirectory')){
-		// Do something with child LocalDirectory object
+    if($item->isDirectory()){
+		// Do something with child Directory object
 	} else {
-		// Do something with LocalFile object
+		// Do something with File object
 	}
 }
 

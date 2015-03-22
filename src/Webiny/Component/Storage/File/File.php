@@ -8,6 +8,9 @@
 namespace Webiny\Component\Storage\File;
 
 use Webiny\Component\EventManager\EventManagerTrait;
+use Webiny\Component\Storage\Driver\AbsolutePathInterface;
+use Webiny\Component\Storage\Driver\SizeAwareInterface;
+use Webiny\Component\Storage\Driver\TouchableInterface;
 use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageEvent;
 use Webiny\Component\Storage\StorageException;
@@ -31,6 +34,7 @@ class File implements FileInterface
     protected $isDirectory;
     protected $timeModified;
     protected $url;
+    protected $size = null;
 
     /**
      * Construct a File instance
@@ -61,6 +65,34 @@ class File implements FileInterface
     }
 
     /**
+     * Get file size in bytes
+     *
+     * @return int|null Number of bytes or null
+     */
+    public function getSize()
+    {
+        if ($this->size === null && $this->storage->supportsSize()) {
+            $this->size = $this->storage->getSize($this->key);
+        }
+
+        return $this->size;
+    }
+
+    /**
+     * Get absolute file path.
+     * If storage driver does not support absolute paths (cloud storage) returns file key
+     *
+     * @return string
+     */
+    public function getAbsolutePath()
+    {
+        if($this->storage->supportsAbsolutePaths()){
+            return $this->storage->getAbsolutePath($this->key);
+        }
+        return $this->getKey();
+    }
+
+    /**
      * @inheritdoc
      */
     public function getTimeModified($asDateTimeObject = false)
@@ -83,6 +115,7 @@ class File implements FileInterface
         $this->contents = $contents;
         if ($this->storage->setContents($this->key, $this->contents, $append) !== false) {
             $this->key = $this->storage->getRecentKey();
+            $this->size = null;
             $this->eventManager()->fire(StorageEvent::FILE_SAVED, new StorageEvent($this));
 
             return true;
@@ -153,5 +186,31 @@ class File implements FileInterface
         }
 
         return $this->url;
+    }
+
+    /**
+     * Touch a file (change time modified)
+     *
+     * @return $this
+     */
+    public function touch()
+    {
+        if($this->storage->supportsTouching()){
+            $this->storage->touchKey($this->key);
+            $this->timeModified = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks if file is a directory.
+     * Need this method for easier checks when looping through directories.
+     *
+     * @return bool
+     */
+    public function isDirectory()
+    {
+        return false;
     }
 }

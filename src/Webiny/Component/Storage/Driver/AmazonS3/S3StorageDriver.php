@@ -24,7 +24,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  *
  * @package  Webiny\Component\Storage\Driver\AmazonS3
  */
-class AmazonS3 implements DriverInterface
+class S3StorageDriver implements DriverInterface
 {
     use StdObjectTrait;
 

@@ -24,7 +24,7 @@ if (!defined('DS')) {
  *
  * @package   Webiny\Component\Storage\Driver\Local
  */
-class Local implements DirectoryAwareInterface, DriverInterface, SizeAwareInterface, AbsolutePathInterface, TouchableInterface
+class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, SizeAwareInterface, AbsolutePathInterface, TouchableInterface
 {
 
     protected $dateFolderStructure;

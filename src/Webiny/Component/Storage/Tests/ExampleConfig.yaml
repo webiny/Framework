@@ -8,25 +8,25 @@
 Storage:
     # You can optionally specify parameters for use in services definitions
     Parameters:
-        Storage.Class: \Webiny\Component\Storage\Storage
-        Storage.S3DriverArgs:
+        StorageClass: \Webiny\Component\Storage\Storage
+        StorageS3DriverArgs:
             - AAAA
             - /FOO
             - foo # Bucket name
             - false # DateFolderStructure
     Services:
         CloudStorage:
-            Class: %Storage.Class%
+            Class: %StorageClass%
             Arguments:
                 Driver:
-                    Object: \Webiny\Component\Storage\Driver\AmazonS3\AmazonS3
-                    ObjectArguments: %Storage.S3DriverArgs%
+                    Object: \Webiny\Component\Storage\Driver\AmazonS3\S3StorageDriver
+                    ObjectArguments: %StorageS3DriverArgs%
             Tags: [cloud]
         LocalStorage:
-            Class: %Storage.Class%
+            Class: %StorageClass%
             Arguments:
                 Driver:
-                    Object: \Webiny\Component\Storage\Driver\Local\Local
+                    Object: \Webiny\Component\Storage\Driver\Local\LocalStorageDriver
                     ObjectArguments:
                         - __DIR__/TestFiles # __DIR__ will be replaced with this config's directory
                         - http://admin.w3.com/Uploads # Web root path

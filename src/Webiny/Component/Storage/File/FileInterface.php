@@ -16,7 +16,6 @@ use Webiny\Component\Storage\Storage;
  */
 interface FileInterface
 {
-
     /**
      * Constructor
      *
@@ -96,4 +95,26 @@ interface FileInterface
      * @return bool
      */
     public function delete();
+
+    /**
+     * Get absolute file path.
+     * If storage driver does not support absolute paths (cloud storage) returns file key
+     *
+     * @return string
+     */
+    public function getAbsolutePath();
+
+    /**
+     * Get file size in bytes
+     *
+     * @return int|null Number of bytes or null
+     */
+    public function getSize();
+
+    /**
+     * Touch a file (change time modified)
+     *
+     * @return $this
+     */
+    public function touch();
 }
