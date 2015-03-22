@@ -130,7 +130,6 @@ class FooService
      * @rest.cache.ttl 100
      * @rest.header.cache.expires 3600
      * @rest.header.status.success 200
-     * @rest.header.status.error 401
      * @rest.header.status.errorMessage No Author for specified id.
      * @rest.rateControl.ignore
      *
@@ -204,7 +203,6 @@ seconds. Note that this feature requires that you have a `Cache` service defined
 There are several options in the `header` section that you can control:
 - `cache.expires`: defines what ttl will be set in `Expires` header that component will send to the browser. If you don't set it, it will be set to '-1' telling the browser to always grab fresh content from the server.
 - `status.success`: what response status code should be returned if the request was successful. By default **200 - OK** is returned, with an exception of **201 - Created** for **POST** requests.
-- `status.error`: same as `status.success`, but in a case of an error. By default the system returns a **404 - Not Found**.
 - `status.errorMessage`: defines a custom error message that will be attached to the response status code.
 
 

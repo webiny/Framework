@@ -33,6 +33,11 @@ class RestErrorException extends ExceptionAbstract
     protected $code = '';
 
     /**
+     * @var int Http response code that should be send with the error. Default is 404.
+     */
+    protected $responseCode = 404;
+
+    /**
      * @var array Additional error messages. Useful if you wish to return a validation error, this can be used to
      *            store errors per-field.
      */
@@ -42,11 +47,12 @@ class RestErrorException extends ExceptionAbstract
     /**
      * Base constructor.
      *
-     * @param string $message     Error message.
-     * @param string $description Error description.
-     * @param string $code        Error code.
+     * @param string $message      Error message.
+     * @param string $description  Error description.
+     * @param string $code         Error code.
+     * @param int    $responseCode Http response code that should be send with the error. Default is 404.
      */
-    public function __construct($message, $description = '', $code = '')
+    public function __construct($message, $description = '', $code = '', $responseCode = 404)
     {
         $this->message = $message;
         $this->description = $description;
@@ -101,5 +107,21 @@ class RestErrorException extends ExceptionAbstract
     public function getErrorCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @param $responseCode Http response code that should be send with the error. Default is 404.
+     */
+    public function setResponseCode($responseCode)
+    {
+        $this->responseCode = $responseCode;
+    }
+
+    /**
+     * @return int Returns the http response code.
+     */
+    public function getResponseCode()
+    {
+        return $this->responseCode;
     }
 }

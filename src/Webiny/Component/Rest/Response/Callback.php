@@ -135,9 +135,12 @@ class Callback
 
             } catch (RestErrorException $re) {
                 // check if method has custom headers set
-                $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['error'],
+                $cr->setHeaderResponse($statusCode = $re->getResponseCode(),
                                        $this->requestBag->getMethodData()['header']['status']['errorMessage']
                 );
+
+                // check if a custom http response code is set
+
 
                 $cr->setErrorResponse($re->getErrorMessage(), $re->getErrorDescription(), $re->getErrorCode());
                 $errors = $re->getErrors();
