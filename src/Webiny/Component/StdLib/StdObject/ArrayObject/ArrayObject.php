@@ -36,33 +36,34 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      * Constructor.
      * Set standard object value.
      *
-     * @param null|array|ArrayObject|stdClass $array  Array or stdClass from which to create an ArrayObject.
-     * @param null|array                      $values Array of values that will be combined with $array.
-     *                                                See http://www.php.net/manual/en/function.array-combine.php for more info.
-     *                                                $array param is used as key array.
+     * @param null|array|ArrayObject|stdClass|ArrayAccess $array  Array, ArrayAccess or stdClass from which to create an ArrayObject.
+     * @param null|array                                  $values Array of values that will be combined with $array.
+     *                                                            See http://www.php.net/manual/en/function.array-combine.php for more info.
+     *                                                            $array param is used as key array.
      *
      * @throws ArrayObjectException
      */
     public function __construct($array = null, $values = null)
     {
-        if(!$this->isInstanceOf($array, '\stdClass') && !$this->isArray($array) && !$this->isArrayObject($array)) {
-            if($this->isNull($array)) {
+        if (!$this->isInstanceOf($array, '\stdClass') && !$this->isInstanceOf($array,
+                '\ArrayAccess') && !$this->isArray($array) && !$this->isArrayObject($array)
+        ) {
+            if ($this->isNull($array)) {
                 $this->value = array();
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$array',
-                                                                                          'array, ArrayObject'
-                                                                                      ]
-                );
+                        '$array',
+                        'array, ArrayObject, ArrayAccess'
+                    ]);
             }
         } else {
             $array = $this->objectToArray($array);
-            if($this->isInstanceOf($array, $this)) {
+            if ($this->isInstanceOf($array, $this)) {
                 $this->val($array->val());
             } else {
-                if($this->isArray($values)) {
+                if ($this->isArray($values)) {
                     // check if both arrays have the same number of values
-                    if(count($array) != count($values)) {
+                    if (count($array) != count($values)) {
                         throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_COMBINE_COUNT);
                     }
                     $this->value = array_combine($array, $values);
@@ -237,7 +238,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
      */
     public function offsetSet($offset, $value)
     {
-        if($this->isNull($offset)){
+        if ($this->isNull($offset)) {
             $this->value[] = $value;
         } else {
             $this->value[$offset] = $value;
@@ -285,13 +286,13 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
 
     private function objectToArray($object)
     {
-        if($this->isInstanceOf($object, '\stdClass')) {
+        if ($this->isInstanceOf($object, '\stdClass')) {
             // Gets the properties of the given object
             // with get_object_vars function
             $object = get_object_vars($object);
         }
 
-        if(is_array($object)) {
+        if (is_array($object)) {
             foreach ($object as $k => $v) {
                 $object[$k] = $this->objectToArray($v);
             }
