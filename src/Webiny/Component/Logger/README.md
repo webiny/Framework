@@ -48,7 +48,7 @@ Logger:
             Calls:
                 - [addHandler, [@Logger.LogHandler]]
         LogFile:
-            Class: \Webiny\Component\Storage\File\LocalFile
+            Class: \Webiny\Component\Storage\File\File
             Arguments:
                 Key: Development/Log.txt
                 Storage: @Storage.Logger # Define this service in your Storage configuration
@@ -69,8 +69,8 @@ Logger:
         Psr: '../Psr'
 ```
 
-NOTE: `FileHandler` in our example (LogHandler service) takes a `LocalFile` as first argument. We can only write to files
-using `Storage` component, so we need a service which provides us with a `LocalFile` instance.
+NOTE: `FileHandler` in our example (LogHandler service) takes a `File` as first argument. We can only write to files
+using `Storage` component, so we need a service which provides us with a `File` instance.
 
 To use your logger in PHP:
 

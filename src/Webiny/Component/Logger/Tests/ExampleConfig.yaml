@@ -4,7 +4,7 @@ Storage:
             Class: \Webiny\Component\Storage\Storage
             Arguments:
                 Driver:
-                    Object: \Webiny\Component\Storage\Driver\Local\Local
+                    Object: \Webiny\Component\Storage\Driver\Local\LocalStorageDriver
                     ObjectArguments:
                         - __DIR__ # Absolute root path
 Logger:
@@ -22,7 +22,7 @@ Logger:
             Calls:
                 - [addHandler, [@Logger.LogHandler]]
         LogFile:
-            Class: \Webiny\Component\Storage\File\LocalFile
+            Class: \Webiny\Component\Storage\File\File
             Arguments:
                 Key: UnitTest.log
                 Storage: @Storage.Logger # Define this service in your Storage configuration
