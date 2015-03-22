@@ -57,6 +57,7 @@ class RestErrorException extends ExceptionAbstract
         $this->message = $message;
         $this->description = $description;
         $this->code = $code;
+        $this->responseCode = $responseCode;
     }
 
     /**
