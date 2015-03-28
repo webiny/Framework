@@ -150,7 +150,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function attr($attribute)
     {
-        return EntityAttributeBuilder::getInstance()->_setContext($this->attributes, $attribute)->_setEntity($this);
+        return EntityAttributeBuilder::getInstance()->setContext($this->attributes, $attribute)->setEntity($this);
     }
 
     /**

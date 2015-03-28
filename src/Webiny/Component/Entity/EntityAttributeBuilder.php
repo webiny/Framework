@@ -42,7 +42,7 @@ class EntityAttributeBuilder
      *
      * @return $this
      */
-    public function _setContext($attributes, $attribute)
+    public function setContext($attributes, $attribute)
     {
         $this->attributes = $attributes;
         $this->attribute = $attribute;
@@ -50,7 +50,7 @@ class EntityAttributeBuilder
         return $this;
     }
 
-    public function _setEntity(EntityAbstract $entity)
+    public function setEntity(EntityAbstract $entity)
     {
         $this->entity = $entity;
 
