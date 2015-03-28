@@ -40,17 +40,15 @@ trait ManipulatorTrait
 
             return $value;
         } else {
-            if (!$setOnlyIfDoesntExist) {
-                if (!$this->isNull($value)) {
-                    $array[$key] = $value;
-                    $this->val($array);
+            if (!$setOnlyIfDoesntExist && !$this->isNull($value)) {
+                $array[$key] = $value;
+                $this->val($array);
 
-                    return $this;
-                }
+                return $this;
             }
         }
 
-        if(!isset($array[$key])){
+        if (!isset($array[$key])) {
             return $value;
         }
 
@@ -71,43 +69,23 @@ trait ManipulatorTrait
         $key = StdObjectWrapper::toString($key);
         $array = $this->val();
 
+        // If key does not exist, set default $value and return it
         if ($setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
-            if (strpos($key, '.') !== false) {
-                $keys = explode('.', trim($key, '.'), 2);
-                if (!isset($array[$keys[0]])) {
-                    $array[$keys[0]] = [];
-                }
-                $targetArray = new ArrayObject($array[$keys[0]]);
-                $value = $targetArray->keyNested($keys[1], $value, true);
-                $this->keyNested($keys[0], $targetArray->val());
-            } else {
-                $array[$key] = $value;
-                $this->val($array);
-            }
+            $this->handleNestedValue($key, $value, true);
 
             return $value;
         } else {
+            // Set new $value into given $key
             if (!$setOnlyIfDoesntExist && !$this->isNull($value)) {
-                if (strpos($key, '.') !== false) {
-                    $keys = explode('.', trim($key, '.'), 2);
-                    if (!isset($array[$keys[0]])) {
-                        $array[$keys[0]] = [];
-                    }
-                    $targetArray = new ArrayObject($array[$keys[0]]);
-                    $targetArray->keyNested($keys[1], $value);
-                    $this->keyNested($keys[0], $targetArray->val());
-                } else {
-                    $array[$key] = $value;
-                    $this->val($array);
-                }
+                $this->handleNestedValue($key, $value, false);
 
                 return $this;
             }
         }
-
+        // Get value for given $key
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
-            if(!isset($array[$keys[0]])){
+            if (!isset($array[$keys[0]])) {
                 $array[$keys[0]] = [];
             }
             $targetArray = new ArrayObject($array[$keys[0]]);
@@ -115,11 +93,7 @@ trait ManipulatorTrait
             return $targetArray->keyNested($keys[1], $value, true);
         }
 
-        if(!isset($array[$key])){
-            return $value;
-        }
-
-        return $array[$key];
+        return $array[$key] ?: $value;
     }
 
     /**
@@ -301,10 +275,9 @@ trait ManipulatorTrait
                 $realCase = CASE_UPPER;
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_PARAM_VALUE_OUT_OF_SCOPE, [
-                                                                                                     '$case',
-                                                                                                     '"lower" or "upper"'
-                                                                                                 ]
-                );
+                    '$case',
+                    '"lower" or "upper"'
+                ]);
             }
         }
 
@@ -352,26 +325,23 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($start)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$start',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$start',
+                'integer'
+            ]);
         }
 
         if (!$this->isNumber($num)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$num',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$num',
+                'integer'
+            ]);
         }
 
         if ($num <= 0) {
             throw new ArrayObjectException(ArrayObjectException::MSG_PARAM_VALUE_OUT_OF_SCOPE, [
-                                                                                                 '$num',
-                                                                                                 'greater than zero'
-                                                                                             ]
-            );
+                '$num',
+                'greater than zero'
+            ]);
         }
 
         $this->val(array_fill($start, $num, $value));
@@ -391,10 +361,9 @@ trait ManipulatorTrait
     {
         if ($callable != '' && !$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$callable',
-                                                                                      'a callable function or method'
-                                                                                  ]
-            );
+                '$callable',
+                'a callable function or method'
+            ]);
         }
 
         if ($callable == '') {
@@ -457,10 +426,9 @@ trait ManipulatorTrait
         if ($callable != '') {
             if (!$this->isCallable($callable)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$callable',
-                                                                                          'a callable function or method'
-                                                                                      ]
-                );
+                    '$callable',
+                    'a callable function or method'
+                ]);
             }
 
             $this->val(array_intersect_uassoc($this->val(), $array, $callable));
@@ -486,10 +454,9 @@ trait ManipulatorTrait
         if ($callable != '') {
             if (!$this->isCallable($callable)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$callable',
-                                                                                          'a callable function or method'
-                                                                                      ]
-                );
+                    '$callable',
+                    'a callable function or method'
+                ]);
             }
 
             $this->val(array_intersect_ukey($this->val(), $array, $callable));
@@ -512,10 +479,9 @@ trait ManipulatorTrait
     {
         if (!$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$callable',
-                                                                                      'a callable function or method'
-                                                                                  ]
-            );
+                '$callable',
+                'a callable function or method'
+            ]);
         }
 
         $this->val(array_map($callable, $this->val()));
@@ -584,8 +550,7 @@ trait ManipulatorTrait
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
                 '$array',
                 'ArrayObject or array'
-            ]
-            );
+            ]);
         }
 
         /** @var ArrayObject $array */
@@ -625,10 +590,9 @@ trait ManipulatorTrait
     {
         if (!is_callable($comparisonFunction)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_ARG, [
-                                                                                    '$comparisonFunction',
-                                                                                    'callable'
-                                                                                ]
-            );
+                '$comparisonFunction',
+                'callable'
+            ]);
         }
 
         $val = $this->val();
@@ -745,10 +709,9 @@ trait ManipulatorTrait
         // check if key is present in the array
         if (!$this->first()->key($field)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_VALUE_NOT_PRESENT, [
-                                                                                          '$field',
-                                                                                          'the current array'
-                                                                                      ]
-            );
+                '$field',
+                'the current array'
+            ]);
         }
 
         // do the sorting
@@ -847,10 +810,9 @@ trait ManipulatorTrait
         } else {
             if (!$this->isArray($replacements)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$replacements',
-                                                                                          'array, ArrayObject'
-                                                                                      ]
-                );
+                    '$replacements',
+                    'array, ArrayObject'
+                ]);
             }
         }
 
@@ -896,18 +858,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($offset)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$offset',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$offset',
+                'integer'
+            ]);
         }
 
         if (!$this->isNumber($length)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$length',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         try {
@@ -935,18 +895,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($offset)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$offset',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$offset',
+                'integer'
+            ]);
         }
 
         if (!$this->isNumber($length)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      '$length',
-                                                                                      'integer'
-                                                                                  ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         try {
@@ -990,10 +948,9 @@ trait ManipulatorTrait
     {
         if (!$this->isCallable($callable)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                      $callable,
-                                                                                      'a callable function or method'
-                                                                                  ]
-            );
+                $callable,
+                'a callable function or method'
+            ]);
         }
 
         try {
@@ -1041,10 +998,9 @@ trait ManipulatorTrait
         } else {
             if (!$this->isArray($array)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$array',
-                                                                                          'array, ArrayObject'
-                                                                                      ]
-                );
+                    '$array',
+                    'array, ArrayObject'
+                ]);
             }
         }
 
@@ -1075,15 +1031,37 @@ trait ManipulatorTrait
         } else {
             if (!$this->isArray($array)) {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                                                                                          '$array',
-                                                                                          'array, ArrayObject'
-                                                                                      ]
-                );
+                    '$array',
+                    'array, ArrayObject'
+                ]);
             }
         }
 
         $this->val(array_diff_key($this->val(), $array));
 
         return $this;
+    }
+
+    /**
+     * Set or get given $value for given $key.
+     *
+     * @param string $key                Key to set/get
+     * @param mixed  $value              Value to set
+     * @param bool   $setOnlyIfNotExists Set default value or not
+     */
+    private function handleNestedValue($key, $value, $setOnlyIfNotExists)
+    {
+        if (strpos($key, '.') !== false) {
+            $keys = explode('.', trim($key, '.'), 2);
+            if (!isset($this->val()[$keys[0]])) {
+                $array[$keys[0]] = [];
+            }
+            $targetArray = new ArrayObject($this->val()[$keys[0]]);
+            $targetArray->keyNested($keys[1], $value, $setOnlyIfNotExists);
+            $this->keyNested($keys[0], $targetArray->val());
+        } else {
+            $array[$key] = $value;
+            $this->val($array);
+        }
     }
 }
