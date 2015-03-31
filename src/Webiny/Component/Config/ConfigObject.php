@@ -116,13 +116,11 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         if ($this->str($name)->contains('.')) {
             $keys = $this->str($name)->trim('.')->explode('.', 2);
 
-            if ($this->data->keyExists($keys[0])) {
-                $value = $this->data->key($keys[0])->get($keys[1], $default, $toArray);
-            } else {
+            if (!$this->data->keyExists($keys[0])) {
                 return $default;
             }
 
-            return $value;
+            return $this->data->key($keys[0])->get($keys[1], $default, $toArray);
         }
 
         if ($this->data->keyExists($name)) {
@@ -138,6 +136,36 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Set config object value
+     * You can also access deeper values by using dotted key notation: level1.level2.level3.key
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this|array|mixed|ArrayObject|StringObject
+     */
+    public function set($name, $value)
+    {
+        if ($this->str($name)->contains('.')) {
+            $keys = $this->str($name)->trim('.')->explode('.', 2);
+
+            if (!$this->data->keyExists($keys[0])) {
+                $this->data->key($keys[0], new ConfigObject());
+            }
+
+            $this->data->key($keys[0])->set($keys[1], $value);
+        }
+
+        if (!$this->data->keyExists($name)) {
+            $this->data->key($name, new ConfigObject());
+        }
+
+        $this->data->key($name, $value);
+
+        return $this;
+    }
+
+    /**
      * ConfigObject is an object representing config data in an OO way
      *
      * @param  array|ArrayObject|DriverAbstract $resource Config resource
@@ -146,17 +174,16 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      *
      * @throws ConfigException
      */
-    public function __construct($resource, $cache = true)
+    public function __construct($resource = [], $cache = true)
     {
         $driverAbstractClassName = '\Webiny\Component\Config\Drivers\DriverAbstract';
         $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
 
         // Validate given resources
-        if (!$this->isArray($resource) && !$this->isInstanceOf($resource, $driverAbstractClassName
-            ) && !$this->isArrayObject($resource)
+        if (!$this->isArray($resource) && !$this->isInstanceOf($resource,
+                $driverAbstractClassName) && !$this->isArrayObject($resource)
         ) {
-            throw new ConfigException("ConfigObject resource must be a valid array, $arrayObjectClassName or $driverAbstractClassName"
-            );
+            throw new ConfigException("ConfigObject resource must be a valid array, $arrayObjectClassName or $driverAbstractClassName");
         }
 
 
@@ -169,7 +196,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } else {
             $originalResource = $resource;
         }
-        
+
         $this->resourceType = $this->determineResourceType($originalResource);
 
         // Build internal data array from array resource
@@ -367,7 +394,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public static function determineResourceType($resource)
     {
-        if(self::isStdObject($resource)){
+        if (self::isStdObject($resource)) {
             $resource = $resource->val();
         }
 
@@ -378,7 +405,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } elseif (self::isString($resource)) {
             return self::STRING_RESOURCE;
         }
-        
+
         throw new ConfigException("Given ConfigObject resource is not allowed!");
     }
 
@@ -401,8 +428,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } elseif ($this->isInstanceOf($config, $this)) {
             $configs = [$config];
         } else {
-            throw new ConfigException('Invalid parameter passed to ConfigObject mergeWith($config) method! Expecting a ConfigObject or array.'
-            );
+            throw new ConfigException('Invalid parameter passed to ConfigObject mergeWith($config) method! Expecting a ConfigObject or array.');
         }
 
         /** @var ConfigObject $value */
