@@ -817,6 +817,8 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('deepest', $a->keyNested('k2.k3.k4'));
         $this->assertEquals('default', $a->keyNested('k2.k7', 'default', true));
+        $a->keyNested('k3.k7', 'value');
+        $this->assertEquals('value', $a->keyNested('k3.k7'));
     }
 
     public function testSetNestedKeys()

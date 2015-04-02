@@ -67,7 +67,6 @@ trait ManipulatorTrait
     public function keyNested($key, $value = null, $setOnlyIfDoesntExist = false)
     {
         $key = StdObjectWrapper::toString($key);
-        $array = $this->val();
 
         // If key does not exist, set default $value and return it
         if ($setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
@@ -82,6 +81,8 @@ trait ManipulatorTrait
                 return $this;
             }
         }
+
+        $array = $this->val();
         // Get value for given $key
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
@@ -1051,12 +1052,13 @@ trait ManipulatorTrait
      */
     private function handleNestedValue($key, $value, $setOnlyIfNotExists)
     {
+        $array = $this->val();
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
-            if (!isset($this->val()[$keys[0]])) {
+            if (!isset($array[$keys[0]])) {
                 $array[$keys[0]] = [];
             }
-            $targetArray = new ArrayObject($this->val()[$keys[0]]);
+            $targetArray = new ArrayObject($array[$keys[0]]);
             $targetArray->keyNested($keys[1], $value, $setOnlyIfNotExists);
             $this->keyNested($keys[0], $targetArray->val());
         } else {
