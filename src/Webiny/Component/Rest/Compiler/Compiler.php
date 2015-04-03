@@ -144,6 +144,7 @@ class Compiler
      */
     private function deleteExisting($cacheFile)
     {
+        clearstatcache(true, $cacheFile);
         if (file_exists($cacheFile)) {
             unlink($cacheFile);
         }
