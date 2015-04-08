@@ -10,7 +10,6 @@ namespace Webiny\Component\Rest\Response;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Rest\Compiler\Cache as CompilerCache; // alias set due to problems with phpunit
 use Webiny\Component\Rest\Parser\PathTransformations;
-use Webiny\Component\Rest\Rest;
 use Webiny\Component\Rest\RestException;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -329,8 +328,7 @@ class Router
     {
         // we need regex only if we need to match some parameters
         if (count($data['params']) <= 0) {
-            $endingUrl = substr($url, strpos($url, $pattern));
-
+            $endingUrl = substr($url, strrpos($url, $pattern));
             if ($endingUrl == $pattern) {
                 return [];
             };
