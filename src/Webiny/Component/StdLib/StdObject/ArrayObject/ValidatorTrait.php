@@ -75,7 +75,7 @@ trait ValidatorTrait
             }
             $sourceArray = new ArrayObject($this->val()[$keys[0]]);
 
-            return $sourceArray->keyExists($keys[1], $default);
+            return $sourceArray->keyExistsNested($keys[1], $default);
         }
 
         if (array_key_exists($key, $this->val())) {
