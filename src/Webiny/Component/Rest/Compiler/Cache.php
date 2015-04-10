@@ -100,6 +100,7 @@ class Cache
         $classCacheFolder = PathTransformations::classCacheFolder($class);
 
         $apiFolder = $apiFolder . DIRECTORY_SEPARATOR . $classCacheFolder;
+        clearstatcache(true, $apiFolder);
         if (!is_dir($apiFolder)) {
             mkdir($apiFolder, 0755, true);
         }
