@@ -61,7 +61,6 @@ class Callback
         $cr->attachDebugHeader('Class', $class);
         $cr->attachDebugHeader('ClassVersion', $this->requestBag->getClassData()['version']);
         $cr->attachDebugHeader('Method', strtoupper($this->httpRequest()->getRequestMethod()));
-        $cr->attachDebugHeader('CompileCacheFile', $this->requestBag->getCompileCacheFile());
 
 
         if (!$this->requestBag->getMethodData()) {

@@ -36,7 +36,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
                                                            'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockCacheTestApiClass',
                                                            'version' => '1.0'
                                                        ]
-        )->setCompileCacheFile('foo.cache.file');
+        );
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -66,7 +66,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
                                                            'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
                                                            'version' => '1.0'
                                                        ]
-        )->setCompileCacheFile('foo.cache.file')->setMethodData($methodData)->setMethodParameters([]);
+        )->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -96,7 +96,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
                                                            'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
                                                            'version' => '1.0'
                                                        ]
-        )->setCompileCacheFile('foo.cache.file')->setMethodData($methodData)->setMethodParameters([]);
+        )->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -126,7 +126,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
                                                            'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
                                                            'version' => '1.0'
                                                        ]
-        )->setCompileCacheFile('foo.cache.file')->setMethodData($methodData)->setMethodParameters([]);
+        )->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();

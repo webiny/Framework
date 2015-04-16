@@ -69,19 +69,26 @@ class Router
      */
     private $normalize;
 
+    /**
+     * @var CompilerCache
+     */
+    private $compilerCache;
+
 
     /**
      * Base constructor.
      *
-     * @param string $api   Name of the rest api configuration.
-     * @param string $class Name of the rest api class.
-     * @param bool $normalize Should the url parts be normalized or not.
+     * @param string        $api           Name of the rest api configuration.
+     * @param string        $class         Name of the rest api class.
+     * @param bool          $normalize     Should the url parts be normalized or not.
+     * @param CompilerCache $compilerCache Current compiler cache instance.
      */
-    public function __construct($api, $class, $normalize)
+    public function __construct($api, $class, $normalize, CompilerCache $compilerCache)
     {
         $this->api = $api;
         $this->class = $class;
         $this->normalize = $normalize;
+        $this->compilerCache = $compilerCache;
     }
 
     /**
@@ -153,10 +160,9 @@ class Router
     {
         // get version cache file
         $version = $this->getVersion();
-        $this->cacheFile = CompilerCache::getCacheFilename($this->api, $this->class, $version);
 
-        // get cache file contents
-        $classData = CompilerCache::getCacheContent($this->cacheFile);
+        // get class data from the compiled cache files
+        $classData = $this->compilerCache->getCacheContent($this->api, $this->class, $version);
 
         // match request
         return $this->matchRequest($classData);
@@ -222,8 +228,7 @@ class Router
         $requestBag->setClassData($classData)
                    ->setMethodData($methodData)
                    ->setMethodParameters($matchedParameters)
-                   ->setApi($this->api)
-                   ->setCompileCacheFile($this->cacheFile);
+                   ->setApi($this->api);
 
         $callback = new Callback($requestBag);
 
@@ -372,7 +377,7 @@ class Router
 
         // get parameters that we already have in the url
         $methodUrlName = $data['method'];
-        if($this->normalize){
+        if ($this->normalize) {
             $methodUrlName = PathTransformations::methodNameToUrl($methodUrlName);
         }
 

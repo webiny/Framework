@@ -118,30 +118,6 @@ class RequestBag
     }
 
     /**
-     * Set the path to the compiled cache file.
-     *
-     * @param string $cacheFile Path to the compiled cache file.
-     *
-     * @return $this
-     */
-    public function setCompileCacheFile($cacheFile)
-    {
-        $this->compileCacheFile = $cacheFile;
-
-        return $this;
-    }
-
-    /**
-     * Get the compile cache file path.
-     *
-     * @return string
-     */
-    public function getCompileCacheFile()
-    {
-        return $this->compileCacheFile;
-    }
-
-    /**
      * Set the method data array.
      *
      * @param array $methodData Method data array
