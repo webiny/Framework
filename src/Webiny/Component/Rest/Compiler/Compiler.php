@@ -156,7 +156,7 @@ class Compiler
     {
         switch ($paramType) {
             case 'string':
-                return '([\w-]+)';
+                return '([^/]+)';
                 break;
             case 'bool':
                 return '(0|1|true|false)';
@@ -168,7 +168,7 @@ class Compiler
                 return '([\d.]+)';
                 break;
             default:
-                return '([\w-]+)';
+                return '([^/]+)';
                 break;
         }
     }

@@ -47,9 +47,9 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $cache['post']);
         $this->assertCount(1, $cache['post']);
         $this->assertCount(1, $cache['get']);
-        $this->assertNotFalse($cache['post']['some-method/([\\w-]+)/([\\w-]+)/([\\d]+)/']);
+        $this->assertNotFalse($cache['post']['some-method/([^/]+)/([^/]+)/([\\d]+)/']);
 
-        $method = $cache['post']['some-method/([\\w-]+)/([\\w-]+)/([\\d]+)/'];
+        $method = $cache['post']['some-method/([^/]+)/([^/]+)/([\\d]+)/'];
         $this->assertNotNull($method['default']);
         $this->assertSame('SECRET', $method['role']);
         $this->assertSame('someMethod', $method['method']);
