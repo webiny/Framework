@@ -79,7 +79,7 @@ interface CrudInterface
      * should be removed and the new attributes should be added, while in crudUpdate the attributes would only be added
      * or deleted. In crudUpdate, if the record doesn't exist, it can be created.
      *
-     * @link http://tools.ietf.org/html/rfc5789
+     * @see http://tools.ietf.org/html/rfc5789
      *
      * @rest.default
      * @rest.method put
@@ -97,7 +97,7 @@ interface CrudInterface
      * should be removed and the new attributes should be added, while in crudUpdate the attributes would only be added
      * or deleted. In crudUpdate, if the record doesn't exist, it can be created.
      *
-     * @link http://tools.ietf.org/html/rfc5789
+     * @see http://tools.ietf.org/html/rfc5789
      *
      * @rest.default
      * @rest.method patch
