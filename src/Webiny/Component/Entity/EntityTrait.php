@@ -15,7 +15,7 @@ namespace Webiny\Component\Entity;
 trait EntityTrait
 {
     /**
-     * Get entity pool
+     * Get entity component
      * @return EntityPool
      */
     protected static function entity()
