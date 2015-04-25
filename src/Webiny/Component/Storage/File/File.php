@@ -65,6 +65,15 @@ class File implements FileInterface
     }
 
     /**
+     * Check if file exists
+     * @return bool
+     */
+    public function exists()
+    {
+        return $this->storage->keyExists($this->getKey());
+    }
+
+    /**
      * Get file size in bytes
      *
      * @return int|null Number of bytes or null
@@ -86,9 +95,10 @@ class File implements FileInterface
      */
     public function getAbsolutePath()
     {
-        if($this->storage->supportsAbsolutePaths()){
+        if ($this->storage->supportsAbsolutePaths()) {
             return $this->storage->getAbsolutePath($this->key);
         }
+
         return $this->getKey();
     }
 
@@ -195,7 +205,7 @@ class File implements FileInterface
      */
     public function touch()
     {
-        if($this->storage->supportsTouching()){
+        if ($this->storage->supportsTouching()) {
             $this->storage->touchKey($this->key);
             $this->timeModified = null;
         }
