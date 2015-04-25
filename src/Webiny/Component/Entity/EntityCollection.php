@@ -7,10 +7,9 @@
 
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Mongo\MongoTrait;
-use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 
 /**
@@ -38,6 +37,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
     public function __construct($entityClass, $entityCollection, $conditions, $order, $limit, $offset)
     {
+        // Convert boolean strings to boolean
+        foreach($conditions as &$condition){
+            if(strtolower($condition) === 'true' || strtolower($condition) == 'false'){
+                $condition = StdObjectWrapper::toBool($condition);
+            }
+        }
+
         $this->entityClass = $entityClass;
         $this->collectionName = $entityCollection;
         $this->conditions = $conditions;
@@ -51,6 +57,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
                                ->sort($this->order)
                                ->skip($this->offset)
                                ->limit($this->limit);
+
     }
 
     /**
@@ -195,6 +202,15 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
                 }
             }
         }
+    }
+
+    /**
+     * Get mongo query explanation
+     *
+     * @return array
+     */
+    public function explain(){
+        return $this->cursor->explain();
     }
 
 

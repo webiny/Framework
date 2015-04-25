@@ -621,7 +621,12 @@ abstract class EntityAbstract implements \ArrayAccess
     {
         $parsedOrder = [];
         if (count($order) > 0) {
-            foreach ($order as $o) {
+            foreach ($order as $key => $o) {
+                // Check if $order array is already formatted properly
+                if(!is_numeric($key) && is_numeric($o)){
+                    $parsedOrder[$key] = $o;
+                    continue;
+                }
                 $o = self::str($o);
                 if ($o->startsWith('-')) {
                     $parsedOrder[$o->subString(1, 0)->val()] = -1;
