@@ -26,11 +26,14 @@ class MongoCursor implements \Iterator
 
     public function __call($name, $arguments)
     {
-        return call_user_func([
-                                  $this->cursor,
-                                  $name
-                              ], $arguments
-        );
+        if (count($arguments)) {
+            return call_user_func([
+                $this->cursor,
+                $name
+            ], $arguments);
+        }
+
+        return $this->cursor->$name();
     }
 
 

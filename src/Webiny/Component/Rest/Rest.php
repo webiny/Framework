@@ -17,6 +17,8 @@ use Webiny\Component\Router\Matcher\MatchedRoute;
 use Webiny\Component\Router\Route\Route;
 use Webiny\Component\Router\RouterTrait;
 use Webiny\Component\StdLib\ComponentTrait;
+use Webiny\Component\StdLib\Exception\Exception;
+use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdObjectTrait;
 
 /**
@@ -26,13 +28,19 @@ use Webiny\Component\StdLib\StdObjectTrait;
  */
 class Rest
 {
-    use ComponentTrait, RouterTrait, HttpTrait, StdObjectTrait;
+    use ComponentTrait, RouterTrait, HttpTrait, StdObjectTrait, FactoryLoaderTrait;
 
     /**
      * Environment constants
      */
     const ENV_DEVELOPMENT = 'development';
     const ENV_PRODUCTION = 'production';
+
+    /**
+     * Default cache drivers
+     */
+    const DEV_CACHE_DRIVER = '\Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver';
+    const PROD_CACHE_DRIVER = '\Webiny\Component\Rest\Compiler\CacheDrivers\FilesystemDriver';
 
     /**
      * @var string Name of the api configuration.
@@ -58,6 +66,11 @@ class Rest
      * @var bool Should the url parts be normalized.
      */
     private $normalize;
+
+    /**
+     * @var \Webiny\Component\Rest\Compiler\Cache
+     */
+    private $cacheInstance;
 
 
     /**
@@ -106,8 +119,7 @@ class Rest
             $result = self::router()->match(self::str(self::httpRequest()->getCurrentUrl(true)->getPath())
                                                 ->trimRight('/')
                                                 ->append('/_w_rest/_foo')
-                                                ->val()
-            );
+                                                ->val());
         } else {
             $result = self::router()->match(self::str($url)->trimRight('/')->append('/_w_rest/_foo')->val());
         }
@@ -164,12 +176,40 @@ class Rest
         }
 
         $this->setEnvironment($this->config->get('Environment', 'production'));
+        $this->initializeCache();
 
         $this->api = $api;
         $this->class = $class;
         $this->normalize = $this->config->get('Router.Normalize', false);
 
         $this->registerClass();
+    }
+
+    /**
+     * Initializes the compiler cache driver.
+     *
+     * @throws Exception
+     * @throws \Exception
+     */
+    private function initializeCache()
+    {
+        // get driver
+        if (!($driver = $this->config->get('CompilerCacheDriver', false))) {
+            // default driver
+            if ($this->isDevelopment()) {
+                $driver = self::DEV_CACHE_DRIVER;
+            } else {
+                $driver = self::PROD_CACHE_DRIVER;
+            }
+        }
+
+        // create driver instance
+        try {
+            $instance = $this->factory($driver, '\Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface');
+            $this->cacheInstance = new Cache($instance);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -208,7 +248,7 @@ class Rest
     public function processRequest()
     {
         try {
-            $router = new Router($this->api, $this->class, $this->normalize);
+            $router = new Router($this->api, $this->class, $this->normalize, $this->cacheInstance);
 
             return $router->processRequest();
         } catch (\Exception $e) {
@@ -234,7 +274,7 @@ class Rest
     private function registerClass()
     {
         try {
-            if (!Cache::isCacheValid($this->api, $this->class) || $this->isDevelopment()) {
+            if (!$this->cacheInstance->isCacheValid($this->api, $this->class) || $this->isDevelopment()) {
                 try {
                     $this->parseClass();
                 } catch (\Exception $e) {
@@ -256,7 +296,7 @@ class Rest
         $parsedApi = $parser->parseApi($this->class, $this->normalize);
 
         // in development we always write cache
-        $writer = new Compiler($this->api, $this->normalize);
+        $writer = new Compiler($this->api, $this->normalize, $this->cacheInstance);
         $writer->writeCacheFiles($parsedApi);
     }
 }

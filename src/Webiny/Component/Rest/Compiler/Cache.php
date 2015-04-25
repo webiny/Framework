@@ -7,10 +7,8 @@
 
 namespace Webiny\Component\Rest\Compiler;
 
-use Webiny\Component\Rest\Parser\PathTransformations;
-use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface;
 use Webiny\Component\Rest\RestException;
-use Webiny\Component\StdLib\StdLibTrait;
 
 /**
  * This cache verifies the cache files and can also return the content from an existing cache file.
@@ -19,7 +17,21 @@ use Webiny\Component\StdLib\StdLibTrait;
  */
 class Cache
 {
-    use StdLibTrait;
+    /**
+     * @var CacheDriverInterface
+     */
+    private $cacheDriver;
+
+
+    /**
+     * Base constructor.
+     *
+     * @param CacheDriverInterface $cacheDriver
+     */
+    public function __construct(CacheDriverInterface $cacheDriver)
+    {
+        $this->cacheDriver = $cacheDriver;
+    }
 
     /**
      * Checks if a cache file is valid.
@@ -33,15 +45,8 @@ class Cache
      * @throws \Webiny\Component\Rest\RestException
      * @return bool True if cache file is valid, otherwise false.
      */
-    public static function isCacheValid($api, $class)
+    public function isCacheValid($api, $class)
     {
-        // get modified time of the cached file (we look at "current" version)
-        $cacheFilename = self::getCacheFilename($api, $class, 'current');
-
-        if (!file_exists($cacheFilename)) {
-            return false;
-        }
-
         // get the modified time of the $class
         try {
             $reflection = new \ReflectionClass($class);
@@ -51,63 +56,44 @@ class Cache
 
         $classModTime = filemtime($reflection->getFileName());
 
-        if (filemtime($cacheFilename) < $classModTime) {
-            return false;
-        }
-
-        return true;
+        return $this->cacheDriver->isFresh($api, $class, 'current', $classModTime);
     }
 
     /**
      * Returns the contents of an existing cache file in form of an array.
      *
-     * @param string $cacheFile Path to the cache file
+     * @param $api     Name of the API.
+     * @param $class   Name of the class.
+     * @param $version Version of the class.
      *
      * @return array
      * @throws \Webiny\Component\Rest\RestException
      */
-    public static function getCacheContent($cacheFile)
+    public function getCacheContent($api, $class, $version)
     {
-        clearstatcache(true, $cacheFile);
-        if (!file_exists($cacheFile)) {
-            throw new RestException('Cache file doesn\'t exist: ' . $cacheFile);
-        }
-
-        return include $cacheFile;
+        return $this->cacheDriver->read($api, $class, $version);
     }
 
     /**
-     * Returns the name of the cached class file.
-     *
-     * @param string $api     Name of the api configuration.
-     * @param string $class   Class name.
-     * @param string $version Version of the api class.
-     *
-     * @return string Full path to the cache filename.
-     * @throws \Webiny\Component\Rest\RestException
+     * @param $api   Name of the API.
+     * @param $class Name of the class.
      */
-    public static function getCacheFilename($api, $class, $version)
+    public function deleteCache($api, $class)
     {
-        // get the api compile folder
-        $compilePath = Rest::getConfig()->get($api)->CompilePath;
-        if (empty($compilePath)) {
-            throw new RestException('You must set CompilePath for "' . $api . '" api.');
-        }
-        $apiFolder = self::str($compilePath)->trimRight('/')->append(DIRECTORY_SEPARATOR . $api);
-
-        // get class cache folder
-        $classCacheFolder = PathTransformations::classCacheFolder($class);
-
-        $apiFolder = $apiFolder . DIRECTORY_SEPARATOR . $classCacheFolder;
-        if (!is_dir($apiFolder)) {
-            mkdir($apiFolder, 0755, true);
-        }
-
-        $versionFile = PathTransformations::versionCacheFilename($version);
-
-        // combine the paths and look for the cache file
-        $cacheFile = $apiFolder . DIRECTORY_SEPARATOR . $versionFile;
-
-        return $cacheFile;
+        $this->cacheDriver->delete($api, $class);
     }
+
+    /**
+     * Save the compiled cache array.
+     *
+     * @param $api        Name of the API.
+     * @param $class      Name of the class.
+     * @param $version    Version of the class.
+     * @param $cacheArray The compiled class cache array.
+     */
+    public function writeCacheFile($api, $class, $version, $cacheArray)
+    {
+        $this->cacheDriver->save($api, $class, $version, $cacheArray);
+    }
+
 }

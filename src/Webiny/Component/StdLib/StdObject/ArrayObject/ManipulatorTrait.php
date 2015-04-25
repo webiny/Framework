@@ -909,7 +909,8 @@ trait ManipulatorTrait
         }
 
         try {
-            $arr = array_splice($this->val(), $offset, $length, $replacement);
+            $val = $this->val();
+            $arr = array_splice($val, $offset, $length, $replacement);
         } catch (\ErrorException $e) {
             throw new ArrayObjectException($e->getMessage());
         }

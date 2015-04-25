@@ -73,7 +73,7 @@ This is the list of currently available components:
     - will soon also support building an HTTP response
 - [Image](src/Webiny/Component/Image)
     - library for image manipulation
-- [Loggger](src/Webiny/Component/Logger)
+- [Logger](src/Webiny/Component/Logger)
     - a component for handling logging during code execution
 - [Mailer](src/Webiny/Component/Mailer)
     - component for sending emails

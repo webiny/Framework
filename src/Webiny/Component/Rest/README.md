@@ -507,7 +507,6 @@ The additional headers are as following:
 
 - `X-Webiny-Rest-Class`: name of the used API class (useful to know which class was used based on the version)
 - `X-Webiny-Rest-ClassVersion`: actual API version
-- `X-Webiny-Rest-CompileCacheFile`: absolute path to the compiled cache file (it's useful to refer to that file for additional information)
 - `X-Webiny-Rest-Method`: which HTTP request method was used
 - `X-Webiny-Rest-RateControl-Limit`: the limit of rate control (also present in the production mode)
 - `X-Webiny-Rest-RateControl-Remaining`: the remaining number of requests, until the limit is reached (also present in the production mode)
@@ -518,12 +517,28 @@ Here is typical example output:
 ```txt
 X-Webiny-Rest-Class:TestRestApiServiceNew
 X-Webiny-Rest-ClassVersion:2.0
-X-Webiny-Rest-CompileCacheFile:/var/www/projects/webiny/Public/Cache/Rest/InternalApi/TestRestApiService/current.php
 X-Webiny-Rest-Method:GET
 X-Webiny-Rest-RateControl-Limit:10
 X-Webiny-Rest-RateControl-Remaining:8
 X-Webiny-Rest-RateControl-Reset:1408414512
 X-Webiny-Rest-RequestedRole:SECRET_ROLE
+```
+
+## Compiler cache
+
+The component reads the api classes and creates an array that contains different information about the api services 
+contained within that class. Based on the component environment, that array will be saved. If the environment is `development` 
+the cached array will be stored in memory inside a static array. If the environment is `production` the array will be written 
+to the disk, using the `CompilePath`.
+
+If you wish to create your own compiler cache class, and write, for example to a Redis database, you just need to create a 
+class and implement `\Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface` and define the path to the class
+inside your Rest component config, like this:
+
+```yaml
+Rest:
+    ExampleApi:
+        CompilerCacheDriver: '\Vendor\Namespace\Class'
 ```
 
 Resources

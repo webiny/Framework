@@ -8,6 +8,8 @@
 namespace Webiny\Component\Rest\Tests\Response;
 
 use Webiny\Component\Annotations\Annotations;
+use Webiny\Component\Rest\Compiler\Cache;
+use Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver;
 use Webiny\Component\Rest\Response\Router;
 use Webiny\Component\Rest\Compiler\Compiler;
 use Webiny\Component\Rest\Parser\Parser;
@@ -21,6 +23,8 @@ use Webiny\Component\Rest\Rest;
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
 
+    static protected $cache;
+
     public function setUp()
     {
         Annotations::setConfig(__DIR__ . '/../Mocks/MockAnnotationsConfig.yaml');
@@ -30,27 +34,29 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $parser = new Parser();
         $parserApi = $parser->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
 
-        $instance = new Compiler('ExampleApi', true);
+        self::$cache = new Cache(new ArrayDriver());
+        $instance = new Compiler('ExampleApi', true, self::$cache);
         $instance->writeCacheFiles($parserApi);
     }
 
     public function testConstruct()
     {
-        $instance = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $instance = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true,
+            self::$cache);
         $this->assertInstanceOf('Webiny\Component\Rest\Response\Router', $instance);
     }
 
     public function testSetGetUrl()
     {
         $url = 'http://api.example.com/mock-api-class-router/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $this->assertSame('/mock-api-class-router/', $r->getUrl());
     }
 
     public function testSetGetMethod()
     {
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setHttpMethod('GET');
         $this->assertSame('get', $r->getMethod());
     }
@@ -60,7 +66,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetMethodException()
     {
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setHttpMethod('foo');
     }
 
@@ -70,7 +76,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestDefaultNoParams()
     {
         $url = 'http://api.example.com/mock-api-class-router/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('post');
 
@@ -86,7 +92,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestOneStringParamNotDefined()
     {
         $url = 'http://api.example.com/mock-api-class-router/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
@@ -101,7 +107,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestOneStringParamRequiredDefined()
     {
         $url = 'http://api.example.com/mock-api-class-router/defined/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
@@ -116,7 +122,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestOneIntegerParamRequired()
     {
         $url = 'http://api.example.com/mock-api-class-router/test-integer/10/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
@@ -131,7 +137,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestOneIntegerParamRequiredNotMatched()
     {
         $url = 'http://api.example.com/mock-api-class-router/test-integer/a/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
@@ -146,7 +152,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestStringIntDefString()
     {
         $url = 'http://api.example.com/mock-api-class-router/str/10/';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
@@ -161,7 +167,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testProcessRequestStringIntString()
     {
         $url = 'http://api.example.com/mock-api-class-router/str/10/2xstr';
-        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true);
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
         $r->setUrl($url);
         $r->setHttpMethod('get');
 
