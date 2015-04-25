@@ -36,16 +36,20 @@ class Mongo
      *
      * NOTE: This check is not bullet proof but is useful in most situations.
      *
-     * @param $string
+     * @param $id
      *
      * @return bool
      */
-    public static function isMongoId($string)
+    public static function isMongoId($id)
     {
-        if (!self::isString($string)) {
+        if($id instanceof \MongoId){
+            return true;
+        }
+
+        if (!self::isString($id)) {
             return false;
         }
-        $match = self::str($string)->match('[0-9a-f]{24}', false);
+        $match = self::str($id)->match('[0-9a-f]{24}', false);
 
         if (!$match) {
             return false;
