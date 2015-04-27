@@ -6,6 +6,7 @@ CHANGELOG
 * refactored caching layer
 * cache now supports multiple drivers
 * removed cache file path from debug headers
+* rest annotation can now be passed from parent class to a child class
 
 1.1
 ---------

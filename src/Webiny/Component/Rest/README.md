@@ -150,7 +150,12 @@ of your service. All the REST component annotations have a `rest` namespace.
 All the annotations can be defined on a class level, making them default to methods, and on the method level you can
 overwrite them. There are no required annotations.
 
-The following annotations are available:
+**When one class extends another, where the child class is actually your REST API, the parent class automatically
+passes, its class and method, annotations the child class, so make sure when overwriting methods, that you also 
+overwrite the annotations, if necessary.**
+
+
+### The following annotations are available:
 
 #### **@rest.method**
 

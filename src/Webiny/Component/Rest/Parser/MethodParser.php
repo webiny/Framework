@@ -22,7 +22,7 @@ class MethodParser
     /**
      * @var string Name of the class, where the method is, that we are parsing.
      */
-    private $class;
+    private $classes;
 
     /**
      * @var \ReflectionMethod Method that will be parsed.
@@ -47,9 +47,9 @@ class MethodParser
      * @param \ReflectionMethod $method    Method that should be parsed.
      * @param bool              $normalize Should the class name and the method name be normalized.
      */
-    public function __construct($class, \ReflectionMethod $method, $normalize)
+    public function __construct($classes, \ReflectionMethod $method, $normalize)
     {
-        $this->class = $class;
+        $this->classes = $classes;
         $this->method = $method;
         $this->normalize = $normalize;
     }
@@ -61,11 +61,35 @@ class MethodParser
      */
     public function parse()
     {
-        $annotations = $this->annotationsFromClass($this->class);
+        $annotations = ['rest' => []];
+        foreach ($this->classes as $c) {
+            $classAnnotations = $this->annotationsFromClass($c->getName())->toArray();
+            if (isset($classAnnotations['rest'])) {
+                $annotations['rest'] = array_merge($classAnnotations['rest'], $annotations['rest']);
+            }
+        }
+        $annotations = new ConfigObject($annotations);
+
         $this->classDefaults = $annotations->get('rest', new ConfigObject([]));
 
         // get method annotations
-        $annotations = $this->annotationsFromMethod($this->class, $this->method->name);
+        $annotations = ['rest' => [], 'param' => []];
+        foreach ($this->classes as $c) {
+            $methodAnnotations = $this->annotationsFromMethod($c->getName(), $this->method->name)->toArray();
+            if (isset($methodAnnotations['rest']) && is_array($methodAnnotations['rest'])) {
+                $annotations['rest'] = array_merge($methodAnnotations['rest'], $annotations['rest']);
+            }
+            if (isset($methodAnnotations['param'])) {
+                if(is_array($methodAnnotations['param'])){
+                    $annotations['param'] = array_merge($methodAnnotations['param'], $annotations['param']);
+                }else{
+                    $annotations['param'][] = $methodAnnotations['param'];
+                }
+
+            }
+        }
+        $annotations = new ConfigObject($annotations);
+
         $restAnnotations = $annotations->get('rest', new ConfigObject([]));
         $paramAnnotations = $annotations->get('param', new ConfigObject([]));
 
@@ -110,7 +134,7 @@ class MethodParser
      */
     private function getUrl()
     {
-        if($this->normalize){
+        if ($this->normalize) {
             return PathTransformations::methodNameToUrl($this->method->name);
         }
 
@@ -194,20 +218,14 @@ class MethodParser
         return [
             'cache'  => [
                 'expires' => $annotations->get('header.cache.expires',
-                                               $this->classDefaults->get('header.cache.expires', 0
-                                               )
-                )
+                    $this->classDefaults->get('header.cache.expires', 0))
             ],
             'status' => [
                 'success'      => $successStatus,
                 'error'        => $annotations->get('header.status.error',
-                                                    $this->classDefaults->get('header.status.error', 404
-                                                    )
-                ),
+                    $this->classDefaults->get('header.status.error', 404)),
                 'errorMessage' => $annotations->get('header.status.errorMessage',
-                                                    $this->classDefaults->get('header.status.errorMessage', ''
-                                                    )
-                )
+                    $this->classDefaults->get('header.status.errorMessage', ''))
             ]
         ];
     }

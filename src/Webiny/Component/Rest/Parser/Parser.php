@@ -19,7 +19,7 @@ class Parser
     /**
      * Parses the api class and all its versions.
      *
-     * @param string $class Fully qualified name of the api class.
+     * @param string $class     Fully qualified name of the api class.
      * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @return ParsedApi
@@ -69,7 +69,8 @@ class Parser
             if (!empty($interfaceCurrent)) {
                 $versions['current'] = $interfaceCurrent;
             } else {
-                $versions['current'] = end(array_keys($versions['versions']));
+                $ak = array_keys($versions['versions']);
+                $versions['current'] = end($ak);
             }
 
             // latest
@@ -77,7 +78,8 @@ class Parser
             if (!empty($interfaceLatest)) {
                 $versions['latest'] = $interfaceLatest;
             } else {
-                $versions['latest'] = end(array_keys($versions['versions']));
+                $ak = array_keys($versions['versions']);
+                $versions['latest'] = end($ak);
             }
         }
 

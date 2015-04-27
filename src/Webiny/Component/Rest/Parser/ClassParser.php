@@ -36,11 +36,13 @@ class ClassParser
      */
     private $normalize;
 
+    private $parentClasses;
+
 
     /**
      * Base constructor.
      *
-     * @param string $class Fully qualified name of the api class.
+     * @param string $class     Fully qualified name of the api class.
      * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @throws RestException
@@ -57,6 +59,14 @@ class ClassParser
         $this->normalize = $normalize;
         $this->class = $class;
         $this->parsedClass = new ParsedClass($class);
+
+        // list parent classes
+        $class = $this->reflectionClass;
+        $this->parentClasses[] = $this->reflectionClass;
+        while ($parent = $class->getParentClass()) {
+            $this->parentClasses[] = $parent;
+            $class = $parent;
+        }
 
         // parse class
         $this->parseClass();
@@ -84,7 +94,13 @@ class ClassParser
     private function parseClass()
     {
         // check which interfaces are implemented
-        $interfaces = $this->reflectionClass->getInterfaceNames();
+        $interfaces = [];
+        foreach ($this->parentClasses as $pc) {
+            $interfaces = array_merge($interfaces,
+                $pc->getInterfaceNames()); // returns only the interfaces that the current class implements
+        }
+        $interfaces = array_unique($interfaces);
+
         foreach ($interfaces as $i) {
             if ($i == 'Webiny\Component\Rest\Interfaces\AccessInterface') {
                 $this->parsedClass->accessInterface = true;
@@ -103,14 +119,14 @@ class ClassParser
      */
     private function parseMethods()
     {
-        $methods = $this->reflectionClass->getMethods();
+        $methods = $this->reflectionClass->getMethods(); // this still returns the methods for all parent classes
         if (!is_array($methods) || count($methods) < 1) {
             throw new RestException('Parser: The class "' . $this->class . '" doesn\'t have any methods defined.');
         }
 
         foreach ($methods as $m) {
             if ($m->isPublic()) {
-                $methodParser = new MethodParser($this->class, $m, $this->normalize);
+                $methodParser = new MethodParser($this->parentClasses, $m, $this->normalize);
                 $parsedMethod = $methodParser->parse();
                 if ($parsedMethod) {
                     $this->parsedClass->addApiMethod($parsedMethod);
