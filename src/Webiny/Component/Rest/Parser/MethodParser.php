@@ -75,7 +75,11 @@ class MethodParser
         // get method annotations
         $annotations = ['rest' => [], 'param' => []];
         foreach ($this->classes as $c) {
-            $methodAnnotations = $this->annotationsFromMethod($c->getName(), $this->method->name)->toArray();
+            try {
+                $methodAnnotations = $this->annotationsFromMethod($c->getName(), $this->method->name)->toArray();
+            } catch (\Exception $e) {
+                continue;
+            }
             if (isset($methodAnnotations['rest']) && is_array($methodAnnotations['rest'])) {
                 $annotations['rest'] = array_merge($methodAnnotations['rest'], $annotations['rest']);
             }
