@@ -168,13 +168,13 @@ interface MongoInterface
     /**
      * Returns an array of distinct values, or FALSE on failure
      *
-     * @param array $data Aggregation data
-     *
-     * @see http://php.net/manual/en/mongocollection.distinct.php
+     * @param string $collectionName
+     * @param string $key
+     * @param array  $query
      *
      * @return array|false
      */
-    public function distinct(array $data);
+    public function distinct($collectionName, $key, array $query = null);
 
     /**
      * Find one<br>

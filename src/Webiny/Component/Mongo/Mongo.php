@@ -325,15 +325,17 @@ class Mongo
     /**
      * Returns an array of distinct values, or FALSE on failure
      *
-     * @param array $data Aggregation data
-     *
-     * @see http://php.net/manual/en/mongocollection.distinct.php
+     * @param       $collectionName
+     * @param       $key
+     * @param array $query
      *
      * @return array|false
+     *
+     * @see      http://php.net/manual/en/mongocollection.distinct.php
      */
-    public function distinct(array $data)
+    public function distinct($collectionName, $key, array $query = null)
     {
-        $result = $this->driver->distinct($data);
+        $result = $this->driver->distinct($this->collectionPrefix . $collectionName, $key, $query);
         if ($result) {
             return $this->mongoResult('distinct', $result);
         }
