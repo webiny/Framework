@@ -95,7 +95,7 @@ class Storage
      *
      * @param string $key Key of a directory to get keys from. If not set - keys will be read from the storage root.
      *
-     * @param bool   $recursive
+     * @param bool|int   $recursive false = non-recursive, true = recursive, int = recursion depth
      *
      * @return array
      */

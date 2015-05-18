@@ -36,16 +36,20 @@ class Mongo
      *
      * NOTE: This check is not bullet proof but is useful in most situations.
      *
-     * @param $string
+     * @param $id
      *
      * @return bool
      */
-    public static function isMongoId($string)
+    public static function isMongoId($id)
     {
-        if (!self::isString($string)) {
+        if($id instanceof \MongoId){
+            return true;
+        }
+
+        if (!self::isString($id)) {
             return false;
         }
-        $match = self::str($string)->match('[0-9a-f]{24}', false);
+        $match = self::str($id)->match('[0-9a-f]{24}', false);
 
         if (!$match) {
             return false;
@@ -321,15 +325,17 @@ class Mongo
     /**
      * Returns an array of distinct values, or FALSE on failure
      *
-     * @param array $data Aggregation data
-     *
-     * @see http://php.net/manual/en/mongocollection.distinct.php
+     * @param       $collectionName
+     * @param       $key
+     * @param array $query
      *
      * @return array|false
+     *
+     * @see      http://php.net/manual/en/mongocollection.distinct.php
      */
-    public function distinct(array $data)
+    public function distinct($collectionName, $key, array $query = null)
     {
-        $result = $this->driver->distinct($data);
+        $result = $this->driver->distinct($this->collectionPrefix . $collectionName, $key, $query);
         if ($result) {
             return $this->mongoResult('distinct', $result);
         }

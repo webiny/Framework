@@ -86,11 +86,11 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        self::mongo()->dropCollection('Author');
+        /*self::mongo()->dropCollection('Author');
         self::mongo()->dropCollection('Page');
         self::mongo()->dropCollection('Comment');
         self::mongo()->dropCollection('Label');
-        self::mongo()->dropCollection('Label2Page');
+        self::mongo()->dropCollection('Label2Page');*/
     }
 
     public function testEntity()

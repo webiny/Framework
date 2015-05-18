@@ -238,13 +238,17 @@ class Mongo implements MongoInterface
     /**
      * Distinct
      *
-     * @param array $data data
+     * @param       $collectionName
+     * @param array $key
+     * @param array $query
      *
-     * @return string|null
+     * @return null|string
+     * @internal param array $data data
+     *
      */
-    public function distinct(array $data)
+    public function distinct($collectionName, $key, array $query = null)
     {
-        return $this->db->command($data);
+        return $this->getCollection($collectionName)->distinct($key, $query);
     }
 
     /**

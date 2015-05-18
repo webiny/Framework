@@ -18,37 +18,6 @@ class PathTransformations
 {
     use StdLibTrait;
 
-
-    /**
-     * Creates a name for the cache class file based on the class name and the version.
-     *
-     * @param string $className
-     *
-     * @return string
-     */
-    public static function classCacheFolder($className)
-    {
-        return self::str($className)->trimLeft('\\')->replace('\\', '_')->val();
-    }
-
-    /**
-     * Returns a version cache filename, based on the given $version.
-     *
-     * @param string $version Version number or name.
-     *
-     * @return string
-     */
-    public static function versionCacheFilename($version)
-    {
-        if (!is_numeric(substr($version, 0, 1))) {
-            $versionFile = $version . '.php';
-        } else {
-            $versionFile = 'v' . $version . '.php';
-        }
-
-        return $versionFile;
-    }
-
     /**
      * Transforms method name to a url path.
      *

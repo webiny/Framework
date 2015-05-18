@@ -85,6 +85,8 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
             $this->value->removeItem($item);
         }
 
+        // Rebuild cursor (need to call this to rebuild cursor object with new linked IDs)
+        $this->value = Many2ManyStorage::getInstance()->load($this);
         return $deleted;
     }
 
@@ -123,7 +125,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
     {
         if ($this->isNull($this->value)) {
             $this->value = Many2ManyStorage::getInstance()->load($this);
-            // Add new items to _value and unset these new items
+            // Add new items to value and unset these new items
             foreach ($this->addedItems as $item) {
                 $this->value->add($item);
             }

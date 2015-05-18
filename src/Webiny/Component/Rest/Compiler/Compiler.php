@@ -29,17 +29,23 @@ class Compiler
      */
     private $normalize;
 
+    /**
+     * @var Cache
+     */
+    private $cache;
 
     /**
      * Base constructor.
      *
      * @param string $api       Name of the api configuration.
      * @param bool   $normalize Should the class name and the method name be normalized.
+     * @param Cache  $cache     Current compiler cache instance.
      */
-    public function __construct($api, $normalize)
+    public function __construct($api, $normalize, Cache $cache)
     {
         $this->api = $api;
         $this->normalize = $normalize;
+        $this->cache = $cache;
     }
 
     /**
@@ -52,102 +58,25 @@ class Compiler
     {
         $writtenCacheFiles = [];
 
+        // first delete the cache
         foreach ($parsedApi->versions as $v => $parsedClass) {
-            $cacheFile = Cache::getCacheFilename($this->api, $parsedApi->apiClass, $v);
+            $this->cache->deleteCache($this->api, $parsedApi->apiClass);
+        }
 
-            $this->deleteExisting($cacheFile);
-
+        // then build the cache
+        foreach ($parsedApi->versions as $v => $parsedClass) {
             $compileArray = $this->compileCacheFile($parsedClass, $v);
 
-            $this->compileCacheTemplate($compileArray, $cacheFile, $v);
+            $this->cache->writeCacheFile($this->api, $parsedApi->apiClass, $v, $compileArray);
 
-            $writtenCacheFiles[$v] = [
-                'class'        => $parsedClass->class,
-                'version'      => $v,
-                'compileArray' => $compileArray,
-                'cacheFile'    => $cacheFile
-            ];
+            $writtenCacheFiles[$v] = $compileArray;
         }
 
         // write current and latest versions (just include return a specific version)
-        $this->compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->latestVersion], 'latest');
-        $this->compileCacheAliasTemplate($writtenCacheFiles[$parsedApi->currentVersion], 'current');
-    }
-
-    /**
-     * Creates the cache file based on the cache template file.
-     *
-     * @param array  $compileArray Array holding information about the specific class and version.
-     * @param string $cacheFile    Cache file into which the content will be written.
-     * @param string $version      Version name.
-     */
-    private function compileCacheTemplate($compileArray, $cacheFile, $version)
-    {
-        // template
-        $cacheFileTemplate = file_get_contents(__DIR__ . '/Templates/Cache.tpl');
-
-        // export array
-        $array = var_export($compileArray, true);
-
-        // build map based on template keys
-        $map = [
-            'export'    => $array,
-            'class'     => $compileArray['class'],
-            'version'   => 'v' . $version,
-            'buildDate' => date('D, d. M, Y H:i:s')
-        ];
-
-        $file = $cacheFileTemplate;
-        foreach ($map as $k => $v) {
-            $file = str_replace('|' . $k . '|', $v, $file);
-        }
-
-        file_put_contents($cacheFile, $file);
-    }
-
-    /**
-     * This method writes the alias cache files.
-     * Aliases are "current" and "latest" api versions.
-     * Aliases just include some other cache file.
-     *
-     * @param array  $compileArray Array holding different meta data regarding the api and the class.
-     * @param string $aliasVersion Name of the version.
-     */
-    private function compileCacheAliasTemplate($compileArray, $aliasVersion)
-    {
-        // template
-        $cacheFileTemplate = file_get_contents(__DIR__ . '/Templates/CacheAlias.tpl');
-
-        // build map based on template keys
-        $map = [
-            'export'       => 'include "' . $compileArray['cacheFile'] . '"',
-            'class'        => $compileArray['class'],
-            'version'      => 'v' . $compileArray['version'],
-            'aliasVersion' => $aliasVersion,
-            'buildDate'    => date('D, d. M, Y H:i:s')
-        ];
-
-        $file = $cacheFileTemplate;
-        foreach ($map as $k => $v) {
-            $file = str_replace('|' . $k . '|', $v, $file);
-        }
-
-        $cacheFile = str_replace('v' . $compileArray['version'], $aliasVersion, $compileArray['cacheFile']);
-
-        file_put_contents($cacheFile, $file);
-    }
-
-    /**
-     * Deletes an existing cache file.
-     *
-     * @param string $cacheFile Cache file location.
-     */
-    private function deleteExisting($cacheFile)
-    {
-        clearstatcache(true, $cacheFile);
-        if (file_exists($cacheFile)) {
-            unlink($cacheFile);
-        }
+        $this->cache->writeCacheFile($this->api, $parsedApi->apiClass, 'latest',
+            $writtenCacheFiles[$parsedApi->latestVersion]);
+        $this->cache->writeCacheFile($this->api, $parsedApi->apiClass, 'current',
+            $writtenCacheFiles[$parsedApi->currentVersion]);
     }
 
     /**
@@ -227,7 +156,7 @@ class Compiler
     {
         switch ($paramType) {
             case 'string':
-                return '([\w-]+)';
+                return '([^/]+)';
                 break;
             case 'bool':
                 return '(0|1|true|false)';
@@ -239,7 +168,7 @@ class Compiler
                 return '([\d.]+)';
                 break;
             default:
-                return '([\w-]+)';
+                return '([^/]+)';
                 break;
         }
     }

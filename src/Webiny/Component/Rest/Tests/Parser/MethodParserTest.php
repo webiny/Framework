@@ -34,7 +34,7 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
         $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
         $reflection = new \ReflectionClass($className);
         $method = $reflection->getMethod('someMethod');
-        $instance = new MethodParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass', $method, true);
+        $instance = new MethodParser([new \ReflectionClass('\Webiny\Component\Rest\Tests\Mocks\MockApiClass')], $method, true);
         $parsedMethod = $instance->parse();
         $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedMethod', $parsedMethod);
 
@@ -62,7 +62,7 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
         $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
         $reflection = new \ReflectionClass($className);
         $method = $reflection->getMethod('simpleMethod');
-        $instance = new MethodParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass', $method, true);
+        $instance = new MethodParser([new \ReflectionClass('\Webiny\Component\Rest\Tests\Mocks\MockApiClass')], $method, true);
         $parsedMethod = $instance->parse();
         $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedMethod', $parsedMethod);
 

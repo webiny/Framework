@@ -31,7 +31,7 @@ trait RestTrait
             return $default;
         }
 
-        return $page;
+        return (int)$page;
     }
 
     /**
@@ -48,7 +48,7 @@ trait RestTrait
             return $default;
         }
 
-        return $perPage;
+        return (int)$perPage;
     }
 
     /**
@@ -124,5 +124,14 @@ trait RestTrait
     protected static function restGetFilter($name, $default = null)
     {
         return Request::getInstance()->query($name, $default);
+    }
+
+    /**
+     * Return all query filters
+     *
+     * @return mixed
+     */
+    protected static function restGetFilters(){
+        return Request::getInstance()->query();
     }
 }

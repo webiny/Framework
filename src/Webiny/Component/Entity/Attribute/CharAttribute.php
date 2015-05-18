@@ -24,7 +24,7 @@ class CharAttribute extends AttributeAbstract
      */
     public function validate(&$value)
     {
-        if(!$this->isString($value) && !$this->isNumber($value)) {
+        if($value != null && !$this->isString($value) && !$this->isNumber($value)) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->attribute,
                     'string or number',

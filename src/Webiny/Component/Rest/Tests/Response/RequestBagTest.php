@@ -34,14 +34,6 @@ class RequestBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['data' => 'foo'], $rb->getClassData());
     }
 
-    public function testSetGetCompileCacheFile()
-    {
-        $rb = new RequestBag();
-        $rb->setCompileCacheFile('foo.file');
-
-        $this->assertSame('foo.file', $rb->getCompileCacheFile());
-    }
-
     public function testSetGetMethodData()
     {
         $rb = new RequestBag();

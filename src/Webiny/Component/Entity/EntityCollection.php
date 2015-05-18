@@ -7,10 +7,10 @@
 
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Traversable;
 use Webiny\Component\Mongo\MongoTrait;
-use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 
 /**
@@ -38,6 +38,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
     public function __construct($entityClass, $entityCollection, $conditions, $order, $limit, $offset)
     {
+        // Convert boolean strings to boolean
+        foreach($conditions as &$condition){
+            if(is_scalar($condition) && (strtolower($condition) === 'true' || strtolower($condition) === 'false')){
+                $condition = StdObjectWrapper::toBool($condition);
+            }
+        }
+
         $this->entityClass = $entityClass;
         $this->collectionName = $entityCollection;
         $this->conditions = $conditions;
@@ -51,6 +58,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
                                ->sort($this->order)
                                ->skip($this->offset)
                                ->limit($this->limit);
+
     }
 
     /**
@@ -122,7 +130,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function count()
     {
-        return $this->getIterator()->count();
+        return $this->cursor->count(true);
     }
 
     /**
@@ -132,7 +140,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     public function totalCount()
     {
         if(!$this->count) {
-            $this->count = Entity::getInstance()->getDatabase()->count($this->collectionName, $this->conditions);
+            $this->count = $this->cursor->count(false);
         }
 
         return $this->count;
@@ -197,6 +205,23 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         }
     }
 
+    /**
+     * Get mongo query explanation
+     *
+     * @return array
+     */
+    public function explain(){
+        return $this->cursor->explain();
+    }
+
+    /**
+     * Get collection data
+     * @return Traversable
+     */
+    public function getData(){
+        return $this->getIterator();
+    }
+
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -214,7 +239,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         $dbItems = [];
         foreach ($this->cursor as $data) {
             $instance = new $this->entityClass;
-            $instance->populate(EntityMongoAdapter::getInstance()->adaptValues($data))->setDirty(false);
+            $instance->populate($data)->setDirty(false);
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */

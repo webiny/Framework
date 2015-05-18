@@ -55,60 +55,6 @@ class PathTransformationsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider classCacheFolderProvider
-     *
-     * @param $className
-     * @param $expected
-     */
-    public function testClassCacheFolder($className, $expected)
-    {
-        $this->assertSame($expected, PathTransformations::classCacheFolder($className));
-    }
-
-    public function classCacheFolderProvider()
-    {
-        return [
-            [
-                'ClassName',
-                'ClassName'
-            ],
-            [
-                'Webiny\Class\SomeClass',
-                'Webiny_Class_SomeClass'
-            ]
-        ];
-    }
-
-    /**
-     * @dataProvider versionCacheFilenameProvider
-     *
-     * @param $version
-     * @param $expected
-     */
-    public function testVersionCacheFilename($version, $expected)
-    {
-        $this->assertSame($expected, PathTransformations::versionCacheFilename($version));
-    }
-
-    public function versionCacheFilenameProvider()
-    {
-        return [
-            [
-                1,
-                'v1.php'
-            ],
-            [
-                1.3,
-                'v1.3.php'
-            ],
-            [
-                'latest',
-                'latest.php'
-            ]
-        ];
-    }
-
-    /**
      * @dataProvider methodNameToUrlProvider
      *
      * @param $method

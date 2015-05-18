@@ -171,11 +171,10 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
 
         if ($recursive) {
             try {
-                $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path,
-                                                                                           \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS
-                                                           )
-                );
-                if ($recursive > -1) {
+                $config = \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+                $directoryIterator = new \RecursiveDirectoryIterator($path, $config);
+                $iterator = new \RecursiveIteratorIterator($directoryIterator);
+                if (is_int($recursive) && $recursive > -1) {
                     $iterator->setMaxDepth($recursive);
                 }
             } catch (\Exception $e) {
@@ -194,7 +193,7 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
             }
         }
 
-        $keys = array();
+        $keys = [];
 
 
         foreach ($files as $file) {
