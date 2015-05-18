@@ -61,9 +61,7 @@ class Smarty implements TemplateEngineInterface
         $this->setTemplateDir($templateDir);
 
         // force compile
-        if ($config->get('ForceCompile', false)) {
-            $this->setForceCompile(false);
-        }
+        $this->setForceCompile($config->get('ForceCompile', false));
 
         // merge compiled includes
         if (!$config->get('MergeCompiledIncludes', true)) {
