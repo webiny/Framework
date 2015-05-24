@@ -26,6 +26,7 @@ Router:
                 Method: handle
         StaticCall:
             Path: /blog/post/{slug}/{id}
+            Tags: [system, cron]
             Callback:
                 Class: \Webiny\Component\Router\Tests\RouterCallback
                 Method: handleStatic

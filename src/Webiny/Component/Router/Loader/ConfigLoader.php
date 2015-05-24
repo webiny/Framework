@@ -92,6 +92,12 @@ class ConfigLoader
             $route->setMethods($methods->toArray());
         }
 
+        // tags
+        if (($tags = $routeConfig->get('Tags', false)) !== false) {
+            echo $routeConfig->Path."\n";
+            $route->setTags($tags->toArray());
+        }
+
         return $route;
     }
 }

@@ -54,6 +54,11 @@ class Route
     private $methods = [];
 
     /**
+     * @var array
+     */
+    private $tags = [];
+
+    /**
      * @var null|CompiledRoute
      */
     private $compiledRoute = null;
@@ -275,6 +280,29 @@ class Route
     public function getMethods()
     {
         return $this->methods;
+    }
+
+    /**
+     * Sets the route tags.
+     *
+     * @param array $tags
+     *
+     * @return $this
+     */
+    public function setTags(array $tags)
+    {
+        $this->tags = $tags;
+        return $this;
+    }
+
+    /**
+     * Get the route tags.
+     *
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
