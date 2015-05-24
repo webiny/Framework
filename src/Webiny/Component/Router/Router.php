@@ -277,6 +277,8 @@ class Router
 
         $this->setCache(self::getConfig()->get('Cache', false));
         $this->initializedFlag = true;
+
+        //print_r(Router::getConfig()->toArray());
     }
 
     /**
@@ -317,6 +319,7 @@ class Router
      */
     protected static function postSetConfig()
     {
+        self::getInstance()->initializedFlag = false;
         self::getInstance()->initialize();
     }
 

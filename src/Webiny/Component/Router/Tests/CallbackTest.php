@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Router\Tests;
 
+use Webiny\Component\Http\Request;
 use Webiny\Component\Router\Router;
 
 /**
@@ -71,5 +72,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
         $result = $matchedRoute->hasTags(['tag1', 'tag2', 'fake'], false);
         $this->assertFalse($result);
+
+        $this->assertSame(['system', 'cron'], $matchedRoute->getRoute()->getTags());
     }
 }
