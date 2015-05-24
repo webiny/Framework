@@ -40,7 +40,7 @@ trait ComponentTrait
         $component = $component->explode('\\')->last();
 
         // check if we already have a config
-        if (!self::$componentConfig) {
+        /*if (!self::$componentConfig) {
             $defaultConfigArray = [];
 
             // check if we have default config
@@ -49,6 +49,13 @@ trait ComponentTrait
             }
 
             self::$componentConfig = new ConfigObject($defaultConfigArray);
+        }*/
+
+        // check if we have default config
+        if (isset(self::$defaultConfig)) {
+            self::$componentConfig = new ConfigObject(self::$defaultConfig);
+        }else{
+            self::$componentConfig = new ConfigObject([]);
         }
 
         // validate config
