@@ -26,6 +26,11 @@ class ParsedMethod
     public $urlPattern;
 
     /**
+     * @var bool Does the method use a resource naming url.
+     */
+    public $resourceNaming;
+
+    /**
      * @var string Name if the http method for accessing this api method.
      */
     public $method = 'get';
@@ -78,13 +83,21 @@ class ParsedMethod
     /**
      * Base constructor.
      *
-     * @param string $name       Name of the api method.
-     * @param string $urlPattern Url pattern, defining the api location for this method.
+     * @param string $name Name of the api method.
      */
-    public function __construct($name, $urlPattern)
+    public function __construct($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @param string $urlPattern Url patten used to match the request with the method.
+     * @param bool   $resourceNaming  Does the method use a resource naming url.
+     */
+    public function setUrlPattern($urlPattern, $resourceNaming)
+    {
         $this->urlPattern = $urlPattern;
+        $this->resourceNaming = $resourceNaming;
     }
 
     /**

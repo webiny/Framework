@@ -68,4 +68,28 @@ class MockApiClassRouter
     {
         return 'testProcessRequestStringIntDefString - ' . $p1 . ' ' . $p2 . ' ' . $p3;
     }
+
+    /**
+     * @return string
+     *
+     * @rest.url some-function-name/that/has/a/custom-url
+     */
+    public function fooBar()
+    {
+        return 'in fooBar';
+    }
+
+
+    /**
+     * @param $id
+     * @param $name
+     *
+     * @rest.url some-url/{id}/name/{name}
+     *
+     * @return string
+     */
+    public function testFunction($id, $name)
+    {
+        return $id.' => '.$name;
+    }
 }

@@ -34,4 +34,9 @@ class ParsedParameter
      * @var mixed Parameter default value.
      */
     public $default;
+
+    /**
+     * @var string Regex pattern to match this parameter.
+     */
+    public $matchPattern = '';
 }

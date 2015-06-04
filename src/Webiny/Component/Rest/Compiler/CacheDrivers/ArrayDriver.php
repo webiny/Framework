@@ -87,6 +87,10 @@ class ArrayDriver implements CacheDriverInterface
      */
     public function isFresh($api, $class, $version, $ttl)
     {
-        return true;
+        if($this->read($api, $class, $version)){
+            return true;
+        }
+
+        return false;
     }
 }

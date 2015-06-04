@@ -53,7 +53,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($method['default']);
         $this->assertSame('SECRET', $method['role']);
         $this->assertSame('someMethod', $method['method']);
-        $this->assertSame('some-method', $method['urlPattern']);
+        $this->assertSame('some-method/([^/]+)/([^/]+)/([\\d]+)/', $method['urlPattern']);
         $this->assertSame('3600', $method['cache']['ttl']);
         $this->assertSame(['expires' => '3600'], $method['header']['cache']);
         $this->assertSame('201', $method['header']['status']['success']);
@@ -81,7 +81,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($method['default']);
         $this->assertSame(false, $method['role']);
         $this->assertSame('simpleMethod', $method['method']);
-        $this->assertSame('simple-method', $method['urlPattern']);
+        $this->assertSame('simple-method/', $method['urlPattern']);
         $this->assertSame(0, $method['cache']['ttl']);
         $this->assertSame(['expires' => 0], $method['header']['cache']);
         $this->assertSame(200, $method['header']['status']['success']);

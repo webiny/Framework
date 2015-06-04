@@ -40,7 +40,7 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
 
         // validate parsed method
         $this->assertSame('someMethod', $parsedMethod->name);
-        $this->assertSame('some-method', $parsedMethod->urlPattern);
+        $this->assertSame('some-method/([^/]+)/([^/]+)/([\d]+)/', $parsedMethod->urlPattern);
         $this->assertSame('post', $parsedMethod->method);
         $this->assertSame('SECRET', $parsedMethod->role);
         $this->assertSame(['ttl' => '3600'], $parsedMethod->cache);
@@ -68,7 +68,7 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
 
         // validate parsed method
         $this->assertSame('simpleMethod', $parsedMethod->name);
-        $this->assertSame('simple-method', $parsedMethod->urlPattern);
+        $this->assertSame('simple-method/', $parsedMethod->urlPattern);
         $this->assertSame('get', $parsedMethod->method);
         $this->assertFalse($parsedMethod->role);
         $this->assertSame(['ttl' => 0], $parsedMethod->cache);

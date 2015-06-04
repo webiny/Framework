@@ -9,6 +9,7 @@ namespace Webiny\Component\Rest\Parser;
 
 use Webiny\Component\Annotations\AnnotationsTrait;
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Rest\RestException;
 
 /**
  * Method parser class parses the method parameters of a api method.
@@ -43,7 +44,7 @@ class MethodParser
     /**
      * Base constructor.
      *
-     * @param string            $class     Fully qualified class name.
+     * @param array             $classes   API class tree.
      * @param \ReflectionMethod $method    Method that should be parsed.
      * @param bool              $normalize Should the class name and the method name be normalized.
      */
@@ -84,14 +85,15 @@ class MethodParser
                 $annotations['rest'] = array_merge($methodAnnotations['rest'], $annotations['rest']);
             }
             if (isset($methodAnnotations['param'])) {
-                if(is_array($methodAnnotations['param'])){
+                if (is_array($methodAnnotations['param'])) {
                     $annotations['param'] = array_merge($methodAnnotations['param'], $annotations['param']);
-                }else{
+                } else {
                     $annotations['param'][] = $methodAnnotations['param'];
                 }
 
             }
         }
+
         $annotations = new ConfigObject($annotations);
 
         $restAnnotations = $annotations->get('rest', new ConfigObject([]));
@@ -102,11 +104,8 @@ class MethodParser
             return false;
         }
 
-        // create api url
-        $url = $this->getUrl();
-
         // create ApiMethod instance
-        $parsedMethod = new ParsedMethod($this->method->name, $url);
+        $parsedMethod = new ParsedMethod($this->method->name);
 
         // method
         $parsedMethod->method = $this->getMethod($restAnnotations);
@@ -128,21 +127,20 @@ class MethodParser
             $parsedMethod->addParameter($p);
         }
 
-        return $parsedMethod;
-    }
-
-    /**
-     * Generates url for the api based on the class and method name.
-     *
-     * @return string
-     */
-    private function getUrl()
-    {
-        if ($this->normalize) {
-            return PathTransformations::methodNameToUrl($this->method->name);
+        // build the url pattern
+        if ($restAnnotations->get('url', false)) {
+            // build url pattern using the provided rest.url pattern
+            $urlPattern = $this->buildUrlPatternFromPattern($restAnnotations->get('url'), $parameters);
+            $resourceNaming = true;
+        } else {
+            // build url pattern using method name and parameters
+            $urlPattern = $this->buildUrlPatternStandard($this->method->name, $parameters);
+            $resourceNaming = false;
         }
 
-        return $this->method->name;
+        $parsedMethod->setUrlPattern($urlPattern, $resourceNaming);
+
+        return $parsedMethod;
     }
 
     /**
@@ -244,5 +242,50 @@ class MethodParser
     private function getRateControl(ConfigObject $annotations)
     {
         return $annotations->get('rateControl', [], true);
+    }
+
+    /**
+     * Builds the url match pattern for each of the method inside the api.
+     *
+     * @param string $methodName Method name.
+     * @param array  $parameters List of the ParsedParameter instances.
+     *
+     * @return string The url pattern.
+     */
+    private function buildUrlPatternStandard($methodName, array $parameters)
+    {
+        $url = $methodName;
+        if ($this->normalize) {
+            $url = PathTransformations::methodNameToUrl($methodName);
+        }
+
+        foreach ($parameters as $p) {
+            $matchType = $p->matchPattern;
+            $url = $url . '/' . $matchType;
+        }
+
+        return $url . '/';
+    }
+
+    /**
+     * Builds the url pattern using the `rest.url` definition from method phpDoc.
+     *
+     * @param string $pattern    Defined `rest.url` pattern.
+     * @param array  $parameters List of method parameters.
+     *
+     * @return string
+     * @throws RestException
+     */
+    private function buildUrlPatternFromPattern($pattern, array $parameters)
+    {
+        foreach ($parameters as $p) {
+            $pattern = str_replace('{' . $p->name . '}', $p->matchPattern, $pattern, $rcount);
+            if ($rcount < 1) {
+                throw new RestException(sprintf('Missing parameter "%s" for "%s" method in the rest.url definition.',
+                    $p->name, $this->method->getName()));
+            }
+        }
+
+        return rtrim($pattern, '/') . '/';
     }
 }

@@ -16,6 +16,7 @@ For additional versions of the package, visit the [Packagist page](https://packa
 
 Some of the built-in features:
 - supports **GET**, **POST**, **PUT**, **PATCH** and **DELETE** requests
+- resource naming (via `@rest.url` annotation)
 - integrated version management system
 - effective Rate Control mechanism
 - services are configured using annotations
@@ -132,6 +133,7 @@ class FooService
      * @rest.header.status.success 200
      * @rest.header.status.errorMessage No Author for specified id.
      * @rest.rateControl.ignore
+     * @rest.url some/custom/url/{param1}/param2/{param2}/other/{param3}
      *
      * @param integer $param1 Some param.
      * @param string $param2 Other param.
@@ -231,6 +233,19 @@ This annotation requires that you define the `Security` section in your configur
 ```
 
 This flag marks that rate control will not be applied to that method.
+
+#### **@rest.url**
+
+```php
+/**
+ * @rest.url some/custom/url/{param1}/param2/{param2}/other/{param3}
+ */
+```
+This annotation provides the resource naming feature by specifying a custom url that will be used in the url matching, 
+instead of the `method name`.
+**Note:** When using resource naming, you cannot use `@rest.default` annotation on that method, and also you cannot 
+specify optional parameters.
+
 
 ## Routing and accessing the APIs
 
