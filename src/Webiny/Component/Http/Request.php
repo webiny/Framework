@@ -484,4 +484,16 @@ class Request
     {
         return $this->server()->requestMethod();
     }
+
+    /**
+     * Set the request method.
+     *
+     * @param string $requestMethod Request method name. Example 'GET', 'POST' ...
+     */
+    public function setRequestMethod($requestMethod)
+    {
+        $_SERVER['REQUEST_METHOD'] = strtoupper($requestMethod);
+        // re-initialize Server instance
+        $this->server = new Server();
+    }
 }

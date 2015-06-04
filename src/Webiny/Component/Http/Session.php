@@ -11,6 +11,7 @@ use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Session\SessionException;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 /**
  * Session Http component.
@@ -21,8 +22,16 @@ class Session
 {
     use StdLibTrait, SingletonTrait;
 
+    /**
+     * @var ArrayObject
+     */
     private $sessionBag;
+
+    /**
+     * @var string
+     */
     private $sessionId;
+
 
     /**
      * Constructor.
