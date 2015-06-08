@@ -290,7 +290,11 @@ class Router
         foreach ($callbacks as $pattern => $data) {
             if ($data['default'] !== false && $data['resourceNaming'] === false) {
                 // for default method we need to remove the method name from the pattern
-                $pattern = $classUrl . '/' . str_replace(PathTransformations::methodNameToUrl($data['method']).'/', '', $pattern);
+                $methodUrl = $data['method'];
+                if ($this->normalize) {
+                    $methodUrl = PathTransformations::methodNameToUrl($methodUrl);
+                }
+                $pattern = $classUrl . '/' . str_replace($methodUrl . '/', '', $pattern);
 
                 if (($matchedParameters = $this->doesPatternMatch($pattern, $data, $url)) !== false) {
                     $methodData = $data;
