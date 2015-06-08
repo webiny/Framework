@@ -287,7 +287,7 @@ abstract class EntityAbstract implements \ArrayAccess
             $this->entity()->getDatabase()->insert(static::$entityCollection, $data);
             $this->getId()->setValue($data['id']);
         } else {
-            $where = ['id' => $this->getId()->getValue()];
+            $where = ['_id' => new \MongoId($this->getId()->getValue())];
             $this->entity()
                  ->getDatabase()
                  ->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
