@@ -186,33 +186,6 @@ class Rest
     }
 
     /**
-     * Initializes the compiler cache driver.
-     *
-     * @throws Exception
-     * @throws \Exception
-     */
-    private function initializeCache()
-    {
-        // get driver
-        if (!($driver = $this->config->get('CompilerCacheDriver', false))) {
-            // default driver
-            if ($this->isDevelopment()) {
-                $driver = self::DEV_CACHE_DRIVER;
-            } else {
-                $driver = self::PROD_CACHE_DRIVER;
-            }
-        }
-
-        // create driver instance
-        try {
-            $instance = $this->factory($driver, '\Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface');
-            $this->cacheInstance = new Cache($instance);
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
-
-    /**
      * Set the component environment.
      * If it's development, the component will output additional information inside the debug header.
      *
@@ -298,5 +271,32 @@ class Rest
         // in development we always write cache
         $writer = new Compiler($this->api, $this->normalize, $this->cacheInstance);
         $writer->writeCacheFiles($parsedApi);
+    }
+
+    /**
+     * Initializes the compiler cache driver.
+     *
+     * @throws Exception
+     * @throws \Exception
+     */
+    private function initializeCache()
+    {
+        // get driver
+        if (!($driver = $this->config->get('CompilerCacheDriver', false))) {
+            // default driver
+            if ($this->isDevelopment()) {
+                $driver = self::DEV_CACHE_DRIVER;
+            } else {
+                $driver = self::PROD_CACHE_DRIVER;
+            }
+        }
+
+        // create driver instance
+        try {
+            $instance = $this->factory($driver, '\Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface');
+            $this->cacheInstance = new Cache($instance);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 }

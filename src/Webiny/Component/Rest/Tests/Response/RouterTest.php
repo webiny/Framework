@@ -175,4 +175,30 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('testProcessRequestStringIntDefString - str 10 2xstr', $result->getOutput()['data']);
     }
+
+    public function testResourceNamingNoParams()
+    {
+        $url = 'http://api.example.com/mock-api-class-router/some-function-name/that/has/a/custom-url';
+
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
+        $r->setUrl($url);
+        $r->setHttpMethod('get');
+
+        $result = $r->processRequest();
+
+        $this->assertSame('in fooBar', $result->getOutput()['data']);
+    }
+
+    public function testResourceNamingWithParams()
+    {
+        $url = 'http://api.example.com/mock-api-class-router/some-url/123/name/John Snow';
+
+        $r = new Router('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClassRouter', true, self::$cache);
+        $r->setUrl($url);
+        $r->setHttpMethod('get');
+
+        $result = $r->processRequest();
+
+        $this->assertSame('123 => John Snow', $result->getOutput()['data']);
+    }
 }

@@ -80,6 +80,7 @@ class ParameterParser
             $param = new ParsedParameter();
             $param->name = $p->name;
             $param->type = $this->getType($p->name, $this->paramAnnotations);
+            $param->matchPattern = $this->getParamMatchType($param->type);
             try {
                 $param->default = $p->getDefaultValue();
                 if (is_bool($param->default)) {
@@ -122,5 +123,33 @@ class ParameterParser
         }
 
         return $type;
+    }
+
+    /**
+     * Returns a different match pattern, based on the given $paramType.
+     *
+     * @param string $paramType Parameter type name.
+     *
+     * @return string Match pattern.
+     */
+    private function getParamMatchType($paramType)
+    {
+        switch ($paramType) {
+            case 'string':
+                return '([^/]+)';
+                break;
+            case 'bool':
+                return '(0|1|true|false)';
+                break;
+            case 'integer':
+                return '([\d]+)';
+                break;
+            case 'float':
+                return '([\d.]+)';
+                break;
+            default:
+                return '([^/]+)';
+                break;
+        }
     }
 }

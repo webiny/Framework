@@ -1,6 +1,7 @@
 Rest:
     ExampleApi:
         CompilePath: __DIR__/TempCache
+        CompilerCacheDriver: Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver
         Router:
             Class: \Webiny\Component\Rest\{test}\{mock}\{class}
             Path: /services/{test}/{mock}/{class}

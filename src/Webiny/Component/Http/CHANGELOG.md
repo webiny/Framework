@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.4
+---------
+* Option to mock a Request method
+* Option to mock current url
+
+
 1.3
 ---------
 * Removed the default Cookie prefix

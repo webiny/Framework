@@ -116,7 +116,7 @@ class UrlMatcher
                 $params = $this->extractParameters($matches, $compiledRoute);
             }
 
-            return new MatchedRoute($route->getCallback(), $params);
+            return new MatchedRoute($route, $params);
         }
 
         return false;

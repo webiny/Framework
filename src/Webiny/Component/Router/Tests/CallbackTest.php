@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Router\Tests;
 
+use Webiny\Component\Http\Request;
 use Webiny\Component\Router\Router;
 
 /**
@@ -54,5 +55,24 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     {
         $result = Router::getInstance()->match('http://www.webiny.com/blog/post/new-php/12');
         $this->assertEquals('static-new-php-12', Router::getInstance()->execute($result));
+    }
+
+    public function testHasTags()
+    {
+        $matchedRoute = Router::getInstance()->match('http://www.webiny.com/blog/post/new-php/12');
+
+        $result = $matchedRoute->hasTags(['system', 'cron'], true);
+        $this->assertTrue($result);
+
+        $result = $matchedRoute->hasTags(['system', 'cron', 'fake'], true);
+        $this->assertFalse($result);
+
+        $result = $matchedRoute->hasTags(['system', 'cron', 'fake'], false);
+        $this->assertTrue($result);
+
+        $result = $matchedRoute->hasTags(['tag1', 'tag2', 'fake'], false);
+        $this->assertFalse($result);
+
+        $this->assertSame(['system', 'cron'], $matchedRoute->getRoute()->getTags());
     }
 }

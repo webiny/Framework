@@ -98,79 +98,28 @@ class Compiler
 
 
         foreach ($parsedClass->parsedMethods as $m) {
-            $url = $this->buildUrlMatchPattern($m->name, $m->params);
-            $compileArray[$m->method][$url] = [
-                'default'     => $m->default,
-                'role'        => ($m->role) ? $m->role : false,
-                'method'      => $m->name,
-                'urlPattern'  => $m->urlPattern,
-                'cache'       => $m->cache,
-                'header'      => $m->header,
-                'rateControl' => $m->rateControl,
-                'params'      => []
+            $compileArray[$m->method][$m->urlPattern] = [
+                'default'         => $m->default,
+                'role'            => ($m->role) ? $m->role : false,
+                'method'          => $m->name,
+                'urlPattern'      => $m->urlPattern,
+                'resourceNaming'  => $m->resourceNaming,
+                'cache'           => $m->cache,
+                'header'          => $m->header,
+                'rateControl'     => $m->rateControl,
+                'params'          => []
             ];
 
             foreach ($m->params as $p) {
-                $compileArray[$m->method][$url]['params'][$p->name] = [
+                $compileArray[$m->method][$m->urlPattern]['params'][$p->name] = [
                     'required' => $p->required,
                     'type'     => $p->type,
-                    'default'  => $p->default
+                    'default'  => $p->default,
+                    'pattern'  => $p->matchPattern
                 ];
             }
         }
 
         return $compileArray;
     }
-
-    /**
-     * Builds the url match pattern for each of the method inside the api.
-     *
-     * @param string $methodName Method name.
-     * @param array  $parameters List of the ParsedParameter instances.
-     *
-     * @return string The url pattern.
-     */
-    private function buildUrlMatchPattern($methodName, array $parameters)
-    {
-        $url = $methodName;
-        if ($this->normalize) {
-            $url = PathTransformations::methodNameToUrl($methodName);
-        }
-
-        foreach ($parameters as $p) {
-            $matchType = $this->getParamMatchType($p->type);
-            $url = $url . '/' . $matchType;
-        }
-
-        return $url . '/';
-    }
-
-    /**
-     * Returns a different match pattern, based on the given $paramType.
-     *
-     * @param string $paramType Parameter type name.
-     *
-     * @return string Match pattern.
-     */
-    private function getParamMatchType($paramType)
-    {
-        switch ($paramType) {
-            case 'string':
-                return '([^/]+)';
-                break;
-            case 'bool':
-                return '(0|1|true|false)';
-                break;
-            case 'integer':
-                return '([\d]+)';
-                break;
-            case 'float':
-                return '([\d.]+)';
-                break;
-            default:
-                return '([^/]+)';
-                break;
-        }
-    }
-
 }
