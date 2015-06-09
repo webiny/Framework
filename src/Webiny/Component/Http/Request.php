@@ -286,7 +286,7 @@ class Request
 
             // query
             $query = $this->server()->queryString();
-            if ($query) {
+            if ($query && strpos($pageURL, '?') === false) {
                 $pageURL .= '?' . $query;
             }
 
