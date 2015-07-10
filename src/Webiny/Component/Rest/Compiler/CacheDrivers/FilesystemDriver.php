@@ -161,10 +161,9 @@ class FilesystemDriver implements CacheDriverInterface
 
         $apiFolder = $apiFolder . DIRECTORY_SEPARATOR . $classCacheFolder;
 
-        $apiFolder = realpath($apiFolder);
         if (!is_dir($apiFolder)) {
             mkdir($apiFolder, 0755, true);
-            clearstatcache(true, $apiFolder);
+            clearstatcache(true, realpath($apiFolder));
         }
 
         return $apiFolder . DIRECTORY_SEPARATOR;
