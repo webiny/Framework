@@ -13,8 +13,6 @@ namespace Webiny\Component\StdLib\StdObject\ArrayObject;
 use Traversable;
 use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ManipulatorTrait;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ValidatorTrait;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 /**
@@ -48,7 +46,7 @@ class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \Arra
         if (!$this->isInstanceOf($array, '\stdClass') && !$this->isInstanceOf($array,
                 '\ArrayAccess') && !$this->isArray($array) && !$this->isArrayObject($array)
         ) {
-            if ($this->isNull($array)) {
+            if ($this->isEmpty($array) || $this->isBool($array)) {
                 $this->value = array();
             } else {
                 throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
