@@ -94,7 +94,7 @@ trait ManipulatorTrait
             return $targetArray->keyNested($keys[1], $value, true);
         }
 
-        return $array[$key] ?: $value;
+        return isset($array[$key]) ? $array[$key] : $value;
     }
 
     /**
