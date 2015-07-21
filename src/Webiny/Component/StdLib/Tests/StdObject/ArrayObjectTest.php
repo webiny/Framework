@@ -840,25 +840,6 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('anotherElement', $a->key('k2.k3.k5'));
     }
 
-    public function testStdClassConversion()
-    {
-        $obj = new \stdClass();
-        $obj->name = 'Webiny';
-        $obj->language = 'PHP';
-
-        $arr = new ArrayObject($obj);
-        $this->assertEquals('Webiny', $arr->key('name'));
-        $this->assertEquals('PHP', $arr->key('language'));
-
-
-        $obj2 = new \stdClass();
-        $obj2->url = 'webiny.com';
-        $obj->nested = [$obj2];
-
-        $arr = new ArrayObject($obj);
-        $this->assertEquals('webiny.com', $arr->keyNested('nested.0.url'));
-    }
-
     /**
      * @dataProvider mergeArrays
      */
