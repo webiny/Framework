@@ -167,7 +167,9 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
             $path = $this->directory;
         }
 
-        $this->helper->ensureDirectoryExists($path, $this->create);
+        if(!is_dir($path)){
+            return [];
+        }
 
         if ($recursive) {
             try {
