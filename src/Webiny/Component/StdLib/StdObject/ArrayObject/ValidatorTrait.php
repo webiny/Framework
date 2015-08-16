@@ -55,6 +55,22 @@ trait ValidatorTrait
     }
 
     /**
+     * Check if all given keys exist in the array
+     *
+     * @param array $keys
+     *
+     * @return bool
+     */
+    public function keysExist($keys = []){
+        foreach($keys as $key){
+            if(!$this->keyExists($key)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Checks if $key exists in current array as index. If it exists, true is returned.
      * If the $key doesn't exist, $default is returned.
      * This method supports nested keys access: 'level1.level2.level3'
