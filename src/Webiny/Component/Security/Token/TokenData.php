@@ -42,6 +42,12 @@ class TokenData
      */
     private $authProviderName;
 
+    /**
+     * Name of the class that was used to provide the user data.
+     * @var string
+     */
+    private $userProviderName;
+
 
     /**
      * Base constructor.
@@ -50,10 +56,12 @@ class TokenData
      */
     public function __construct(array $tokenData)
     {
-        $this->username = $tokenData['u'];
-        $this->roles = $tokenData['r'];
-        $this->validUntil = $tokenData['vu'];
-        $this->authProviderName = $tokenData['ap'];
+        $tokenData = $this->arr($tokenData);
+        $this->username = $tokenData->key('u');
+        $this->roles = $tokenData->key('r', [], true);
+        $this->validUntil = $tokenData->key('vu');
+        $this->authProviderName = $tokenData->key('ap');
+        $this->userProviderName = $tokenData->key('up');
     }
 
     /**
@@ -77,6 +85,15 @@ class TokenData
     }
 
     /**
+     * Returns valid until timestamp
+     *
+     * @return string
+     */
+    public function getValidUntil(){
+        return $this->validUntil;
+    }
+
+    /**
      * Returns the name of auth provider.
      *
      * @return string
@@ -84,5 +101,15 @@ class TokenData
     public function getAuthProviderName()
     {
         return $this->authProviderName;
+    }
+
+    /**
+     * Returns the name of user provider.
+     *
+     * @return string
+     */
+    public function getUserProviderName()
+    {
+        return $this->userProviderName;
     }
 }

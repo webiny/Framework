@@ -33,6 +33,9 @@ class SecurityEvent extends Event
     // user not authenticated to access the requested area
     const NOT_AUTHENTICATED = 'wf.security.not_authenticated';
 
+    // user is authenticated
+    const AUTHENTICATED = 'wf.security.authenticated';
+
     /**
      * @var User\UserAbstract
      */

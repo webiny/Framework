@@ -58,4 +58,13 @@ class Session extends TokenStorageAbstract
     {
         return $this->httpSession()->delete($this->getTokenName());
     }
+
+    /**
+     * Get token string representation
+     * @return string
+     */
+    public function getTokenString()
+    {
+        $this->httpSession()->get($this->getTokenName());
+    }
 }

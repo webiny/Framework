@@ -49,4 +49,13 @@ class TokenStorageMock extends TokenStorageAbstract
     {
         return true;
     }
+
+    /**
+     * Get token string representation
+     * @return string
+     */
+    public function getTokenString()
+    {
+        return '';
+    }
 }

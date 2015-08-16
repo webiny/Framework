@@ -93,6 +93,21 @@ class Firewall
     private $accessControl;
 
     /**
+     * @var string
+     */
+    private $defaultCryptDriver = '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt';
+
+    /**
+     * @var string
+     */
+    private $cryptDriverInterface = 'Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface';
+
+    /**
+     * @var string
+     */
+    private $authenticationInterface = '\Webiny\Component\Security\Authentication\Providers\AuthenticationInterface';
+
+    /**
      * @var array A list of currently built-in authentication providers. The keys are used so you don't need to write
      *            the fully qualified class names in the yaml config.
      */
@@ -139,16 +154,17 @@ class Firewall
             $login = $this->getAuthProvider($authProvider)->getLoginObject($this->getConfig());
             if (!$this->isInstanceOf($login, 'Webiny\Component\Security\Authentication\Providers\Login')) {
                 throw new FirewallException('Authentication provider method getLoginObject() must return an instance of
-														"Webiny\Component\Security\Authentication\Providers\Login".'
-                );
+														"Webiny\Component\Security\Authentication\Providers\Login".');
             }
-            $login->setAuthProviderName($authProvider);
+            $login->setAuthProviderName($this->authProviderName);
         } catch (\Exception $e) {
             throw new FirewallException($e->getMessage());
         }
 
         // forward the login object to user providers and validate the credentials
-        if (!($this->user = $this->authenticate($login))) { // login failed
+        $this->user = $this->authenticate($login);
+
+        if (!$this->user) { // login failed
             $this->getAuthProvider($authProvider)->invalidLoginProvidedCallback();
             $this->eventManager()->fire(SecurityEvent::LOGIN_INVALID, new SecurityEvent(new AnonymousUser()));
 
@@ -209,6 +225,8 @@ class Firewall
             } else {
                 $this->user->populate($tokenData->getUsername(), '', $tokenData->getRoles(), true);
                 $this->user->setAuthProviderName($tokenData->getAuthProviderName());
+                $this->user->setUserProviderName($tokenData->getUserProviderName());
+                $this->eventManager()->fire(SecurityEvent::AUTHENTICATED, new SecurityEvent($this->user));
                 $this->setUserRoles();
 
                 $this->userAuthenticated = true;
@@ -335,14 +353,9 @@ class Firewall
             // get the first auth provider from the list
             $providers = $this->getConfig()->get('AuthenticationProviders', []);
             $authProvider = $providers[0];
-            $this->authProviderConfig = Security::getConfig()
-                                                 ->get('AuthenticationProviders.' . $providers[0], new ConfigObject([])
-                                                 );
-        } else {
-            $this->authProviderConfig = Security::getConfig()
-                                                 ->get('AuthenticationProviders.' . $authProvider, new ConfigObject([])
-                                                 );
         }
+
+        $this->authProviderConfig = Security::getConfig()->get('AuthenticationProviders.' . $authProvider, new ConfigObject());
 
         // merge the internal driver
         // merge only if driver is not set and it matches the internal auth provider name
@@ -351,17 +364,16 @@ class Firewall
         }
 
         // make sure the requested auth provider is assigned to the current firewall
-        if(!in_array($authProvider, $this->getConfig()->get('AuthenticationProviders', [])->toArray())){
-            throw new FirewallException('Authentication provider "' . $authProvider . '" is not defined on "'.$this->getFirewallKey().'" firewall.'
-            );
+        if (!in_array($authProvider, $this->getConfig()->get('AuthenticationProviders', [])->toArray())) {
+            throw new FirewallException('Authentication provider "' . $authProvider . '" is not defined on "' . $this->getFirewallKey() . '" firewall.');
         }
 
         // check that we have the driver
         if (!$this->authProviderConfig->get('Driver', false)) {
-            throw new FirewallException('Unable to detect configuration for authentication provider "' . $authProvider . '".'
-            );
+            throw new FirewallException('Unable to detect configuration for authentication provider "' . $authProvider . '".');
         }
 
+        $this->authProviderName = $authProvider;
         return $this->authProviderConfig;
     }
 
@@ -384,18 +396,10 @@ class Firewall
             return false;
         }
 
-        if ($user) {
-            if ($user->authenticate($login, $this)) {
-                // save info about current auth provider into user instance
-                $user->setAuthProviderName($login->getAuthProviderName());
+        if ($user && $user->authenticate($login, $this)) {
+            $this->getToken()->saveUser($user);
 
-                // save token
-                $this->getToken()->saveUser($user);
-
-                return $user;
-            } else {
-                return false;
-            }
+            return $user;
         }
 
         return false;
@@ -411,10 +415,12 @@ class Firewall
      */
     private function getUserFromUserProvider(Login $login)
     {
-        foreach ($this->userProviders as $provider) {
+        foreach ($this->userProviders as $name => $provider) {
             try {
+                /* @var UserAbstract $user */
                 $user = $provider->getUser($login);
                 if ($user) {
+                    $user->setUserProviderName($name);
                     $user->setAuthProviderName($login->getAuthProviderName());
 
                     return $user;
@@ -453,24 +459,16 @@ class Firewall
             }
         }
 
-        $tokenCryptDriver = Security::getConfig()
-                                    ->get('Tokens.' . $tokenName . '.Driver',
-                                          '\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt'
-                                    );
-        if (!$tokenCryptDriver) {
-            throw new FirewallException('Driver parameter for token "' . $tokenName . '" is not defined.');
-        }
+        $tokenCryptDriver = Security::getConfig()->get('Tokens.' . $tokenName . '.Driver', $this->defaultCryptDriver);
         $tokenCryptParams = Security::getConfig()->get('Tokens.' . $tokenName . '.Params', [], true);
         try {
-            $tokenCrypt = $this->factory($tokenCryptDriver,
-                                         'Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface',
-                                         $tokenCryptParams
-            );
+            $tokenCrypt = $this->factory($tokenCryptDriver, $this->cryptDriverInterface, $tokenCryptParams);
         } catch (\Exception $e) {
             throw new FirewallException($e->getMessage());
         }
 
-        $this->token = new Token($this->getTokenName(), $rememberMe, $securityKey, $tokenCrypt);
+        $storageClass = Security::getConfig()->get('Tokens.' . $tokenName . '.StorageDriver');
+        $this->token = new Token($this->getTokenName(), $rememberMe, $securityKey, $tokenCrypt, $storageClass);
     }
 
     /**
@@ -503,10 +501,7 @@ class Firewall
             $params = $authProviderConfig->get('Params', [], true);
 
             try {
-                $this->authProvider = $this->factory($authProviderConfig->Driver,
-                                                      '\Webiny\Component\Security\Authentication\Providers\AuthenticationInterface',
-                                                      $params
-                );
+                $this->authProvider = $this->factory($authProviderConfig->Driver, $this->authenticationInterface, $params);
             } catch (Exception $e) {
                 throw new FirewallException($e->getMessage());
             }

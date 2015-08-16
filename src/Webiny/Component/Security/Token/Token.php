@@ -44,20 +44,22 @@ class Token
      *                                                       token is only valid for current session.
      * @param string                            $securityKey Security key that will be used for encryption of token data
      * @param CryptDrivers\CryptDriverInterface $cryptDriver
+     * @param null|string $storageClass
      *
      * @throws TokenException
      * @internal param \Webiny\Component\Security\Token\Crypt\CryptDriverInterface $crypt Name of the crypt driver that we be used to encode the session/cookie.
      *
      */
-    public function __construct($tokenName, $rememberMe = false, $securityKey, CryptDriverInterface $cryptDriver)
+    public function __construct($tokenName, $rememberMe = false, $securityKey, CryptDriverInterface $cryptDriver, $storageClass = null)
     {
 
         $this->rememberMe = $rememberMe;
 
         try {
-            $this->storage = $this->factory($this->getStorageName(),
-                                             '\Webiny\Component\Security\Token\TokenStorageAbstract'
-            );
+            if(!$storageClass){
+                $storageClass = $this->getStorageName();
+            }
+            $this->storage = $this->factory($storageClass, '\Webiny\Component\Security\Token\TokenStorageAbstract');
             $this->storage->setSecurityKey($securityKey);
             $this->storage->setCrypt($cryptDriver);
         } catch (Exception $e) {
@@ -65,6 +67,16 @@ class Token
         }
 
         $this->storage->setTokenName($tokenName);
+    }
+
+    /**
+     * Get string representation of token
+     *
+     * @return string
+     */
+    public function getTokenString()
+    {
+        return $this->storage->getTokenString();
     }
 
     /**

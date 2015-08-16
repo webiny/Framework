@@ -49,6 +49,11 @@ abstract class UserAbstract implements UserInterface
      */
     private $authProviderName = '';
 
+    /**
+     * @var string The name of the user provider that has provided the current user.
+     */
+    private $userProviderName = '';
+
 
     /**
      * This method verifies the credentials of current user with the credentials provided from the Login object.
@@ -203,5 +208,25 @@ abstract class UserAbstract implements UserInterface
     public function getAuthProviderName()
     {
         return $this->authProviderName;
+    }
+
+    /**
+     * Set the name of the user provider.
+     *
+     * @param string $name
+     */
+    public function setUserProviderName($name)
+    {
+        $this->userProviderName = $name;
+    }
+
+    /**
+     * Returns the name of user provider.
+     *
+     * @return string
+     */
+    public function getUserProviderName()
+    {
+        return $this->userProviderName;
     }
 }

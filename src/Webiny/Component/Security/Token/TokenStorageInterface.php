@@ -53,4 +53,10 @@ interface TokenStorageInterface
      * @param string $securityKey Must have 16/32/64 chars.
      */
     public function setSecurityKey($securityKey);
+
+    /**
+     * Get token string representation
+     * @return string
+     */
+    public function getTokenString();
 }

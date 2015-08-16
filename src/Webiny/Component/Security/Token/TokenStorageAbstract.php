@@ -28,18 +28,18 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
      * Name of the token.
      * @var string
      */
-    private $tokenName;
+    protected $tokenName;
 
     /**
      * Security key used for encrypting the token data.
      * @var string
      */
-    private $securityKey;
+    protected $securityKey;
 
     /**
      * @var string Name of the crypt service.
      */
-    private $crypt;
+    protected $crypt;
 
 
     /**
@@ -102,7 +102,7 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
         $data = [
             // username
             'u'   => $user->getUsername(),
-            // rules
+            // roles
             'r'   => $roleArray,
             // valid until
             'vu'  => time() + (86400 * 30),
@@ -200,5 +200,4 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
         // hash and return
         return hash('sha512', $securityKey);
     }
-
 }

@@ -44,10 +44,8 @@ class User extends UserAbstract
      */
     public function authenticate(Login $login, Firewall $firewall)
     {
-        $entityInstance = new $this->entity;
-        $user = $entityInstance->find([$this->username => $login->getUsername()]);
-        if ($user && isset($user[0])) {
-            $user = $user[0];
+        $user = call_user_func_array([$this->entity, 'findOne'], [[$this->username => $login->getUsername()]]);
+        if ($user) {
             if ($firewall->verifyPasswordHash($login->getPassword(), $user[$this->password])) {
 
                 if(isset($user[$this->role])){
