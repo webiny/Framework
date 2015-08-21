@@ -67,6 +67,7 @@ class Token
         }
 
         $this->storage->setTokenName($tokenName);
+        $this->storage->setTokenRememberMe($this->rememberMe);
     }
 
     /**

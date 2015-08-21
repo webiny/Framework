@@ -81,7 +81,7 @@ class Stateless extends TokenStorageAbstract
             // username
             'u'   => $user->getUsername(),
             // valid until
-            'vu'  => time() + (86400 * 30),
+            'vu'  => $this->tokenRememberMe ? time() + (86400 * 30) : time() + 86400,
             // auth provider driver
             'ap'  => $user->getAuthProviderName(),
             // user provider driver

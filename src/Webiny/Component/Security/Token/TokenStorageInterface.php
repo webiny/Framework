@@ -25,6 +25,13 @@ interface TokenStorageInterface
     public function setTokenName($tokenName);
 
     /**
+     * This function provides the token 'remember me' flag to the storage.
+     *
+     * @param bool $rememberMe Token rememberme.
+     */
+    public function setTokenRememberMe($rememberMe);
+
+    /**
      * Save user authentication token.
      *
      * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.

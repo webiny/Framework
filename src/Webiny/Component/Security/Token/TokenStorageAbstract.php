@@ -31,6 +31,12 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     protected $tokenName;
 
     /**
+     * Should token be remembered
+     * @var bool
+     */
+    protected $tokenRememberMe;
+
+    /**
      * Security key used for encrypting the token data.
      * @var string
      */
@@ -60,6 +66,15 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     public function getTokenName()
     {
         return $this->tokenName;
+    }
+
+    /**
+     * This function provides the token 'remember me' flag to the storage.
+     *
+     * @param bool $rememberMe Token rememberme.
+     */
+    public function setTokenRememberMe($rememberMe){
+        $this->tokenRememberMe = $rememberMe;
     }
 
     /**

@@ -374,6 +374,7 @@ class Firewall
         }
 
         $this->authProviderName = $authProvider;
+
         return $this->authProviderConfig;
     }
 
@@ -390,45 +391,19 @@ class Firewall
      */
     private function authenticate(Login $login)
     {
-        try {
-            $user = $this->getUserFromUserProvider($login);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        if ($user && $user->authenticate($login, $this)) {
-            $this->getToken()->saveUser($user);
-
-            return $user;
-        }
-
-        return false;
-    }
-
-    /**
-     * Tries to load user object from the registered user providers based on the data inside the Login object instance.
-     *
-     * @param Login $login Login object received from authentication provider.
-     *
-     * @return UserAbstract|bool Instance of UserAbstract, if user is found, or false if user is not found.
-     * @throws FirewallException
-     */
-    private function getUserFromUserProvider(Login $login)
-    {
         foreach ($this->userProviders as $name => $provider) {
             try {
                 /* @var UserAbstract $user */
                 $user = $provider->getUser($login);
-                if ($user) {
+                if ($user && $user->authenticate($login, $this)) {
                     $user->setUserProviderName($name);
                     $user->setAuthProviderName($login->getAuthProviderName());
+                    $this->getToken()->saveUser($user);
 
                     return $user;
                 }
-            } catch (UserNotFoundException $e) {
-                // next user provider
             } catch (\Exception $e) {
-                throw new FirewallException($e->getMessage());
+                // next user provider
             }
         }
 
