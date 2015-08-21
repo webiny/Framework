@@ -25,7 +25,13 @@ class Payload
      */
     public function __construct()
     {
-        $this->payloadBag = $this->arr(json_decode(file_get_contents("php://input"), true));
+        $data = json_decode(file_get_contents("php://input"), true);
+        $phpInput = file_get_contents('php://input');
+        if(is_null($data) && $phpInput != ''){
+            parse_str($phpInput, $data);
+        }
+
+        $this->payloadBag = $this->arr($data);
     }
 
     /**
