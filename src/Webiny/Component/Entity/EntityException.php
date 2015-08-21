@@ -7,6 +7,7 @@
 namespace Webiny\Component\Entity;
 
 use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
  * Exception class for the Entity component.
@@ -36,7 +37,7 @@ class EntityException extends ExceptionAbstract
 
     public function setInvalidAttributes($attributes)
     {
-        $this->invalidAttributes = $attributes;
+        $this->invalidAttributes = StdObjectWrapper::toArray($attributes);
 
         return $this;
     }

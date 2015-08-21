@@ -427,14 +427,22 @@ abstract class EntityAbstract implements \ArrayAccess
         $validation = $this->arr();
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
-            // Check if attribute is required and it's value is set
-            if ($entityAttribute->getRequired() && !isset($data[$attributeName])) {
+            /**
+             * Check if attribute is required and it's value is set.
+             */
+            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->getId()->getValue()) {
                 $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING,
                     [$attributeName]);
                 continue;
             }
 
-            // If 'required' check is passed, continue with other checks
+            /**
+             * In case it is an update - if the attribute is not in new $data, it's no big deal, we already have the previous value.
+             */
+            if(!isset($data[$attributeName]) && $this->getId()->getValue()){
+                continue;
+            }
+
             $canPopulate = !$this->getId()->getValue() || !$entityAttribute->getOnce();
             if (isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
