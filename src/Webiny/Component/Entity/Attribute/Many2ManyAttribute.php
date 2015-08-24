@@ -64,6 +64,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
          */
         foreach ($item as $i) {
             $this->addedItems[] = $i;
+            $this->entity->setDirty(true);
         }
 
         return $this;
