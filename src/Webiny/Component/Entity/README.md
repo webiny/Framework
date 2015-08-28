@@ -92,7 +92,7 @@ $title = $page->getAttribute('title')->getValue();
 
 // Short syntax
 $page = Page::findById("53712ed46803fa4e058b456b");
-$title = $page->title->getValue();
+$title = $page->title;
 ```
 
 NOTE: you need to call `getValue()` to get the actual value of the attribute.
