@@ -42,7 +42,7 @@ use Webiny\Component\Entity\EntityAbstract;
 
 class Page extends EntityAbstract
 {
-    protected static $_entityCollection = "Page";
+    protected static $entityCollection = "Page";
 
     protected function _entityStructure() {
 
