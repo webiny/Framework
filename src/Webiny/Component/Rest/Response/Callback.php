@@ -8,8 +8,10 @@
 namespace Webiny\Component\Rest\Response;
 
 use Webiny\Component\Http\HttpTrait;
+use Webiny\Component\Rest\Interfaces\MiddlewareInterface;
 use Webiny\Component\Rest\RestErrorException;
 use Webiny\Component\Rest\RestException;
+use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * Response calls the api method and parses the output.
@@ -19,18 +21,25 @@ use Webiny\Component\Rest\RestException;
  */
 class Callback
 {
-    use HttpTrait;
+    use HttpTrait, ValidatorTrait;
 
     /**
      * @var RequestBag
      */
     private $requestBag;
 
+    /**
+     * @var MiddlewareInterface
+     */
+    private $middleware;
+
 
     /**
      * Base constructor.
      *
      * @param RequestBag $requestBag Current api request.
+     *
+     * @throws RestException
      */
     public function __construct(RequestBag $requestBag)
     {
@@ -111,11 +120,24 @@ class Callback
             $cr->attachDebugHeader('Cache', 'HIT');
         } else {
             try {
-                $result = call_user_func_array([
-                                                   $this->requestBag->getClassInstance(),
-                                                   $this->requestBag->getMethodData()['method']
-                                               ], $this->requestBag->getMethodParameters()
-                );
+                // Check if we have a Middleware set up
+                $middleware = $this->requestBag->getApiConfig()->get('Middleware');
+                if ($middleware) {
+                    $middleware = new $middleware;
+                    if (!$this->isInstanceOf($middleware, '\Webiny\Component\Rest\Interfaces\MiddlewareInterface')) {
+                        throw new RestException('Your custom Rest middleware must implement `\Webiny\Component\Rest\Interfaces\MiddlewareInterface`');
+                    }
+                    $this->middleware = $middleware;
+                }
+
+                if ($this->middleware){
+                    $result = $this->middleware->getResult($this->requestBag);
+                } else {
+                    $result = call_user_func_array([
+                        $this->requestBag->getClassInstance(),
+                        $this->requestBag->getMethodData()['method']
+                    ], $this->requestBag->getMethodParameters());
+                }
 
                 // check if method has custom headers set
                 $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['success']);
@@ -135,8 +157,7 @@ class Callback
             } catch (RestErrorException $re) {
                 // check if method has custom headers set
                 $cr->setHeaderResponse($statusCode = $re->getResponseCode(),
-                                       $this->requestBag->getMethodData()['header']['status']['errorMessage']
-                );
+                    $this->requestBag->getMethodData()['header']['status']['errorMessage']);
 
                 // check if a custom http response code is set
 
@@ -149,27 +170,24 @@ class Callback
 
                 if ($env == 'development') {
                     $cr->addDebugMessage([
-                                             'file'   => $re->getFile(),
-                                             'line'   => $re->getLine(),
-                                             'traces' => explode('#', $re->getTraceAsString())
-                                         ]
-                    );
+                            'file'   => $re->getFile(),
+                            'line'   => $re->getLine(),
+                            'traces' => explode('#', $re->getTraceAsString())
+                        ]);
                 }
             } catch (\Exception $e) {
                 // check if method has custom headers set
                 $cr->setHeaderResponse($this->requestBag->getMethodData()['header']['status']['error'],
-                                       $this->requestBag->getMethodData()['header']['status']['errorMessage']
-                );
+                    $this->requestBag->getMethodData()['header']['status']['errorMessage']);
 
                 $cr->setErrorResponse('There has been an error processing the request.');
                 if ($env == 'development') {
                     $cr->addErrorMessage(['message' => $e->getMessage()]);
                     $cr->addDebugMessage([
-                                             'file'   => $e->getFile(),
-                                             'line'   => $e->getLine(),
-                                             'traces' => explode('#', $e->getTraceAsString())
-                                         ]
-                    );
+                            'file'   => $e->getFile(),
+                            'line'   => $e->getLine(),
+                            'traces' => explode('#', $e->getTraceAsString())
+                        ]);
                 }
             }
         }

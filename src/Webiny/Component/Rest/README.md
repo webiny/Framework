@@ -50,6 +50,13 @@ Rest:
             Class: \Foo\Bar\MyServices\{foo}\{bar}
             Path: /services/{test}/{foo}/{mock}/{bar}
             Normalize: true
+    MiddlewareApi:
+        CompilePath: /var/tmp
+        Middleware: \My\Custom\Handler
+        Router:
+            Class: \Foo\Bar\MyServices\{foo}\{bar}
+            Path: /services/{test}/{foo}/{mock}/{bar}
+            Normalize: true
 	SomeOtherApi:
 	    CompilePath: /var/www/Cache/Rest
         Cache: someCacheService
@@ -115,6 +122,12 @@ Note that the rate control mechanism requires that you have `Cache` specified on
 #### **Environment**
 The value of `Environment` attribute can either be 'production' or 'development'. The difference is that in development
 mode we constantly rebuild the compiled cache files, we also output special debug response headers, and JSON output uses pretty format.
+
+#### **Middleware**
+If this parameter is set, it should point to your class that implements `MiddlewareInterface`. This gives you control over execution of your REST service method.
+Everything until and after the execution of the service is done by the component. The component passes the `RequestBag` to your middleware, and it is up to you 
+how you will execute the method, maybe perform additional checks, or some custom business logic. Whatever you do, the return value will be passed directly to 
+the REST component and will be used as a service result. 
 
 ## Class and method annotations
 
