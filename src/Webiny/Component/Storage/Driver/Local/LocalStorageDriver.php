@@ -272,4 +272,12 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
 
         return $path;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function createDateFolderStructure()
+    {
+        return $this->dateFolderStructure;
+    }
 }

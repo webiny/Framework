@@ -187,4 +187,12 @@ class S3StorageDriver implements DriverInterface
     {
         return $this->recentKey;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function createDateFolderStructure()
+    {
+        return $this->dateFolderStructure;
+    }
 }

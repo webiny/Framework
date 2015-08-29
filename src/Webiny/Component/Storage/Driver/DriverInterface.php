@@ -101,4 +101,10 @@ interface DriverInterface
      * @return mixed
      */
     public function getURL($key);
+
+    /**
+     * Does this storage create a date folder structure?
+     * @return boolean
+     */
+    public function createDateFolderStructure();
 }
