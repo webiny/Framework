@@ -235,6 +235,18 @@ trait ManipulatorTrait
     }
 
     /**
+     * Implode the array with the given $glue.
+     *
+     * @param string $glue String that will be used to put elements together.
+     *
+     * @return StringObject Instance of StringObject containing the array elements glued together as a string.
+     */
+    public function join($glue)
+    {
+        return $this->implode($glue);
+    }
+
+    /**
      * Split an array into chunks.
      *
      * @param int  $size          Chunk size.
