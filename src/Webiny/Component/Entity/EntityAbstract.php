@@ -137,12 +137,12 @@ abstract class EntityAbstract implements \ArrayAccess
     public function __construct()
     {
         $this->attributes = $this->arr();
-        $this->entityStructure();
-
         /**
          * Add ID to the list of attributes
          */
         $this->attr('id')->char();
+
+        $this->entityStructure();
     }
 
     /**
@@ -180,6 +180,15 @@ abstract class EntityAbstract implements \ArrayAccess
     public function __toString()
     {
         return $this->getMaskedValue();
+    }
+
+    /**
+     * Is this entity already saved?
+     *
+     * @return bool
+     */
+    public function exists(){
+        return $this->id !== null;
     }
 
     /**
@@ -265,7 +274,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
-        if (!$this->getDirty() && !$this->isNull($this->getId()->getValue())) {
+        if (!$this->getDirty() && $this->exists()) {
             return true;
         }
 
@@ -281,13 +290,13 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Insert or update
          */
-        if ($this->getId()->getValue() === null) {
+        if (!$this->exists()) {
             $data['_id'] = new \MongoId();
             $data['id'] = (string)$data['_id'];
             $this->entity()->getDatabase()->insert(static::$entityCollection, $data);
-            $this->getId()->setValue($data['id']);
+            $this->id = $data['id'];
         } else {
-            $where = ['_id' => new \MongoId($this->getId()->getValue())];
+            $where = ['_id' => new \MongoId($this->id)];
             $this->entity()
                  ->getDatabase()
                  ->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
@@ -386,7 +395,7 @@ abstract class EntityAbstract implements \ArrayAccess
             /* @var $attr Many2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $firstClassName = $this->extractClassName($attr->getParentEntity());
-                $query = [$firstClassName => $this->getId()->getValue()];
+                $query = [$firstClassName => $this->id];
                 $this->entity()->getDatabase()->remove($attr->getIntermediateCollection(), $query);
             }
         }
@@ -406,7 +415,7 @@ abstract class EntityAbstract implements \ArrayAccess
         $this->entity()
              ->getDatabase()
              ->remove(static::$entityCollection,
-                 ['_id' => $this->entity()->getDatabase()->id($this->getId()->getValue())]);
+                 ['_id' => $this->entity()->getDatabase()->id($this->id)]);
 
         static::entity()->remove($this);
 
@@ -430,7 +439,7 @@ abstract class EntityAbstract implements \ArrayAccess
             /**
              * Check if attribute is required and it's value is set.
              */
-            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->getId()->getValue()) {
+            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->exists()) {
                 $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING,
                     [$attributeName]);
                 continue;
@@ -439,11 +448,11 @@ abstract class EntityAbstract implements \ArrayAccess
             /**
              * In case it is an update - if the attribute is not in new $data, it's no big deal, we already have the previous value.
              */
-            if(!isset($data[$attributeName]) && $this->getId()->getValue()){
+            if(!isset($data[$attributeName]) && $this->exists()){
                 continue;
             }
 
-            $canPopulate = !$this->getId()->getValue() || !$entityAttribute->getOnce();
+            $canPopulate = !$this->exists() || !$entityAttribute->getOnce();
             if (isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);

@@ -27,11 +27,16 @@ abstract class DateAttributeAbstract extends AttributeAbstract
             $this->setDefaultValueInternal();
         }
 
-        if ($this->autoUpdate) {
+        if ($this->autoUpdate && $this->entity->exists()) {
             $this->setValue(date($this->attributeFormat));
         }
 
-        return new \MongoDate(strtotime($this->getValue()));
+        if($this->getValue()){
+            return new \MongoDate(strtotime($this->getValue()));
+        }
+
+        return null;
+
     }
 
     /**

@@ -88,8 +88,7 @@ class EntityDataExtractor
                 }
                 if (self::$currentLevel < $this->nestedLevel) {
                     self::$currentLevel++;
-                    $attrDataExtractor = new EntityDataExtractor($entityAttributeValue, $this->nestedLevel);
-                    $data[$attr] = $attrDataExtractor->extractData($subAttributes);
+                    $data[$attr] = $entityAttributeValue->toArray($subAttributes, $this->nestedLevel);
                     self::$currentLevel--;
                 }
             } elseif ($isOne2Many || $isMany2Many) {
@@ -97,8 +96,7 @@ class EntityDataExtractor
                 foreach ($entityAttributeValue as $item) {
                     if (self::$currentLevel < $this->nestedLevel) {
                         self::$currentLevel++;
-                        $attrDataExtractor = new EntityDataExtractor($item, $this->nestedLevel);
-                        $data[$attr][] = $attrDataExtractor->extractData($subAttributes);
+                        $data[$attr][] = $item->toArray($subAttributes, $this->nestedLevel);
                         self::$currentLevel--;
                     }
                 }
