@@ -239,6 +239,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         $dbItems = [];
         foreach ($this->cursor as $data) {
             $instance = new $this->entityClass;
+            $data['__webiny_db__'] = true;
             $instance->populate($data)->setDirty(false);
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
