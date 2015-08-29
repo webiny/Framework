@@ -71,6 +71,7 @@ abstract class EntityAbstract implements \ArrayAccess
             return null;
         }
         $instance = new static;
+        $data['__webiny_db__'] = true;
         $instance->populate($data)->setDirty(false);
 
         return static::entity()->add($instance);
@@ -104,6 +105,7 @@ abstract class EntityAbstract implements \ArrayAccess
             return null;
         }
         $instance = new static;
+        $data['__webiny_db__'] = true;
         $instance->populate($data)->setDirty(false);
 
         return static::entity()->add($instance);
@@ -432,6 +434,11 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function populate($data)
     {
+        $fromDb = false;
+        if(isset($data['__webiny_db__'])){
+            $fromDb = true;
+        }
+
         $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
         $validation = $this->arr();
         /* @var $entityAttribute AttributeAbstract */
@@ -452,7 +459,7 @@ abstract class EntityAbstract implements \ArrayAccess
                 continue;
             }
 
-            $canPopulate = !$this->exists() || !$entityAttribute->getOnce();
+            $canPopulate = !$this->exists() || $fromDb || !$entityAttribute->getOnce();
             if (isset($data[$attributeName]) && $canPopulate) {
                 $dataValue = $data[$attributeName];
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
