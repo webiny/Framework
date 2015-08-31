@@ -28,11 +28,11 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function __toString()
     {
-        if($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
             return (string)$this->defaultValue;
         }
 
-        if($this->isNull($this->value)) {
+        if ($this->isNull($this->value)) {
             return '';
         }
 
@@ -46,7 +46,7 @@ class Many2OneAttribute extends AttributeAbstract
     public function getId()
     {
         $value = $this->getValue();
-        if($value) {
+        if ($value) {
             return $value->getId();
         }
 
@@ -61,31 +61,31 @@ class Many2OneAttribute extends AttributeAbstract
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($this->isNull($value)) {
+        if ($this->isNull($value)) {
             return null;
         }
 
         // If what we got is a defaultValue - create or load an actual entity instance
-        if($value === $this->defaultValue) {
-            if($this->isArray($value) || $this->isArrayObject($value)) {
+        if ($value === $this->defaultValue) {
+            if ($this->isArray($value) || $this->isArrayObject($value)) {
                 $this->value = new $this->entityClass;
                 $this->value->populate($value);
             }
 
-            if(Entity::getInstance()->getDatabase()->isMongoId($value)) {
+            if (Entity::getInstance()->getDatabase()->isMongoId($value)) {
                 $this->value = call_user_func_array([
-                                                         $this->entityClass,
-                                                         'findById'
-                                                     ], [$value]);
+                    $this->entityClass,
+                    'findById'
+                ], [$value]);
             }
         }
 
-        if($this->getValue()->getId()->getValue() === null) {
+        if ($this->getValue()->id === null) {
             $this->getValue()->save();
         }
 
         // Return a simple Entity ID string
-        return $this->getValue()->getId()->getValue();
+        return $this->getValue()->id;
     }
 
     /**
@@ -119,15 +119,14 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function getValue()
     {
-        if(!$this->isInstanceOf($this->value, $this->entityClass)) {
+        if (!$this->isInstanceOf($this->value, $this->entityClass)) {
             $this->value = call_user_func_array([
-                                                     $this->entityClass,
-                                                     'findById'
-                                                 ], [$this->value]
-            );
+                $this->entityClass,
+                'findById'
+            ], [$this->value]);
         }
 
-        if(!$this->value && !$this->isNull($this->defaultValue)) {
+        if (!$this->value && !$this->isNull($this->defaultValue)) {
             return $this->defaultValue;
         }
 
@@ -143,15 +142,12 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function setValue($value = null)
     {
-        if(!$this->canAssign()) {
+        if (!$this->canAssign()) {
             return $this;
         }
 
         $this->validate($value);
-        if($this->value != $value) {
-            $this->value = $value;
-            $this->entity->setDirty(true);
-        }
+        $this->value = $value;
 
         return $this;
     }
@@ -192,15 +188,15 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function validate(&$value)
     {
-        if(!$this->isNull($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract'
-            ) && !Entity::getInstance()->getDatabase()->isMongoId($value)
+        if (!$this->isNull($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()
+                                                                                                                        ->getDatabase()
+                                                                                                                        ->isMongoId($value)
         ) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                     $this->attribute,
                     'entity ID, instance of \Webiny\Component\Entity\EntityAbstract or null',
                     gettype($value)
-                ]
-            );
+                ]);
         }
 
         return $this;

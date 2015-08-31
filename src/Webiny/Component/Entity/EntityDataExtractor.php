@@ -106,6 +106,8 @@ class EntityDataExtractor
         }
         self::$loadedEntities->removeKey($checkKey);
 
+        $data['_name'] = $this->entity->getMaskedValue();
+
         return $data;
     }
 

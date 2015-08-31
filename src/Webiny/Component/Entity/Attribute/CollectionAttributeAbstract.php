@@ -58,7 +58,6 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
     public function add($item)
     {
         $this->getValue()->add($item);
-        $this->entity->setDirty(true);
 
         return $this;
     }

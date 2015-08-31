@@ -42,8 +42,6 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     protected static $entityMask = '{id}';
 
-    private $dirty = false;
-
     /**
      * This method is called during instantiation to build entity structure
      * @return void
@@ -72,7 +70,7 @@ abstract class EntityAbstract implements \ArrayAccess
         }
         $instance = new static;
         $data['__webiny_db__'] = true;
-        $instance->populate($data)->setDirty(false);
+        $instance->populate($data);
 
         return static::entity()->add($instance);
     }
@@ -106,7 +104,7 @@ abstract class EntityAbstract implements \ArrayAccess
         }
         $instance = new static;
         $data['__webiny_db__'] = true;
-        $instance->populate($data)->setDirty(false);
+        $instance->populate($data);
 
         return static::entity()->add($instance);
     }
@@ -194,33 +192,6 @@ abstract class EntityAbstract implements \ArrayAccess
     }
 
     /**
-     * Set entity's dirty flag
-     *
-     * NOTE: you should not be calling this method on your own!
-     * This me
-     *
-     * @param bool $flag
-     *
-     * @return $this|bool
-     */
-    public function setDirty($flag = true)
-    {
-        $this->dirty = boolval($flag);
-
-        return $this;
-    }
-
-    /**
-     * Get entity's dirty flag
-     *
-     * @return bool
-     */
-    public function getDirty()
-    {
-        return $this->dirty;
-    }
-
-    /**
      * Get entity attribute
      *
      * @param string $attribute
@@ -276,10 +247,6 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
-        if (!$this->getDirty() && $this->exists()) {
-            return true;
-        }
-
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr,
@@ -303,8 +270,6 @@ abstract class EntityAbstract implements \ArrayAccess
                  ->getDatabase()
                  ->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
-
-        $this->setDirty(false);
 
         /**
          * Now save One2Many values

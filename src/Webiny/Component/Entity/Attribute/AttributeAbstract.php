@@ -190,9 +190,6 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         $this->validate($value);
-        if($this->value != $value) {
-            $this->entity->setDirty(true);
-        }
         $this->value = $value;
 
         return $this;
