@@ -38,4 +38,17 @@ class ValidationException extends ExceptionAbstract
         return $this->errorMessages;
     }
 
+    /**
+     * Set validator name
+     *
+     * @param string $validator
+     *
+     * @return $this
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }
 }

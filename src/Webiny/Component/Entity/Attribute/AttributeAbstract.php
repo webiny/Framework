@@ -16,7 +16,6 @@ use Webiny\Component\StdLib\StdLibTrait;
 /**
  * AttributeAbstract
  * @package Webiny\Component\Entity\AttributeType
- *
  */
 abstract class AttributeAbstract implements JsonSerializable
 {
@@ -32,6 +31,8 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $value = null;
     protected $required = false;
     protected $once = false;
+    protected $validators = [];
+    protected $validationMessages = [];
 
     /**
      * @param string         $attribute
@@ -50,7 +51,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __toString()
     {
-        if($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
             return (string)$this->defaultValue;
         }
 
@@ -67,7 +68,7 @@ abstract class AttributeAbstract implements JsonSerializable
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($this->isNull($this->value)) {
+        if ($this->isNull($this->value)) {
             $this->value = $value;
         }
 
@@ -88,11 +89,11 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @param null|string $attribute
      *
-     * @return EntityAttributeBuilder
+     * @return EntityAttributeBuilder|string
      */
     public function attr($attribute = null)
     {
-        if($this->isNull($attribute)) {
+        if ($this->isNull($attribute)) {
             return $this->attribute;
         }
 
@@ -185,7 +186,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setValue($value = null)
     {
-        if(!$this->canAssign()) {
+        if (!$this->canAssign()) {
             return $this;
         }
 
@@ -202,7 +203,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getValue()
     {
-        if($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
             return $this->defaultValue;
         }
 
@@ -220,6 +221,56 @@ abstract class AttributeAbstract implements JsonSerializable
     public function validate(&$value)
     {
         return $this;
+    }
+
+    /**
+     * Set attribute validators
+     *
+     * @param array|string $validators
+     *
+     * @return $this
+     */
+    public function setValidators($validators = [])
+    {
+        if (is_array($validators)) {
+            $this->validators = $validators;
+        } else {
+            $this->validators = func_get_args();
+        }
+
+        return $this;
+
+    }
+
+    /**
+     * Get validators
+     * @return array
+     */
+    public function getValidators()
+    {
+        return $this->validators;
+    }
+
+    /**
+     * Set validation messages
+     *
+     * @param array $messages
+     *
+     * @return $this
+     */
+    public function setValidationMessages($messages){
+        $this->validationMessages = $messages;
+
+        return $this;
+    }
+
+    /**
+     * Get validation messages
+     *
+     * @return array
+     */
+    public function getValidationMessages(){
+        return $this->validationMessages;
     }
 
     /**
@@ -244,7 +295,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function canAssign()
     {
-        if($this->entity->getId()->getValue() && $this->getOnce() && $this->value !== null) {
+        if ($this->entity->getId()->getValue() && $this->getOnce() && $this->value !== null) {
             return false;
         }
 

@@ -14,6 +14,7 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\Attribute\ValidationException;
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
+use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
@@ -23,7 +24,11 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 abstract class EntityAbstract implements \ArrayAccess
 {
-    use StdLibTrait, EntityTrait;
+    use StdLibTrait, EntityTrait, FactoryLoaderTrait;
+
+    private $validators = [];
+
+    private $validatorInterface = '\Webiny\Component\Entity\Validators\ValidatorInterface';
 
     /**
      * Entity attributes
@@ -136,6 +141,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function __construct()
     {
+        $this->validators = Entity::getConfig()->get('Validators', []);
         $this->attributes = $this->arr();
         /**
          * Add ID to the list of attributes
@@ -187,7 +193,8 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @return bool
      */
-    public function exists(){
+    public function exists()
+    {
         return $this->id !== null;
     }
 
@@ -249,9 +256,7 @@ abstract class EntityAbstract implements \ArrayAccess
     {
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
-            if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr,
-                    AttributeType::MANY2MANY)
-            ) {
+            if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $data[$key] = $attr->getDbValue();
             }
         }
@@ -266,9 +271,7 @@ abstract class EntityAbstract implements \ArrayAccess
             $this->id = $data['id'];
         } else {
             $where = ['_id' => new \MongoId($this->id)];
-            $this->entity()
-                 ->getDatabase()
-                 ->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
+            $this->entity()->getDatabase()->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
 
         /**
@@ -325,8 +328,7 @@ abstract class EntityAbstract implements \ArrayAccess
                 $relatedEntity = new $relatedClass;
                 /* @var $relAttr Many2ManyAttribute */
                 foreach ($relatedEntity->getAttributes() as $relAttr) {
-                    if ($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $relAttr->getEntity() == $thisClass
-                    ) {
+                    if ($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $relAttr->getEntity() == $thisClass) {
                         $foundMatch = true;
                     }
                 }
@@ -379,10 +381,7 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Delete $this
          */
-        $this->entity()
-             ->getDatabase()
-             ->remove(static::$entityCollection,
-                 ['_id' => $this->entity()->getDatabase()->id($this->id)]);
+        $this->entity()->getDatabase()->remove(static::$entityCollection, ['_id' => $this->entity()->getDatabase()->id($this->id)]);
 
         static::entity()->remove($this);
 
@@ -400,7 +399,7 @@ abstract class EntityAbstract implements \ArrayAccess
     public function populate($data)
     {
         $fromDb = false;
-        if(isset($data['__webiny_db__'])){
+        if (isset($data['__webiny_db__'])) {
             $fromDb = true;
         }
 
@@ -412,15 +411,14 @@ abstract class EntityAbstract implements \ArrayAccess
              * Check if attribute is required and it's value is set.
              */
             if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->exists()) {
-                $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING,
-                    [$attributeName]);
+                $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING, [$attributeName]);
                 continue;
             }
 
             /**
              * In case it is an update - if the attribute is not in new $data, it's no big deal, we already have the previous value.
              */
-            if(!isset($data[$attributeName]) && $this->exists()){
+            if (!isset($data[$attributeName]) && $this->exists()) {
                 continue;
             }
 
@@ -445,12 +443,11 @@ abstract class EntityAbstract implements \ArrayAccess
                     if (!$this->isArray($dataValue) && !$this->isArrayObject($dataValue) && !$this->isInstanceOf($dataValue,
                             $entityCollectionClass)
                     ) {
-                        $validation[$attributeName] = new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED,
-                            [
-                                $attributeName,
-                                'array, ArrayObject or EntityCollection',
-                                gettype($dataValue)
-                            ]);
+                        $validation[$attributeName] = new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
+                            $attributeName,
+                            'array, ArrayObject or EntityCollection',
+                            gettype($dataValue)
+                        ]);
                         continue;
                     }
                     /* @var $entityAttribute One2ManyAttribute */
@@ -483,8 +480,12 @@ abstract class EntityAbstract implements \ArrayAccess
                     $entityAttribute->add($dataValue);
                 } else {
                     try {
-                        $entityAttribute->validate($dataValue)->setValue($dataValue);
+                        if (!$fromDb) {
+                            $this->validateAttribute($dataValue, $entityAttribute);
+                        }
+                        $entityAttribute->setValue($dataValue);
                     } catch (ValidationException $e) {
+
                         $validation[$attributeName] = $e;
                     }
                 }
@@ -594,6 +595,40 @@ abstract class EntityAbstract implements \ArrayAccess
     public function offsetUnset($offset)
     {
         // Nothing to unset
+    }
+
+    /**
+     * @param mixed             $data
+     * @param AttributeAbstract $attribute
+     *
+     * @throws \Webiny\Component\Entity\Attribute\ValidationException
+     */
+    private function validateAttribute($data, AttributeAbstract $attribute)
+    {
+        try {
+            $messages = $attribute->getValidationMessages();
+            $attribute->validate($data);
+            foreach ($attribute->getValidators() as $validator) {
+                if ($this->isString($validator)) {
+                    $params = $this->arr(explode(':', $validator));
+                    $vName = '';
+                    $params->removeFirst($vName)->prepend($attribute)->prepend($data);
+                    $validator = $this->factory($this->validators[$vName], $this->validatorInterface);
+                    call_user_func_array([$validator, 'validate'], $params->val());
+                } elseif ($this->isCallable($validator)) {
+                    $vName = 'callable';
+                    $validator($data, $attribute);
+                }
+            }
+        } catch (ValidationException $e) {
+            // See if custom validation message is set
+            $msg = isset($messages[$vName]) ? $messages[$vName] : false;
+            if($msg){
+                $e->setMessage($msg);
+            }
+            throw $e;
+        }
+
     }
 
     /**

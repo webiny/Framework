@@ -75,6 +75,9 @@ class EntityDataExtractor
         $attributes = $this->buildEntityFields($attributes);
 
         foreach ($attributes as $attr => $subAttributes) {
+            if($attr == '_name'){
+                continue;
+            }
             $entityAttribute = $this->entity->getAttribute($attr);
             $entityAttributeValue = $entityAttribute->getValue();
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
