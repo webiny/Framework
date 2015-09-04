@@ -34,7 +34,7 @@ class Http
         ],
         'TrustedProxies' => ['127.0.0.1'],
         'TrustedHeaders' => [
-            'client_ip'    => 'X_FORWARDED_FOR',
+            //'client_ip'    => 'X_FORWARDED_FOR', # needs to be explicitly enabled because this can be a security issue
             'client_host'  => 'X_FORWARDED_HOST',
             'client_proto' => 'X_FORWARDED_PROTO',
             'client_port'  => 'X_FORWARDED_PORT'
