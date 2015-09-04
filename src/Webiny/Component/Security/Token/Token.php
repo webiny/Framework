@@ -44,19 +44,24 @@ class Token
      *                                                       token is only valid for current session.
      * @param string                            $securityKey Security key that will be used for encryption of token data
      * @param CryptDrivers\CryptDriverInterface $cryptDriver
-     * @param null|string $storageClass
+     * @param null|string                       $storageClass
      *
      * @throws TokenException
      * @internal param \Webiny\Component\Security\Token\Crypt\CryptDriverInterface $crypt Name of the crypt driver that we be used to encode the session/cookie.
      *
      */
-    public function __construct($tokenName, $rememberMe = false, $securityKey, CryptDriverInterface $cryptDriver, $storageClass = null)
-    {
+    public function __construct(
+        $tokenName,
+        $rememberMe = false,
+        $securityKey,
+        CryptDriverInterface $cryptDriver,
+        $storageClass = null
+    ) {
 
         $this->rememberMe = $rememberMe;
 
         try {
-            if(!$storageClass){
+            if (!$storageClass) {
                 $storageClass = $this->getStorageName();
             }
             $this->storage = $this->factory($storageClass, '\Webiny\Component\Security\Token\TokenStorageAbstract');
@@ -78,6 +83,16 @@ class Token
     public function getTokenString()
     {
         return $this->storage->getTokenString();
+    }
+
+    /**
+     * Save the provided token string into the token storage.
+     *
+     * @param string $token Token string to save.
+     */
+    public function setTokenString($token)
+    {
+        $this->storage->setTokenString($token);
     }
 
     /**
