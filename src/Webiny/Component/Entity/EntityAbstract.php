@@ -14,9 +14,11 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\Attribute\ValidationException;
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
+use Webiny\Component\Mongo\MongoResult;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
  * Entity
@@ -257,7 +259,9 @@ abstract class EntityAbstract implements \ArrayAccess
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
-                $data[$key] = $attr->getDbValue();
+                if($attr->getStoreToDb()){
+                    $data[$key] = $attr->getDbValue();
+                }
             }
         }
 
@@ -398,9 +402,12 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function populate($data)
     {
-        if(empty($data)){
+        if(is_null($data)){
             return $this;
         }
+
+        $data = $this->normalizeData($data);
+
         $fromDb = false;
         if (isset($data['__webiny_db__'])) {
             $fromDb = true;
@@ -414,9 +421,10 @@ abstract class EntityAbstract implements \ArrayAccess
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
             /**
-             * Check if attribute is required and it's value is set.
+             * Check if attribute is required and it's value is set or maybe value was already assigned
              */
-            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->exists()) {
+            $hasValue = !is_null($entityAttribute->getValue());
+            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
                 $validation[$attributeName] = new ValidationException(ValidationException::REQUIRED_ATTRIBUTE_IS_MISSING, [$attributeName]);
                 continue;
             }
@@ -424,12 +432,13 @@ abstract class EntityAbstract implements \ArrayAccess
             /**
              * In case it is an update - if the attribute is not in new $data, it's no big deal, we already have the previous value.
              */
-            if (!isset($data[$attributeName]) && $this->exists()) {
+            $dataIsSet = array_key_exists($attributeName, $data);
+            if (!$dataIsSet && $this->exists()) {
                 continue;
             }
 
             $canPopulate = !$this->exists() || $fromDb || !$entityAttribute->getOnce();
-            if (isset($data[$attributeName]) && $canPopulate) {
+            if ($dataIsSet && $canPopulate) {
                 $dataValue = $data[$attributeName];
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
                 $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
@@ -682,5 +691,18 @@ abstract class EntityAbstract implements \ArrayAccess
         }
 
         return $this->str($class)->explode('\\')->last()->val();
+    }
+
+    private function normalizeData($data){
+        if($data instanceof MongoResult){
+            return $data->toArray();
+        }
+
+        if ($this->isArray($data) || $this->isArrayObject($data)) {
+            return StdObjectWrapper::toArray($data);
+        }
+
+
+        return $data;
     }
 }

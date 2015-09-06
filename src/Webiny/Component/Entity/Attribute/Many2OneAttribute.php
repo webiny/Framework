@@ -22,6 +22,11 @@ class Many2OneAttribute extends AttributeAbstract
     protected $entityClass = null;
 
     /**
+     * @var null|\Closure
+     */
+    protected $setNull = null;
+
+    /**
      * Get masked entity value when instance is being converted to string
      *
      * @return mixed|null|string
@@ -125,7 +130,7 @@ class Many2OneAttribute extends AttributeAbstract
                 $data = $this->value;
                 $this->value = isset($data['id']) ? $data['id'] : false;
             }
-            
+
             $this->value = call_user_func_array([
                 $this->entityClass,
                 'findById'
@@ -160,6 +165,17 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         $this->validate($value);
+
+        // Execute setNull callback
+        if($this->setNull && is_null($value) && $this->value){
+            $callable = $this->setNull;
+            if($callable == 'delete'){
+                $this->getValue()->delete();
+            } else {
+                $callable($this->getValue());
+            }
+        }
+
         $this->value = $value;
 
         return $this;
@@ -201,16 +217,23 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function validate(&$value)
     {
-        if (!$this->isNull($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()
-                                                                                                                        ->getDatabase()
-                                                                                                                        ->isMongoId($value)
+        if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()
+                                                                                                                                             ->getDatabase()
+                                                                                                                                             ->isMongoId($value)
         ) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->attribute,
-                    'entity ID, instance of \Webiny\Component\Entity\EntityAbstract or null',
-                    gettype($value)
-                ]);
+                $this->attribute,
+                'entity ID, instance of \Webiny\Component\Entity\EntityAbstract or null',
+                gettype($value)
+            ]);
         }
+
+        return $this;
+    }
+
+    public function onSetNull($callable)
+    {
+        $this->setNull = $callable;
 
         return $this;
     }

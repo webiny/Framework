@@ -33,6 +33,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $once = false;
     protected $validators = [];
     protected $validationMessages = [];
+    protected $storeToDb = true;
 
     /**
      * @param string         $attribute
@@ -73,6 +74,16 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         return $value;
+    }
+
+    /**
+     * Should this attribute value be stored to DB
+     *
+     * @return bool
+     */
+    public function getStoreToDb()
+    {
+        return $this->storeToDb;
     }
 
     /**

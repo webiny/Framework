@@ -12,6 +12,7 @@ use Webiny\Component\Entity\Attribute\BooleanAttribute;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\DateAttribute;
 use Webiny\Component\Entity\Attribute\DateTimeAttribute;
+use Webiny\Component\Entity\Attribute\DynamicAttribute;
 use Webiny\Component\Entity\Attribute\FloatAttribute;
 use Webiny\Component\Entity\Attribute\IntegerAttribute;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
@@ -158,9 +159,7 @@ class EntityAttributeBuilder
      */
     public function one2many($relatedAttribute)
     {
-        return $this->attributes[$this->attribute] = new One2ManyAttribute($this->attribute, $this->entity,
-                                                                             $relatedAttribute
-        );
+        return $this->attributes[$this->attribute] = new One2ManyAttribute($this->attribute, $this->entity, $relatedAttribute);
     }
 
     /**
@@ -170,8 +169,16 @@ class EntityAttributeBuilder
      */
     public function many2many($collectionName)
     {
-        return $this->attributes[$this->attribute] = new Many2ManyAttribute($this->attribute, $this->entity,
-                                                                              $collectionName
-        );
+        return $this->attributes[$this->attribute] = new Many2ManyAttribute($this->attribute, $this->entity, $collectionName);
+    }
+
+    /**
+     * @param callable $callable
+     *
+     * @return DynamicAttribute
+     */
+    public function dynamic($callable)
+    {
+        return $this->attributes[$this->attribute] = new DynamicAttribute($this->attribute, $this->entity, $callable);
     }
 }
