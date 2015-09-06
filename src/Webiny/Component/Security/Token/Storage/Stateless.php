@@ -49,7 +49,7 @@ class Stateless extends TokenStorageAbstract
      */
     public function loadUserFromToken()
     {
-        $token = $this->httpRequest()->header('Authorization');
+        $token = $this->getTokenString();
         if (!$token) {
             return false;
         }
@@ -79,13 +79,13 @@ class Stateless extends TokenStorageAbstract
         // data (we use short syntax to reduce the size of the cookie or session)
         $data = [
             // username
-            'u'   => $user->getUsername(),
+            'u'  => $user->getUsername(),
             // valid until
-            'vu'  => $this->tokenRememberMe ? time() + (86400 * 30) : time() + 86400,
+            'vu' => $this->tokenRememberMe ? time() + (86400 * 30) : time() + 86400,
             // auth provider driver
-            'ap'  => $user->getAuthProviderName(),
+            'ap' => $user->getAuthProviderName(),
             // user provider driver
-            'up'  => $user->getUserProviderName()
+            'up' => $user->getUserProviderName()
         ];
 
         // build and add token to $data
@@ -152,10 +152,20 @@ class Stateless extends TokenStorageAbstract
      */
     public function getTokenString()
     {
-        if(!$this->tokenString){
+        if (!$this->tokenString) {
             return $this->httpRequest()->header('Authorization');
         }
 
         return $this->tokenString;
+    }
+
+    /**
+     * Save the provided token string into the token storage.
+     *
+     * @param string $token Token string to save.
+     */
+    public function setTokenString($token)
+    {
+        $this->tokenString = $token;
     }
 }
