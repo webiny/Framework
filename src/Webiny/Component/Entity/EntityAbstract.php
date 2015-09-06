@@ -398,9 +398,15 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function populate($data)
     {
+        if(empty($data)){
+            return $this;
+        }
         $fromDb = false;
         if (isset($data['__webiny_db__'])) {
             $fromDb = true;
+        } else {
+            unset($data['id']);
+            unset($data['_id']);
         }
 
         $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';

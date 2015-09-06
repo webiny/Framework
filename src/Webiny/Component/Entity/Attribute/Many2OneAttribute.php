@@ -119,11 +119,24 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function getValue()
     {
-        if (!$this->isInstanceOf($this->value, $this->entityClass)) {
+        if (!$this->isInstanceOf($this->value, $this->entityClass) && !empty($this->value)) {
+            $data = null;
+            if ($this->isArray($this->value) || $this->isArrayObject($this->value)) {
+                $data = $this->value;
+                $this->value = isset($data['id']) ? $data['id'] : false;
+            }
+            
             $this->value = call_user_func_array([
                 $this->entityClass,
                 'findById'
             ], [$this->value]);
+
+            if($this->value){
+                $this->value->populate($data);
+            } else {
+                $this->value = new $this->entityClass;
+                $this->value->populate($data);
+            }
         }
 
         if (!$this->value && !$this->isNull($this->defaultValue)) {
