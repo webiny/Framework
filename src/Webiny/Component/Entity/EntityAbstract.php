@@ -56,6 +56,14 @@ abstract class EntityAbstract implements \ArrayAccess
     protected abstract function entityStructure();
 
     /**
+     * Get collection name
+     * @return string
+     */
+    public static function getEntityCollection(){
+        return static::$entityCollection;
+    }
+
+    /**
      * Find entity by ID
      *
      * @param $id
@@ -498,7 +506,7 @@ abstract class EntityAbstract implements \ArrayAccess
                         if (!$fromDb) {
                             $this->validateAttribute($dataValue, $entityAttribute);
                         }
-                        $entityAttribute->setValue($dataValue);
+                        $entityAttribute->setValue($dataValue, $fromDb);
                     } catch (ValidationException $e) {
 
                         $validation[$attributeName] = $e;
