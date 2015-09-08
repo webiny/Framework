@@ -113,6 +113,18 @@ trait RestTrait
     }
 
     /**
+     * Get the fields depth
+     *
+     * @param int Default value to return if fieldsDepth parameter is not found.
+     *
+     * @return int
+     */
+    protected static function restGetFieldsDepth($default = 1)
+    {
+        return Request::getInstance()->query('_fieldsDepth', $default);
+    }
+
+    /**
      * Return a query filter.
      * Filters are all the parameters in the url query.
      *
