@@ -158,7 +158,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @return $this
      */
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if (!$this->canAssign()) {
             return $this;

@@ -105,7 +105,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      *
      * @return $this|null|EntityCollection
      */
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if(!$this->canAssign()){
             return $this;

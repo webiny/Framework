@@ -33,7 +33,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
         return $value;
     }
 
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if($this->isNull($value)) {
             $value = new ArrayObject();

@@ -59,7 +59,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         return $this->formatValue(parent::getValue());
     }
 
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if ($this->isInstanceOf($value, '\MongoDate')) {
             if ($value->sec == 0) {

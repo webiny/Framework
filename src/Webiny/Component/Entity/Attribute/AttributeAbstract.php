@@ -34,6 +34,8 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $validators = [];
     protected $validationMessages = [];
     protected $storeToDb = true;
+    protected $onValue = null;
+    protected $onValueCallback = null;
 
     /**
      * @param string         $attribute
@@ -188,20 +190,41 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this->defaultValue;
     }
 
+    public function on($value, $callable = null)
+    {
+        if (is_callable($value)) {
+            $callable = $value;
+            $value = null;
+        }
+        $this->onValue = $value;
+        $this->onValueCallback = $callable;
+
+        return $this;
+    }
+
     /**
      * Set attribute value
      *
      * @param null $value
      *
+     * @param bool $fromDb
+     *
      * @return $this
      */
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if (!$this->canAssign()) {
             return $this;
         }
 
-        $this->validate($value);
+        if (!$fromDb) {
+            $this->validate($value);
+
+            if ($this->onValueCallback !== null && ($this->onValue === null || $this->onValue === $value)) {
+                call_user_func_array($this->onValueCallback, [$value]);
+            }
+        }
+
         $this->value = $value;
 
         return $this;
@@ -269,7 +292,8 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return $this
      */
-    public function setValidationMessages($messages){
+    public function setValidationMessages($messages)
+    {
         $this->validationMessages = $messages;
 
         return $this;
@@ -280,7 +304,8 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return array
      */
-    public function getValidationMessages(){
+    public function getValidationMessages()
+    {
         return $this->validationMessages;
     }
 

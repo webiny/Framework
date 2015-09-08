@@ -91,7 +91,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         return $this->relatedAttribute;
     }
 
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         if(!$this->canAssign()){
             return $this;

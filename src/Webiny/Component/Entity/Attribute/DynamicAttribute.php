@@ -66,7 +66,7 @@ class DynamicAttribute extends AttributeAbstract
      *
      * @return $this
      */
-    public function setValue($value = null)
+    public function setValue($value = null, $fromDb = false)
     {
         return $this;
     }
