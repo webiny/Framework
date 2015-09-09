@@ -63,14 +63,46 @@ trait RestTrait
         $sort = Request::getInstance()->query('_sort', false);
         if (!$sort) {
             return $default;
-        } else {
-            $sortDirection = substr($sort, 0, 1);
-            if ($sortDirection == '+' || $sortDirection == '-') {
-                return substr($sort, 1);
+        }
+
+        $sortDirection = substr($sort, 0, 1);
+        if ($sortDirection == '+' || $sortDirection == '-') {
+            return substr($sort, 1);
+        }
+
+        return $sort;
+    }
+
+    /**
+     * Get the sort fields values
+     *
+     * @param string|bool $default Default value to return if sort parameter is not found.
+     *
+     * @return mixed|string
+     */
+    protected static function restGetSortFields($default = [])
+    {
+        $sort = Request::getInstance()->query('_sort', false);
+        if (!$sort) {
+            return $default;
+        }
+
+        $sorters = [];
+        $fields = explode(',', $sort);
+        foreach($fields as $sort){
+            $sortField = $sort;
+            $sortDirection = 1;
+
+            $sortDirectionSign = substr($sort, 0, 1);
+            if ($sortDirectionSign == '+' || $sortDirectionSign == '-') {
+                $sortField = substr($sort, 1);
+                $sortDirection = $sortDirectionSign == '+' ? 1 : -1;
             }
 
-            return $sort;
+            $sorters[$sortField] = $sortDirection;
         }
+
+        return $sorters;
     }
 
     /**
@@ -86,18 +118,18 @@ trait RestTrait
         $sort = Request::getInstance()->query('_sort', false);
         if (!$sort) {
             return $default;
-        } else {
-            $sortDirection = substr($sort, 0, 1);
-            if ($sortDirection == '+') {
-                return 1;
-            } else {
-                if ($sortDirection == '-') {
-                    return -1;
-                }
-            }
-
-            return $default;
         }
+
+        $sortDirection = substr($sort, 0, 1);
+        if ($sortDirection == '+') {
+            return 1;
+        }
+
+        if ($sortDirection == '-') {
+            return -1;
+        }
+
+        return $default;
     }
 
     /**
@@ -143,7 +175,8 @@ trait RestTrait
      *
      * @return mixed
      */
-    protected static function restGetFilters(){
+    protected static function restGetFilters()
+    {
         return Request::getInstance()->query();
     }
 }
