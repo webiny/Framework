@@ -458,6 +458,7 @@ In the trait you will find the next methods:
 - `restGetPage`: returns the value of `_page` query parameter
 - `restGetPerPage`: returns the value of `_perPage` query parameter (has a built-in limit of 1.000)
 - `restGetSortField`: returns the sort field name from the `_sort` query parameter
+- `restGetSortFields`: returns the sort fields array, parsed from the `_sort` query parameter
 - `restGetSortDirection`: returns the sort direction from the `_sort` query parameter
 - `restGetFields`: returns the value of `_fields` query parameter
 
@@ -469,6 +470,7 @@ The returned values would be as following:
 - `restGetPerPage`: 10
 - `restGetSortField`: Title
 - `restGetSortDirection`: 1 (if we would have '-' in front of the field name, the function would return -1)
+- `restGetSortFields`: ['Title' => 1]
 - `restGetFields`: id,title,author,slug
 
 ## Return values
