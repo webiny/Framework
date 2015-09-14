@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity;
 
+use Webiny\Component\Entity\Attribute\ArrayAttribute;
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\CharAttribute;
@@ -59,7 +60,8 @@ abstract class EntityAbstract implements \ArrayAccess
      * Get collection name
      * @return string
      */
-    public static function getEntityCollection(){
+    public static function getEntityCollection()
+    {
         return static::$entityCollection;
     }
 
@@ -267,7 +269,7 @@ abstract class EntityAbstract implements \ArrayAccess
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
-                if($attr->getStoreToDb()){
+                if ($attr->getStoreToDb()) {
                     $data[$key] = $attr->getDbValue();
                 }
             }
@@ -410,7 +412,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function populate($data)
     {
-        if(is_null($data)){
+        if (is_null($data)) {
             return $this;
         }
 
@@ -451,6 +453,7 @@ abstract class EntityAbstract implements \ArrayAccess
                 $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
                 $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
                 $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
+                $isArrayAttribute = $this->isInstanceOf($entityAttribute, AttributeType::ARR);
 
                 if ($isMany2One) {
                     try {
@@ -505,6 +508,14 @@ abstract class EntityAbstract implements \ArrayAccess
                     try {
                         if (!$fromDb) {
                             $this->validateAttribute($dataValue, $entityAttribute);
+                            if ($isArrayAttribute) {
+                                /* @var ArrayAttribute $entityAttribute */
+                                $errors = $this->validateArrayAttribute($dataValue, $entityAttribute);
+                                if (count($errors)) {
+                                    $validation->merge($errors);
+                                    continue;
+                                }
+                            }
                         }
                         $entityAttribute->setValue($dataValue, $fromDb);
                     } catch (ValidationException $e) {
@@ -631,7 +642,9 @@ abstract class EntityAbstract implements \ArrayAccess
         try {
             $messages = $attribute->getValidationMessages();
             $attribute->validate($data);
-            foreach ($attribute->getValidators() as $validator) {
+            $validators = $attribute->getValidators();
+
+            foreach ($validators as $validator) {
                 if ($this->isString($validator)) {
                     $params = $this->arr(explode(':', $validator));
                     $vName = '';
@@ -646,11 +659,56 @@ abstract class EntityAbstract implements \ArrayAccess
         } catch (ValidationException $e) {
             // See if custom validation message is set
             $msg = isset($messages[$vName]) ? $messages[$vName] : false;
-            if($msg){
+            if ($msg) {
                 $e->setMessage($msg);
             }
             throw $e;
         }
+    }
+
+    /**
+     * @param mixed          $data
+     * @param ArrayAttribute $attribute
+     *
+     * @return array
+     * @throws \Webiny\Component\Entity\Attribute\ValidationException
+     */
+    private function validateArrayAttribute($data, ArrayAttribute $attribute)
+    {
+        $messages = $attribute->getKeyValidationMessages();
+        $attribute->validate($data);
+        $keyValidators = $attribute->getKeyValidators();
+        $errors = [];
+
+        foreach ($keyValidators as $key => $validators) {
+            $keyValue = $this->arr($data)->keyNested($key);
+            if ($this->isString($validators)) {
+                $validators = explode(',', $validators);
+            }
+            foreach ($validators as $validator) {
+                try {
+                    if ($this->isString($validator)) {
+                        $params = $this->arr(explode(':', $validator));
+                        $vName = '';
+                        $params->removeFirst($vName)->prepend($attribute)->prepend($keyValue);
+                        $validator = $this->factory($this->validators[$vName], $this->validatorInterface);
+                        call_user_func_array([$validator, 'validate'], $params->val());
+                    } elseif ($this->isCallable($validator)) {
+                        $vName = 'callable';
+                        $validator($keyValue, $attribute);
+                    }
+                } catch (ValidationException $e) {
+                    // See if custom validation message is set
+                    $msg = isset($messages[$key][$vName]) ? $messages[$key][$vName] : false;
+                    if ($msg) {
+                        $e->setMessage($msg);
+                    }
+                    $errors[$attribute->attr() . '.' . $key] = $e;
+                }
+            }
+        }
+
+        return $errors;
 
     }
 
@@ -701,8 +759,9 @@ abstract class EntityAbstract implements \ArrayAccess
         return $this->str($class)->explode('\\')->last()->val();
     }
 
-    private function normalizeData($data){
-        if($data instanceof MongoResult){
+    private function normalizeData($data)
+    {
+        if ($data instanceof MongoResult) {
             return $data->toArray();
         }
 

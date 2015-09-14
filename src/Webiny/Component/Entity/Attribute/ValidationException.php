@@ -22,8 +22,8 @@ class ValidationException extends ExceptionAbstract
     protected $errorMessages = [];
 
     protected static $messages = [
-        101 => "Invalid data provided for attribute '%s'. Expecting '%s', got '%s'.",
-        102 => "Missing required attribute value for attribute '%s'."
+        101 => "Invalid data type provided for attribute '%s'. Expecting '%s', got '%s'.",
+        102 => "Value is required"
     ];
 
     public function setErrorMessages($messages)
