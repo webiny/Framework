@@ -270,6 +270,9 @@ abstract class AttributeAbstract implements JsonSerializable
             $this->validators = $validators;
         } else {
             $this->validators = func_get_args();
+            if(count($this->validators) == 1 && is_string($this->validators[0])){
+                $this->validators = explode(',', $this->validators[0]);
+            }
         }
 
         return $this;
