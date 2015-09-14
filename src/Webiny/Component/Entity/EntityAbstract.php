@@ -648,9 +648,10 @@ abstract class EntityAbstract implements \ArrayAccess
                 if ($this->isString($validator)) {
                     $params = $this->arr(explode(':', $validator));
                     $vName = '';
-                    $params->removeFirst($vName)->prepend($attribute)->prepend($data);
+                    $params->removeFirst($vName);
+                    $validatorParams = [$data, $attribute, $params->val()];
                     $validator = $this->factory($this->validators[$vName], $this->validatorInterface);
-                    call_user_func_array([$validator, 'validate'], $params->val());
+                    call_user_func_array([$validator, 'validate'], $validatorParams);
                 } elseif ($this->isCallable($validator)) {
                     $vName = 'callable';
                     $validator($data, $attribute);

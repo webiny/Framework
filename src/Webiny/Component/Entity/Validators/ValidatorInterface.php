@@ -16,9 +16,11 @@ interface ValidatorInterface
      * Validate given data
      *
      * @param mixed $data
+     * @param AttributeAbstract $attribute
+     * @param array $params
      *
      * @throws ValidationException
      * @return void
      */
-    public function validate($data, AttributeAbstract $attribute, $params = null);
+    public function validate($data, AttributeAbstract $attribute, $params = []);
 }
