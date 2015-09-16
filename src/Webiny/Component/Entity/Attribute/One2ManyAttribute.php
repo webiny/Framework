@@ -23,6 +23,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
     protected $relatedAttribute = null;
     protected $filter = [];
+    protected $sorter = [];
     protected $onDelete = 'cascade';
 
     /**
@@ -51,6 +52,20 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     public function setFilter(array $filter)
     {
         $this->filter = $filter;
+
+        return $this;
+    }
+
+    /**
+     * Sort returned result set
+     *
+     * @param array|string $sorter Ex: ['-order', '+createdOn'] or '-order,+createdOn'
+     *
+     * @return $this
+     */
+    public function setSorter($sorter)
+    {
+        $this->sorter = $this->parseSorter($sorter);
 
         return $this;
     }
@@ -120,9 +135,32 @@ class One2ManyAttribute extends CollectionAttributeAbstract
                 $this->entityClass,
                 'find'
             ];
-            $this->value = call_user_func_array($callable, [$query]);
+            $this->value = call_user_func_array($callable, [$query, $this->sorter]);
         }
 
         return $this->value;
+    }
+
+    private function parseSorter($fields){
+        $sorters = [];
+
+        if(is_string($fields)){
+            $fields = explode(',', $fields);
+        }
+
+        foreach($fields as $sort){
+            $sortField = $sort;
+            $sortDirection = 1;
+
+            $sortDirectionSign = substr($sort, 0, 1);
+            if ($sortDirectionSign == '+' || $sortDirectionSign == '-') {
+                $sortField = substr($sort, 1);
+                $sortDirection = $sortDirectionSign == '+' ? 1 : -1;
+            }
+
+            $sorters[$sortField] = $sortDirection;
+        }
+
+        return $sorters;
     }
 }
