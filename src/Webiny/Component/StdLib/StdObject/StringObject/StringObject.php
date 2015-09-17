@@ -47,16 +47,20 @@ class StringObject extends StdObjectAbstract implements \ArrayAccess
      */
     public function __construct($value)
     {
-        if(!$this->isString($value) && !$this->isNumber($value)) {
-            if($this->isInstanceOf($value, $this)) {
+        // It can be a class implementing __toString
+        if (is_object($value) && method_exists($value, '__toString')) {
+            $value = (string)$value;
+        }
+
+        if (!$this->isString($value) && !$this->isNumber($value)) {
+            if ($this->isInstanceOf($value, $this)) {
                 return $value;
             }
 
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                                                                                      '$value',
-                                                                                      'string'
-                                                                                  ]
-            );
+                    '$value',
+                    'string'
+                ]);
         }
         $this->value = (string)$value;
     }
@@ -84,7 +88,7 @@ class StringObject extends StdObjectAbstract implements \ArrayAccess
      */
     public function wordCount($format = 0)
     {
-        if($format < 1) {
+        if ($format < 1) {
             return str_word_count($this->val(), $format);
         } else {
             return new ArrayObject(str_word_count($this->val(), $format));
@@ -114,7 +118,7 @@ class StringObject extends StdObjectAbstract implements \ArrayAccess
      */
     public function subStringCount($string, $offset = 0, $length = null)
     {
-        if($this->isNull($length)) {
+        if ($this->isNull($length)) {
             $length = $this->length();
         }
 
