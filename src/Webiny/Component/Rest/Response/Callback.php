@@ -55,7 +55,11 @@ class Callback
     public function getCallbackResult()
     {
         $class = $this->requestBag->getClassData()['class'];
-        $this->requestBag->setClassInstance(new $class);
+        if(is_string($class)){
+            $this->requestBag->setClassInstance(new $class);
+        } else {
+            $this->requestBag->setClassInstance($class);
+        }
 
         // create CallbackResult instance
         $cr = new CallbackResult();

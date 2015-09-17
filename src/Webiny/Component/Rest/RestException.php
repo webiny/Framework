@@ -16,4 +16,17 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  */
 class RestException extends ExceptionAbstract
 {
+    private $class = null;
+
+    public function getRequestedClass()
+    {
+        return $this->class;
+    }
+
+    public function setRequestedClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
 }

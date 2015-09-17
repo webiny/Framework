@@ -225,7 +225,9 @@ class Rest
 
             return $router->processRequest();
         } catch (\Exception $e) {
-            throw new RestException('Unable to process request for class "' . $this->class . '". ' . $e->getMessage());
+            $exception = new RestException('Unable to process request for class "' . $this->class . '". ' . $e->getMessage());
+            $exception->setRequestedClass($this->class);
+            throw $exception;
         }
     }
 
@@ -248,14 +250,12 @@ class Rest
     {
         try {
             if (!$this->cacheInstance->isCacheValid($this->api, $this->class) || $this->isDevelopment()) {
-                try {
-                    $this->parseClass();
-                } catch (\Exception $e) {
-                    throw new RestException('Error registering class "' . $this->class . '". ' . $e->getMessage());
-                }
+                $this->parseClass();
             }
         } catch (\Exception $e) {
-            throw new RestException('Unable to register class "' . $this->class . '". ' . $e->getMessage());
+            $exception = new RestException('Unable to register class "' . $this->class . '". ' . $e->getMessage());
+            $exception->setRequestedClass($this->class);
+            throw $exception;
         }
     }
 
