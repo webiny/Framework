@@ -125,8 +125,10 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     public function getValue()
     {
         if ($this->isNull($this->value)) {
+            $entityId = $this->entity->id;
+            $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
             $query = [
-                $this->relatedAttribute => $this->entity->getId()->getValue()
+                $this->relatedAttribute => $entityId
             ];
 
             $query = array_merge($query, $this->filter);
