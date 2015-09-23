@@ -21,6 +21,8 @@ class Many2OneAttribute extends AttributeAbstract
 
     protected $entityClass = null;
 
+    protected $updateExisting = false;
+
     /**
      * @var null|\Closure
      */
@@ -59,6 +61,31 @@ class Many2OneAttribute extends AttributeAbstract
     }
 
     /**
+     * Allow update of existing entity
+     *
+     * By default, only new Many2One records are created but updates are not allowed.
+     *
+     * @param bool|true $flag
+     *
+     * @return $this
+     */
+    public function setUpdateExisting($flag = true)
+    {
+        $this->updateExisting = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Is update of existing entity allowed?
+     * @return bool
+     */
+    public function getUpdateExisting()
+    {
+        return $this->updateExisting;
+    }
+
+    /**
      * Get value that will be stored to database
      *
      * @return string
@@ -85,7 +112,7 @@ class Many2OneAttribute extends AttributeAbstract
             }
         }
 
-        if ($this->getValue()->id === null) {
+        if ($this->getValue()->id === null || $this->updateExisting) {
             $this->getValue()->save();
         }
 
@@ -136,9 +163,9 @@ class Many2OneAttribute extends AttributeAbstract
                 'findById'
             ], [$this->value]);
 
-            if($this->value){
+            if ($this->value) {
                 $this->value->populate($data);
-            } else {
+            } elseif ($data) {
                 $this->value = new $this->entityClass;
                 $this->value->populate($data);
             }
@@ -166,10 +193,26 @@ class Many2OneAttribute extends AttributeAbstract
 
         $this->validate($value);
 
+        if (is_array($value) && isset($value['id']) && !$fromDb) {
+            // Verify that given ID exists
+            $exists = call_user_func_array([
+                $this->entityClass,
+                'findById'
+            ], [$value['id']]);
+
+            if (!$exists) {
+                unset($value['id']);
+            }
+
+            if (!$this->updateExisting && $this->value != null) {
+                $value = isset($value['id']) ? $value['id'] : null;
+            }
+        }
+
         // Execute setNull callback
-        if($this->setNull && is_null($value) && $this->value){
+        if ($this->setNull && is_null($value) && $this->value) {
             $callable = $this->setNull;
-            if($callable == 'delete'){
+            if ($callable == 'delete') {
                 $this->getValue()->delete();
             } else {
                 $callable($this->getValue());
@@ -217,9 +260,8 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function validate(&$value)
     {
-        if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()
-                                                                                                                                             ->getDatabase()
-                                                                                                                                             ->isMongoId($value)
+        if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value,
+                '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()->getDatabase()->isMongoId($value)
         ) {
             throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
                 $this->attribute,

@@ -177,7 +177,7 @@ abstract class EntityAbstract implements \ArrayAccess
      * Convert EntityAbstract to array with specified fields.
      * If no fields are specified, array will contain all simple and Many2One attributes
      *
-     * @param string $fields      List of fields to extract
+     * @param string $fields List of fields to extract
      *
      * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
      *
@@ -457,6 +457,12 @@ abstract class EntityAbstract implements \ArrayAccess
 
                 if ($isMany2One) {
                     try {
+                        // If simple ID or null - set and forget
+                        if (is_string($dataValue) || is_null($dataValue)) {
+                            $entityAttribute->setValue($dataValue);
+                            continue;
+                        }
+
                         $entityAttribute->validate($dataValue)->setValue($dataValue);
                     } catch (ValidationException $e) {
                         $validation[$attributeName] = $e;
@@ -604,7 +610,7 @@ abstract class EntityAbstract implements \ArrayAccess
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *
@@ -640,6 +646,7 @@ abstract class EntityAbstract implements \ArrayAccess
     private function validateAttribute($data, AttributeAbstract $attribute)
     {
         try {
+            $vName = '';
             $messages = $attribute->getValidationMessages();
             $attribute->validate($data);
             $validators = $attribute->getValidators();
