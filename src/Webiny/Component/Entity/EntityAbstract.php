@@ -81,7 +81,7 @@ abstract class EntityAbstract implements \ArrayAccess
         if ($instance) {
             return $instance;
         }
-        $data = static::entity()->getDatabase()->findOne(static::$entityCollection, ['id' => $id]);
+        $data = static::entity()->getDatabase()->findOne(static::$entityCollection, ['_id' => new \MongoId($id)]);
         if (!$data) {
             return null;
         }
@@ -646,10 +646,17 @@ abstract class EntityAbstract implements \ArrayAccess
     private function validateAttribute($data, AttributeAbstract $attribute)
     {
         try {
+            $validators = $attribute->getValidators();
+
+            // Do not validate if attribute value is not required and empty value is given
+            // 'empty' function is not suitable for this check here
+            if (!in_array('required', $validators) && (is_null($data) || $data === '')) {
+                return;
+            }
+
             $vName = '';
             $messages = $attribute->getValidationMessages();
             $attribute->validate($data);
-            $validators = $attribute->getValidators();
 
             foreach ($validators as $validator) {
                 if ($this->isString($validator)) {
@@ -703,7 +710,7 @@ abstract class EntityAbstract implements \ArrayAccess
                         call_user_func_array([$validator, 'validate'], $params->val());
                     } elseif ($this->isCallable($validator)) {
                         $vName = 'callable';
-                        $validator($keyValue, $attribute);
+                        $validator($keyValue, $attribute, $data);
                     }
                 } catch (ValidationException $e) {
                     // See if custom validation message is set

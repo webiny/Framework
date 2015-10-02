@@ -62,6 +62,15 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
+     * Get entity instance this attribute belongs to
+     *
+     * @return EntityAbstract
+     */
+    public function getEntity(){
+        return $this->entity;
+    }
+
+    /**
      * Get value that will be stored to database<br>
      *
      * If no value is set, default value will be used, and that value will also be assigned as a new attribute value.
@@ -221,7 +230,11 @@ abstract class AttributeAbstract implements JsonSerializable
             $this->validate($value);
 
             if ($this->onValueCallback !== null && ($this->onValue === null || $this->onValue === $value)) {
-                call_user_func_array($this->onValueCallback, [$value]);
+                $callable = $this->onValueCallback;
+                if (is_string($this->onValueCallback)) {
+                    $callable = [$this->entity, $this->onValueCallback];
+                }
+                $value = call_user_func_array($callable, [$value]);
             }
         }
 
