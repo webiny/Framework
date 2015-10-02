@@ -17,6 +17,7 @@ class DynamicAttribute extends AttributeAbstract
 {
 
     protected $storeToDb = false;
+    protected $storedValue = null;
 
     /**
      * @param string         $attribute
@@ -53,10 +54,11 @@ class DynamicAttribute extends AttributeAbstract
     public function getValue()
     {
         $callable = $this->callable;
-        if(is_string($callable)){
+        if (is_string($callable)) {
             $callable = [$this->entity, $callable];
         }
-        return call_user_func_array($callable, []);
+
+        return call_user_func_array($callable, [$this->storedValue]);
     }
 
     /**
@@ -68,6 +70,10 @@ class DynamicAttribute extends AttributeAbstract
      */
     public function setValue($value = null, $fromDb = false)
     {
+        if ($fromDb) {
+            $this->storedValue = $value;
+        }
+
         return $this;
     }
 

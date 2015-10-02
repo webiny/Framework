@@ -63,7 +63,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
     {
         if ($this->isInstanceOf($value, '\MongoDate')) {
             if ($value->sec == 0) {
-                return parent::setValue(null);
+                return parent::setValue(null, $fromDb);
             }
             $value = (new DateTimeObject($value->sec))->format($this->attributeFormat);
         }
@@ -76,7 +76,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
             $value = date($this->attributeFormat);
         }
 
-        return parent::setValue($value);
+        return parent::setValue($value, $fromDb);
     }
 
     public function getValue($asDateTimeObject = false)

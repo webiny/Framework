@@ -13,6 +13,12 @@ namespace Webiny\Component\Entity\Attribute;
  */
 class FloatAttribute extends AttributeAbstract
 {
+
+    public function getDbValue()
+    {
+        return floatval(parent::getDbValue());
+    }
+
     /**
      * Perform validation against given value
      *

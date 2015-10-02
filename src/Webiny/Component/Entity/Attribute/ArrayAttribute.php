@@ -10,6 +10,7 @@ namespace Webiny\Component\Entity\Attribute;
 use Traversable;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
  * ArrayAttribute
@@ -45,8 +46,22 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
         $value = $this->arr($value);
 
-        return parent::setValue($value);
+        return parent::setValue($value, $fromDb);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getValue()
+    {
+        $defaultValue = new ArrayObject($this->defaultValue);
+        if ($this->value->count() == 0 && $defaultValue->count() > 0) {
+            return $this->defaultValue;
+        }
+
+        return $this->value;
+    }
+
 
     /**
      * Perform validation against given value
