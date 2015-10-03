@@ -27,4 +27,5 @@ class AttributeType
     const SELECT = '\Webiny\Component\Entity\Attribute\SelectAttribute';
     const TEXT = '\Webiny\Component\Entity\Attribute\TextAttribute';
     const ARR = '\Webiny\Component\Entity\Attribute\ArrayAttribute';
+    const DYNAMIC = '\Webiny\Component\Entity\Attribute\DynamicAttribute';
 }

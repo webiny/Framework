@@ -430,6 +430,14 @@ abstract class EntityAbstract implements \ArrayAccess
         $validation = $this->arr();
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
+            // Dynamic attributes from database should be populated without any checks, and skipped otherwise
+            if ($this->isInstanceOf($entityAttribute, AttributeType::DYNAMIC)) {
+                if ($fromDb && isset($data[$attributeName])) {
+                    $entityAttribute->setValue($data[$attributeName]);
+                }
+                continue;
+            }
+
             /**
              * Check if attribute is required and it's value is set or maybe value was already assigned
              */
