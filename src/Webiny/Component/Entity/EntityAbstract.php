@@ -607,7 +607,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->attributes[$offset];
+        return $this->__get($offset);
     }
 
     /**
@@ -626,7 +626,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->attributes[$offset]->setValue($value);
+        $this->__set($offset, $value);
     }
 
     /**
