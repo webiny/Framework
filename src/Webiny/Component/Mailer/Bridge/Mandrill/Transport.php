@@ -77,9 +77,9 @@ class Transport implements TransportInterface
 
         if($this->config->get('Mode', 'template') == 'template'){
             unset($message['html']);
-            $res = $this->mailer->messages->sendTemplate($template, [], $message);
+            $res = $this->mailer->messages->sendTemplate($template, [], $message, false);
         } else {
-            $res = $this->mailer->messages->send($message);
+            $res = $this->mailer->messages->send($message, false);
         }
 
 
