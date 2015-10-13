@@ -36,6 +36,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $storeToDb = true;
     protected $onValue = null;
     protected $onValueCallback = null;
+    protected $onGetToArrayValue = null;
 
     /**
      * @param string         $attribute
@@ -66,7 +67,8 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return EntityAbstract
      */
-    public function getEntity(){
+    public function getEntity()
+    {
         return $this->entity;
     }
 
@@ -98,12 +100,35 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
-     * Get value that will be used when converting EntityAbstract to array
+     * Get value that will be used to represent this attribute when converting EntityAbstract to array
+     *
      * @return string
      */
     public function getToArrayValue()
     {
+        if($this->onGetToArrayValue !== null){
+            $callable = $this->onGetToArrayValue;
+            if (is_string($this->onGetToArrayValue)) {
+                $callable = [$this->entity, $this->onGetToArrayValue];
+            }
+            return call_user_func_array($callable, [(string)$this]);
+        }
+
         return (string)$this;
+    }
+
+    /**
+     * Set callback that will be used to process getToArrayValue() call
+     *
+     * @param $callback
+     *
+     * @return $this
+     */
+    public function setToArrayValue($callback)
+    {
+        $this->onGetToArrayValue = $callback;
+
+        return $this;
     }
 
     /**
