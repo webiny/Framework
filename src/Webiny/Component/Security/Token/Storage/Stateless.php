@@ -91,6 +91,7 @@ class Stateless extends TokenStorageAbstract
         // build and add token to $data
         $token = $this->getCrypt()->encrypt($this->jsonEncode($data), $this->getEncryptionKey());
         $token = rtrim($token, '=');
+
         return $token;
     }
 
@@ -153,7 +154,11 @@ class Stateless extends TokenStorageAbstract
     public function getTokenString()
     {
         if (!$this->tokenString) {
-            return $this->httpRequest()->header('Authorization');
+            $token = $this->httpRequest()->header('Authorization');
+            if (!$token) {
+                $token = $this->httpRequest()->post('Authorization');
+            }
+            return $token;
         }
 
         return $this->tokenString;
