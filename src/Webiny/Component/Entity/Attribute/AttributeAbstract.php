@@ -106,11 +106,12 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getToArrayValue()
     {
-        if($this->onGetToArrayValue !== null){
+        if ($this->onGetToArrayValue !== null) {
             $callable = $this->onGetToArrayValue;
             if (is_string($this->onGetToArrayValue)) {
                 $callable = [$this->entity, $this->onGetToArrayValue];
             }
+
             return call_user_func_array($callable, [(string)$this]);
         }
 
