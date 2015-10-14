@@ -433,7 +433,7 @@ abstract class EntityAbstract implements \ArrayAccess
             // Dynamic attributes from database should be populated without any checks, and skipped otherwise
             if ($this->isInstanceOf($entityAttribute, AttributeType::DYNAMIC)) {
                 if ($fromDb && isset($data[$attributeName])) {
-                    $entityAttribute->setValue($data[$attributeName]);
+                    $entityAttribute->setValue($data[$attributeName], $fromDb);
                 }
                 continue;
             }
