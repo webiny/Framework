@@ -35,7 +35,7 @@ class DynamicAttribute extends AttributeAbstract
      */
     public function getToArrayValue()
     {
-        return $this->getValue();
+        return $this->processToArrayValue($this->getValue());
     }
 
 

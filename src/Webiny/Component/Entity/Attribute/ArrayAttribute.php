@@ -91,10 +91,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function getToArrayValue()
     {
         if ($this->value->count() == 0) {
-            return $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+            $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+            return $this->processToArrayValue($value);
         }
 
-        return $this->value->val();
+        return $this->processToArrayValue($this->value->val());
     }
 
 
@@ -259,7 +260,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *

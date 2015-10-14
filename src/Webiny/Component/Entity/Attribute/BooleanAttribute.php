@@ -33,6 +33,6 @@ class BooleanAttribute extends AttributeAbstract
 
     public function getToArrayValue()
     {
-        return StdObjectWrapper::toBool(parent::getToArrayValue());
+        return $this->processToArrayValue(StdObjectWrapper::toBool(parent::getToArrayValue()));
     }
 }

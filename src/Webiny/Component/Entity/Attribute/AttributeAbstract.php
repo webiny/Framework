@@ -106,16 +106,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getToArrayValue()
     {
-        if ($this->onGetToArrayValue !== null) {
-            $callable = $this->onGetToArrayValue;
-            if (is_string($this->onGetToArrayValue)) {
-                $callable = [$this->entity, $this->onGetToArrayValue];
-            }
-
-            return call_user_func_array($callable, [(string)$this]);
-        }
-
-        return (string)$this;
+        return $this->processToArrayValue((string)$this);
     }
 
     /**
@@ -383,5 +374,26 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         return true;
+    }
+
+    /**
+     * Take generated value and check if custom callback exists for this attribute.
+     * If yes - return the processed value.
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function processToArrayValue($value){
+        if ($this->onGetToArrayValue !== null) {
+            $callable = $this->onGetToArrayValue;
+            if (is_string($this->onGetToArrayValue)) {
+                $callable = [$this->entity, $this->onGetToArrayValue];
+            }
+
+            return call_user_func_array($callable, [$value]);
+        }
+
+        return $value;
     }
 }

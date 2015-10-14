@@ -56,7 +56,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function getToArrayValue()
     {
-        return $this->formatValue(parent::getValue());
+        return $this->processToArrayValue($this->formatValue(parent::getValue()));
     }
 
     public function setValue($value = null, $fromDb = false)
