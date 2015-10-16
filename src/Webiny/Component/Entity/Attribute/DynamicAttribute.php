@@ -33,6 +33,19 @@ class DynamicAttribute extends AttributeAbstract
     /**
      * @inheritDoc
      */
+    public function getDbValue()
+    {
+        $value = $this->getValue();
+        if($value instanceof EntityAbstract){
+            return $value->id;
+        }
+        return parent::getDbValue();
+    }
+
+
+    /**
+     * @inheritDoc
+     */
     public function getToArrayValue()
     {
         return $this->processToArrayValue($this->getValue());
