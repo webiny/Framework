@@ -106,9 +106,9 @@ class DateTimeObject extends StdObjectAbstract
      * Constructor.
      * Set standard object value.
      *
-     * @param string|int  $time                     A date/time string. List of available formats is explained here
+     * @param string|int  $time A date/time string. List of available formats is explained here
      *                                              http://www.php.net/manual/en/datetime.formats.php
-     * @param null|string $timezone                 Timezone in which you want to set the date. Here is a list of valid
+     * @param null|string $timezone Timezone in which you want to set the date. Here is a list of valid
      *                                              timezones: http://php.net/manual/en/timezones.php
      *
      * @throws DateTimeObjectException
@@ -182,7 +182,7 @@ class DateTimeObject extends StdObjectAbstract
     /**
      * Create a DateTimeObject from the given $time and $format.
      *
-     * @param string|int  $time   Timestamp.
+     * @param string|int  $time Timestamp.
      * @param null|string $format Format in which the current timestamp is defined.
      *
      * @return DateTimeObject
@@ -215,7 +215,7 @@ class DateTimeObject extends StdObjectAbstract
     }
 
     /**
-     * @param int|string|\DateTime|DateTimeObject $time     Date to compare to.
+     * @param int|string|\DateTime|DateTimeObject $time Date to compare to.
      * @param bool                                $absolute Should the interval be forced to be positive?
      *
      * @throws DateTimeObjectException
@@ -466,6 +466,20 @@ class DateTimeObject extends StdObjectAbstract
     }
 
     /**
+     * Get MongoDate object
+     *
+     * @return \MongoDate
+     * @throws DateTimeObjectException
+     */
+    public function getMongoDate()
+    {
+        if (class_exists('MongoDate')) {
+            return new \MongoDate($this->getTimestamp());
+        }
+        throw new DateTimeObjectException(DateTimeObjectException::MSG_MONGO_EXTENSION_REQUIRED);
+    }
+
+    /**
      * Return, or update, current standard objects value.
      *
      * @param null $value If $value is set, value is updated and DateTimeObject is returned.
@@ -601,7 +615,7 @@ class DateTimeObject extends StdObjectAbstract
      * Checks if $format is a valid format for $dateElement.
      *
      * @param string $dateElement Possible values are: date, year, month, day, time, hour, minutes, seconds, meridiem.
-     * @param string $format      For list of possible formats check: http://php.net/manual/en/function.date.php
+     * @param string $format For list of possible formats check: http://php.net/manual/en/function.date.php
      *
      * @return mixed
      * @throws DateTimeObjectException
@@ -610,10 +624,9 @@ class DateTimeObject extends StdObjectAbstract
     {
         if (!self::$formatters->key($dateElement)->inArray($format)) {
             throw new DateTimeObjectException(DateTimeObjectException::MSG_INVALID_FORMAT_FOR_ELEMENT, [
-                    $format,
-                    "get" . ucfirst($dateElement)
-                ]
-            );
+                $format,
+                "get" . ucfirst($dateElement)
+            ]);
         }
 
         return $format;
@@ -623,14 +636,13 @@ class DateTimeObject extends StdObjectAbstract
      * Returns defined $dateElement in defined $format.
      *
      * @param string      $dateElement Possible values are: date, year, month, day, time, hour, minutes, seconds, meridiem.
-     * @param null|string $format      For list of possible formats check: http://php.net/manual/en/function.date.php
+     * @param null|string $format For list of possible formats check: http://php.net/manual/en/function.date.php
      *
      * @return string
      */
     private function getDateElement($dateElement, $format = null)
     {
-        $format = ($this->isNull($format)) ? $this->getFormatFor($dateElement
-        ) : $this->validateFormatFor($dateElement, $format);
+        $format = ($this->isNull($format)) ? $this->getFormatFor($dateElement) : $this->validateFormatFor($dateElement, $format);
 
         return $this->getDateObject()->format($format);
     }

@@ -24,6 +24,7 @@ class DateTimeObjectException extends StdObjectException
     const MSG_DEFAULT_TIMEZONE = 106;
     const MSG_INVALID_FORMAT_FOR_ELEMENT = 107;
     const MSG_INVALID_DATE_INTERVAL = 108;
+    const MSG_MONGO_EXTENSION_REQUIRED = 109;
 
     protected static $messages = [
         101 => 'Invalid timezone provided "%s".',
@@ -33,6 +34,7 @@ class DateTimeObjectException extends StdObjectException
         105 => 'Invalid date format "%s".',
         106 => 'Unable to detect the default timezone.',
         107 => 'Invalid format %s for %s',
-        108 => 'Invalid datetime interval provided "%s".'
+        108 => 'Invalid datetime interval provided "%s".',
+        109 => 'getMongoDate() method requires Mongo PHP extension'
     ];
 }
