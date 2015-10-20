@@ -38,10 +38,10 @@ interface MongoInterface
      * Performs an operation similar to SQL's GROUP BY command
      *
      * @param string $collectionName collection name
-     * @param array  $keys           keys
-     * @param array  $initial        initial
-     * @param array  $reduce         reduce
-     * @param array  $condition      condition
+     * @param array  $keys keys
+     * @param array  $initial initial
+     * @param array  $reduce reduce
+     * @param array  $condition condition
      *
      * @see http://php.net/manual/en/mongocollection.group.php
      *
@@ -55,8 +55,8 @@ interface MongoInterface
      * Returns an array containing the status of the index creation.
      *
      * @param string $collectionName name
-     * @param string $keys           keys
-     * @param array  $options        options
+     * @param string $keys keys
+     * @param array  $options options
      *
      * @return array
      */
@@ -84,7 +84,7 @@ interface MongoInterface
      * Delete index from given collection
      *
      * @param string $collectionName Collection name
-     * @param string $index          Index name
+     * @param string $index Index name
      *
      * @return mixed
      */
@@ -116,8 +116,8 @@ interface MongoInterface
      * Find
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
-     * @param array  $fields         fields
+     * @param array  $query query
+     * @param array  $fields fields
      *
      * @return MongoCursor
      */
@@ -126,10 +126,10 @@ interface MongoInterface
     /**
      * Create collection
      *
-     * @param string $name   name
+     * @param string $name name
      * @param bool   $capped Enables a capped collection. To create a capped collection, specify true. If you specify true, you must also set a maximum size in the size field.
-     * @param int    $size   Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
-     * @param int    $max    The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
+     * @param int    $size Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
+     * @param int    $max The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
      *
      * @return array
      */
@@ -181,8 +181,8 @@ interface MongoInterface
      * Returns array of data or NULL if not found.
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
-     * @param array  $fields         fields
+     * @param array  $query query
+     * @param array  $fields fields
      *
      * @return array|null
      */
@@ -192,7 +192,7 @@ interface MongoInterface
      * Returns number of documents in given collection by given criteria.
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
+     * @param array  $query query
      *
      * @return int
      */
@@ -214,8 +214,8 @@ interface MongoInterface
      * </code>
      *
      * @param string $collectionName collection name
-     * @param array  $criteria       criteria
-     * @param array  $options        options
+     * @param array  $criteria criteria
+     * @param array  $options options
      *
      * @return array
      */
@@ -227,8 +227,8 @@ interface MongoInterface
      * Otherwise, returns a boolean representing if the array was not empty (an empty array will not be inserted).
      *
      * @param string $collectionName collection name
-     * @param array  $data           data
-     * @param array  $options        options
+     * @param array  $data data
+     * @param array  $options options
      *
      * @return array|bool
      */
@@ -249,11 +249,21 @@ interface MongoInterface
      * </code>
      *
      * @param string $collectionName collection name
-     * @param array  $criteria       criteria
-     * @param array  $newObj         new obj
-     * @param array  $options        options
+     * @param array  $criteria criteria
+     * @param array  $newObj new obj
+     * @param array  $options options
      *
      * @return array
      */
     public function update($collectionName, array $criteria, array $newObj, $options = []);
+
+    /**
+     * Aggregate
+     *
+     * @param string $collectionName
+     * @param array  $pipelines
+     *
+     * @return mixed
+     */
+    public function aggregate($collectionName, array $pipelines);
 }

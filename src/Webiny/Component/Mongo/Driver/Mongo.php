@@ -38,7 +38,7 @@ class Mongo implements MongoInterface
             'connect' => true
         ];
 
-        if(!$this->isNull($user) && !$this->isNull($password)) {
+        if (!$this->isNull($user) && !$this->isNull($password)) {
             $config['username'] = $user;
             $config['password'] = $password;
         }
@@ -74,7 +74,8 @@ class Mongo implements MongoInterface
      *
      * @return array
      */
-    public function getIndexInfo($collectionName){
+    public function getIndexInfo($collectionName)
+    {
         return $this->getCollection($collectionName)->getIndexInfo();
     }
 
@@ -97,10 +98,10 @@ class Mongo implements MongoInterface
      * Group
      *
      * @param string $collectionName collection name
-     * @param array  $keys           keys
-     * @param array  $initial        initial
-     * @param array  $reduce         reduce
-     * @param array  $condition      condition
+     * @param array  $keys keys
+     * @param array  $initial initial
+     * @param array  $reduce reduce
+     * @param array  $condition condition
      *
      * @return mixed
      */
@@ -127,8 +128,8 @@ class Mongo implements MongoInterface
      * Ensure index
      *
      * @param string $collectionName name
-     * @param string $keys           keys
-     * @param array  $options        options
+     * @param string $keys keys
+     * @param array  $options options
      *
      * @return string|null
      */
@@ -141,7 +142,7 @@ class Mongo implements MongoInterface
      * Delete index
      *
      * @param string $collectionName Collection name
-     * @param array  $index          Index to delete
+     * @param array  $index Index to delete
      *
      * @see http://php.net/manual/en/mongocollection.deleteindex.php
      *
@@ -150,9 +151,9 @@ class Mongo implements MongoInterface
     public function deleteIndex($collectionName, $index)
     {
         return $this->db->command([
-                                       "deleteIndexes" => $collectionName,
-                                       "index"         => $index,
-                                   ]);
+            "deleteIndexes" => $collectionName,
+            "index"         => $index,
+        ]);
     }
 
     /**
@@ -184,8 +185,8 @@ class Mongo implements MongoInterface
      * Find
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
-     * @param array  $fields         fields
+     * @param array  $query query
+     * @param array  $fields fields
      *
      * @see http://php.net/manual/en/mongocollection.find.php
      *
@@ -199,10 +200,10 @@ class Mongo implements MongoInterface
     /**
      * Create collection
      *
-     * @param string $name   name
+     * @param string $name name
      * @param bool   $capped Enables a capped collection. To create a capped collection, specify true. If you specify true, you must also set a maximum size in the size field.
-     * @param int    $size   Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
-     * @param int    $max    The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
+     * @param int    $size Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
+     * @param int    $max The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
      *
      * @return string|null
      */
@@ -255,8 +256,8 @@ class Mongo implements MongoInterface
      * Find one
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
-     * @param array  $fields         fields
+     * @param array  $query query
+     * @param array  $fields fields
      *
      * @return mixed
      */
@@ -269,7 +270,7 @@ class Mongo implements MongoInterface
      * Count
      *
      * @param string $collectionName collection name
-     * @param array  $query          query
+     * @param array  $query query
      *
      * @return mixed
      */
@@ -282,8 +283,8 @@ class Mongo implements MongoInterface
      * Remove
      *
      * @param string $collectionName collection name
-     * @param array  $criteria       criteria
-     * @param array  $options        options
+     * @param array  $criteria criteria
+     * @param array  $options options
      *
      * @see http://php.net/manual/en/mongocollection.remove.php
      *
@@ -298,8 +299,8 @@ class Mongo implements MongoInterface
      * Save
      *
      * @param string $collectionName collection name
-     * @param array  $data           data
-     * @param array  $options        options
+     * @param array  $data data
+     * @param array  $options options
      *
      * @see http://php.net/manual/en/mongocollection.save.php
      *
@@ -314,9 +315,9 @@ class Mongo implements MongoInterface
      * Update
      *
      * @param string $collectionName collection name
-     * @param array  $criteria       criteria
-     * @param array  $newObj         new obj
-     * @param array  $options        options
+     * @param array  $criteria criteria
+     * @param array  $newObj new obj
+     * @param array  $options options
      *
      * @see http://php.net/manual/en/mongocollection.update.php
      *
@@ -325,6 +326,19 @@ class Mongo implements MongoInterface
     public function update($collectionName, array $criteria, array $newObj, $options = [])
     {
         return $this->getCollection($collectionName)->update($criteria, $newObj, $options);
+    }
+
+    /**
+     * Aggregate
+     *
+     * @param $collectionName
+     * @param $pipelines
+     *
+     * @return array
+     */
+    public function aggregate($collectionName, array $pipelines)
+    {
+        return $this->getCollection($collectionName)->aggregate($pipelines);
     }
 
     /**

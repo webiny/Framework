@@ -42,7 +42,7 @@ class Mongo
      */
     public static function isMongoId($id)
     {
-        if($id instanceof \MongoId){
+        if ($id instanceof \MongoId) {
             return true;
         }
 
@@ -92,7 +92,7 @@ class Mongo
      * Create mongo index
      *
      * @param string         $collectionName Target collection
-     * @param IndexInterface $index          Index object
+     * @param IndexInterface $index Index object
      *
      * @return MongoResult
      */
@@ -109,7 +109,7 @@ class Mongo
      * Delete indexes
      *
      * @param string $collectionName Target collection
-     * @param string $index          Index name to delete
+     * @param string $index Index name to delete
      *
      * @return MongoResult
      */
@@ -199,10 +199,10 @@ class Mongo
      * Performs an operation similar to SQL's GROUP BY command
      *
      * @param string $collectionName Collection name
-     * @param array  $keys           Keys
-     * @param array  $initial        Initial
-     * @param array  $reduce         Reduce
-     * @param array  $condition      Condition
+     * @param array  $keys Keys
+     * @param array  $initial Initial
+     * @param array  $reduce Reduce
+     * @param array  $condition Condition
      *
      * @see http://php.net/manual/en/mongocollection.group.php
      *
@@ -210,8 +210,7 @@ class Mongo
      */
     public function group($collectionName, $keys, array $initial, $reduce, array $condition = [])
     {
-        $result = $this->driver->group($this->collectionPrefix . $collectionName, $keys, $initial, $reduce,
-                                        $condition);
+        $result = $this->driver->group($this->collectionPrefix . $collectionName, $keys, $initial, $reduce, $condition);
 
         return $this->mongoResult('group', $result);
     }
@@ -220,8 +219,8 @@ class Mongo
      * Ensure index
      *
      * @param string $collectionName Name
-     * @param string $keys           Keys
-     * @param array  $options        Options
+     * @param string $keys Keys
+     * @param array  $options Options
      *
      * @return MongoResult
      */
@@ -255,8 +254,8 @@ class Mongo
      * If `fields` is specified, will only return the specified fields.<br>
      *
      * @param string $collectionName Collection name
-     * @param array  $query          Query
-     * @param array  $fields         Fields In form: ['fieldname' => true, 'fieldname2' => true]
+     * @param array  $query Query
+     * @param array  $fields Fields In form: ['fieldname' => true, 'fieldname2' => true]
      *
      * @return MongoCursor|MongoResult
      */
@@ -274,10 +273,10 @@ class Mongo
     /**
      * Create collection
      *
-     * @param string $name   Name
+     * @param string $name Name
      * @param bool   $capped Enables a capped collection. To create a capped collection, specify true. If you specify true, you must also set a maximum size in the size field.
-     * @param int    $size   Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
-     * @param int    $max    The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
+     * @param int    $size Specifies a maximum size in bytes for a capped collection. The size field is required for capped collections. If capped is false, you can use this field to preallocate space for an ordinary collection.
+     * @param int    $max The maximum number of documents allowed in the capped collection. The size limit takes precedence over this limit. If a capped collection reaches its maximum size before it reaches the maximum number of documents, MongoDB removes old documents. If you prefer to use this limit, ensure that the size limit, which is required, is sufficient to contain the documents limit.
      *
      * @return MongoResult|MongoCollection
      */
@@ -348,8 +347,8 @@ class Mongo
      * Returns array of data or NULL if not found.
      *
      * @param string $collectionName Collection name
-     * @param array  $query          Query
-     * @param array  $fields         Fields
+     * @param array  $query Query
+     * @param array  $fields Fields
      *
      * @return array|null
      */
@@ -367,7 +366,7 @@ class Mongo
      * Returns number of documents in given collection by given criteria.
      *
      * @param string $collectionName Collection name
-     * @param array  $query          Query
+     * @param array  $query Query
      *
      * @return int
      */
@@ -381,8 +380,8 @@ class Mongo
      * Returns array containing result of remove operation.
      *
      * @param string $collectionName Collection name
-     * @param array  $criteria       Criteria
-     * @param array  $options        Options
+     * @param array  $criteria Criteria
+     * @param array  $options Options
      *
      * @return array
      */
@@ -399,8 +398,8 @@ class Mongo
      * Otherwise, returns a boolean representing if the array was not empty (an empty array will not be inserted).
      *
      * @param string $collectionName Collection name
-     * @param array  $data           Data
-     * @param array  $options        Options
+     * @param array  $data Data
+     * @param array  $options Options
      *
      * @return MongoResult|bool
      */
@@ -419,9 +418,9 @@ class Mongo
      * Returns array containing result of update operation.
      *
      * @param string $collectionName Collection name
-     * @param array  $criteria       Criteria
-     * @param array  $newObj         New obj
-     * @param array  $options        Options
+     * @param array  $criteria Criteria
+     * @param array  $newObj New obj
+     * @param array  $options Options
      *
      * @return array
      */
@@ -430,6 +429,26 @@ class Mongo
         $result = $this->driver->update($this->collectionPrefix . $collectionName, $criteria, $newObj, $options);
 
         return $this->mongoResult('update', $result);
+    }
+
+    /**
+     * Aggregate
+     *
+     * @param string $collectionName
+     * @param array  $pipelines
+     *
+     * @return MongoResult
+     */
+    public function aggregate($collectionName, array $pipelines)
+    {
+        $args = func_get_args();
+        if (count($args) > 2) {
+            $pipelines = array_slice($args, 1);
+        }
+
+        $result = $this->driver->aggregate($this->collectionPrefix . $collectionName, $pipelines);
+
+        return $this->mongoResult('aggregate', $result);
     }
 
     /**
