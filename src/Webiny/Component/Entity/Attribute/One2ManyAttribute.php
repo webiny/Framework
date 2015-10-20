@@ -45,11 +45,11 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     /**
      * Filter returned result set
      *
-     * @param array $filter
+     * @param array|callable $filter
      *
      * @return $this
      */
-    public function setFilter(array $filter)
+    public function setFilter($filter)
     {
         $this->filter = $filter;
 
@@ -131,7 +131,13 @@ class One2ManyAttribute extends CollectionAttributeAbstract
                 $this->relatedAttribute => $entityId
             ];
 
-            $query = array_merge($query, $this->filter);
+            $filters = $this->filter;
+            if (is_string($filters) || is_callable($filters)) {
+                $callable = is_string($filters) ? [$this->entity, $filters] : $filters;
+                $filters = call_user_func_array($callable, []);
+            }
+
+            $query = array_merge($query, $filters);
 
             $callable = [
                 $this->entityClass,

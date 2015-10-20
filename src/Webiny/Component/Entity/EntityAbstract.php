@@ -708,6 +708,13 @@ abstract class EntityAbstract implements \ArrayAccess
             if ($this->isString($validators)) {
                 $validators = explode(',', $validators);
             }
+
+            // Do not validate if attribute value is not required and empty value is given
+            // 'empty' function is not suitable for this check here
+            if (!in_array('required', $validators) && (is_null($keyValue) || $keyValue === '')) {
+                continue;
+            }
+
             foreach ($validators as $validator) {
                 try {
                     if ($this->isString($validator)) {
