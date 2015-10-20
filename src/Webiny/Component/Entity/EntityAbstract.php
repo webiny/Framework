@@ -34,6 +34,12 @@ abstract class EntityAbstract implements \ArrayAccess
     private $validatorInterface = '\Webiny\Component\Entity\Validators\ValidatorInterface';
 
     /**
+     * This array serves as a log to prevent infinite save loop
+     * @var array
+     */
+    private static $saved = [];
+
+    /**
      * Entity attributes
      * @var ArrayObject
      */
@@ -284,9 +290,16 @@ abstract class EntityAbstract implements \ArrayAccess
             $this->entity()->getDatabase()->insert(static::$entityCollection, $data);
             $this->id = $data['id'];
         } else {
+            // Check if this entity was already saved during save cycle through other relational attributes
+            if (array_key_exists($this->id, self::$saved)) {
+                return;
+            }
             $where = ['_id' => new \MongoId($this->id)];
             $this->entity()->getDatabase()->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
+
+        // Store this entity's id to prevent infinite saving loop
+        self::$saved[$this->id] = true;
 
         /**
          * Now save One2Many values
@@ -316,6 +329,9 @@ abstract class EntityAbstract implements \ArrayAccess
                 Many2ManyStorage::getInstance()->save($attr);
             }
         }
+
+        // Now that this entity is saved, remove its id from save log
+        unset(self::$saved[$this->id]);
 
         return true;
     }
