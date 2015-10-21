@@ -7,12 +7,13 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Webiny\Component\Entity\Validation\ValidationException;
+
 
 /**
  * SelectAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-
 class SelectAttribute extends AttributeAbstract
 {
 
@@ -26,15 +27,10 @@ class SelectAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         if (!$this->isString($value) && !$this->isNumber($value)) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->attribute,
-                    'string or number',
-                    gettype($value)
-                ]
-            );
+            $this->expected('string or number', gettype($value));
         }
 
         return $this;

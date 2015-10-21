@@ -21,12 +21,13 @@ class BooleanAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         $value = StdObjectWrapper::toBool($value);
+
+        parent::validate($value);
 
         return $this;
     }

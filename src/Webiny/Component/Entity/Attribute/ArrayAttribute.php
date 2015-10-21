@@ -9,8 +9,9 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
 use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
  * ArrayAttribute
@@ -68,22 +69,25 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      *
      * @param $value
      *
-     * @throws ValidationException
      * @return $this
+     * @throws AttributeValidationException
+     * @throws ValidationException
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         if ($this->isNull($value)) {
             return $this;
         }
 
         if (!$this->isArray($value) && !$this->isArrayObject($value)) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                $this->attribute,
-                'array or ArrayObject',
-                gettype($value)
-            ]);
+            $this->expected('array or ArrayObject', gettype($value));
         }
+
+        // Call parent method
+        parent::validate($value);
+
+        // Validate array keys
+        $this->validateNestedKeys($value);
 
         return $this;
     }
@@ -92,6 +96,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     {
         if ($this->value->count() == 0) {
             $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+
             return $this->processToArrayValue($value);
         }
 
@@ -289,5 +294,48 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function offsetUnset($offset)
     {
         unset($this->value[$offset]);
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @throws Exception\ValidationException
+     */
+    private function validateNestedKeys($data)
+    {
+        $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED, [$this->attribute]);
+        $messages = $this->getKeyValidationMessages();
+        $keyValidators = $this->getKeyValidators();
+        $errors = [];
+
+        foreach ($keyValidators as $key => $validators) {
+            $keyValue = $this->arr($data)->keyNested($key);
+            if ($this->isString($validators)) {
+                $validators = explode(',', $validators);
+            }
+
+            // Do not validate if attribute value is not required and empty value is given
+            // 'empty' function is not suitable for this check here
+            if (!in_array('required', $validators) && (is_null($keyValue) || $keyValue === '')) {
+                return;
+            }
+
+            foreach ($validators as $validator) {
+                try {
+                    $this->applyValidator($validator, $key, $keyValue, $messages[$key]);
+                } catch (AttributeValidationException $e) {
+                    foreach ($e as $key => $error) {
+                        $errors[$this->attr() . '.' . $key] = $error;
+                    }
+                }
+            }
+        }
+
+        if (count($errors)) {
+            foreach ($errors as $key => $msg) {
+                $ex->addError($key, $msg);
+            }
+            throw $ex;
+        }
     }
 }

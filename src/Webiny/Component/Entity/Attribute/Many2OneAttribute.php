@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Entity;
+use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -258,16 +259,13 @@ class Many2OneAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
-        if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value,
-                '\Webiny\Component\Entity\EntityAbstract') && !Entity::getInstance()->getDatabase()->isMongoId($value)
-        ) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                $this->attribute,
-                'entity ID, instance of \Webiny\Component\Entity\EntityAbstract or null',
-                gettype($value)
-            ]);
+        $mongoId = Entity::getInstance()->getDatabase()->isMongoId($value);
+        $abstractEntityClass = '\Webiny\Component\Entity\EntityAbstract';
+
+        if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value, $abstractEntityClass) && !$mongoId) {
+            $this->expected('entity ID, instance of ' . $abstractEntityClass . ' or null', gettype($value));
         }
 
         return $this;

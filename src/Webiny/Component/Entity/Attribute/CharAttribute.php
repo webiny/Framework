@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Webiny\Component\Entity\Attribute\Exception\ValidationException;
 use Webiny\Component\Entity\EntityAbstract;
 
 /**
@@ -24,22 +25,19 @@ class CharAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
-        if($value instanceof EntityAbstract){
+        if ($value instanceof EntityAbstract) {
             $value = $value->id;
         }
-        if($value != null && !$this->isString($value) && !$this->isNumber($value)) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->attribute,
-                    'string, number or EntityAbstract',
-                    gettype($value)
-                ]
-            );
+        if ($value != null && !$this->isString($value) && !$this->isNumber($value)) {
+            $this->expected('string, number or EntityAbstract', gettype($value));
         }
 
         // Make sure it's a string even if it is a number (convert to numeric string)
         $value = '' . $value;
+
+        parent::validate($value);
 
         return $this;
     }

@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\Validation\ValidationException;
 
 /**
  * DynamicAttribute
@@ -99,7 +100,7 @@ class DynamicAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         return $this;
     }

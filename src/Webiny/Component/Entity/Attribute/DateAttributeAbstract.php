@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObjectException;
 
@@ -95,7 +96,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
             $value = $value->format($this->attributeFormat);
@@ -109,12 +110,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         try {
             new DateTimeObject($value);
         } catch (DateTimeObjectException $e) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->attribute,
-                    'Unix timestamp, string or DateTimeObject',
-                    gettype($value)
-                ]
-            );
+            $this->expected('Unix timestamp, string or DateTimeObject', gettype($value));
         }
 
         return $this;

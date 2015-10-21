@@ -8,8 +8,12 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use JsonSerializable;
+use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
+use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityAttributeBuilder;
+use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -19,7 +23,9 @@ use Webiny\Component\StdLib\StdLibTrait;
  */
 abstract class AttributeAbstract implements JsonSerializable
 {
-    use StdLibTrait;
+    use StdLibTrait, FactoryLoaderTrait;
+
+    protected static $entityValidators;
 
     /**
      * @var EntityAbstract
@@ -37,6 +43,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onValue = null;
     protected $onValueCallback = null;
     protected $onGetToArrayValue = null;
+    protected $validatorInterface = '\Webiny\Component\Entity\Validation\ValidatorInterface';
 
     /**
      * @param string         $attribute
@@ -44,6 +51,9 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __construct($attribute, EntityAbstract $entity)
     {
+        if (!self::$entityValidators) {
+            self::$entityValidators = Entity::getConfig()->get('Validators', []);
+        }
         $this->attribute = $attribute;
         $this->entity = $entity;
     }
@@ -279,12 +289,27 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @param $value
      *
-     * @throws ValidationException
      * @return $this
+     * @throws AttributeValidationException
+     * @throws ValidationException
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
-        return $this;
+        $validators = $this->getValidators();
+
+        unset($validators['required']);
+
+        // Do not validate if attribute value is not required and empty value is given
+        // 'empty' function is not suitable for this check here
+        if (!$this->required && (is_null($value) || $value === '')) {
+            return;
+        }
+
+        $messages = $this->getValidationMessages();
+
+        foreach ($validators as $validator) {
+            $this->applyValidator($validator, $this->attribute, $value, $messages);
+        }
     }
 
     /**
@@ -307,8 +332,9 @@ abstract class AttributeAbstract implements JsonSerializable
 
         if (in_array('required', $this->validators)) {
             $this->setRequired();
-            unset($this->validators['required']);
+            unset($this->validators[array_search('required', $this->validators)]);
         }
+
 
         return $this;
 
@@ -384,7 +410,8 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return mixed
      */
-    protected function processToArrayValue($value){
+    protected function processToArrayValue($value)
+    {
         if ($this->onGetToArrayValue !== null) {
             $callable = $this->onGetToArrayValue;
             if (is_string($this->onGetToArrayValue)) {
@@ -395,5 +422,67 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         return $value;
+    }
+
+    /**
+     * Apply validator to given value
+     *
+     * @param string $validator
+     * @param string $key
+     * @param mixed  $value
+     * @param array  $messages
+     *
+     * @throws AttributeValidationException
+     * @throws \Webiny\Component\StdLib\Exception\Exception
+     */
+    protected function applyValidator($validator, $key, $value, $messages = [])
+    {
+        try {
+            if ($this->isString($validator)) {
+                $params = $this->arr(explode(':', $validator));
+                $vName = '';
+                $validatorParams = [$value, $this, $params->removeFirst($vName)->val()];
+                if ($vName == 'required') {
+                    die(print_r($this->validators));
+                }
+                $validator = $this->factory(self::$entityValidators[$vName], $this->validatorInterface);
+                call_user_func_array([$validator, 'validate'], $validatorParams);
+            } elseif ($this->isCallable($validator)) {
+                $vName = 'callable';
+                $validator($value, $this);
+            }
+        } catch (ValidationException $e) {
+            $msg = isset($messages[$vName]) ? $messages[$vName] : $e->getMessage();
+
+            $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+            $ex->addError($key, $msg);
+
+            throw $ex;
+        }
+    }
+
+    /**
+     * Throw or return attribute validation exception
+     *
+     * @param string $expecting
+     * @param string $got
+     * @param bool   $return
+     *
+     * @return AttributeValidationException
+     * @throws AttributeValidationException
+     */
+    protected function expected($expecting, $got, $return = false)
+    {
+        $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+        $ex->addError($this->attribute, AttributeValidationException::DATA_TYPE, [
+            $expecting,
+            $got
+        ]);
+
+        if ($return) {
+            return $ex;
+        }
+
+        throw $ex;
     }
 }

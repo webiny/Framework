@@ -7,12 +7,13 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Webiny\Component\Entity\Validation\ValidationException;
+
 
 /**
  * TextAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-
 class TextAttribute extends AttributeAbstract
 {
 
@@ -24,15 +25,10 @@ class TextAttribute extends AttributeAbstract
      * @throws ValidationException
      * @return $this
      */
-    public function validate(&$value)
+    protected function validate(&$value)
     {
         if (!$this->isString($value)) {
-            throw new ValidationException(ValidationException::ATTRIBUTE_VALIDATION_FAILED, [
-                    $this->attribute,
-                    'string',
-                    gettype($value)
-                ]
-            );
+            $this->expected('string', gettype($value));
         }
 
         return $this;

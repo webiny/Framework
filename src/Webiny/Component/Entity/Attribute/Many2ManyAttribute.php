@@ -36,7 +36,6 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      *
      * @param array|\Webiny\Component\Entity\EntityAbstract $item
      *
-     * @throws \Webiny\Component\Entity\EntityException
      * @return $this
      */
     public function add($item)
@@ -50,12 +49,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
          */
         foreach ($item as $i) {
             if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isMongoId($i)) {
-                throw new EntityException(EntityException::INVALID_MANY2MANY_VALUE, [
-                        $this->attribute,
-                        'entity ID or instance of ' . $this->getEntity() . ' or null',
-                        get_class($i)
-                    ]
-                );
+                $this->expected('entity ID or instance of ' . $this->getEntity() . ' or null', get_class($i));
             }
         }
 
@@ -87,6 +81,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
         // Rebuild cursor (need to call this to rebuild cursor object with new linked IDs)
         $this->value = Many2ManyStorage::getInstance()->load($this);
+
         return $deleted;
     }
 
@@ -107,7 +102,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function setValue($value = null, $fromDb = false)
     {
-        if(!$this->canAssign()){
+        if (!$this->canAssign()) {
             return $this;
         }
 

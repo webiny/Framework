@@ -5,10 +5,10 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Entity\Validators;
+namespace Webiny\Component\Entity\Validation;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\Attribute\ValidationException;
+use Webiny\Component\Entity\Validation\ValidationException;
 
 interface ValidatorInterface
 {
