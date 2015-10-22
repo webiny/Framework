@@ -317,12 +317,12 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
             // Do not validate if attribute value is not required and empty value is given
             // 'empty' function is not suitable for this check here
             if (!in_array('required', $validators) && (is_null($keyValue) || $keyValue === '')) {
-                return;
+                continue;
             }
 
             foreach ($validators as $validator) {
                 try {
-                    $this->applyValidator($validator, $key, $keyValue, $messages[$key]);
+                    $this->applyValidator($validator, $key, $keyValue, isset($messages[$key]) ? $messages[$key] : []);
                 } catch (AttributeValidationException $e) {
                     foreach ($e as $key => $error) {
                         $errors[$this->attr() . '.' . $key] = $error;

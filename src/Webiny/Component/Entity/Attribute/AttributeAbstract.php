@@ -442,9 +442,6 @@ abstract class AttributeAbstract implements JsonSerializable
                 $params = $this->arr(explode(':', $validator));
                 $vName = '';
                 $validatorParams = [$value, $this, $params->removeFirst($vName)->val()];
-                if ($vName == 'required') {
-                    die(print_r($this->validators));
-                }
                 $validator = $this->factory(self::$entityValidators[$vName], $this->validatorInterface);
                 call_user_func_array([$validator, 'validate'], $validatorParams);
             } elseif ($this->isCallable($validator)) {
