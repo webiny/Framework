@@ -11,6 +11,7 @@ use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Mongo\MongoTrait;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 
 /**
@@ -75,7 +76,7 @@ class EntityDataExtractor
         $attributes = $this->buildEntityFields($attributes);
 
         foreach ($attributes as $attr => $subAttributes) {
-            if($attr == '_name'){
+            if ($attr == '_name') {
                 continue;
             }
             $entityAttribute = $this->entity->getAttribute($attr);
@@ -130,31 +131,39 @@ class EntityDataExtractor
             // Check if asterisk is present and replace it with actual attribute names
             if ($this->arr($fields)->keyExists('*')) {
                 unset($fields['*']);
-                $defaultFields = $this->str($this->getDefaultAttributes())
-                                      ->explode(',')
-                                      ->filter()
-                                      ->map('trim')
-                                      ->flip()
-                                      ->val();
+                $defaultFields = $this->str($this->getDefaultAttributes())->explode(',')->filter()->map('trim')->flip()->val();
                 $fields = $this->arr($fields)->merge($defaultFields)->val();
             }
 
             return $fields;
         }
-        $parsedFields = [];
+
+        $parsedFields = $this->arr();
+        $unsetFields = [];
 
         foreach ($fields as $f) {
-            if ($f == '*') {
+            $f = $this->str($f);
+            if ($f->startsWith('!')) {
+                $unsetFields[] = $f->trimLeft('!')->val();
+                continue;
+            }
+
+            if ($f->val() == '*') {
                 $defaultFields = $this->str($this->getDefaultAttributes())->explode(',')->filter()->map('trim')->val();
                 foreach ($defaultFields as $df) {
-                    $this->buildFields($parsedFields, $df);
+                    $this->buildFields($parsedFields, $this->str($df));
                 }
                 continue;
             }
             $this->buildFields($parsedFields, $f);
         }
 
-        return $parsedFields;
+        // TODO: add support for nested keys
+        foreach($unsetFields as $field){
+            $parsedFields->removeKey($field);
+        }
+
+        return $parsedFields->val();
     }
 
     /**
@@ -163,17 +172,17 @@ class EntityDataExtractor
      * @param $parsedFields Reference to array of parsed fields
      * @param $key          Current key to parse
      */
-    private function buildFields(&$parsedFields, $key)
+    private function buildFields(&$parsedFields, StringObject $key)
     {
-        if ($this->str($key)->contains('.')) {
-            $parts = $this->str($key)->explode('.', 2)->val();
+        if ($key->contains('.')) {
+            $parts = $key->explode('.', 2)->val();
             if (!isset($parsedFields[$parts[0]])) {
                 $parsedFields[$parts[0]] = [];
             }
 
-            $this->buildFields($parsedFields[$parts[0]], $parts[1]);
+            $this->buildFields($parsedFields[$parts[0]], $this->str($parts[1]));
         } else {
-            $parsedFields[$key] = '';
+            $parsedFields[$key->val()] = '';
         }
     }
 
