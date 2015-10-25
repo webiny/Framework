@@ -7,9 +7,7 @@
 
 namespace Webiny\Component\Security\Token\Storage;
 
-use Webiny\Component\Crypt\CryptTrait;
 use Webiny\Component\Http\HttpTrait;
-use Webiny\Component\Security\Role\Role;
 use Webiny\Component\Security\Token\TokenData;
 use Webiny\Component\Security\Token\TokenException;
 use Webiny\Component\Security\Token\TokenStorageAbstract;
@@ -90,7 +88,7 @@ class Stateless extends TokenStorageAbstract
 
         // build and add token to $data
         $token = $this->getCrypt()->encrypt($this->jsonEncode($data), $this->getEncryptionKey());
-        $token = rtrim($token, '=');
+        $token = urlencode(rtrim($token, '='));
 
         return $token;
     }
@@ -108,6 +106,7 @@ class Stateless extends TokenStorageAbstract
     {
         // decrypt token data
         try {
+            $tokenData = urldecode($tokenData);
             $tokenData .= '==';
             $data = $this->getCrypt()->decrypt($tokenData, $this->getEncryptionKey());
             $data = $this->jsonDecode($data, true);
