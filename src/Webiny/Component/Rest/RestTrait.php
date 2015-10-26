@@ -89,7 +89,7 @@ trait RestTrait
 
         $sorters = [];
         $fields = explode(',', $sort);
-        foreach($fields as $sort){
+        foreach ($fields as $sort) {
             $sortField = $sort;
             $sortDirection = 1;
 
@@ -153,14 +153,33 @@ trait RestTrait
      */
     protected static function restGetFieldsDepth($default = 1)
     {
-        return Request::getInstance()->query('_fieldsDepth', $default);
+        $depth = Request::getInstance()->query('_fieldsDepth', false);
+        if (!$depth) {
+            $fields = static::restGetFields(false);
+            if (!$fields) {
+                return $default;
+            }
+
+            // Determine the deepest key
+            $depth = 1;
+            foreach (explode(',', $fields) as $key) {
+                $keyDepth = substr_count($key, '.');
+                if ($depth < $keyDepth) {
+                    $depth = $keyDepth;
+                }
+            }
+            return $depth;
+        }
+
+        return $depth;
+
     }
 
     /**
      * Return a query filter.
      * Filters are all the parameters in the url query.
      *
-     * @param string $name    Filter name.
+     * @param string $name Filter name.
      * @param mixed  $default Default filter value, if filter is not defined.
      *
      * @return mixed
