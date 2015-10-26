@@ -28,8 +28,6 @@ class EntityDataExtractor
      */
     protected $entity;
 
-    protected static $loadedEntities = null;
-
     protected static $currentLevel = 0;
     protected $nestedLevel = 1;
 
@@ -38,12 +36,14 @@ class EntityDataExtractor
         if ($nestedLevel < 0) {
             $nestedLevel = 1;
         }
+
+        // Do not allow depth greater than 10
+        if($nestedLevel > 10){
+            $nestedLevel = 10;
+        }
+
         $this->entity = $entity;
         $this->nestedLevel = $nestedLevel;
-
-        if (!self::$loadedEntities) {
-            self::$loadedEntities = $this->arr();
-        }
     }
 
     /**
@@ -57,17 +57,6 @@ class EntityDataExtractor
      */
     public function extractData($attributes = [])
     {
-        $checkKey = get_class($this->entity) . '-' . $this->entity->getId();
-        if (self::$loadedEntities->keyExists($checkKey)) {
-            return [
-                '__reference__' => true,
-                'class'         => get_class($this->entity),
-                'id'            => $this->entity->getId()->getValue()
-            ];
-        } else {
-            self::$loadedEntities->key($checkKey, true);
-        }
-
         if ($this->isEmpty($attributes)) {
             $attributes = $this->getDefaultAttributes();
         }
@@ -108,8 +97,6 @@ class EntityDataExtractor
                 $data[$attr] = $entityAttribute->getToArrayValue();
             }
         }
-        self::$loadedEntities->removeKey($checkKey);
-
         $data['_name'] = $this->entity->getMaskedValue();
 
         return $data;
