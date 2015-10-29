@@ -133,6 +133,11 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this;
     }
 
+    public function getToArrayValueCallback()
+    {
+        return $this->onGetToArrayValue;
+    }
+
     /**
      * Create new attribute or get name of current attribute
      *

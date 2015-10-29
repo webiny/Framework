@@ -38,7 +38,7 @@ class EntityDataExtractor
         }
 
         // Do not allow depth greater than 10
-        if($nestedLevel > 10){
+        if ($nestedLevel > 10) {
             $nestedLevel = 10;
         }
 
@@ -79,6 +79,12 @@ class EntityDataExtractor
                     $data[$attr] = null;
                     continue;
                 }
+
+                if ($entityAttribute->getToArrayValueCallback()) {
+                    $data[$attr] = $entityAttribute->getToArrayValue();
+                    continue;
+                }
+
                 if (self::$currentLevel < $this->nestedLevel) {
                     self::$currentLevel++;
                     $data[$attr] = $entityAttributeValue->toArray($subAttributes, $this->nestedLevel);
@@ -146,7 +152,7 @@ class EntityDataExtractor
         }
 
         // TODO: add support for nested keys
-        foreach($unsetFields as $field){
+        foreach ($unsetFields as $field) {
             $parsedFields->removeKey($field);
         }
 
