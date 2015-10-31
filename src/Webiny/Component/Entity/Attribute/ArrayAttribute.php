@@ -31,9 +31,10 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
     public function getDbValue()
     {
-        $value = $this->getToArrayValue();
         if ($this->value->count() == 0) {
-            $this->value = $this->arr($value);
+            $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+        } else {
+            $value = $this->value->val();
         }
 
         return $value;
