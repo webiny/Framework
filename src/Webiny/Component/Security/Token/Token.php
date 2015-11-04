@@ -96,6 +96,20 @@ class Token
     }
 
     /**
+     * Should token be remembered or not
+     *
+     * @param bool $rememberMe
+     * @return $this
+     */
+    public function setRememberMe($rememberMe)
+    {
+        $this->rememberMe = $rememberMe;
+        $this->storage->setTokenRememberMe($rememberMe);
+
+        return $this;
+    }
+
+    /**
      * Tries to load current user from token and if succeeds, an instance of TokenData is returned.
      *
      * @return bool|TokenData Instance of TokenData is returned is the token exists, otherwise false is returned.

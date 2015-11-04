@@ -121,7 +121,7 @@ class Stateless extends TokenStorageAbstract
         }
 
         // check that token data is still valid
-        if ($this->datetime()->setTimestamp($data['vu'])->isPast()) {
+        if ($this->datetime($data['vu'])->isPast()) {
             return false;
         }
 

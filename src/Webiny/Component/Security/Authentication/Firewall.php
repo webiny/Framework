@@ -18,7 +18,6 @@ use Webiny\Component\Security\Role\RoleHierarchy;
 use Webiny\Component\Security\Security;
 use Webiny\Component\Security\SecurityEvent;
 use Webiny\Component\Security\User\AnonymousUser;
-use Webiny\Component\Security\User\Exceptions\UserNotFoundException;
 use Webiny\Component\Security\User\Providers\Memory;
 use Webiny\Component\Security\Token\Token;
 use Webiny\Component\Security\User\UserAbstract;
@@ -398,7 +397,7 @@ class Firewall
                 if ($user && $user->authenticate($login, $this)) {
                     $user->setUserProviderName($name);
                     $user->setAuthProviderName($login->getAuthProviderName());
-                    $this->getToken()->saveUser($user);
+                    $this->getToken()->setRememberMe($login->getRememberMe())->saveUser($user);
 
                     return $user;
                 }
