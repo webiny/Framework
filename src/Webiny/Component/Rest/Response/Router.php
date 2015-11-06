@@ -89,8 +89,8 @@ class Router
     /**
      * Set the url.
      *
-     * NOTE: You don't really need to use this method, since getUrl returns the current url, which is what you need in
-     * 99% of use-cases. This method is mostly so that we can do better unit and functional testing of this class.
+     * In case a fixed url string is passed directly into the Rest instance, using this method the url will be passed
+     * to the router.
      *
      * @param string $url Url upon which we will try to match a service in the registered class.
      */

@@ -72,19 +72,31 @@ class Rest
      */
     private $cacheInstance;
 
+    /**
+     * @var string Url passed from initRest method.
+     */
+    private static $url;
+
+    /**
+     * @var string HTTP method passed from the initRest method.
+     */
+    private static $method;
+
 
     /**
      * Initializes the current Rest configuration, tries to match the current URL with the defined Path.
      * If match was successful, an instance of Rest class is returned, otherwise false.
      *
-     * @param string $api Api configuration Name
-     * @param string $url Url on which the to match. Leave blank to use the current url.
+     * @param string $api    Api configuration Name
+     * @param string $url    Url on which the to match. Leave blank to use the current url.
+     * @param string $method Name of the HTTP method that will be used to match the request.
+     *                       Leave blank to use the method from the current HTTP request.
      *
      * @return bool|Rest
      * @throws RestException
      * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
      */
-    public static function initRest($api, $url = '')
+    public static function initRest($api, $url = '', $method = '')
     {
         $config = self::getConfig()->get($api, false);
 
@@ -128,6 +140,8 @@ class Rest
             return false;
         }
 
+        self::$url = $url;
+        self::$method = $method;
         return self::processRouterResponse($result, $config, $api);
     }
 
@@ -222,6 +236,16 @@ class Rest
     {
         try {
             $router = new Router($this->api, $this->class, $this->normalize, $this->cacheInstance);
+
+            // check if url is set via the initRest method
+            if (!empty(self::$url)) {
+                $router->setUrl(self::$url);
+            }
+
+            // check if the method vas set via initRest method
+            if (!empty(self::$method)) {
+                $router->setHttpMethod(self::$method);
+            }
 
             return $router->processRequest();
         } catch (\Exception $e) {
