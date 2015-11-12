@@ -54,6 +54,17 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     /**
      * @inheritDoc
      */
+    public function setDefaultValue($defaultValue = null)
+    {
+        if(is_array($defaultValue)){
+            $defaultValue = $this->arr($defaultValue);
+        }
+        return parent::setDefaultValue($defaultValue);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getValue()
     {
         $defaultValue = new ArrayObject($this->defaultValue);
