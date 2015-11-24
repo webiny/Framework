@@ -37,12 +37,14 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $value = null;
     protected $required = false;
     protected $once = false;
+    protected $skipOnPopulate = false;
     protected $validators = [];
     protected $validationMessages = [];
     protected $storeToDb = true;
-    protected $onValue = null;
-    protected $onValueCallback = null;
-    protected $onGetToArrayValue = null;
+    protected $onSetValue = null;
+    protected $onSetCallback = null;
+    protected $onGetCallback = null;
+    protected $onToArrayCallback = null;
     protected $validatorInterface = '\Webiny\Component\Entity\Validation\ValidatorInterface';
 
     /**
@@ -114,7 +116,7 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return string
      */
-    public function getToArrayValue()
+    public function toArray()
     {
         return $this->processToArrayValue((string)$this);
     }
@@ -126,16 +128,16 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return $this
      */
-    public function setToArrayValue($callback)
+    public function onToArray($callback)
     {
-        $this->onGetToArrayValue = $callback;
+        $this->onToArrayCallback = $callback;
 
         return $this;
     }
 
-    public function getToArrayValueCallback()
+    public function hasToArrayCallback()
     {
-        return $this->onGetToArrayValue;
+        return $this->onToArrayCallback !== null;
     }
 
     /**
@@ -173,15 +175,39 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return $this
      */
-    public function getRequired()
+    public function isRequired()
     {
         return $this->required;
     }
 
     /**
+     * Skip attribute on mass populate
+     *
+     * @param bool $flag
+     *
+     * @return $this
+     */
+    public function setSkipOnPopulate($flag = true)
+    {
+        $this->skipOnPopulate = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Get skipOnPopulate flag
+     *
+     * @return bool
+     */
+    public function getSkipOnPopulate()
+    {
+        return $this->skipOnPopulate;
+    }
+
+    /**
      * Set 'once' flag<br>
      * If true, it tells EntityAbstract to only populate this attribute if it's a new entity<br>
-     * This is useful when you want to protect values from being populate on secondary updates.
+     * This is useful when you want to protect values from being populate on later updates.
      *
      * @param boolean $flag
      *
@@ -231,14 +257,21 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this->defaultValue;
     }
 
-    public function on($value, $callable = null)
+    public function onSet($value, $callable = null)
     {
         if (is_callable($value)) {
             $callable = $value;
             $value = null;
         }
-        $this->onValue = $value;
-        $this->onValueCallback = $callable;
+        $this->onSetValue = $value;
+        $this->onSetCallback = $callable;
+
+        return $this;
+    }
+
+    public function onGet($callable = null)
+    {
+        $this->onGetCallback = $callable;
 
         return $this;
     }
@@ -261,10 +294,10 @@ abstract class AttributeAbstract implements JsonSerializable
         if (!$fromDb) {
             $this->validate($value);
 
-            if ($this->onValueCallback !== null && ($this->onValue === null || $this->onValue === $value)) {
-                $callable = $this->onValueCallback;
-                if (is_string($this->onValueCallback)) {
-                    $callable = [$this->entity, $this->onValueCallback];
+            if ($this->onSetCallback !== null && ($this->onSetValue === null || $this->onSetValue === $value)) {
+                $callable = $this->onSetCallback;
+                if (is_string($this->onSetCallback)) {
+                    $callable = [$this->entity, $this->onSetCallback];
                 }
                 $value = call_user_func_array($callable, [$value]);
             }
@@ -282,11 +315,12 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getValue()
     {
-        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
-            return $this->defaultValue;
+        $value = $this->value;
+        if ($this->isNull($value) && !$this->isNull($this->defaultValue)) {
+            $value = $this->defaultValue;
         }
 
-        return $this->value;
+        return $this->processGetValue($value);
     }
 
     /**
@@ -408,6 +442,29 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
+     * Triggered when calling 'getValue()' on attribute instance
+     * Take generated value and check if custom callback exists for this attribute.
+     * If yes - return the processed value.
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function processGetValue($value)
+    {
+        if ($this->onGetCallback) {
+            $callable = $this->onGetCallback;
+            if (is_string($callable)) {
+                $callable = [$this->entity, $callable];
+            }
+            $value = call_user_func_array($callable, [$value]);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Triggered when calling 'toArray()' on the entity instance
      * Take generated value and check if custom callback exists for this attribute.
      * If yes - return the processed value.
      *
@@ -417,10 +474,10 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function processToArrayValue($value)
     {
-        if ($this->onGetToArrayValue !== null) {
-            $callable = $this->onGetToArrayValue;
-            if (is_string($this->onGetToArrayValue)) {
-                $callable = [$this->entity, $this->onGetToArrayValue];
+        if ($this->onToArrayCallback !== null) {
+            $callable = $this->onToArrayCallback;
+            if (is_string($callable)) {
+                $callable = [$this->entity, $callable];
             }
 
             return call_user_func_array($callable, [$value]);

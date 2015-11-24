@@ -47,7 +47,7 @@ class DynamicAttribute extends AttributeAbstract
     /**
      * @inheritDoc
      */
-    public function getToArrayValue()
+    public function toArray()
     {
         return $this->processToArrayValue($this->getValue());
     }
@@ -72,7 +72,7 @@ class DynamicAttribute extends AttributeAbstract
             $callable = [$this->entity, $callable];
         }
 
-        return call_user_func_array($callable, [$this->storedValue]);
+        return $this->processGetValue(call_user_func_array($callable, [$this->storedValue]));
     }
 
     /**

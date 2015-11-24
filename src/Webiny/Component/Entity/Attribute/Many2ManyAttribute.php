@@ -127,6 +127,6 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
             $this->addedItems = [];
         }
 
-        return $this->value;
+        return $this->processGetValue($this->value);
     }
 }

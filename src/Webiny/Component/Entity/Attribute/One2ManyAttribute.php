@@ -146,7 +146,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             $this->value = call_user_func_array($callable, [$query, $this->sorter]);
         }
 
-        return $this->value;
+        return $this->processGetValue($this->value);
     }
 
     private function parseSorter($fields){

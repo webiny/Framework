@@ -68,7 +68,13 @@ class EntityDataExtractor
             if ($attr == '_name') {
                 continue;
             }
-            $entityAttribute = $this->entity->getAttribute($attr);
+
+            try {
+                $entityAttribute = $this->entity->getAttribute($attr);
+            } catch (EntityException $e) {
+                continue;
+            }
+
             $entityAttributeValue = $entityAttribute->getValue();
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
@@ -80,8 +86,8 @@ class EntityDataExtractor
                     continue;
                 }
 
-                if ($entityAttribute->getToArrayValueCallback()) {
-                    $data[$attr] = $entityAttribute->getToArrayValue();
+                if ($entityAttribute->hasToArrayCallback()) {
+                    $data[$attr] = $entityAttribute->toArray();
                     continue;
                 }
 
@@ -100,7 +106,7 @@ class EntityDataExtractor
                     }
                 }
             } else {
-                $data[$attr] = $entityAttribute->getToArrayValue();
+                $data[$attr] = $entityAttribute->toArray();
             }
         }
         $data['_name'] = $this->entity->getMaskedValue();

@@ -69,10 +69,10 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     {
         $defaultValue = new ArrayObject($this->defaultValue);
         if ($this->value->count() == 0 && $defaultValue->count() > 0) {
-            return $this->defaultValue;
+            return $this->processGetValue($this->defaultValue);
         }
 
-        return $this->value;
+        return $this->processGetValue($this->value);
     }
 
 
@@ -104,7 +104,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
         return $this;
     }
 
-    public function getToArrayValue()
+    public function toArray()
     {
         if ($this->value->count() == 0) {
             $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;

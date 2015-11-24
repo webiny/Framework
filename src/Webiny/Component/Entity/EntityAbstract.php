@@ -440,6 +440,12 @@ abstract class EntityAbstract implements \ArrayAccess
         $validation = $this->arr();
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
+
+            // Skip population of protected attributes if data is not coming from DB
+            if(!$fromDb && $entityAttribute->getSkipOnPopulate()){
+                continue;
+            }
+
             // Dynamic attributes from database should be populated without any checks, and skipped otherwise
             if ($this->isInstanceOf($entityAttribute, AttributeType::DYNAMIC)) {
                 if ($fromDb && isset($data[$attributeName])) {
@@ -452,7 +458,7 @@ abstract class EntityAbstract implements \ArrayAccess
              * Check if attribute is required and it's value is set or maybe value was already assigned
              */
             $hasValue = !is_null($entityAttribute->getValue());
-            if ($entityAttribute->getRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
+            if ($entityAttribute->isRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
                 $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
                 $ex->addError($attributeName, ValidationException::REQUIRED, []);
                 $validation[$attributeName] = $ex;

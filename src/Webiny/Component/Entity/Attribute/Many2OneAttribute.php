@@ -173,10 +173,10 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         if (!$this->value && !$this->isNull($this->defaultValue)) {
-            return $this->defaultValue;
+            return $this->processGetValue($this->defaultValue);
         }
 
-        return $this->value;
+        return $this->processGetValue($this->value);
     }
 
     /**
