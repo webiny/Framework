@@ -38,7 +38,7 @@ class DynamicAttribute extends AttributeAbstract
     {
         $value = $this->getValue();
         if($value instanceof EntityAbstract){
-            return $value->id;
+            return $this->processToDbValue($value->id);
         }
         return parent::getDbValue();
     }

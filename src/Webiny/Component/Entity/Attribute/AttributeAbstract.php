@@ -45,6 +45,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onSetCallback = null;
     protected $onGetCallback = null;
     protected $onToArrayCallback = null;
+    protected $onToDbCallback = null;
     protected $validatorInterface = '\Webiny\Component\Entity\Validation\ValidatorInterface';
 
     /**
@@ -98,7 +99,7 @@ abstract class AttributeAbstract implements JsonSerializable
             $this->value = $value;
         }
 
-        return $value;
+        return $this->processToDbValue($value);
     }
 
     /**
@@ -131,6 +132,20 @@ abstract class AttributeAbstract implements JsonSerializable
     public function onToArray($callback)
     {
         $this->onToArrayCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set callback that will be used to process getDbValue() call
+     *
+     * @param $callback
+     *
+     * @return $this
+     */
+    public function onToDb($callback)
+    {
+        $this->onToDbCallback = $callback;
 
         return $this;
     }
@@ -454,6 +469,28 @@ abstract class AttributeAbstract implements JsonSerializable
     {
         if ($this->onGetCallback) {
             $callable = $this->onGetCallback;
+            if (is_string($callable)) {
+                $callable = [$this->entity, $callable];
+            }
+            $value = call_user_func_array($callable, [$value]);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Triggered when calling 'getDbValue()' on attribute instance
+     * Take generated value and check if custom callback exists for this attribute.
+     * If yes - return the processed value.
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function processToDbValue($value)
+    {
+        if ($this->onToDbCallback) {
+            $callable = $this->onToDbCallback;
             if (is_string($callable)) {
                 $callable = [$this->entity, $callable];
             }

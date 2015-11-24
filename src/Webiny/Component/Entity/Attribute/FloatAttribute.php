@@ -18,7 +18,12 @@ class FloatAttribute extends AttributeAbstract
 
     public function getDbValue()
     {
-        return floatval(parent::getDbValue());
+        $value = floatval($this->getValue());
+        if ($this->isNull($this->value)) {
+            $this->value = floatval($value);
+        }
+
+        return $this->processToDbValue($value);
     }
 
     /**

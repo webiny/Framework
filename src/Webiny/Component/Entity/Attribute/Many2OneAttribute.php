@@ -95,7 +95,7 @@ class Many2OneAttribute extends AttributeAbstract
     {
         $value = $this->getValue();
         if ($this->isNull($value)) {
-            return null;
+            return $this->processToDbValue(null);
         }
 
         // If what we got is a defaultValue - create or load an actual entity instance
@@ -118,7 +118,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         // Return a simple Entity ID string
-        return $this->getValue()->id;
+        return $this->processToDbValue($this->getValue()->id);
     }
 
     /**

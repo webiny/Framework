@@ -24,6 +24,8 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function getDbValue()
     {
+        $value = null;
+
         if ($this->isEmpty($this->value)) {
             $this->setDefaultValueInternal();
         }
@@ -32,12 +34,11 @@ abstract class DateAttributeAbstract extends AttributeAbstract
             $this->setValue(date($this->attributeFormat));
         }
 
-        if($this->getValue()){
-            return new \MongoDate(strtotime($this->getValue()));
+        if ($this->getValue()) {
+            $value = new \MongoDate(strtotime($this->getValue()));
         }
 
-        return null;
-
+        return $this->processToDbValue($value);
     }
 
     /**
@@ -82,9 +83,10 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function getValue($asDateTimeObject = false)
     {
-        if($asDateTimeObject){
+        if ($asDateTimeObject) {
             return $this->processGetValue(new DateTimeObject(parent::getValue()));
         }
+
         return $this->processGetValue($this->formatValue(parent::getValue()));
     }
 

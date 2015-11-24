@@ -37,7 +37,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
             $value = $this->value->val();
         }
 
-        return $value;
+        return $this->processToDbValue($value);
     }
 
     public function setValue($value = null, $fromDb = false)
