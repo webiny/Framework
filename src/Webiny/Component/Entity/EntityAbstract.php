@@ -429,7 +429,7 @@ abstract class EntityAbstract implements \ArrayAccess
         $data = $this->normalizeData($data);
 
         $fromDb = false;
-        if (isset($data['__webiny_db__'])) {
+        if ($this->isDbData($data)) {
             $fromDb = true;
         } else {
             unset($data['id']);
@@ -655,6 +655,18 @@ abstract class EntityAbstract implements \ArrayAccess
     public function offsetUnset($offset)
     {
         // Nothing to unset
+    }
+
+    /**
+     * Used for checking if the entity populate data is coming from database
+     *
+     * @param $data
+     *
+     * @return bool
+     */
+    protected function isDbData($data)
+    {
+        return isset($data['__webiny_db__']) && $data['__webiny_db__'];
     }
 
     /**

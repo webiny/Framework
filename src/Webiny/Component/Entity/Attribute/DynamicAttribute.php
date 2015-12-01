@@ -79,6 +79,7 @@ class DynamicAttribute extends AttributeAbstract
      * Set attribute value
      *
      * @param null $value
+     * @param bool $fromDb
      *
      * @return $this
      */

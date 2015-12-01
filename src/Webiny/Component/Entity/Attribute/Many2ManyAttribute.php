@@ -97,6 +97,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      * Set or get attribute value
      *
      * @param null $value
+     * @param bool $fromDb
      *
      * @return $this|null|EntityCollection
      */
@@ -104,6 +105,10 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
     {
         if (!$this->canAssign()) {
             return $this;
+        }
+
+        if(!$fromDb){
+            $value = $this->processSetValue($value);
         }
 
         $this->value = $value;

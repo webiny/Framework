@@ -17,6 +17,7 @@ use Webiny\Component\Entity\Attribute\FloatAttribute;
 use Webiny\Component\Entity\Attribute\IntegerAttribute;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Many2OneAttribute;
+use Webiny\Component\Entity\Attribute\ObjectAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\Attribute\SelectAttribute;
 use Webiny\Component\Entity\Attribute\TextAttribute;
@@ -86,6 +87,14 @@ class EntityAttributeBuilder
     public function arr()
     {
         return $this->attributes[$this->attribute] = new ArrayAttribute($this->attribute, $this->entity);
+    }
+
+    /**
+     * @return ObjectAttribute
+     */
+    public function object()
+    {
+        return $this->attributes[$this->attribute] = new ObjectAttribute($this->attribute, $this->entity);
     }
 
     /**

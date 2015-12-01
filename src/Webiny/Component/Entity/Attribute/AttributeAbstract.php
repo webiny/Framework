@@ -295,7 +295,6 @@ abstract class AttributeAbstract implements JsonSerializable
      * Set attribute value
      *
      * @param null $value
-     *
      * @param bool $fromDb
      *
      * @return $this
@@ -308,14 +307,7 @@ abstract class AttributeAbstract implements JsonSerializable
 
         if (!$fromDb) {
             $this->validate($value);
-
-            if ($this->onSetCallback !== null && ($this->onSetValue === null || $this->onSetValue === $value)) {
-                $callable = $this->onSetCallback;
-                if (is_string($this->onSetCallback)) {
-                    $callable = [$this->entity, $this->onSetCallback];
-                }
-                $value = call_user_func_array($callable, [$value]);
-            }
+            $this->processSetValue($value);
         }
 
         $this->value = $value;
@@ -458,8 +450,6 @@ abstract class AttributeAbstract implements JsonSerializable
 
     /**
      * Triggered when calling 'getValue()' on attribute instance
-     * Take generated value and check if custom callback exists for this attribute.
-     * If yes - return the processed value.
      *
      * @param $value
      *
@@ -467,21 +457,23 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function processGetValue($value)
     {
-        if ($this->onGetCallback) {
-            $callable = $this->onGetCallback;
-            if (is_string($callable)) {
-                $callable = [$this->entity, $callable];
-            }
-            $value = call_user_func_array($callable, [$value]);
-        }
+        return $this->processCallback($this->onGetCallback, $value);
+    }
 
-        return $value;
+    /**
+     * Triggered when calling 'setValue()' on attribute instance
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function processSetValue($value)
+    {
+        return $this->processCallback($this->onSetCallback, $value);
     }
 
     /**
      * Triggered when calling 'getDbValue()' on attribute instance
-     * Take generated value and check if custom callback exists for this attribute.
-     * If yes - return the processed value.
      *
      * @param $value
      *
@@ -489,21 +481,11 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function processToDbValue($value)
     {
-        if ($this->onToDbCallback) {
-            $callable = $this->onToDbCallback;
-            if (is_string($callable)) {
-                $callable = [$this->entity, $callable];
-            }
-            $value = call_user_func_array($callable, [$value]);
-        }
-
-        return $value;
+        return $this->processCallback($this->onToDbCallback, $value);
     }
 
     /**
      * Triggered when calling 'toArray()' on the entity instance
-     * Take generated value and check if custom callback exists for this attribute.
-     * If yes - return the processed value.
      *
      * @param $value
      *
@@ -511,16 +493,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function processToArrayValue($value)
     {
-        if ($this->onToArrayCallback !== null) {
-            $callable = $this->onToArrayCallback;
-            if (is_string($callable)) {
-                $callable = [$this->entity, $callable];
-            }
-
-            return call_user_func_array($callable, [$value]);
-        }
-
-        return $value;
+        return $this->processCallback($this->onToArrayCallback, $value);
     }
 
     /**
@@ -580,5 +553,27 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         throw $ex;
+    }
+
+    /**
+     * Execute given callback<br/>
+     * Take $value and check if a valid callback is given<br/>
+     * If yes, return the processed value.
+     *
+     * @param $callback
+     * @param $value
+     *
+     * @return mixed
+     */
+    private function processCallback($callback, $value)
+    {
+        if ($callback) {
+            if (is_string($callback)) {
+                $callback = [$this->entity, $callback];
+            }
+            $value = call_user_func_array($callback, [$value]);
+        }
+
+        return $value;
     }
 }

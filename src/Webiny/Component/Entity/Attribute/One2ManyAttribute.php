@@ -112,6 +112,10 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             return $this;
         }
 
+        if(!$fromDb){
+            $value = $this->processSetValue($value);
+        }
+
         $this->value = $value;
 
         return $this;

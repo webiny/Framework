@@ -183,8 +183,10 @@ class Many2OneAttribute extends AttributeAbstract
      * Set attribute value
      *
      * @param null $value
+     * @param bool $fromDb
      *
      * @return $this
+     * @throws \Webiny\Component\Entity\EntityException
      */
     public function setValue($value = null, $fromDb = false)
     {
@@ -209,6 +211,8 @@ class Many2OneAttribute extends AttributeAbstract
                 $value = isset($value['id']) ? $value['id'] : null;
             }
         }
+
+        $value = $this->processSetValue($value);
 
         // Execute setNull callback
         if ($this->setNull && is_null($value) && $this->value) {
