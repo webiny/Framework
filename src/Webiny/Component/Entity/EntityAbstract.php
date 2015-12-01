@@ -484,11 +484,11 @@ abstract class EntityAbstract implements \ArrayAccess
                     try {
                         // If simple ID or null - set and forget
                         if (is_string($dataValue) || is_null($dataValue)) {
-                            $entityAttribute->setValue($dataValue);
+                            $entityAttribute->setValue($dataValue, $fromDb);
                             continue;
                         }
 
-                        $entityAttribute->setValue($dataValue);
+                        $entityAttribute->setValue($dataValue, $fromDb);
                     } catch (ValidationException $e) {
                         $validation[$attributeName] = $e;
                         continue;
