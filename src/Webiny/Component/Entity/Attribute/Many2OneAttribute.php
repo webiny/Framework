@@ -212,7 +212,9 @@ class Many2OneAttribute extends AttributeAbstract
             }
         }
 
-        $value = $this->processSetValue($value);
+        if(!$fromDb){
+            $value = $this->processSetValue($value);
+        }
 
         // Execute setNull callback
         if ($this->setNull && is_null($value) && $this->value) {
