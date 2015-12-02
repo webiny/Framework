@@ -469,7 +469,11 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function processSetValue($value)
     {
-        return $this->processCallback($this->onSetCallback, $value);
+        if ($this->onSetCallback !== null && ($this->onSetValue === null || $this->onSetValue === $value)) {
+            return $this->processCallback($this->onSetCallback, $value);
+        }
+
+        return $value;
     }
 
     /**
