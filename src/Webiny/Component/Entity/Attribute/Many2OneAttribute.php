@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Entity;
+use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -27,7 +28,7 @@ class Many2OneAttribute extends AttributeAbstract
     /**
      * @var null|\Closure
      */
-    protected $setNull = null;
+    protected $onSetNullCallback = null;
 
     /**
      * Get masked entity value when instance is being converted to string
@@ -106,10 +107,7 @@ class Many2OneAttribute extends AttributeAbstract
             }
 
             if (Entity::getInstance()->getDatabase()->isMongoId($value)) {
-                $this->value = call_user_func_array([
-                    $this->entityClass,
-                    'findById'
-                ], [$value]);
+                $this->value = $this->loadEntity($value);
             }
         }
 
@@ -159,10 +157,7 @@ class Many2OneAttribute extends AttributeAbstract
                 $this->value = isset($data['id']) ? $data['id'] : false;
             }
 
-            $this->value = call_user_func_array([
-                $this->entityClass,
-                'findById'
-            ], [$this->value]);
+            $this->value = $this->loadEntity($this->value);
 
             if ($this->value) {
                 $this->value->populate($data);
@@ -190,43 +185,72 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function setValue($value = null, $fromDb = false)
     {
+        if ($fromDb) {
+            $this->value = $value;
+
+            return $this;
+        }
+
         if (!$this->canAssign()) {
             return $this;
         }
 
         $this->validate($value);
 
-        if (is_array($value) && isset($value['id']) && !$fromDb) {
-            // Verify that given ID exists
-            $exists = call_user_func_array([
-                $this->entityClass,
-                'findById'
-            ], [$value['id']]);
+        $id = null;
+        $data = [];
+        $entity = null;
 
-            if (!$exists) {
-                unset($value['id']);
-            }
-
-            if (!$this->updateExisting && $this->value != null) {
-                $value = isset($value['id']) ? $value['id'] : null;
-            }
+        // Normalize $value using one of 5 scenarios:
+        // 1: EntityAbstract instance
+        // 2: ID
+        // 3: Array with ID
+        // 4: Array without ID
+        // 5: null (default)
+        if ($this->isInstanceOf($value, $this->entityClass)) {
+            $id = $value->id;
+            $entity = $value;
+        } elseif (Entity::getInstance()->getDatabase()->isMongoId($value)) {
+            $id = $value;
+        } elseif (is_array($value) && isset($value['id'])) {
+            $id = $value['id'];
+            $data = $value;
+            unset($data['id']);
+        } elseif (is_array($value) && !isset($value['id'])) {
+            $entity = new $this->entityClass;
+            $data = $value;
         }
 
-        if(!$fromDb){
-            $value = $this->processSetValue($value);
+        // Try loading entity with existing ID if not already assigned
+        if ($id && !$entity) {
+            $entity = $this->loadEntity($id);
         }
 
-        // Execute setNull callback
-        if ($this->setNull && is_null($value) && $this->value) {
-            $callable = $this->setNull;
-            if ($callable == 'delete') {
-                $this->getValue()->delete();
-            } else {
-                $callable($this->getValue());
-            }
+        // Optionally, populate entity with new data
+        if ($entity && (!$entity->exists() || $this->updateExisting)) {
+            $entity->populate($data);
+        }
+
+        // Process onSet() callback
+        $previousValue = $this->getValue();
+        $value = $this->processSetValue($entity);
+
+        // After callback is executed we do simple check if it's either null or instance of expected entity class
+        if (!$this->isNull($value) && !$this->isInstanceOf($value, $this->entityClass)) {
+            $this->expected('null or instance of ' . $this->entityClass, gettype($value));
         }
 
         $this->value = $value;
+
+        // Execute setNull callback
+        if ($this->onSetNullCallback && is_null($this->value) && $previousValue) {
+            $callable = $this->onSetNullCallback;
+            if ($callable == 'delete') {
+                $previousValue->delete();
+            } else {
+                $callable($previousValue);
+            }
+        }
 
         return $this;
     }
@@ -279,8 +303,20 @@ class Many2OneAttribute extends AttributeAbstract
 
     public function onSetNull($callable)
     {
-        $this->setNull = $callable;
+        $this->onSetNullCallback = $callable;
 
         return $this;
+    }
+
+    private function loadEntity($id)
+    {
+        if (!$id) {
+            return null;
+        }
+
+        return call_user_func_array([
+            $this->entityClass,
+            'findById'
+        ], [$id]);
     }
 }

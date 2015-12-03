@@ -441,7 +441,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function canAssign()
     {
-        if ($this->entity->getId()->getValue() && $this->getOnce() && $this->value !== null) {
+        if ($this->entity->id && $this->getOnce() && $this->value !== null) {
             return false;
         }
 
