@@ -307,7 +307,7 @@ abstract class AttributeAbstract implements JsonSerializable
 
         if (!$fromDb) {
             $this->validate($value);
-            $this->processSetValue($value);
+            $value = $this->processSetValue($value);
         }
 
         $this->value = $value;
