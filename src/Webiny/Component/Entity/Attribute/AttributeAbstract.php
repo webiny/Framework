@@ -301,6 +301,12 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setValue($value = null, $fromDb = false)
     {
+        if($fromDb){
+            $this->value = $value;
+
+            return $this;
+        }
+
         if (!$this->canAssign()) {
             return $this;
         }

@@ -108,11 +108,17 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
     public function setValue($value = null, $fromDb = false)
     {
-        if(!$this->canAssign()){
+        if ($fromDb) {
+            $this->value = $value;
+
             return $this;
         }
 
-        if(!$fromDb){
+        if (!$this->canAssign()) {
+            return $this;
+        }
+
+        if (!$fromDb) {
             $value = $this->processSetValue($value);
         }
 
@@ -153,14 +159,15 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         return $this->processGetValue($this->value);
     }
 
-    private function parseSorter($fields){
+    private function parseSorter($fields)
+    {
         $sorters = [];
 
-        if(is_string($fields)){
+        if (is_string($fields)) {
             $fields = explode(',', $fields);
         }
 
-        foreach($fields as $sort){
+        foreach ($fields as $sort) {
             $sortField = $sort;
             $sortDirection = 1;
 
