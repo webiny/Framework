@@ -193,7 +193,7 @@ class EntityDataExtractor
 
             $fields = explode(',', $part);
 
-            $isLast = $index < $lastPart;
+            $isLast = $index == $lastPart;
 
             if (!$isLast) {
                 $newNestedKey = array_pop($fields) . '.';
