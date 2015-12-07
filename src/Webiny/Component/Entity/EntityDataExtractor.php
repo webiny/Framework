@@ -143,7 +143,13 @@ class EntityDataExtractor
     private function buildEntityFields($fields)
     {
         if (!$this->isArray($fields)) {
-            $fields = $this->str($fields)->explode(',')->filter()->map('trim')->val();
+            $fields = $this->str($fields);
+
+            if ($fields->contains('[')) {
+                $fields = $this->parseGroupedNestedFields($fields);
+            }
+
+            $fields = $fields->explode(',')->filter()->map('trim')->val();
         } else {
             // Check if asterisk is present and replace it with actual attribute names
             if ($this->arr($fields)->keyExists('*')) {
@@ -175,12 +181,71 @@ class EntityDataExtractor
             $this->buildFields($parsedFields, $f);
         }
 
-        // TODO: add support for nested keys
         foreach ($unsetFields as $field) {
             $parsedFields->removeKey($field);
         }
 
         return $parsedFields->val();
+    }
+
+    /**
+     * Check if there are grouped nested keys (by using '[' and ']' and converts that string
+     * into a plain version - a string that only contains comma-separated full paths of each field
+     *
+     * @param $string
+     *
+     * @return StringObject
+     */
+    private function parseGroupedNestedFields(StringObject $string)
+    {
+        $output = $this->str('');
+        $currentPath = [
+            'array'  => [],
+            'string' => ''
+        ];
+
+        $parts = $string->explode('[');
+        $lastPart = $parts->count() - 1;
+
+        foreach ($parts as $index => $part) {
+
+            $fields = explode(',', $part);
+
+            $isLast = $index == $lastPart;
+
+            if (!$isLast) {
+                $newNestedKey = array_pop($fields) . '.';
+            }
+
+            foreach ($fields as $field) {
+
+                $fullPath = '';
+
+                if (substr($field, 0, 1) == '!') {
+                    $fullPath = '!';
+                    $field = ltrim($field, '!');
+                }
+
+                $closingBrackets = substr_count($field, ']');
+                $field = rtrim($field, ']');
+
+                $fullPath .= $currentPath['string'] . $field;
+
+                $output->append($fullPath . ',');
+
+                if ($closingBrackets > 0) {
+                    $currentPath['array'] = array_slice($currentPath['array'], 0, count($currentPath['array']) - $closingBrackets);
+                    $currentPath['string'] = implode('.', $currentPath['array']);
+                }
+            }
+
+            if (!$isLast) {
+                $currentPath['string'] .= $newNestedKey;
+                $currentPath['array'][] = $newNestedKey;
+            }
+        }
+
+        return $output->trimRight(',');
     }
 
     /**
