@@ -79,6 +79,8 @@ class EntityDataExtractor
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
             $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
+            $isArray = $this->isInstanceOf($entityAttribute, AttributeType::ARR);
+            $isObject = $this->isInstanceOf($entityAttribute, AttributeType::OBJECT);
 
             if ($isMany2One) {
                 if ($this->isNull($entityAttributeValue)) {
@@ -105,6 +107,22 @@ class EntityDataExtractor
                         self::$currentLevel--;
                     }
                 }
+            } elseif ($isArray) {
+                $value = $entityAttribute->toArray();
+                if ($subAttributes) {
+                    $subValues = [];
+                    foreach ($value as $array) {
+                        $subValues[] = $this->getSubAttributesFromArray($subAttributes, $array);
+                    }
+                    $value = $subValues;
+                }
+                $data[$attr] = $value;
+            } elseif ($isObject) {
+                $value = $entityAttribute->toArray();
+                if ($subAttributes) {
+                    $value = $this->getSubAttributesFromArray($subAttributes, $value);
+                }
+                $data[$attr] = $value;
             } else {
                 $data[$attr] = $entityAttribute->toArray();
             }
@@ -183,6 +201,36 @@ class EntityDataExtractor
         } else {
             $parsedFields[$key->val()] = '';
         }
+    }
+
+    private function buildNestedKeys($fields)
+    {
+        $keys = [];
+        foreach ($fields as $f => $nestedFields) {
+            if (is_array($nestedFields)) {
+                $nestedKeys = $this->buildNestedKeys($nestedFields);
+                foreach ($nestedKeys as $k) {
+                    $keys[] = $f . '.' . $k;
+                }
+            } else {
+                $keys[] = $f;
+            }
+        }
+
+        return $keys;
+    }
+
+    private function getSubAttributesFromArray($subAttributes, $array)
+    {
+        $keys = $this->buildNestedKeys($subAttributes);
+
+        $value = $this->arr();
+        $entityAttributeValue = $this->arr($array);
+        foreach ($keys as $key) {
+            $value->keyNested($key, $entityAttributeValue->keyNested($key), true);
+        }
+
+        return $value->val();
     }
 
     /**
