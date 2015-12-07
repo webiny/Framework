@@ -30,6 +30,8 @@ class EntityDataExtractor
 
     protected static $currentLevel = 0;
     protected $nestedLevel = 1;
+    protected $aliases = [];
+    protected $dottedFields = [];
 
     public function __construct(EntityAbstract $entity, $nestedLevel = 1)
     {
@@ -107,6 +109,15 @@ class EntityDataExtractor
                         self::$currentLevel--;
                     }
                 }
+            } elseif ($isObject) {
+                $value = $entityAttribute->toArray();
+                if ($subAttributes) {
+                    $value = $this->getSubAttributesFromArray($subAttributes, $value);
+                }
+
+                if (!empty($value)) {
+                    $data[$attr] = $value;
+                }
             } elseif ($isArray) {
                 $value = $entityAttribute->toArray();
                 if ($subAttributes) {
@@ -116,12 +127,7 @@ class EntityDataExtractor
                     }
                     $value = $subValues;
                 }
-                $data[$attr] = $value;
-            } elseif ($isObject) {
-                $value = $entityAttribute->toArray();
-                if ($subAttributes) {
-                    $value = $this->getSubAttributesFromArray($subAttributes, $value);
-                }
+
                 $data[$attr] = $value;
             } else {
                 $data[$attr] = $entityAttribute->toArray();
@@ -129,7 +135,22 @@ class EntityDataExtractor
         }
         $data['_name'] = $this->entity->getMaskedValue();
 
-        return $data;
+        // Populate alias value
+        $data = $this->arr($data);
+        if (count($this->aliases)) {
+            // Recreate the entire array to remove keys of aliased attributes
+            $cleanData = $this->arr();
+            foreach ($this->dottedFields as $key) {
+                if (array_key_exists($key, $this->aliases)) {
+                    $cleanData->keyNested($this->aliases[$key], $data->keyNested($key), true);
+                    continue;
+                }
+                $cleanData->keyNested($key, $data->keyNested($key), true);
+            }
+            return $cleanData->val();
+        }
+
+        return $data->val();
     }
 
     /**
@@ -166,6 +187,15 @@ class EntityDataExtractor
 
         foreach ($fields as $f) {
             $f = $this->str($f);
+
+            if ($f->contains('@')) {
+                list($f, $alias) = $f->explode('@')->val();
+                $this->aliases[$f] = $alias;
+                $f = $this->str($f);
+            }
+
+            $this->dottedFields[] = $f->val();
+
             if ($f->startsWith('!')) {
                 $unsetFields[] = $f->trimLeft('!')->val();
                 continue;
@@ -251,8 +281,8 @@ class EntityDataExtractor
     /**
      * Parse attribute key recursively
      *
-     * @param $parsedFields Reference to array of parsed fields
-     * @param $key          Current key to parse
+     * @param array        $parsedFields Reference to array of parsed fields
+     * @param StringObject $key Current key to parse
      */
     private function buildFields(&$parsedFields, StringObject $key)
     {
@@ -291,7 +321,9 @@ class EntityDataExtractor
 
         $value = $this->arr();
         $entityAttributeValue = $this->arr($array);
+
         foreach ($keys as $key) {
+            $key = $this->str($key);
             $value->keyNested($key, $entityAttributeValue->keyNested($key), true);
         }
 

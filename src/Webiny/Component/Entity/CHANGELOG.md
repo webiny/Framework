@@ -9,6 +9,8 @@ CHANGELOG
 * added setSkipOnPopulate(), onSet(), onGet(), onToArray() and onToDb() callbacks on all attributes 
 * added support for Entity attribute validation and custom validators through Entity config
 * ArrayAttribute now supports nested key validation and validation messages
+* EntityDataExtractor now supports nested attributes grouping using brackets, eg: `team[name,members,owner[id,email]]`
+* Alias can be given to EntityDataExtractor to format returned data, eg: `meta[lastChargeFailed@chargeFailed,type@custom.typeFailed]`
 
 1.0.0-RC1
 ---------
