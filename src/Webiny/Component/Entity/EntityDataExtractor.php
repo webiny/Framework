@@ -110,14 +110,7 @@ class EntityDataExtractor
                     }
                 }
             } elseif ($isObject) {
-                $value = $entityAttribute->toArray();
-                if ($subAttributes) {
-                    $value = $this->getSubAttributesFromArray($subAttributes, $value);
-                }
-
-                if (!empty($value)) {
-                    $data[$attr] = $value;
-                }
+                $data[$attr] = $entityAttribute->toArray();
             } elseif ($isArray) {
                 $value = $entityAttribute->toArray();
                 if ($subAttributes) {
@@ -126,6 +119,7 @@ class EntityDataExtractor
                         $subValues[] = $this->getSubAttributesFromArray($subAttributes, $array);
                     }
                     $value = $subValues;
+                    $value['__webiny_array__'] = true;
                 }
 
                 $data[$attr] = $value;
@@ -134,11 +128,13 @@ class EntityDataExtractor
             }
         }
         $data['_name'] = $this->entity->getMaskedValue();
-
+        
         // Populate alias value
+        $copy = $data;
         $data = $this->arr($data);
+
+        // If aliases were used, recreate the entire array to remove junk keys of aliased attributes
         if (count($this->aliases)) {
-            // Recreate the entire array to remove keys of aliased attributes
             $cleanData = $this->arr();
             foreach ($this->dottedFields as $key) {
                 if (array_key_exists($key, $this->aliases)) {
@@ -147,7 +143,15 @@ class EntityDataExtractor
                 }
                 $cleanData->keyNested($key, $data->keyNested($key), true);
             }
-            return $cleanData->val();
+            $data = $cleanData;
+        }
+
+        // Copy ArrayAttribute value from backup
+        foreach($copy as $key => $value){
+            if(is_array($value) && array_key_exists('__webiny_array__', $value)){
+                unset($value['__webiny_array__']);
+                $data[$key] = $value;
+            }
         }
 
         return $data->val();
