@@ -41,6 +41,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $validators = [];
     protected $validationMessages = [];
     protected $storeToDb = true;
+    protected $setAfterPopulate = false;
     protected $onSetValue = null;
     protected $onSetCallback = null;
     protected $onGetCallback = null;
@@ -220,6 +221,32 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
+     * Should this attribute's value be assigned after populate() ?
+     * This is useful when onSet() callback is triggering business logic that depends on other attributes that are not yet set
+     * because populate() cycle has not yet finished and onSet() callback of current attribute is executed
+     *
+     * @param bool $flag
+     *
+     * @return $this
+     */
+    public function setAfterPopulate($flag = true)
+    {
+        $this->setAfterPopulate = true;
+
+        return $this;
+    }
+
+    /**
+     * Should this attribute's value be assigned after populate() ?
+     *
+     * @return bool
+     */
+    public function getAfterPopulate()
+    {
+        return $this->setAfterPopulate;
+    }
+
+    /**
      * Set 'once' flag<br>
      * If true, it tells EntityAbstract to only populate this attribute if it's a new entity<br>
      * This is useful when you want to protect values from being populate on later updates.
@@ -274,10 +301,11 @@ abstract class AttributeAbstract implements JsonSerializable
 
     public function onSet($value, $callable = null)
     {
-        if (is_callable($value)) {
+        if (is_callable($value) || (is_string($value) && $callable == null)) {
             $callable = $value;
             $value = null;
         }
+
         $this->onSetValue = $value;
         $this->onSetCallback = $callable;
 
@@ -301,7 +329,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function setValue($value = null, $fromDb = false)
     {
-        if($fromDb){
+        if ($fromDb) {
             $this->value = $value;
 
             return $this;
@@ -312,8 +340,8 @@ abstract class AttributeAbstract implements JsonSerializable
         }
 
         if (!$fromDb) {
-            $this->validate($value);
             $value = $this->processSetValue($value);
+            $this->validate($value);
         }
 
         $this->value = $value;

@@ -195,8 +195,6 @@ class Many2OneAttribute extends AttributeAbstract
             return $this;
         }
 
-        $this->validate($value);
-
         $id = null;
         $data = [];
         $entity = null;
@@ -219,6 +217,8 @@ class Many2OneAttribute extends AttributeAbstract
         } elseif (is_array($value) && !isset($value['id'])) {
             $entity = new $this->entityClass;
             $data = $value;
+        } else {
+            $entity = $value;
         }
 
         // Try loading entity with existing ID if not already assigned
@@ -227,7 +227,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         // Optionally, populate entity with new data
-        if ($entity && (!$entity->exists() || $this->updateExisting)) {
+        if ($this->isInstanceOf($entity, $this->entityClass) && (!$entity->exists() || $this->updateExisting)) {
             $entity->populate($data);
         }
 
@@ -235,10 +235,7 @@ class Many2OneAttribute extends AttributeAbstract
         $previousValue = $this->getValue();
         $value = $this->processSetValue($entity);
 
-        // After callback is executed we do simple check if it's either null or instance of expected entity class
-        if (!$this->isNull($value) && !$this->isInstanceOf($value, $this->entityClass)) {
-            $this->expected('null or instance of ' . $this->entityClass, gettype($value));
-        }
+        $this->validate($value);
 
         $this->value = $value;
 
