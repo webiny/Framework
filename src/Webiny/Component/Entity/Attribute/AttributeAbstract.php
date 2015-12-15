@@ -76,6 +76,11 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this->isNull($this->value) ? '' : (string)$this->value;
     }
 
+    public function hasValue()
+    {
+        return $this->value !== null;
+    }
+
     /**
      * Get entity instance this attribute belongs to
      *

@@ -37,12 +37,10 @@ class Many2ManyStorage
 
         // Select related IDs from aggregation table
         $query = [
-            $firstClassName => $attribute->getParentEntity()->getId()->getValue()
+            $firstClassName => $attribute->getParentEntity()->id
         ];
 
-        $relatedObjects = Entity::getInstance()
-                                ->getDatabase()
-                                ->find($attribute->getIntermediateCollection(), $query, [$secondClassName]);
+        $relatedObjects = Entity::getInstance()->getDatabase()->find($attribute->getIntermediateCollection(), $query, [$secondClassName]);
         $relatedIds = [];
         foreach ($relatedObjects as $rObject) {
             $relatedIds[] = $rObject[$secondClassName];
@@ -59,6 +57,26 @@ class Many2ManyStorage
         ];
 
         return call_user_func_array($callable, [$query]);
+    }
+
+    /**
+     * Count many2many attribute values
+     *
+     * @param Many2ManyAttribute $attribute
+     *
+     * @return EntityCollection
+     */
+    public function count(Many2ManyAttribute $attribute)
+    {
+        $firstClassName = $this->extractClassName($attribute->getParentEntity());
+        $secondClassName = $this->extractClassName($attribute->getEntity());
+
+        // Select related IDs from aggregation table
+        $query = [
+            $firstClassName => $attribute->getParentEntity()->id
+        ];
+
+        return Entity::getInstance()->getDatabase()->count($attribute->getIntermediateCollection(), $query, [$secondClassName]);
     }
 
     public function save(Many2ManyAttribute $attribute)

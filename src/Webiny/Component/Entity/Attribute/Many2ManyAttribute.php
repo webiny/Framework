@@ -103,7 +103,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     public function setValue($value = null, $fromDb = false)
     {
-        if($fromDb){
+        if ($fromDb) {
             $this->value = $value;
 
             return $this;
@@ -113,13 +113,18 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
             return $this;
         }
 
-        if(!$fromDb){
+        if (!$fromDb) {
             $value = $this->processSetValue($value);
         }
 
         $this->value = $value;
 
         return $this;
+    }
+
+    public function hasValue()
+    {
+        return boolval(Many2ManyStorage::getInstance()->count($this));
     }
 
     /**

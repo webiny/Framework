@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
+use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -25,6 +26,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     protected $filter = [];
     protected $sorter = [];
     protected $onDelete = 'cascade';
+    protected $dataLoaded = false;
 
     /**
      * @var null|\Webiny\Component\Entity\EntityAbstract
@@ -40,6 +42,10 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     {
         $this->relatedAttribute = $relatedAttribute;
         parent::__construct($attribute, $entity);
+    }
+
+    public function isLoaded(){
+        return $this->dataLoaded;
     }
 
     /**
@@ -154,9 +160,26 @@ class One2ManyAttribute extends CollectionAttributeAbstract
                 'find'
             ];
             $this->value = call_user_func_array($callable, [$query, $this->sorter]);
+            $this->dataLoaded = true;
         }
 
         return $this->processGetValue($this->value);
+    }
+
+    public function hasValue()
+    {
+        if ($this->isNull($this->value)) {
+            $entityId = $this->entity->id;
+            $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
+            $query = [
+                $this->relatedAttribute => $entityId
+            ];
+
+            $entityCollection = call_user_func_array([$this->entityClass, 'getEntityCollection'], []);
+            return boolval(Entity::getInstance()->getDatabase()->count($entityCollection, $query));
+        }
+
+        return boolval($this->value);
     }
 
     private function parseSorter($fields)

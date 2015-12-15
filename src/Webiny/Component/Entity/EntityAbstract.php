@@ -300,7 +300,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr One2ManyAttribute */
-            if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
+            if ($this->isInstanceOf($attr, AttributeType::ONE2MANY) && $attr->isLoaded()) {
                 foreach ($attr->getValue() as $item) {
                     $item->getAttribute($attr->getRelatedAttribute())->setValue($this);
                     $item->save();
@@ -623,7 +623,7 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Check if attribute is required and it's value is set or maybe value was already assigned
          */
-        $hasValue = !is_null($entityAttribute->getValue());
+        $hasValue = $entityAttribute->hasValue();
         if ($entityAttribute->isRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
             $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
             $ex->addError($attributeName, ValidationException::REQUIRED, []);
