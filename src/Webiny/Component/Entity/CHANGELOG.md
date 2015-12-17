@@ -13,6 +13,7 @@ CHANGELOG
 * Alias can be given to EntityDataExtractor to format returned data, eg: `meta[lastChargeFailed@chargeFailed,type@custom.typeFailed]`
 * Changed default attributes returned by `toArray()`: Many2OneAttribute, ArrayAttribute and ObjectAttribute are no longer returned.
 
+
 1.0.0-RC1
 ---------
 * Initial version
