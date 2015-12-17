@@ -11,6 +11,7 @@ CHANGELOG
 * ArrayAttribute now supports nested key validation and validation messages
 * EntityDataExtractor now supports nested attributes grouping using brackets, eg: `team[name,members,owner[id,email]]`
 * Alias can be given to EntityDataExtractor to format returned data, eg: `meta[lastChargeFailed@chargeFailed,type@custom.typeFailed]`
+* Changed default attributes returned by `toArray()`: Many2OneAttribute, ArrayAttribute and ObjectAttribute are no longer returned.
 
 1.0.0-RC1
 ---------

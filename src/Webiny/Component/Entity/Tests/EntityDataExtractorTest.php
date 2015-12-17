@@ -96,15 +96,15 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         $page = self::$page;
         $page->save();
 
-        // Test default toArray()
-        $data = $page->toArray();
+        // Test toArray()
+        $data = $page->toArray('*,author');
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('author', $data);
         $this->assertArrayHasKey('name', $data['author']);
         $this->assertArrayNotHasKey('labels', $data);
         $this->assertArrayNotHasKey('comments', $data);
 
-        // Test specific toArray()
+        // Test specific toArray() fields
         $data = $page->toArray('title,comments.text,comments.id,labels');
         $this->assertArrayHasKey('comments', $data);
         $this->assertArrayHasKey('labels', $data);
@@ -112,41 +112,20 @@ class EntityDataExtractorTest extends PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('author', $data);
         $this->assertEquals('marketing', $data['labels'][0]['label']);
 
-        // Test EntityCollection toArray()
+        // Test EntityCollection toArray() with default fields
         $data = Page::find()->toArray()[0];
+        $this->assertArrayHasKey('title', $data);
+        $this->assertArrayNotHasKey('author', $data);
+        $this->assertArrayNotHasKey('labels', $data);
+        $this->assertArrayNotHasKey('comments', $data);
+
+        // Test EntityCollection toArray with specific fields
+        $data = Page::find()->toArray('*,author')[0];
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('author', $data);
         $this->assertArrayHasKey('name', $data['author']);
         $this->assertArrayNotHasKey('labels', $data);
         $this->assertArrayNotHasKey('comments', $data);
         $this->assertEquals('Pavel Denisjuk', $data['author']['name']);
-    }
-
-    public function testParentEntity()
-    {
-        // Create parent page
-        $parentPage = new Page();
-        $parentPage->title = 'Parent page';
-        $parentPage->save();
-
-        $page = self::$page;
-        $page->parent = $parentPage;
-        $page->save();
-
-        $parentPage->parent = $page;
-        $parentPage->save();
-
-        /*$data = $page->toArray('*,labels');
-        $this->assertArrayHasKey('title', $data);
-        $this->assertArrayHasKey('author', $data);
-        $this->assertArrayHasKey('name', $data['author']);
-        $this->assertArrayHasKey('labels', $data);
-        $this->assertArrayNotHasKey('comments', $data);
-
-        $data = $page->toArray('title,comments.text,comments.id,labels');
-        $this->assertArrayHasKey('comments', $data);
-        $this->assertArrayHasKey('labels', $data);
-        $this->assertArrayHasKey('label', $data['labels'][0]);
-        $this->assertArrayNotHasKey('author', $data);*/
     }
 }

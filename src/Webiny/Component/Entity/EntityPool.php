@@ -83,6 +83,14 @@ class EntityPool
     }
 
     /**
+     * Remove all loaded instances from pool
+     */
+    public function reset()
+    {
+        $this->pool = $this->arr();
+    }
+
+    /**
      * Get entity database
      * @return \Webiny\Component\Mongo\Mongo
      */

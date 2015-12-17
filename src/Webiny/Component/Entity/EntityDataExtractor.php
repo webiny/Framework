@@ -128,7 +128,7 @@ class EntityDataExtractor
             }
         }
         $data['_name'] = $this->entity->getMaskedValue();
-        
+
         // Populate alias value
         $copy = $data;
         $data = $this->arr($data);
@@ -147,8 +147,8 @@ class EntityDataExtractor
         }
 
         // Copy ArrayAttribute value from backup
-        foreach($copy as $key => $value){
-            if(is_array($value) && array_key_exists('__webiny_array__', $value)){
+        foreach ($copy as $key => $value) {
+            if (is_array($value) && array_key_exists('__webiny_array__', $value)) {
                 unset($value['__webiny_array__']);
                 $data[$key] = $value;
             }
@@ -344,10 +344,15 @@ class EntityDataExtractor
     {
         $attributes = [];
         foreach ($this->entity->getAttributes() as $name => $attribute) {
-            $isOne2Many = $this->isInstanceOf($attribute, AttributeType::ONE2MANY);
-            $isMany2Many = $this->isInstanceOf($attribute, AttributeType::MANY2MANY);
+            $default = [
+                $this->isInstanceOf($attribute, AttributeType::ONE2MANY),
+                $this->isInstanceOf($attribute, AttributeType::MANY2MANY),
+                $this->isInstanceOf($attribute, AttributeType::MANY2ONE),
+                $this->isInstanceOf($attribute, AttributeType::ARR),
+                $this->isInstanceOf($attribute, AttributeType::OBJECT)
+            ];
 
-            if ($isOne2Many || $isMany2Many) {
+            if (in_array(true, $default)) {
                 continue;
             }
 

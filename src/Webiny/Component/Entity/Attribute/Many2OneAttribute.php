@@ -94,29 +94,39 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function getDbValue()
     {
-        $value = $this->getValue();
-        if ($this->isNull($value)) {
+        if (is_null($this->value)) {
             return $this->processToDbValue(null);
         }
 
-        // If what we got is a defaultValue - create or load an actual entity instance
-        if ($value === $this->defaultValue) {
-            if ($this->isArray($value) || $this->isArrayObject($value)) {
-                $this->value = new $this->entityClass;
-                $this->value->populate($value);
+        // Array or string
+        if (!$this->isInstanceOf($this->value, $this->entityClass) && !empty($this->value)) {
+            if ($this->isArray($this->value)) {
+                $id = isset($data['id']) ? $data['id'] : null;
+                if (!$this->getUpdateExisting()) {
+                    return $this->processToDbValue($id);
+                } elseif ($this->getUpdateExisting() && Entity::getInstance()->getDatabase()->isMongoId($id)) {
+                    $this->value = $this->loadEntity($id);
+                    if ($this->value) {
+                        $this->value->populate($data)->save();
+                    } elseif ($data) {
+                        $this->value = new $this->entityClass;
+                        $this->value->populate($data)->save();
+                    }
+
+                    return $this->processToDbValue($this->value->id);
+                }
             }
 
-            if (Entity::getInstance()->getDatabase()->isMongoId($value)) {
-                $this->value = $this->loadEntity($value);
-            }
+            // String ID
+            return $this->processToDbValue($this->value);
         }
 
-        if ($this->getValue()->id === null || $this->updateExisting) {
-            $this->getValue()->save();
+        // Entity value
+        if(!$this->value->exists()){
+            $this->value->save();
         }
 
-        // Return a simple Entity ID string
-        return $this->processToDbValue($this->getValue()->id);
+        return $this->processToDbValue($this->value->id);
     }
 
     /**
