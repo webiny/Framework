@@ -44,9 +44,16 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * Get result as array
      *
+     * @param bool $asArrayObject Return ArrayObject
+     *
      * @return array
      */
-    public function toArray(){
+    public function toArray($asArrayObject = false)
+    {
+        if ($asArrayObject) {
+            return $this->data;
+        }
+
         return $this->data->val();
     }
 
@@ -105,7 +112,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *
