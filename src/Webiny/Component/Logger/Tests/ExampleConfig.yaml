@@ -20,15 +20,15 @@ Logger:
             Class: %Logger.Class%
             Arguments: [System, %Logger.Driver.Class%]
             Calls:
-                - [addHandler, [@Logger.LogHandler]]
+                - [addHandler, ["@Logger.LogHandler"]]
         LogFile:
             Class: \Webiny\Component\Storage\File\File
             Arguments:
                 Key: UnitTest.log
-                Storage: @Storage.Logger # Define this service in your Storage configuration
+                Storage: "@Storage.Logger" # Define this service in your Storage configuration
         LogHandler:
             Class: %Logger.Handlers.File.Class%
-            Arguments: [@Logger.LogFile, [], true, false]
+            Arguments: ["@Logger.LogFile", [], true, false]
             Calls:
                 - [addProcessor, [%Logger.Processor.FileLine.Class%]]
                 - [addProcessor, [%Logger.Processor.MemoryUsage.Class%]]
