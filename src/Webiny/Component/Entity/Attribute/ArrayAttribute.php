@@ -40,7 +40,9 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
         // Make sure it's not an associative array
         if ((bool)count(array_filter(array_keys($value), 'is_string'))) {
-            throw new EntityException('ArrayAttribute value must be an index based array. For associative array use ObjectAttribute instead.');
+            $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+            $ex->addError($this->attribute, 'You should use ObjectAttribute for associative array instead of ArrayAttribute');
+            throw $ex;
         }
 
         return $this->processToDbValue($value);
