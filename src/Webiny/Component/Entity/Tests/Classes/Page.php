@@ -36,6 +36,6 @@ class Page extends EntityAbstract
         $this->attr('labels')->many2many('Label2Page')->setEntity('\Webiny\Component\Entity\Tests\Classes\Label');
 
         // Array
-        $this->attr('settings')->arr();
+        $this->attr('settings')->object();
     }
 }

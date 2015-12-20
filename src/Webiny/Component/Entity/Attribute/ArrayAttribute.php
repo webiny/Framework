@@ -9,6 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
 use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\EntityException;
 use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -37,6 +38,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
             $value = $this->value->val();
         }
 
+        // Make sure it's not an associative array
+        if ((bool)count(array_filter(array_keys($value), 'is_string'))) {
+            throw new EntityException('ArrayAttribute value must be an index based array. For associative array use ObjectAttribute instead.');
+        }
+
         return $this->processToDbValue($value);
     }
 
@@ -56,9 +62,10 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function setDefaultValue($defaultValue = null)
     {
-        if(is_array($defaultValue)){
+        if (is_array($defaultValue)) {
             $defaultValue = $this->arr($defaultValue);
         }
+
         return parent::setDefaultValue($defaultValue);
     }
 
