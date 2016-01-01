@@ -315,7 +315,6 @@ class Request
      * Get client ip address.
      * This function check and validates headers from trusted proxies.
      *
-     * @throws RequestException
      * @return string Client IP address.
      */
     public function getClientIp()
@@ -340,7 +339,7 @@ class Request
             // The remote IP address
             $clientIp = $this->server()->remoteAddress();
         } else {
-            throw new RequestException('Unable to get client IP address.');
+            return false;
         }
 
         return $clientIp;
