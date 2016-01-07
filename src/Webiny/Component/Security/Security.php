@@ -51,8 +51,8 @@ class Security
      *            the fully qualified class names in the yaml config.
      */
     private static $encoders = [
-        'Crypt' => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
-        'Null'  => '\Webiny\Component\Security\Encoder\Drivers\Null'
+        'Crypt'  => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
+        'Plain'  => '\Webiny\Component\Security\Encoder\Drivers\Plain'
     ];
 
 

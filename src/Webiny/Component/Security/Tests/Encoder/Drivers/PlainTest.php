@@ -7,26 +7,26 @@
 
 namespace Webiny\Component\Security\Tests\Encoder\Drivers;
 
-use Webiny\Component\Security\Encoder\Drivers\Null;
+use Webiny\Component\Security\Encoder\Drivers\Plain;
 
-class NullTest extends \PHPUnit_Framework_TestCase
+class PlainTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCreatePasswordHash()
     {
-        $driver = new Null();
+        $driver = new Plain();
         $this->assertSame('password', $driver->createPasswordHash('password'));
     }
 
     public function testVerifyPasswordHashTrue()
     {
-        $driver = new Null();
+        $driver = new Plain();
         $this->assertTrue($driver->verifyPasswordHash('password', 'password'));
     }
 
     public function testVerifyPasswordHashFalse()
     {
-        $driver = new Null();
+        $driver = new Plain();
         $this->assertFalse($driver->verifyPasswordHash('admin', 'password'));
     }
 }

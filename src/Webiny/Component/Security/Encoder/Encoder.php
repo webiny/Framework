@@ -22,7 +22,7 @@ class Encoder
     use StdLibTrait, FactoryLoaderTrait;
 
     /**
-     * @var EncoderInterface
+     * @var EncoderDriverInterface
      */
     private $encoderProviderInstance;
 
