@@ -90,4 +90,14 @@ class Cache
     {
         return new CacheStorage(new Storage\BlackHole());
     }
+
+    /**
+     * Create a cache instance with SessionArray cache driver.
+     *
+     * @return CacheStorage
+     */
+    public static function SessionArray()
+    {
+        return new CacheStorage(new Storage\SessionArray());
+    }
 }
