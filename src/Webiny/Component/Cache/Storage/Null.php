@@ -10,12 +10,12 @@ namespace Webiny\Component\Cache\Storage;
 use \Webiny\Component\Cache\Bridge\CacheStorageInterface;
 
 /**
- * Null cache storage.
+ * BlackHole cache storage.
  * This storage is used when cache status is set to false.
  *
  * @package         Webiny\Component\Cache\Storage
  */
-class Null implements CacheStorageInterface
+class BlackHole implements CacheStorageInterface
 {
 
     /**

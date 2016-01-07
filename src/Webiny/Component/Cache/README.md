@@ -88,7 +88,7 @@ See the `ExampleConfig.yaml` for additional details.
 Under `Cache` you define the cache drivers by giving each of them a `cache id` and underneath you nest its config.
 The driver configuration depends on which driver you are using.
 
-If you wish to turn off the cache, use the `Null` driver.
+If you wish to turn off the cache, use the `BlackHole` driver.
 
 The `Method` parameter must be a valid callback function that will return an instance of `CacheStorage`.
 
