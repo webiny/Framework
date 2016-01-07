@@ -14,7 +14,7 @@ For additional versions of the package, visit the [Packagist page](https://packa
 
 ## Requirements
 
-Webiny Framework requires PHP 5.5 or later.
+Webiny Framework requires PHP 5.6 or later. PHP 7.0 compatibility will come in the upcoming weeks.
 
 ## Feedback
 
