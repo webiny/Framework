@@ -2,5 +2,4 @@ Cache:
     Services:
         TestCache:
             Factory: \Webiny\Component\Cache\Cache
-            Method: Memcache
-            MethodArguments: [127.0.0.1, 11211, []]
+            Method: SessionArray
