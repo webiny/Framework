@@ -76,7 +76,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
     public function testSetGetCacheAsCacheObject()
     {
-        $nullCache = Cache::Null();
+        $nullCache = Cache::BlackHole();
         Router::getInstance()->setCache($nullCache);
         $this->assertInstanceOf('\Webiny\Component\Cache\CacheStorage', Router::getInstance()->getCache());
     }
