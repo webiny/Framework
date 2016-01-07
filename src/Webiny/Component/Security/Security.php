@@ -176,7 +176,7 @@ class Security
         // get the encoder name
         $encoderName = $this->getFirewallConfig($firewallKey)->get('Encoder', 'Crypt');
         if (!$encoderName) {
-            $encoderName = 'Null';
+            $encoderName = 'Plain';
         }
 
         // check if the encoder is defined in the global config
