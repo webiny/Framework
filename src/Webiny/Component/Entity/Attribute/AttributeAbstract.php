@@ -78,7 +78,11 @@ abstract class AttributeAbstract implements JsonSerializable
 
     public function hasValue()
     {
-        return $this->value !== null;
+        if($this->value !== null){
+            return true;
+        }
+
+        return $this->defaultValue !== null;
     }
 
     /**

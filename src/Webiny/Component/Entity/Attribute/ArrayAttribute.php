@@ -54,9 +54,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
             $value = new ArrayObject();
         }
 
-        $value = $this->arr($value);
+        parent::setValue($value, $fromDb);
 
-        return parent::setValue($value, $fromDb);
+        $this->value = $this->arr($this->value);
+
+        return $this;
     }
 
     /**

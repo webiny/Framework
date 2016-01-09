@@ -122,7 +122,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         // Entity value
-        if(!$this->value->exists()){
+        if(!$this->value->exists() || $this->getUpdateExisting()){
             $this->value->save();
         }
 

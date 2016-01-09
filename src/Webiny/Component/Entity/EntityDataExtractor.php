@@ -31,7 +31,7 @@ class EntityDataExtractor
     protected static $currentLevel = 0;
     protected $nestedLevel = 1;
     protected $aliases = [];
-    protected $dottedFields = [];
+    protected $dottedFields = ['_name'];
 
     public function __construct(EntityAbstract $entity, $nestedLevel = 1)
     {
