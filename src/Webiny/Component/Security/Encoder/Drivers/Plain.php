@@ -15,7 +15,7 @@ use Webiny\Component\Security\Encoder\EncoderDriverInterface;
  *
  * @package         Webiny\Component\Security\Encoder\Drivers
  */
-class Null implements EncoderDriverInterface
+class Plain implements EncoderDriverInterface
 {
     /**
      * Create a hash for the given password.

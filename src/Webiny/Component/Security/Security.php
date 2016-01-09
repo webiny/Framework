@@ -51,8 +51,8 @@ class Security
      *            the fully qualified class names in the yaml config.
      */
     private static $encoders = [
-        'Crypt' => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
-        'Null'  => '\Webiny\Component\Security\Encoder\Drivers\Null'
+        'Crypt'  => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
+        'Plain'  => '\Webiny\Component\Security\Encoder\Drivers\Plain'
     ];
 
 
@@ -176,7 +176,7 @@ class Security
         // get the encoder name
         $encoderName = $this->getFirewallConfig($firewallKey)->get('Encoder', 'Crypt');
         if (!$encoderName) {
-            $encoderName = 'Null';
+            $encoderName = 'Plain';
         }
 
         // check if the encoder is defined in the global config

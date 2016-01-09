@@ -81,13 +81,23 @@ class Cache
     }
 
     /**
-     * Create a cache instance with Null cache driver.
-     * NOTE: Null driver turns off the cache.
+     * Create a cache instance with BlackHole cache driver.
+     * NOTE: BlackHole driver turns off the cache.
      *
      * @return CacheStorage
      */
-    public static function Null()
+    public static function BlackHole()
     {
-        return new CacheStorage(new Storage\Null());
+        return new CacheStorage(new Storage\BlackHole());
+    }
+
+    /**
+     * Create a cache instance with SessionArray cache driver.
+     *
+     * @return CacheStorage
+     */
+    public static function SessionArray()
+    {
+        return new CacheStorage(new Storage\SessionArray());
     }
 }

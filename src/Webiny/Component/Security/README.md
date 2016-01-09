@@ -175,7 +175,7 @@ Security:
         EncoderOne:
             Driver: \Webiny\Component\Security\Encoder\Drivers\Crypt
         EncoderTwo:
-            Driver: \Webiny\Component\Security\Encoder\Drivers\Null
+            Driver: \Webiny\Component\Security\Encoder\Drivers\Plain
     Firewalls:
         Admin:
             Encoder: EncoderOne
@@ -184,8 +184,8 @@ Security:
 To create a custom encoder driver, you need to create a class that implements
 `\Webiny\Component\Security\Encoder\EncoderDriverInterface`.
 
-The component also comes with a `Null` driver, which doesn't encode passwords, it keeps them in their plain format.
-You can also set `Encoder: false` under the `Firewall`. That will use the `Null` driver.
+The component also comes with a `Plain` driver, which doesn't encode passwords, it keeps them in their plain format.
+You can also set `Encoder: false` under the `Firewall`. That will use the `Plain` driver.
 
 By default you don't need to define an `Encoder`, an internal encoder is automatically defined for you. 
 

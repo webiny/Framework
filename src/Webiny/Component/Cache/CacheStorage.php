@@ -8,6 +8,7 @@
 namespace Webiny\Component\Cache;
 
 use Webiny\Component\Cache\Bridge\CacheStorageInterface;
+use Webiny\Component\Cache\Storage\BlackHole;
 
 /**
  * CacheStorage is the main instance for working with cache drivers.
@@ -18,7 +19,7 @@ use Webiny\Component\Cache\Bridge\CacheStorageInterface;
 class CacheStorage
 {
     /**
-     * @var null|Null
+     * @var null|BlackHole
      */
     private static $nullDriver = null;
 
@@ -60,10 +61,10 @@ class CacheStorage
      */
     public function getDriver()
     {
-        // if driver status is false, we return the Null driver
+        // if driver status is false, we return the BlackHole driver
         if (!$this->getStatus()) {
             if (is_null(self::$nullDriver)) {
-                self::$nullDriver = new Storage\Null();
+                self::$nullDriver = new Storage\BlackHole();
             }
 
             return self::$nullDriver;
