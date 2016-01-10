@@ -17,13 +17,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     public function randomIntProvider()
     {
         return [
-            [0,0],
-            [1,1],
-            [0,1],
-            [0,1000],
-            [1000,1000],
+            [0, 0],
+            [1, 1],
+            [0, 1],
+            [0, 1000],
+            [1000, 1000],
             [0, PHP_INT_MAX],
-            [PHP_INT_MAX-100, PHP_INT_MAX]
+            [PHP_INT_MAX - 100, PHP_INT_MAX]
         ];
     }
 
@@ -35,7 +35,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $c = new CryptBridge(CRYPT_BLOWFISH, MCRYPT_MODE_ECB, MCRYPT_RIJNDAEL_256);
         $int = $c->GenerateRandomInt($min, $max);
         $this->assertGreaterThanOrEqual($min, $int);
-        $this->assertLessThanOrEqual ($max, $int);
+        $this->assertLessThanOrEqual($max, $int);
     }
 
     public function testGenerateRandomIntRandomness()
@@ -43,7 +43,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $c = new CryptBridge(CRYPT_BLOWFISH, MCRYPT_MODE_ECB, MCRYPT_RIJNDAEL_256);
 
         $genNumbers = [];
-        for($i=0;$i<100;$i++){
+        for ($i = 0; $i < 100; $i++) {
             $genNumbers[] = $c->GenerateRandomInt(0, PHP_INT_MAX);
         }
 
@@ -57,13 +57,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
 
     public function randomStringProvider()
     {
-        return[
+        return [
             [1, 'a'],
             [10, 'bcd'],
             [100, CryptBridge::CHARS],
             [100, CryptBridge::NUMBERS],
             [200, CryptBridge::SYMBOLS],
-            [300, CryptBridge::SYMBOLS.CryptBridge::NUMBERS.CryptBridge::CHARS],
+            [300, CryptBridge::SYMBOLS . CryptBridge::NUMBERS . CryptBridge::CHARS],
         ];
     }
 
@@ -93,7 +93,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $len);
 
         $chars = array_unique(str_split($str));
-        $diff = array_diff($chars, str_split(CryptBridge::NUMBERS.CryptBridge::CHARS));
+        $diff = array_diff($chars, str_split(CryptBridge::NUMBERS . CryptBridge::CHARS));
         $this->assertSame(0, count($diff));
     }
 
@@ -106,7 +106,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $len);
 
         $chars = array_unique(str_split($str));
-        $diff = array_diff($chars, str_split(CryptBridge::SYMBOLS.CryptBridge::NUMBERS.CryptBridge::CHARS));
+        $diff = array_diff($chars, str_split(CryptBridge::SYMBOLS . CryptBridge::NUMBERS . CryptBridge::CHARS));
         $this->assertSame(0, count($diff));
     }
 
@@ -159,8 +159,8 @@ class CryptTest extends \PHPUnit_Framework_TestCase
         ];
 
         $return = [];
-        foreach($ciphers as $c){
-            foreach($blocks as $b){
+        foreach ($ciphers as $c) {
+            foreach ($blocks as $b) {
                 $return[] = ['some text', 'secret key', $b, $c];
             }
         }

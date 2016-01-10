@@ -27,7 +27,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisterCacheDriver()
     {
-        ClassLoader::getInstance()->registerCacheDriver(Cache::Null());
+        ClassLoader::getInstance()->registerCacheDriver(Cache::BlackHole());
         $autoloaders = spl_autoload_functions();
         $this->assertSame('getClassFromCache', $autoloaders[0][1]);
     }
