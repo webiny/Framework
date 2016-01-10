@@ -70,7 +70,7 @@ class DateTimeObjectTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDate()
     {
-        $dt = new DateTimeObject('14.02.2013');
+        $dt = new DateTimeObject('14.02.2013', 'Europe/London');
 
         $this->assertSame("2013-02-14T00:00:00+00:00", $dt->getDate());
     }
