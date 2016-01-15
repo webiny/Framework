@@ -35,10 +35,10 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
     /**
      * Constructor
      *
-     * @param string  $directory           Directory of the storage
-     * @param string  $publicUrl           Public storage URL
+     * @param string  $directory Directory of the storage
+     * @param string  $publicUrl Public storage URL
      * @param bool    $dateFolderStructure If true, will append Y/m/d to the key
-     * @param boolean $create              Whether to create the directory if it does not
+     * @param boolean $create Whether to create the directory if it does not
      *                                     exist (default FALSE)
      *
      * @throws StorageException
@@ -124,7 +124,7 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
     public function setContents($key, $contents, $append = false)
     {
         if ($this->dateFolderStructure) {
-            if (!$this->keyExists($key)) {
+            if (!preg_match('#^\d{4}/\d{2}/\d{2}/#', $key)) {
                 $key = new StringObject($key);
                 $key = date('Y' . DS . 'm' . DS . 'd') . DS . $key->trimLeft(DS);
             }
@@ -151,7 +151,7 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
     /**
      * Returns an array of all keys (files and directories)
      *
-     * @param string   $key       (Optional) Key of a directory to get keys from. If not set - keys will be read from the storage root.
+     * @param string   $key (Optional) Key of a directory to get keys from. If not set - keys will be read from the storage root.
      *
      * @param bool|int $recursive (Optional) Read all items recursively. Pass integer value to specify recursion depth.
      *
@@ -167,7 +167,7 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
             $path = $this->directory;
         }
 
-        if(!is_dir($path)){
+        if (!is_dir($path)) {
             return [];
         }
 
@@ -264,10 +264,9 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
         $path = $this->helper->buildPath($key, $this->directory, $this->create);
         if (strpos($path, $this->directory) !== 0) {
             throw new StorageException(StorageException::PATH_IS_OUT_OF_STORAGE_ROOT, [
-                                                                                        $path,
-                                                                                        $this->directory
-                                                                                    ]
-            );
+                    $path,
+                    $this->directory
+                ]);
         }
 
         return $path;
