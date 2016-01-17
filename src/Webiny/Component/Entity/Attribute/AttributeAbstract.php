@@ -78,7 +78,7 @@ abstract class AttributeAbstract implements JsonSerializable
 
     public function hasValue()
     {
-        if($this->value !== null){
+        if ($this->value !== null) {
             return true;
         }
 
@@ -455,10 +455,16 @@ abstract class AttributeAbstract implements JsonSerializable
     /**
      * Get validation messages
      *
-     * @return array
+     * @param string|null $validator If given, returns validation message for given validator
+     *
+     * @return mixed
      */
-    public function getValidationMessages()
+    public function getValidationMessages($validator = null)
     {
+        if ($validator) {
+            return isset($this->validationMessages[$validator]) ? $this->validationMessages[$validator] : null;
+        }
+
         return $this->validationMessages;
     }
 

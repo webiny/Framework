@@ -128,6 +128,26 @@ abstract class EntityAbstract implements \ArrayAccess
     }
 
     /**
+     * Find a random entity
+     *
+     * @param array $conditions
+     *
+     * @return null|EntityAbstract
+     * @throws EntityException
+     */
+    public static function random(array $conditions = [])
+    {
+        $count = static::entity()->getDatabase()->count(static::$entityCollection, $conditions);
+        if ($count === 0) {
+            return null;
+        }
+
+        $instance = new static;
+        $data = static::find($conditions, [], 1, rand(0, $count));
+        return $data[0];
+    }
+
+    /**
      * Find entities
      *
      * @param mixed $conditions
@@ -440,7 +460,7 @@ abstract class EntityAbstract implements \ArrayAccess
 
         /* @var $entityAttribute AttributeAbstract */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
-            if(!$entityAttribute->getAfterPopulate()){
+            if (!$entityAttribute->getAfterPopulate()) {
                 $this->populateAttribute($attributeName, $entityAttribute, $validation, $data, $fromDb);
             }
         }
@@ -605,7 +625,7 @@ abstract class EntityAbstract implements \ArrayAccess
         return $parsedOrder;
     }
 
-    private function populateAttribute($attributeName, $entityAttribute, $validation, $data, $fromDb)
+    private function populateAttribute($attributeName, AttributeAbstract $entityAttribute, $validation, $data, $fromDb)
     {
         // Skip population of protected attributes if data is not coming from DB
         if (!$fromDb && $entityAttribute->getSkipOnPopulate()) {
@@ -617,6 +637,7 @@ abstract class EntityAbstract implements \ArrayAccess
             if ($fromDb && isset($data[$attributeName])) {
                 $entityAttribute->setValue($data[$attributeName], $fromDb);
             }
+
             return;
         }
 
@@ -625,9 +646,14 @@ abstract class EntityAbstract implements \ArrayAccess
          */
         $hasValue = $entityAttribute->hasValue();
         if ($entityAttribute->isRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
+            $message = $entityAttribute->getValidationMessages('required');
+            if (!$message) {
+                $message = ValidationException::REQUIRED;
+            }
             $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
-            $ex->addError($attributeName, ValidationException::REQUIRED, []);
+            $ex->addError($attributeName, $message, []);
             $validation[$attributeName] = $ex;
+
             return;
         }
 
@@ -651,12 +677,14 @@ abstract class EntityAbstract implements \ArrayAccess
                     // If simple ID or null - set and forget
                     if (is_string($dataValue) || is_null($dataValue)) {
                         $entityAttribute->setValue($dataValue, $fromDb);
+
                         return;
                     }
 
                     $entityAttribute->setValue($dataValue, $fromDb);
                 } catch (ValidationException $e) {
                     $validation[$attributeName] = $e;
+
                     return;
                 }
             } elseif ($isOne2Many) {
@@ -673,6 +701,7 @@ abstract class EntityAbstract implements \ArrayAccess
                         gettype($dataValue)
                     ]);
                     $validation[$attributeName] = $ex;
+
                     return;
                 }
                 /* @var $entityAttribute One2ManyAttribute */
