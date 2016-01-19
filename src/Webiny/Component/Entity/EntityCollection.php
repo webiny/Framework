@@ -35,12 +35,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     private $count;
     private $value = [];
     private $loaded = false;
+    private $randomize = false;
 
     public function __construct($entityClass, $entityCollection, $conditions, $order, $limit, $offset)
     {
         // Convert boolean strings to boolean
-        foreach($conditions as &$condition){
-            if(is_scalar($condition) && (strtolower($condition) === 'true' || strtolower($condition) === 'false')){
+        foreach ($conditions as &$condition) {
+            if (is_scalar($condition) && (strtolower($condition) === 'true' || strtolower($condition) === 'false')) {
                 $condition = StdObjectWrapper::toBool($condition);
             }
         }
@@ -53,11 +54,11 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         $this->limit = $limit;
 
         $this->cursor = Entity::getInstance()
-                               ->getDatabase()
-                               ->find($this->collectionName, $this->conditions)
-                               ->sort($this->order)
-                               ->skip($this->offset)
-                               ->limit($this->limit);
+                              ->getDatabase()
+                              ->find($this->collectionName, $this->conditions)
+                              ->sort($this->order)
+                              ->skip($this->offset)
+                              ->limit($this->limit);
 
     }
 
@@ -81,7 +82,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      * Each EntityAbstract wil be converted to array using $fields and $nestedLevel specified.<br>
      * If no fields are specified, array will contain all simple and Many2One attributes
      *
-     * @param string $fields      List of fields to extract
+     * @param string $fields List of fields to extract
      *
      * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
      *
@@ -106,17 +107,17 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function add($item)
     {
-        if(!$this->isArray($item)) {
+        if (!$this->isArray($item)) {
             $item = [$item];
         }
 
         foreach ($item as $addItem) {
-            if(!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
+            if (!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
                 $class = $this->entityClass;
                 $addItem = $class::findById($addItem);
             }
 
-            if(!$this->contains($addItem)) {
+            if (!$this->contains($addItem)) {
                 $this->value[] = $addItem;
             }
         }
@@ -139,7 +140,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function totalCount()
     {
-        if(!$this->count) {
+        if (!$this->count) {
             $this->count = $this->cursor->count(false);
         }
 
@@ -156,12 +157,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function contains($item)
     {
-        if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
             $item = $item->getId()->getValue();
         }
         foreach ($this->getIterator() as $entity) {
             $eId = $entity->getId()->getValue();
-            if(!$this->isNull($eId) && $eId == $item) {
+            if (!$this->isNull($eId) && $eId == $item) {
                 return true;
             }
         }
@@ -191,12 +192,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function removeItem($item)
     {
-        if($this->loaded) {
-            if($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if ($this->loaded) {
+            if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
                 $item = $item->getId()->getValue();
             }
             foreach ($this->getIterator() as $index => $entity) {
-                if($entity->getId()->getValue() == $item) {
+                if ($entity->getId()->getValue() == $item) {
                     unset($this->value[$index]);
 
                     return;
@@ -210,7 +211,8 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      *
      * @return array
      */
-    public function explain(){
+    public function explain()
+    {
         return $this->cursor->explain();
     }
 
@@ -218,10 +220,17 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      * Get collection data
      * @return Traversable
      */
-    public function getData(){
+    public function getData()
+    {
         return $this->getIterator();
     }
 
+    public function randomize()
+    {
+        $this->randomize = true;
+
+        return $this;
+    }
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -232,7 +241,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      */
     public function getIterator()
     {
-        if($this->loaded) {
+        if ($this->loaded) {
             return new \ArrayIterator($this->value);
         }
 
@@ -244,7 +253,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */
-            if($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->getId()->getValue())) {
+            if ($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->getId()->getValue())) {
                 $dbItems[] = $itemInPool;
             } else {
                 $dbItems[] = EntityPool::getInstance()->add($instance);
@@ -252,6 +261,10 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         }
         $this->value = array_merge($dbItems, $this->value);
         $this->loaded = true;
+
+        if ($this->randomize) {
+            shuffle($this->value);
+        }
 
         return new \ArrayIterator($this->value);
     }
@@ -299,7 +312,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *

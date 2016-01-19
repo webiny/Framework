@@ -44,7 +44,8 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         parent::__construct($attribute, $entity);
     }
 
-    public function isLoaded(){
+    public function isLoaded()
+    {
         return $this->dataLoaded;
     }
 
@@ -126,6 +127,9 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
         if (!$fromDb) {
             $value = $this->processSetValue($value);
+
+            // If new value is being set - delete all existing records that are NOT in the new data set
+            $this->cleanUpRecords($value);
         }
 
         $this->value = $value;
@@ -176,6 +180,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             ];
 
             $entityCollection = call_user_func_array([$this->entityClass, 'getEntityCollection'], []);
+
             return boolval(Entity::getInstance()->getDatabase()->count($entityCollection, $query));
         }
 
@@ -204,5 +209,26 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         }
 
         return $sorters;
+    }
+
+    private function cleanUpRecords($newValues)
+    {
+        $newIds = [];
+        foreach ($newValues as $nv) {
+            if (isset($nv['id']) && $nv['id'] != '') {
+                $newIds[] = new \MongoId($nv['id']);
+            }
+        }
+
+        $where = [
+            '_id' => ['$nin' => $newIds]
+        ];
+
+        $where[$this->relatedAttribute] = $this->entity->id;
+
+        $toRemove = call_user_func_array([$this->entityClass, 'find'], [$where]);
+        foreach ($toRemove as $r) {
+            $r->delete();
+        }
     }
 }

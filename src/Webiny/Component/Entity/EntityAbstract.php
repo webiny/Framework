@@ -144,6 +144,7 @@ abstract class EntityAbstract implements \ArrayAccess
 
         $instance = new static;
         $data = static::find($conditions, [], 1, rand(0, $count));
+
         return $data[0];
     }
 
@@ -330,7 +331,7 @@ abstract class EntityAbstract implements \ArrayAccess
                  * This is necessary when we have circular references, and parent record does not get it's many2one ID saved
                  * until all child referenced objects are saved. Only then can we get proper links between referenced classes.
                  */
-                $attr->setValue(null);
+                $attr->setValue(null, true);
             }
         }
 
@@ -705,6 +706,7 @@ abstract class EntityAbstract implements \ArrayAccess
                     return;
                 }
                 /* @var $entityAttribute One2ManyAttribute */
+                $values = [];
                 foreach ($dataValue as $item) {
                     $itemEntity = false;
 
@@ -727,9 +729,10 @@ abstract class EntityAbstract implements \ArrayAccess
                         $itemEntity->populate($item);
                     }
 
-                    // Add One2Many entity instance to current entity's attribute
-                    $entityAttribute->add($itemEntity);
+                    $values[] = $itemEntity;
                 }
+                // Set attribute value
+                $entityAttribute->setValue($values);
             } elseif ($isMany2Many) {
                 $entityAttribute->add($dataValue);
             } else {
