@@ -130,6 +130,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
             // If new value is being set - delete all existing records that are NOT in the new data set
             $this->cleanUpRecords($value);
+            $this->dataLoaded = true;
         }
 
         $this->value = $value;
