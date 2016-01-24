@@ -95,7 +95,17 @@ class Many2OneAttribute extends AttributeAbstract
     public function getDbValue()
     {
         if (is_null($this->value)) {
-            return $this->processToDbValue(null);
+            // Process default value
+            $value = $this->defaultValue;
+            if ($this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract')) {
+                if (!$value->exists()) {
+                    $value->save();
+                }
+
+                $value = $value->id;
+            }
+
+            return $this->processToDbValue($value);
         }
 
         // Array or string
@@ -122,7 +132,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         // Entity value
-        if(!$this->value->exists() || $this->getUpdateExisting()){
+        if (!$this->value->exists() || $this->getUpdateExisting()) {
             $this->value->save();
         }
 
