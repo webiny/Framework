@@ -41,6 +41,11 @@ abstract class EntityAbstract implements \ArrayAccess
     protected $attributes;
 
     /**
+     * @var EntityAttributeBuilder
+     */
+    protected $attributeBuilder;
+
+    /**
      * @var string Entity collection name
      */
     protected static $entityCollection = null;
@@ -173,9 +178,16 @@ abstract class EntityAbstract implements \ArrayAccess
     /**
      * Entity constructor
      */
-    public function __construct()
+    public function  __construct()
     {
-        $this->attributes = $this->arr();
+        if (!$this->attributes) {
+            $this->attributes = $this->arr();
+        }
+
+        if (!$this->attributeBuilder) {
+            $this->attributeBuilder = new EntityAttributeBuilder($this, $this->attributes);
+        }
+
         /**
          * Add ID to the list of attributes
          */
@@ -191,7 +203,7 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function attr($attribute)
     {
-        return EntityAttributeBuilder::getInstance()->setContext($this->attributes, $attribute)->setEntity($this);
+        return $this->attributeBuilder->attr($attribute);
     }
 
     /**

@@ -22,6 +22,7 @@ use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\Attribute\SelectAttribute;
 use Webiny\Component\Entity\Attribute\TextAttribute;
 use Webiny\Component\StdLib\SingletonTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 
 /**
@@ -30,33 +31,17 @@ use Webiny\Component\StdLib\SingletonTrait;
  */
 class EntityAttributeBuilder
 {
-    use SingletonTrait;
-
     protected $entity;
     protected $attributes;
     protected $attribute;
 
     /**
-     * Set EntityAttributeBuilder context: Entity attributes array and current attribute
-     *
-     * @param $attributes
-     * @param $attribute
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setContext($attributes, $attribute)
-    {
-        $this->attributes = $attributes;
-        $this->attribute = $attribute;
-
-        return $this;
-    }
-
-    public function setEntity(EntityAbstract $entity)
+    function __construct(EntityAbstract $entity, ArrayObject $attributes)
     {
         $this->entity = $entity;
-
-        return $this;
+        $this->attributes = $attributes;
     }
 
     /**
