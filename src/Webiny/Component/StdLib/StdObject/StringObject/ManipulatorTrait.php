@@ -68,10 +68,9 @@ trait ManipulatorTrait
         } else {
             if (!$this->isString($char)) {
                 throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                        '$char',
-                        'string'
-                    ]
-                );
+                    '$char',
+                    'string'
+                ]);
             }
 
             $value = trim($this->val(), $char);
@@ -158,7 +157,7 @@ trait ManipulatorTrait
         $str = $this->val();
         $upper = mb_convert_case($str, MB_CASE_UPPER, self::DEF_ENCODING);
         $firstChar = mb_substr($upper, 0, 1, self::DEF_ENCODING);
-        $str = $firstChar.mb_substr($str, 1, null, self::DEF_ENCODING);
+        $str = $firstChar . mb_substr($str, 1, null, self::DEF_ENCODING);
         $this->val($str);
 
         return $this;
@@ -233,10 +232,9 @@ trait ManipulatorTrait
     {
         if (!$this->isString($char)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$char',
-                    'string'
-                ]
-            );
+                '$char',
+                'string'
+            ]);
         }
         $this->val(ltrim($this->val(), $char));
 
@@ -255,10 +253,9 @@ trait ManipulatorTrait
     {
         if (!$this->isString($char)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$char',
-                    'string'
-                ]
-            );
+                '$char',
+                'string'
+            ]);
         }
 
         $this->val(rtrim($this->val(), $char));
@@ -270,7 +267,7 @@ trait ManipulatorTrait
      * Returns a substring from the current string.
      *
      * @param int $startPosition From which char position will the substring start.
-     * @param int $length        Where will the substring end. If 0 - to the end of string.
+     * @param int $length Where will the substring end. If 0 - to the end of string.
      *
      * @throws StringObjectException
      * @return $this
@@ -279,18 +276,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($startPosition)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$startPosition',
-                    'integer'
-                ]
-            );
+                '$startPosition',
+                'integer'
+            ]);
         }
 
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if ($length == 0) {
@@ -306,7 +301,7 @@ trait ManipulatorTrait
      * Replaces the occurrences of $search inside the current string with $replace.
      * This function is CASE-INSENSITIVE.
      *
-     * @param string|array $search  String, or array of strings, that will replaced.
+     * @param string|array $search String, or array of strings, that will replaced.
      * @param string|array $replace String, or array of strings, with whom $search occurrences will be replaced.
      *
      * @throws StringObjectException
@@ -328,7 +323,7 @@ trait ManipulatorTrait
      * Explode the current string with the given delimiter and return ArrayObject with the exploded values.
      *
      * @param string   $delimiter String upon which the current string will be exploded.
-     * @param null|int $limit     Limit the number of exploded items.
+     * @param null|int $limit Limit the number of exploded items.
      *
      * @return ArrayObject ArrayObject object containing exploded values.
      * @throws StringObjectException
@@ -337,10 +332,9 @@ trait ManipulatorTrait
     {
         if (!$this->isString($delimiter)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$delimiter',
-                    'string'
-                ]
-            );
+                '$delimiter',
+                'string'
+            ]);
         }
 
         if ($this->isNull($limit)) {
@@ -348,10 +342,9 @@ trait ManipulatorTrait
         } else {
             if (!$this->isNumber($limit)) {
                 throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                        '$limit',
-                        'integer'
-                    ]
-                );
+                    '$limit',
+                    'integer'
+                ]);
             }
 
             $arr = explode($delimiter, $this->val(), $limit);
@@ -376,10 +369,9 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($chunkSize)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$chunkSize',
-                    'integer'
-                ]
-            );
+                '$chunkSize',
+                'integer'
+            ]);
         }
 
         $arr = str_split($this->val(), $chunkSize);
@@ -423,7 +415,7 @@ trait ManipulatorTrait
      * Convert all HTML entities to their applicable characters.
      * For more info visit: http://www.php.net/manual/en/function.htmlentities.php
      *
-     * @param string|null $flags    Default flags are set to ENT_COMPAT | ENT_HTML401
+     * @param string|null $flags Default flags are set to ENT_COMPAT | ENT_HTML401
      * @param string      $encoding Which encoding will be used in the conversion. Default is UTF-8.
      *
      * @throws StringObjectException
@@ -475,7 +467,7 @@ trait ManipulatorTrait
      * This function is multi-byte safe.
      *
      * @param int    $chunkSize Size of each chunk.
-     * @param string $endChar   String that will be appended to the end of each chunk.
+     * @param string $endChar String that will be appended to the end of each chunk.
      *
      * @throws StringObjectException
      * @return $this
@@ -484,18 +476,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($chunkSize)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$chunkSize',
-                    'integer'
-                ]
-            );
+                '$chunkSize',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($endChar)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$endChar',
-                    'string'
-                ]
-            );
+                '$endChar',
+                'string'
+            ]);
         }
 
         $tmp = array_chunk(preg_split("//u", $this->val(), -1, PREG_SPLIT_NO_EMPTY), $chunkSize);
@@ -573,7 +563,7 @@ trait ManipulatorTrait
     /**
      * Format the string according to the provided $format.
      *
-     * @param string|array $args   Arguments used for string formatting.
+     * @param string|array $args Arguments used for string formatting.
      *                             For more info visit http://www.php.net/manual/en/function.sprintf.php
      *
      * @return $this
@@ -597,7 +587,7 @@ trait ManipulatorTrait
     /**
      * Pad the string to a certain length with another string.
      *
-     * @param int    $length    Length to which to pad.
+     * @param int    $length Length to which to pad.
      * @param string $padString String that will be appended.
      *
      * @throws StringObjectException
@@ -607,18 +597,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$padString',
-                    'string'
-                ]
-            );
+                '$padString',
+                'string'
+            ]);
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_LEFT));
@@ -629,7 +617,7 @@ trait ManipulatorTrait
     /**
      * Pad the string to a certain length with another string.
      *
-     * @param int    $length    Length to which to pad.
+     * @param int    $length Length to which to pad.
      * @param string $padString String that will be appended.
      *
      * @throws StringObjectException
@@ -639,18 +627,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$padString',
-                    'string'
-                ]
-            );
+                '$padString',
+                'string'
+            ]);
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_RIGHT));
@@ -661,7 +647,7 @@ trait ManipulatorTrait
     /**
      * Pad the string to a certain length with another string.
      *
-     * @param int    $length    Length to which to pad.
+     * @param int    $length Length to which to pad.
      * @param string $padString String that will be appended.
      *
      * @throws StringObjectException
@@ -671,18 +657,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($padString)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$padString',
-                    'string'
-                ]
-            );
+                '$padString',
+                'string'
+            ]);
         }
 
         $this->val(str_pad($this->val(), $length, $padString, STR_PAD_BOTH));
@@ -702,10 +686,9 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($multiplier)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$multiplier',
-                    'integer'
-                ]
-            );
+                '$multiplier',
+                'integer'
+            ]);
         }
         $this->val(str_repeat($this->val(), $multiplier));
 
@@ -736,10 +719,9 @@ trait ManipulatorTrait
     {
         if (!$this->isString($whiteList)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$whiteList',
-                    'integer'
-                ]
-            );
+                '$whiteList',
+                'integer'
+            ]);
         }
 
         $this->val(strip_tags($this->val(), $whiteList));
@@ -763,8 +745,8 @@ trait ManipulatorTrait
      * Wraps a string to a given number of characters using a string break character.
      *
      * @param int    $length The number of characters at which the string will be wrapped.
-     * @param string $break  The line is broken using the optional break parameter.
-     * @param bool   $cut    If the cut is set to TRUE, the string is always wrapped at or before the specified width.
+     * @param string $break The line is broken using the optional break parameter.
+     * @param bool   $cut If the cut is set to TRUE, the string is always wrapped at or before the specified width.
      *                       So if you have a word that is larger than the given width, it is broken apart.
      *
      * @throws StringObjectException
@@ -774,26 +756,23 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($break)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$break',
-                    'string'
-                ]
-            );
+                '$break',
+                'string'
+            ]);
         }
 
         if (!$this->isBool($cut)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$cut',
-                    'boolean'
-                ]
-            );
+                '$cut',
+                'boolean'
+            ]);
         }
         $this->val(wordwrap($this->val(), $length, $break, $cut));
 
@@ -803,7 +782,7 @@ trait ManipulatorTrait
     /**
      * Truncate the string to the given length without breaking words.
      *
-     * @param int    $length   Length to which you which to trim.
+     * @param int    $length Length to which you which to trim.
      * @param string $ellipsis Ellipsis is calculated in the string $length.
      *
      * @throws StringObjectException
@@ -813,18 +792,16 @@ trait ManipulatorTrait
     {
         if (!$this->isNumber($length)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$length',
-                    'integer'
-                ]
-            );
+                '$length',
+                'integer'
+            ]);
         }
 
         if (!$this->isString($ellipsis)) {
             throw new StringObjectException(StringObjectException::MSG_INVALID_ARG, [
-                    '$ellipsis',
-                    'string'
-                ]
-            );
+                '$ellipsis',
+                'string'
+            ]);
         }
 
         if ($this->length() <= $length) {
@@ -846,7 +823,7 @@ trait ManipulatorTrait
      * Preg matches current string against the given regular expression.
      * If you just wish if string is contained within the current string, use StringObject::contains().
      *
-     * @param string $regEx    Regular expression to match.
+     * @param string $regEx Regular expression to match.
      * @param bool   $matchAll Use preg_match_all, or just preg_match. Default is preg_match_all.
      *
      * @throws StringObjectException
@@ -868,10 +845,9 @@ trait ManipulatorTrait
 
         if (!in_array($delimiter, $validDelimiters)) {
             $regEx = '/' . str_replace([
-                                           '\/',
-                                           '/'
-                                       ], '\/', $regEx
-                ) . '/';
+                    '\/',
+                    '/'
+                ], '\/', $regEx) . '/';
         }
 
         if ($matchAll) {
@@ -947,6 +923,327 @@ trait ManipulatorTrait
         if ($webSafe) {
             $this->replace('-', '+')->replace('_', '/');
         }
+
+        return $this;
+    }
+
+    /**
+     * Create a slug
+     *
+     * @return $this
+     */
+    function slug()
+    {
+        // Make sure string is in UTF-8 and strip invalid UTF-8 characters
+        $str = mb_convert_encoding($this->val(), 'UTF-8', mb_list_encodings());
+
+        $delimiter = '-';
+
+        $charMap = [
+            // Latin
+            'À' => 'A',
+            'Á' => 'A',
+            'Â' => 'A',
+            'Ã' => 'A',
+            'Ä' => 'A',
+            'Å' => 'A',
+            'Æ' => 'AE',
+            'Ç' => 'C',
+            'È' => 'E',
+            'É' => 'E',
+            'Ê' => 'E',
+            'Ë' => 'E',
+            'Ì' => 'I',
+            'Í' => 'I',
+            'Î' => 'I',
+            'Ï' => 'I',
+            'Ð' => 'D',
+            'Ñ' => 'N',
+            'Ò' => 'O',
+            'Ó' => 'O',
+            'Ô' => 'O',
+            'Õ' => 'O',
+            'Ö' => 'O',
+            'Ő' => 'O',
+            'Ø' => 'O',
+            'Ù' => 'U',
+            'Ú' => 'U',
+            'Û' => 'U',
+            'Ü' => 'U',
+            'Ű' => 'U',
+            'Ý' => 'Y',
+            'Þ' => 'TH',
+            'ß' => 'ss',
+            'à' => 'a',
+            'á' => 'a',
+            'â' => 'a',
+            'ã' => 'a',
+            'ä' => 'a',
+            'å' => 'a',
+            'æ' => 'ae',
+            'ç' => 'c',
+            'è' => 'e',
+            'é' => 'e',
+            'ê' => 'e',
+            'ë' => 'e',
+            'ì' => 'i',
+            'í' => 'i',
+            'î' => 'i',
+            'ï' => 'i',
+            'ð' => 'd',
+            'ñ' => 'n',
+            'ò' => 'o',
+            'ó' => 'o',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ö' => 'o',
+            'ő' => 'o',
+            'ø' => 'o',
+            'ù' => 'u',
+            'ú' => 'u',
+            'û' => 'u',
+            'ü' => 'u',
+            'ű' => 'u',
+            'ý' => 'y',
+            'þ' => 'th',
+            'ÿ' => 'y',
+            // Latin symbols
+            '©' => '(c)',
+            // Greek
+            'Α' => 'A',
+            'Β' => 'B',
+            'Γ' => 'G',
+            'Δ' => 'D',
+            'Ε' => 'E',
+            'Ζ' => 'Z',
+            'Η' => 'H',
+            'Θ' => '8',
+            'Ι' => 'I',
+            'Κ' => 'K',
+            'Λ' => 'L',
+            'Μ' => 'M',
+            'Ν' => 'N',
+            'Ξ' => '3',
+            'Ο' => 'O',
+            'Π' => 'P',
+            'Ρ' => 'R',
+            'Σ' => 'S',
+            'Τ' => 'T',
+            'Υ' => 'Y',
+            'Φ' => 'F',
+            'Χ' => 'X',
+            'Ψ' => 'PS',
+            'Ω' => 'W',
+            'Ά' => 'A',
+            'Έ' => 'E',
+            'Ί' => 'I',
+            'Ό' => 'O',
+            'Ύ' => 'Y',
+            'Ή' => 'H',
+            'Ώ' => 'W',
+            'Ϊ' => 'I',
+            'Ϋ' => 'Y',
+            'α' => 'a',
+            'β' => 'b',
+            'γ' => 'g',
+            'δ' => 'd',
+            'ε' => 'e',
+            'ζ' => 'z',
+            'η' => 'h',
+            'θ' => '8',
+            'ι' => 'i',
+            'κ' => 'k',
+            'λ' => 'l',
+            'μ' => 'm',
+            'ν' => 'n',
+            'ξ' => '3',
+            'ο' => 'o',
+            'π' => 'p',
+            'ρ' => 'r',
+            'σ' => 's',
+            'τ' => 't',
+            'υ' => 'y',
+            'φ' => 'f',
+            'χ' => 'x',
+            'ψ' => 'ps',
+            'ω' => 'w',
+            'ά' => 'a',
+            'έ' => 'e',
+            'ί' => 'i',
+            'ό' => 'o',
+            'ύ' => 'y',
+            'ή' => 'h',
+            'ώ' => 'w',
+            'ς' => 's',
+            'ϊ' => 'i',
+            'ΰ' => 'y',
+            'ϋ' => 'y',
+            'ΐ' => 'i',
+            // Turkish
+            'Ş' => 'S',
+            'İ' => 'I',
+            'Ç' => 'C',
+            'Ü' => 'U',
+            'Ö' => 'O',
+            'Ğ' => 'G',
+            'ş' => 's',
+            'ı' => 'i',
+            'ç' => 'c',
+            'ü' => 'u',
+            'ö' => 'o',
+            'ğ' => 'g',
+            // Russian
+            'А' => 'A',
+            'Б' => 'B',
+            'В' => 'V',
+            'Г' => 'G',
+            'Д' => 'D',
+            'Е' => 'E',
+            'Ё' => 'Yo',
+            'Ж' => 'Zh',
+            'З' => 'Z',
+            'И' => 'I',
+            'Й' => 'J',
+            'К' => 'K',
+            'Л' => 'L',
+            'М' => 'M',
+            'Н' => 'N',
+            'О' => 'O',
+            'П' => 'P',
+            'Р' => 'R',
+            'С' => 'S',
+            'Т' => 'T',
+            'У' => 'U',
+            'Ф' => 'F',
+            'Х' => 'H',
+            'Ц' => 'C',
+            'Ч' => 'Ch',
+            'Ш' => 'Sh',
+            'Щ' => 'Sh',
+            'Ъ' => '',
+            'Ы' => 'Y',
+            'Ь' => '',
+            'Э' => 'E',
+            'Ю' => 'Yu',
+            'Я' => 'Ya',
+            'а' => 'a',
+            'б' => 'b',
+            'в' => 'v',
+            'г' => 'g',
+            'д' => 'd',
+            'е' => 'e',
+            'ё' => 'yo',
+            'ж' => 'zh',
+            'з' => 'z',
+            'и' => 'i',
+            'й' => 'j',
+            'к' => 'k',
+            'л' => 'l',
+            'м' => 'm',
+            'н' => 'n',
+            'о' => 'o',
+            'п' => 'p',
+            'р' => 'r',
+            'с' => 's',
+            'т' => 't',
+            'у' => 'u',
+            'ф' => 'f',
+            'х' => 'h',
+            'ц' => 'c',
+            'ч' => 'ch',
+            'ш' => 'sh',
+            'щ' => 'sh',
+            'ъ' => '',
+            'ы' => 'y',
+            'ь' => '',
+            'э' => 'e',
+            'ю' => 'yu',
+            'я' => 'ya',
+            // Ukrainian
+            'Є' => 'Ye',
+            'І' => 'I',
+            'Ї' => 'Yi',
+            'Ґ' => 'G',
+            'є' => 'ye',
+            'і' => 'i',
+            'ї' => 'yi',
+            'ґ' => 'g',
+            // Czech
+            'Č' => 'C',
+            'Ď' => 'D',
+            'Ě' => 'E',
+            'Ň' => 'N',
+            'Ř' => 'R',
+            'Š' => 'S',
+            'Ť' => 'T',
+            'Ů' => 'U',
+            'Ž' => 'Z',
+            'č' => 'c',
+            'ď' => 'd',
+            'ě' => 'e',
+            'ň' => 'n',
+            'ř' => 'r',
+            'š' => 's',
+            'ť' => 't',
+            'ů' => 'u',
+            'ž' => 'z',
+            // Polish
+            'Ą' => 'A',
+            'Ć' => 'C',
+            'Ę' => 'e',
+            'Ł' => 'L',
+            'Ń' => 'N',
+            'Ó' => 'o',
+            'Ś' => 'S',
+            'Ź' => 'Z',
+            'Ż' => 'Z',
+            'ą' => 'a',
+            'ć' => 'c',
+            'ę' => 'e',
+            'ł' => 'l',
+            'ń' => 'n',
+            'ó' => 'o',
+            'ś' => 's',
+            'ź' => 'z',
+            'ż' => 'z',
+            // Latvian
+            'Ā' => 'A',
+            'Č' => 'C',
+            'Ē' => 'E',
+            'Ģ' => 'G',
+            'Ī' => 'i',
+            'Ķ' => 'k',
+            'Ļ' => 'L',
+            'Ņ' => 'N',
+            'Š' => 'S',
+            'Ū' => 'u',
+            'Ž' => 'Z',
+            'ā' => 'a',
+            'č' => 'c',
+            'ē' => 'e',
+            'ģ' => 'g',
+            'ī' => 'i',
+            'ķ' => 'k',
+            'ļ' => 'l',
+            'ņ' => 'n',
+            'š' => 's',
+            'ū' => 'u',
+            'ž' => 'z'
+        ];
+
+        // Convert characters to ASCII
+        $str = str_replace(array_keys($charMap), $charMap, $str);
+
+        // Replace non-alphanumeric characters with our delimiter
+        $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $delimiter, $str);
+
+        // Remove duplicate delimiters
+        $str = preg_replace('/(' . preg_quote($delimiter, '/') . '){2,}/', '$1', $str);
+
+        // Remove delimiter from ends
+        $str = trim($str, $delimiter);
+
+        $this->val(mb_strtolower($str, 'UTF-8'));
 
         return $this;
     }
