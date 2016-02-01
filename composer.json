@@ -33,9 +33,8 @@
         "league/oauth1-client": "~1.0",
         "league/oauth2-client": "0.8.*",
         "psr/log": "~1.0",
-        "ext-mongo": "*",
-        "ext-memcache": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "mongodb/mongodb": "^1.0"
     },
     "replace": {
         "webiny/amazon": "self.version",
