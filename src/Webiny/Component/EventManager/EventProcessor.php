@@ -22,13 +22,14 @@ class EventProcessor
      * Process given event
      *
      * @param array|ArrayObject $eventListeners EventListeners that are subscribed to this event
-     * @param Event             $event          Event data object
+     * @param Event             $event Event data object
      *
-     * @param null|string       $resultType     Type of event result to enforce (can be any class or interface name)
+     * @param null|string       $resultType Type of event result to enforce (can be any class or interface name)
+     * @param null|int          $limit Number of results to return
      *
      * @return array
      */
-    public function process($eventListeners, Event $event, $resultType = null)
+    public function process($eventListeners, Event $event, $resultType = null, $limit = null)
     {
 
         $eventListeners = $this->orderByPriority($eventListeners);
@@ -50,16 +51,21 @@ class EventProcessor
                 $result = $handler($event);
             } else {
                 $result = call_user_func_array([
-                                                   $handler,
-                                                   $method
-                                               ], [$event]
-                );
+                    $handler,
+                    $method
+                ], [$event]);
             }
 
-            if ($this->isNull($resultType) || (!$this->isNull($resultType) && $this->isInstanceOf($result, $resultType
-                    ))
-            ) {
+            if ($this->isNull($resultType) || (!$this->isNull($resultType) && $this->isInstanceOf($result, $resultType))) {
                 $results[] = $result;
+
+                if ($limit === 1 && count($results) === 1) {
+                    return $results[0];
+                }
+
+                if (count($results) === $limit) {
+                    return $results;
+                }
             }
 
             if ($event->isPropagationStopped()) {

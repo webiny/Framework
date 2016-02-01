@@ -41,7 +41,7 @@ class EventManager
     /**
      * Subscribe to event
      *
-     * @param string        $eventName     Event name you want to listen
+     * @param string        $eventName Event name you want to listen
      * @param EventListener $eventListener (Optional) If specified, given EventListener will be used for this event
      *
      * @throws EventManagerException
@@ -82,13 +82,14 @@ class EventManager
     /**
      * Fire event
      *
-     * @param string      $eventName  Event to fire. You can also use wildcards to fire multiple events at once, ex: 'event.*'
-     * @param array|Event $data       Array or Event object
+     * @param string      $eventName Event to fire. You can also use wildcards to fire multiple events at once, ex: 'event.*'
+     * @param array|Event $data Array or Event object
      * @param null        $resultType If specified, the event results will be filtered using given class/interface name
+     * @param null|int    $limit Number of results to return
      *
      * @return array Array of results from EventListeners
      */
-    public function fire($eventName, $data = null, $resultType = null)
+    public function fire($eventName, $data = null, $resultType = null, $limit = null)
     {
 
         if ($this->suppressEvents) {
@@ -108,7 +109,7 @@ class EventManager
             $data = new Event($data);
         }
 
-        return $this->eventProcessor->process($eventListeners, $data, $resultType);
+        return $this->eventProcessor->process($eventListeners, $data, $resultType, $limit);
     }
 
     /**
