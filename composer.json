@@ -33,8 +33,7 @@
         "league/oauth1-client": "~1.0",
         "league/oauth2-client": "0.8.*",
         "psr/log": "~1.0",
-        "ext-gd": "*",
-        "mongodb/mongodb": "^1.0"
+        "ext-gd": "*"
     },
     "replace": {
         "webiny/amazon": "self.version",
