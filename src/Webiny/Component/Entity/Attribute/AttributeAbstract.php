@@ -178,7 +178,7 @@ abstract class AttributeAbstract implements JsonSerializable
             return $this->attribute;
         }
 
-        return EntityAttributeBuilder::getInstance()->attr($attribute);
+        return $this->entity->attr($attribute);
     }
 
     /**
