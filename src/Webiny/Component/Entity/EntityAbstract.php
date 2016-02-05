@@ -746,7 +746,7 @@ abstract class EntityAbstract implements \ArrayAccess
                 // Set attribute value
                 $entityAttribute->setValue($values);
             } elseif ($isMany2Many) {
-                $entityAttribute->add($dataValue);
+                $entityAttribute->setValue($dataValue);
             } else {
                 try {
                     $entityAttribute->setValue($dataValue, $fromDb);

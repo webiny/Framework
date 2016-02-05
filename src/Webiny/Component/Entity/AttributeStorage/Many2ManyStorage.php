@@ -99,12 +99,20 @@ class Many2ManyStorage
         /**
          * Insert values
          */
+        $existingIds = [];
+        $firstEntityId = $attribute->getParentEntity()->id;
         foreach ($attribute->getValue() as $item) {
-            $firstEntityId = $attribute->getParentEntity()->getId()->getValue();
-            if ($item->getId()->getValue() === null) {
+            if ($item instanceof EntityAbstract && !$item->exists()) {
                 $item->save();
             }
-            $secondEntityId = $item->getId()->getValue();
+
+            if ($item instanceof EntityAbstract){
+                $secondEntityId = $item->id;
+            } else {
+                $secondEntityId = $item;
+            }
+
+            $existingIds[] = $secondEntityId;
 
             $data = [
                 $firstClassName  => $firstEntityId,
@@ -117,6 +125,18 @@ class Many2ManyStorage
                 continue;
             }
         }
+
+        /**
+         * Remove old links
+         */
+        $removeQuery = [
+            $firstClassName  => $firstEntityId,
+            $secondClassName => [
+                '$nin' => $existingIds
+            ]
+        ];
+        Entity::getInstance()->getDatabase()->remove($collectionName, $removeQuery);
+
         /**
          * The value of many2many attribute must be set to 'null' to trigger data reload on next access.
          * If this is not done, we may not have proper links between the 2 entities and it may seem as if data was missing.
