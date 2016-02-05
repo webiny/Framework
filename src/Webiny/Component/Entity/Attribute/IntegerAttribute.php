@@ -46,6 +46,8 @@ class IntegerAttribute extends AttributeAbstract
             $this->expected('integer', gettype($value));
         }
 
+        parent::validate($value);
+
         return $this;
     }
 

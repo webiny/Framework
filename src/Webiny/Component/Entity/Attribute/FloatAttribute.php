@@ -45,6 +45,8 @@ class FloatAttribute extends AttributeAbstract
             $this->expected('number', gettype($value));
         }
 
+        parent::validate($value);
+
         return $this;
     }
 }

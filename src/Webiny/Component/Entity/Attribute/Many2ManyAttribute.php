@@ -115,6 +115,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
         if (!$fromDb) {
             $value = $this->processSetValue($value);
+            $this->validate($value);
         }
 
         $this->value = $value;
@@ -140,7 +141,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
         // Add new items to value and unset these new items
         foreach ($this->addedItems as $item) {
-            if($this->value instanceof EntityCollection){
+            if ($this->value instanceof EntityCollection) {
                 $this->value->add($item);
             } else {
                 $this->value[] = $item;

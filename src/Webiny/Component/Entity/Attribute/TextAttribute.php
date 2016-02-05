@@ -31,6 +31,8 @@ class TextAttribute extends AttributeAbstract
             $this->expected('string', gettype($value));
         }
 
+        parent::validate($value);
+
         return $this;
     }
 }
