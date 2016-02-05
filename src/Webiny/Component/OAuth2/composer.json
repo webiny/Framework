@@ -22,9 +22,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.9",
-        "webiny/http": "~1.3",
-        "webiny/config": "~1.3",
-        "webiny/std-lib": "~1.3",
+        "webiny/http": "~1.4",
+        "webiny/config": "~1.4",
+        "webiny/std-lib": "~1.4",
         "league/oauth2-client": "0.8.*"
     },
     "require-dev": {
@@ -41,7 +41,7 @@
     },
     "extras": {
         "branch-alias": {
-            "dev-master": "1.3-dev"
+            "dev-master": "1.4-dev"
         }
     }
 }
