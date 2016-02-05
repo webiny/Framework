@@ -99,7 +99,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      * @param null $value
      * @param bool $fromDb
      *
-     * @return $this|null|EntityCollection
+     * @return $this|EntityCollection
      */
     public function setValue($value = null, $fromDb = false)
     {
@@ -136,12 +136,18 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
     {
         if ($this->isNull($this->value)) {
             $this->value = Many2ManyStorage::getInstance()->load($this);
-            // Add new items to value and unset these new items
-            foreach ($this->addedItems as $item) {
-                $this->value->add($item);
-            }
-            $this->addedItems = [];
         }
+
+        // Add new items to value and unset these new items
+        foreach ($this->addedItems as $item) {
+            if($this->value instanceof EntityCollection){
+                $this->value->add($item);
+            } else {
+                $this->value[] = $item;
+            }
+
+        }
+        $this->addedItems = [];
 
         return $this->processGetValue($this->value);
     }

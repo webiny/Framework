@@ -28,10 +28,6 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     private $cursor;
     private $entityClass;
     private $collectionName;
-    private $conditions;
-    private $order;
-    private $offset;
-    private $limit;
     private $count;
     private $value = [];
     private $loaded = false;
@@ -48,17 +44,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
         $this->entityClass = $entityClass;
         $this->collectionName = $entityCollection;
-        $this->conditions = $conditions;
-        $this->order = $order;
-        $this->offset = $offset;
-        $this->limit = $limit;
 
         $this->cursor = Entity::getInstance()
                               ->getDatabase()
-                              ->find($this->collectionName, $this->conditions)
-                              ->sort($this->order)
-                              ->skip($this->offset)
-                              ->limit($this->limit);
+                              ->find($entityCollection, $conditions)
+                              ->sort($order)
+                              ->skip($offset)
+                              ->limit($limit);
 
     }
 
