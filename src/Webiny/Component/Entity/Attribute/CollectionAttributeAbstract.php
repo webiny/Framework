@@ -53,6 +53,8 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
      *
      * @param $item
      *
+     * TODO: remove this method and update unit tests
+     *
      * @return $this
      */
     public function add($item)

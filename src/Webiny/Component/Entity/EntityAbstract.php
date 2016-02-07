@@ -334,13 +334,12 @@ abstract class EntityAbstract implements \ArrayAccess
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr One2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::ONE2MANY) && $attr->isLoaded()) {
-                // TODO: this is a very heavy task (fetching all linked records) if we have many related records. See how we can optimize this.
                 foreach ($attr->getValue() as $item) {
                     $relAttribute = $item->getAttribute($attr->getRelatedAttribute());
                     $relEntity = $relAttribute->getValue();
 
                     // Only save if not already linked to $this
-                    if ($relEntity != $this) {
+                    if ($relEntity != $this || !$item->exists()) {
                         $relAttribute->setValue($this);
                         $item->save();
                     }
@@ -665,7 +664,7 @@ abstract class EntityAbstract implements \ArrayAccess
          * Check if attribute is required and it's value is set or maybe value was already assigned
          */
         $hasValue = $entityAttribute->hasValue();
-        if ($entityAttribute->isRequired() && !isset($data[$attributeName]) && !$this->exists() && !$hasValue) {
+        if (!$fromDb && $entityAttribute->isRequired() && !isset($data[$attributeName]) && !$hasValue) {
             $message = $entityAttribute->getValidationMessages('required');
             if (!$message) {
                 $message = ValidationException::REQUIRED;
