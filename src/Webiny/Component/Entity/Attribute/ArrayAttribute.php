@@ -79,9 +79,8 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function getValue()
     {
-        $defaultValue = $this->getDefaultValue();
-        if ($this->value->count() == 0 && count($defaultValue) > 0) {
-            return $this->processGetValue($defaultValue);
+        if ($this->value->count() == 0 && !$this->isNull($this->defaultValue)) {
+            return $this->processGetValue($this->getDefaultValue());
         }
 
         return $this->processGetValue($this->value);
