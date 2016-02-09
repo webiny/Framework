@@ -38,7 +38,7 @@ class Many2OneAttribute extends AttributeAbstract
     public function __toString()
     {
         if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
-            return (string)$this->defaultValue;
+            return (string)$this->getDefaultValue();
         }
 
         if ($this->isNull($this->value)) {
@@ -96,7 +96,7 @@ class Many2OneAttribute extends AttributeAbstract
     {
         if (is_null($this->value)) {
             // Process default value
-            $value = $this->defaultValue;
+            $value = $this->getDefaultValue();
             if ($this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract')) {
                 if (!$value->exists()) {
                     $value->save();
@@ -188,7 +188,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         if (!$this->value && !$this->isNull($this->defaultValue)) {
-            return $this->processGetValue($this->defaultValue);
+            return $this->processGetValue($this->getDefaultValue());
         }
 
         return $this->processGetValue($this->value);

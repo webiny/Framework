@@ -21,8 +21,9 @@ class ObjectAttribute extends ArrayAttribute
 {
     public function getDbValue()
     {
+        $defaultValue = $this->getDefaultValue();
         if ($this->value->count() == 0) {
-            $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
         } else {
             $value = $this->value->val();
         }

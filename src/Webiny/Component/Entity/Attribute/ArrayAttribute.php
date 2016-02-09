@@ -33,7 +33,8 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function getDbValue()
     {
         if ($this->value->count() == 0) {
-            $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+            $defaultValue = $this->getDefaultValue();
+            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
         } else {
             $value = $this->value->val();
         }
@@ -78,9 +79,9 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      */
     public function getValue()
     {
-        $defaultValue = new ArrayObject($this->defaultValue);
-        if ($this->value->count() == 0 && $defaultValue->count() > 0) {
-            return $this->processGetValue($this->defaultValue);
+        $defaultValue = $this->getDefaultValue();
+        if ($this->value->count() == 0 && count($defaultValue) > 0) {
+            return $this->processGetValue($defaultValue);
         }
 
         return $this->processGetValue($this->value);
@@ -118,7 +119,8 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function toArray()
     {
         if ($this->value->count() == 0) {
-            $value = $this->isStdObject($this->defaultValue) ? $this->defaultValue->val() : $this->defaultValue;
+            $defaultValue = $this->getDefaultValue();
+            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
 
             return $this->processToArrayValue($value);
         }

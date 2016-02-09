@@ -139,7 +139,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
      */
     private function setDefaultValueInternal()
     {
-        $defaultValue = $this->defaultValue;
+        $defaultValue = $this->getDefaultValue();
         if ($defaultValue == 'now') {
             $defaultValue = new DateTimeObject('now');
         }

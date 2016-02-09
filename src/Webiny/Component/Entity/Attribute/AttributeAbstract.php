@@ -69,8 +69,9 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __toString()
     {
-        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
-            return (string)$this->defaultValue;
+        $defaultValue = $this->getDefaultValue();
+        if ($this->isNull($this->value) && !$this->isNull($defaultValue)) {
+            return (string)$defaultValue;
         }
 
         return $this->isNull($this->value) ? '' : (string)$this->value;
@@ -82,6 +83,7 @@ abstract class AttributeAbstract implements JsonSerializable
             return true;
         }
 
+        // We don't need to execute defaultValue callable at this point, only need to know if there IS a default value
         return $this->defaultValue !== null;
     }
 
@@ -305,7 +307,9 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function getDefaultValue()
     {
-        return $this->defaultValue;
+        $defaultValue = $this->defaultValue;
+
+        return is_callable($defaultValue) ? $defaultValue() : $defaultValue;
     }
 
     public function onSet($value, $callable = null)
@@ -366,8 +370,9 @@ abstract class AttributeAbstract implements JsonSerializable
     public function getValue()
     {
         $value = $this->value;
-        if ($this->isNull($value) && !$this->isNull($this->defaultValue)) {
-            $value = $this->defaultValue;
+        $defaultValue = $this->getDefaultValue();
+        if ($this->isNull($value) && !$this->isNull($defaultValue)) {
+            $value = $defaultValue;
         }
 
         return $this->processGetValue($value);
