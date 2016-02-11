@@ -335,14 +335,8 @@ abstract class EntityAbstract implements \ArrayAccess
             /* @var $attr One2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::ONE2MANY) && $attr->isLoaded()) {
                 foreach ($attr->getValue() as $item) {
-                    $relAttribute = $item->getAttribute($attr->getRelatedAttribute());
-                    $relEntity = $relAttribute->getValue();
-
-                    // Only save if not already linked to $this
-                    if ($relEntity != $this || !$item->exists()) {
-                        $relAttribute->setValue($this);
-                        $item->save();
-                    }
+                    $item->getAttribute($attr->getRelatedAttribute())->setValue($this);
+                    $item->save();
                 }
                 /**
                  * The value of one2many attribute must be set to null to trigger data reload on next access.

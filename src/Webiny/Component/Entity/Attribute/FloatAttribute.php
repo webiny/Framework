@@ -27,6 +27,17 @@ class FloatAttribute extends AttributeAbstract
     }
 
     /**
+     * Get value that will be used to represent this attribute when converting EntityAbstract to array
+     *
+     * @return string
+     */
+    public function toArray()
+    {
+        return (float)parent::toArray();
+    }
+
+
+    /**
      * Perform validation against given value
      *
      * @param $value
@@ -36,7 +47,7 @@ class FloatAttribute extends AttributeAbstract
      */
     protected function validate(&$value)
     {
-        if($this->str($value)->contains(',')){
+        if ($this->str($value)->contains(',')) {
             $value = $this->str($value)->replace(',', '.')->val();
         }
         $value = floatval($value);

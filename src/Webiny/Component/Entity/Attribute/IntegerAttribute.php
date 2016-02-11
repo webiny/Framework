@@ -27,6 +27,17 @@ class IntegerAttribute extends AttributeAbstract
     }
 
     /**
+     * Get value that will be used to represent this attribute when converting EntityAbstract to array
+     *
+     * @return string
+     */
+    public function toArray()
+    {
+        return (int)parent::toArray();
+    }
+
+
+    /**
      * Perform validation against given value
      *
      * @param $value
