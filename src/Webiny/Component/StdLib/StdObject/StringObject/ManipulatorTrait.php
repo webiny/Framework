@@ -1327,4 +1327,28 @@ trait ManipulatorTrait
 
         return $this;
     }
+
+    /**
+     * Convert string to its singular form
+     *
+     * @return $this
+     */
+    public function singularize()
+    {
+        $this->val(Inflection::getInstance()->singularize($this->val()));
+
+        return $this;
+    }
+
+    /**
+     * Convert string to its plural form
+     *
+     * @return $this
+     */
+    public function pluralize()
+    {
+        $this->val(Inflection::getInstance()->pluralize($this->val()));
+
+        return $this;
+    }
 }
