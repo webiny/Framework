@@ -23,8 +23,8 @@ trait ManipulatorTrait
     /**
      * Get or update the given key inside current array.
      *
-     * @param string|int|StringObject $key                  Array key
-     * @param null|mixed              $value                If set, the value under current $key will be updated and not returned.
+     * @param string|int|StringObject $key Array key
+     * @param null|mixed              $value If set, the value under current $key will be updated and not returned.
      * @param bool                    $setOnlyIfDoesntExist Set the $value only in case if the $key doesn't exist.
      *
      * @return $this|mixed|StringObject The value of the given key.
@@ -58,8 +58,8 @@ trait ManipulatorTrait
     /**
      * Get or update the given key inside current array. This method supports nested key access: 'level1.level2.level3'
      *
-     * @param string|int|StringObject $key                  Array key Eg: 'level1.level2.level3'
-     * @param null|mixed              $value                If set, the value under current $key will be updated and not returned.
+     * @param string|int|StringObject $key Array key Eg: 'level1.level2.level3'
+     * @param null|mixed              $value If set, the value under current $key will be updated and not returned.
      * @param bool                    $setOnlyIfDoesntExist Set the $value only in case if the $key doesn't exist.
      *
      * @return $this|mixed|StringObject The value of the given key.
@@ -249,7 +249,7 @@ trait ManipulatorTrait
     /**
      * Split an array into chunks.
      *
-     * @param int  $size          Chunk size.
+     * @param int  $size Chunk size.
      * @param bool $preserve_keys Do you want ot preserve keys.
      *
      * @return ArrayObject  A new instance of ArrayObject containing a multidimensional numerically indexed array,
@@ -328,7 +328,7 @@ trait ManipulatorTrait
      * If you have items in your current array, they will be removed.
      *
      * @param int   $start The first index of the returned array.
-     * @param int   $num   Number of elements to insert. Must be greater than zero.
+     * @param int   $num Number of elements to insert. Must be greater than zero.
      * @param mixed $value Value to use for filling.
      *
      * @return $this
@@ -428,7 +428,7 @@ trait ManipulatorTrait
      * Remove all elements from the current array that are not present in the given $array.
      * This function uses array keys for comparison unlike 'intersect' method.
      *
-     * @param array  $array    Array for comparison
+     * @param array  $array Array for comparison
      * @param string $callable Optional callback function that can be uses for comparison.
      *
      * @return $this
@@ -456,7 +456,7 @@ trait ManipulatorTrait
      * Remove all elements from the current array that are not present in the given $array.
      * This function compares ONLY array keys.
      *
-     * @param array  $array    Array for comparison
+     * @param array  $array Array for comparison
      * @param string $callable Optional callback function that can be uses for comparison.
      *
      * @return $this
@@ -621,7 +621,7 @@ trait ManipulatorTrait
      * Default behavior equals to the standard sort function.
      *
      * @param int $direction In which direction you want to sort. You can use SORT_ASC or SORT_DESC.
-     * @param int $sortFlag  Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
+     * @param int $sortFlag Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
      *
      * @return $this
      * @throws ArrayObjectException
@@ -650,7 +650,7 @@ trait ManipulatorTrait
      * Default behavior equals to the standard asort function.
      *
      * @param int $direction In which direction you want to sort. You can use SORT_ASC or SORT_DESC.
-     * @param int $sortFlag  Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
+     * @param int $sortFlag Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
      *
      * @return $this
      * @throws ArrayObjectException
@@ -679,7 +679,7 @@ trait ManipulatorTrait
      * Default behavior equals to the standard asort function.
      *
      * @param int $direction In which direction you want to sort. You can use SORT_ASC or SORT_DESC.
-     * @param int $sortFlag  Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
+     * @param int $sortFlag Which sort algorithm. SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL
      *
      * @return $this
      * @throws ArrayObjectException
@@ -758,7 +758,7 @@ trait ManipulatorTrait
     /**
      * Pad array to the specified length with a value.
      *
-     * @param int   $size  New size of the array
+     * @param int   $size New size of the array
      * @param mixed $value Value to pad if array is smaller than pad_size.
      *
      * @return $this
@@ -860,25 +860,18 @@ trait ManipulatorTrait
     /**
      * Slice a portion of current array and discard the remains.
      *
-     * @param int  $offset       From where to start slicing.
-     * @param int  $length       How many elements to take.
-     * @param bool $preserveKeys Do you want to preserve the keys from the current array. Default is true.
+     * @param int      $offset From where to start slicing.
+     * @param null|int $length How many elements to take.
+     * @param bool     $preserveKeys Do you want to preserve the keys from the current array. Default is true.
      *
      * @return $this
      * @throws ArrayObjectException
      */
-    public function slice($offset, $length, $preserveKeys = true)
+    public function slice($offset, $length = null, $preserveKeys = true)
     {
         if (!$this->isNumber($offset)) {
             throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
                 '$offset',
-                'integer'
-            ]);
-        }
-
-        if (!$this->isNumber($length)) {
-            throw new ArrayObjectException(ArrayObjectException::MSG_INVALID_PARAM, [
-                '$length',
                 'integer'
             ]);
         }
@@ -897,8 +890,8 @@ trait ManipulatorTrait
     /**
      * Remove a portion of the array and replace it with something else.
      *
-     * @param int  $offset      From where to start slicing.
-     * @param int  $length      How many elements to take.
+     * @param int  $offset From where to start slicing.
+     * @param int  $length How many elements to take.
      * @param bool $replacement With what to replace the selected portion.
      *
      * @return $this
@@ -935,7 +928,7 @@ trait ManipulatorTrait
     /**
      * Remove duplicates from the array.
      *
-     * @param int $sortFlag   The optional parameter that may be used to modify the sorting behavior.
+     * @param int $sortFlag The optional parameter that may be used to modify the sorting behavior.
      *                        Possible values are: SORT_STRING, SORT_NUMERIC, SORT_REGULAR and SORT_LOCALE_STRING
      *
      * @return $this
@@ -951,9 +944,9 @@ trait ManipulatorTrait
      * Applies the user-defined function to each element of the input array.
      * If $recursive the function will recurse into deeper arrays.
      *
-     * @param mixed $callable  Which function will be called for each array value.
+     * @param mixed $callable Which function will be called for each array value.
      * @param bool  $recursive Go into deeper levels of the array. Default: false.
-     * @param null  $userData  Optional data that can be passed along to the user callable $function.
+     * @param null  $userData Optional data that can be passed along to the user callable $function.
      *
      * @return $this
      * @throws ArrayObjectException
@@ -1059,8 +1052,8 @@ trait ManipulatorTrait
     /**
      * Set or get given $value for given $key.
      *
-     * @param string $key                Key to set/get
-     * @param mixed  $value              Value to set
+     * @param string $key Key to set/get
+     * @param mixed  $value Value to set
      * @param bool   $setOnlyIfNotExists Set default value or not
      */
     private function handleNestedValue($key, $value, $setOnlyIfNotExists)
