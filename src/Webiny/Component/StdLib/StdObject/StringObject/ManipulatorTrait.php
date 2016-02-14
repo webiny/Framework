@@ -24,6 +24,26 @@ trait ManipulatorTrait
     use StdObjectManipulatorTrait;
 
     /**
+     * Generate a UUID (GUID)
+     *
+     * @return string
+     */
+    public static function uuid()
+    {
+        mt_srand((double)microtime() * 10000);
+        $charId = md5(uniqid(rand(), true));
+        $uuid = [
+            substr($charId, 0, 8),
+            substr($charId, 8, 4),
+            substr($charId, 12, 4),
+            substr($charId, 16, 4),
+            substr($charId, 20, 12)
+        ];
+
+        return join('-', $uuid);
+    }
+
+    /**
      * Appends the given string to the current string.
      *
      * @param string $str String you wish to append
