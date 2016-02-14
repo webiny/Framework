@@ -153,8 +153,7 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $s->nl2br();
 
         $this->assertSame('new <br />
- line', $s->val()
-        );
+ line', $s->val());
     }
 
     public function testStripTrailingSlash()
@@ -250,10 +249,9 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
     {
         $s = new StringObject('a b c');
         $s->replace([
-                        'a',
-                        'b'
-                    ], 'c'
-        );
+            'a',
+            'b'
+        ], 'c');
 
         $this->assertSame('c c c', $s->val());
     }
@@ -281,17 +279,24 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('F', $s->val());
     }
 
+    public function testPregReplace()
+    {
+        $s = new StringObject('ReplaceThis');
+        $count = 0;
+        $this->assertEquals('-Replace-This', $s->pregReplace('/[A-Z]/', '-$0', -1, $count)->val());
+        $this->assertEquals(2, $count);
+    }
+
     public function testExplode()
     {
         $s = new StringObject('a b c');
         $arr = $s->explode(' ');
 
         $this->assertSame([
-                              'a',
-                              'b',
-                              'c'
-                          ], $arr->val()
-        );
+            'a',
+            'b',
+            'c'
+        ], $arr->val());
     }
 
     public function testExplode2()
@@ -300,10 +305,9 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $arr = $s->explode(' ', 2);
 
         $this->assertSame([
-                              'a',
-                              'b c'
-                          ], $arr->val()
-        );
+            'a',
+            'b c'
+        ], $arr->val());
     }
 
     public function testSplit()
@@ -312,13 +316,12 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $arr = $s->split();
 
         $this->assertSame([
-                              'a',
-                              ' ',
-                              'b',
-                              ' ',
-                              'c'
-                          ], $arr->val()
-        );
+            'a',
+            ' ',
+            'b',
+            ' ',
+            'c'
+        ], $arr->val());
     }
 
     public function testSplit2()
@@ -327,11 +330,10 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $arr = $s->split(2);
 
         $this->assertSame([
-                              'a ',
-                              'b ',
-                              'c'
-                          ], $arr->val()
-        );
+            'a ',
+            'b ',
+            'c'
+        ], $arr->val());
     }
 
     public function testHash()
@@ -442,10 +444,9 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
     {
         $s = new StringObject('There are %d monkeys in the %s');
         $s->format([
-                       5,
-                       'tree'
-                   ]
-        );
+            5,
+            'tree'
+        ]);
 
         $this->assertSame('There are 5 monkeys in the tree', $s->val());
     }
@@ -613,10 +614,9 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $result = $s->match('|([0-9]{1,5})|', false);
 
         $this->assertSame([
-                              '10',
-                              '10'
-                          ], $result->val()
-        );
+            '10',
+            '10'
+        ], $result->val());
     }
 
     public function testLongerThan()
@@ -631,6 +631,68 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
         $s = new StringObject('I had 10 dollars.');
 
         $this->assertFalse($s->longerThan(30));
+    }
+
+    /**
+     * @dataProvider caseStrings
+     */
+    public function testKebabCase($test)
+    {
+        $s = new StringObject($test);
+
+        $this->assertEquals('this-needs-to-be-converted', $s->kebabCase()->val());
+    }
+
+    /**
+     * @dataProvider caseStrings
+     */
+    public function testPascalCase($test)
+    {
+        $s = new StringObject($test);
+
+        $this->assertEquals('ThisNeedsToBeConverted', $s->pascalCase()->val());
+    }
+
+    /**
+     * @dataProvider caseStrings
+     */
+    public function testCamelCase($test)
+    {
+        $s = new StringObject($test);
+
+        $this->assertEquals('thisNeedsToBeConverted', $s->camelCase()->val());
+    }
+
+    /**
+     * @dataProvider caseStrings
+     */
+    public function testSnakeCase($test)
+    {
+        $s = new StringObject($test);
+
+        $this->assertEquals('this_needs_to_be_converted', $s->snakeCase()->val());
+    }
+
+    /**
+     * @dataProvider caseStrings
+     */
+    public function testSentenceCase($test)
+    {
+        $s = new StringObject($test);
+
+        $this->assertEquals('This needs to be converted', $s->sentenceCase()->val());
+    }
+
+    public function caseStrings()
+    {
+        return [
+            ['this needs to be converted'],
+            ['this_needs_to_be_converted'],
+            ['ThisNeedsToBeConverted'],
+            ['_this-needs to_be_converted-'],
+            ['this_needs_to_be_converted'],
+            ['thisNeedsToBeConverted']
+        ];
     }
 
     public function stringSet()
@@ -648,4 +710,5 @@ class StringObjectTest extends \PHPUnit_Framework_TestCase
             ['/string with slash/'],
         ];
     }
+
 }
