@@ -36,7 +36,7 @@ class MongoResult implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->data = new ArrayObject($data);
     }
 
-    public function _get($name)
+    public function __get($name)
     {
         return $this->data->key($name);
     }
