@@ -20,7 +20,34 @@ use Traversable;
 interface MongoInterface
 {
 
-    public function connect($uri, array $uriOptions = [], array $driverOptions = [], $collectionPrefix = '');
+    /**
+     * Connect to Mongo instance
+     *
+     * @param       $uri
+     * @param array $uriOptions
+     * @param array $driverOptions
+     *
+     * @return mixed
+     */
+    public function connect($uri, array $uriOptions = [], array $driverOptions = []);
+
+    /**
+     * Create a mongo ID instance
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function id($id);
+
+    /**
+     * Check if given string/object is a valid mongo ID.
+     *
+     * @param mixed $id
+     *
+     * @return bool
+     */
+    public function isId($id);
 
     /**
      * Executes an aggregation framework pipeline on the collection.
@@ -135,6 +162,16 @@ interface MongoInterface
     public function distinct($collectionName, $fieldName, $filter = [], array $options = []);
 
     /**
+     * Create collection.
+     *
+     * @param string $collectionName
+     * @param array  $options Additional options
+     *
+     * @return array|object Command result document
+     */
+    public function createCollection($collectionName, array $options = []);
+
+    /**
      * Drop this collection.
      *
      * @param string $collectionName
@@ -173,14 +210,11 @@ interface MongoInterface
      *
      * @param string       $collectionName
      * @param array|object $filter Query by which to filter documents
-     * @param array        $sort
-     * @param int          $limit
-     * @param int          $skip
      * @param array        $options Additional options
      *
      * @return Cursor
      */
-    public function find($collectionName, $filter = [], $sort = [], $limit = 0, $skip = 0, array $options = []);
+    public function find($collectionName, $filter = [], array $options = []);
 
     /**
      * Finds a single document matching the query.
@@ -293,6 +327,15 @@ interface MongoInterface
      * @return InsertOneResult
      */
     public function insertOne($collectionName, $document, array $options = []);
+
+    /**
+     * Returns information for all collections.
+     *
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function listCollections(array $options = []);
 
     /**
      * Returns information for all indexes for the collection.

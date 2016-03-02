@@ -8,8 +8,10 @@
 namespace Webiny\Component\Mongo\Bridge;
 
 use InvalidArgumentException;
+use MongoDB\BSON\ObjectID;
 use MongoDB\BulkWriteResult;
 use MongoDB\Client;
+use MongoDB\Database;
 use MongoDB\DeleteResult;
 use MongoDB\Driver\Cursor;
 use MongoDB\InsertManyResult;
@@ -34,113 +36,322 @@ class MongoDb implements MongoInterface
      */
     private $connection;
 
+    /**
+     * @var Database
+     */
+    private $db;
+
     public function connect($uri, array $uriOptions = [], array $driverOptions = [])
     {
         $server = 'mongodb://' . $uri;
         try {
             $this->connection = new Client($server, $uriOptions, $driverOptions);
+            $this->db = $this->connection->selectDatabase($uriOptions['database']);
         } catch (InvalidArgumentException $e) {
             throw new MongoException($e->getMessage());
         }
     }
 
+    /**
+     * Create a mongo ID instance
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function id($id)
+    {
+        return new ObjectID($id);
+    }
+
+    /**
+     * Check if given string/object is a valid mongo ID.
+     *
+     * @param mixed $id
+     *
+     * @return bool
+     */
+    public function isId($id)
+    {
+        if ($id instanceof ObjectID) {
+            return true;
+        }
+
+        try {
+            new ObjectID($id);
+        } catch (\MongoDB\Driver\Exception\InvalidArgumentException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $collectionName
+     * @param array  $pipeline
+     * @param array  $options
+     *
+     * @return Traversable
+     */
     public function aggregate($collectionName, array $pipeline, array $options = [])
     {
-        // TODO: Implement aggregate() method.
+        return $this->getCollection($collectionName)->aggregate($pipeline, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $operations
+     * @param array  $options
+     *
+     * @return BulkWriteResult
+     */
     public function bulkWrite($collectionName, array $operations, array $options = [])
     {
-        // TODO: Implement bulkWrite() method.
+        return $this->getCollection($collectionName)->bulkWrite($operations, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $filter
+     * @param array  $options
+     *
+     * @return int
+     */
     public function count($collectionName, $filter = [], array $options = [])
     {
-        // TODO: Implement count() method.
+        return $this->getCollection($collectionName)->count($filter, $options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $key
+     * @param array        $options
+     *
+     * @return string
+     */
     public function createIndex($collectionName, $key, array $options = [])
     {
-        // TODO: Implement createIndex() method.
+        return $this->getCollection($collectionName)->createIndex($key, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $indexes
+     *
+     * @return \string[]
+     */
     public function createIndexes($collectionName, array $indexes)
     {
-        // TODO: Implement createIndexes() method.
+        return $this->getCollection($collectionName)->createIndexes($indexes);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $filter
+     * @param array        $options
+     *
+     * @return DeleteResult
+     */
     public function delete($collectionName, $filter, array $options = [])
     {
-        // TODO: Implement delete() method.
+        return $this->getCollection($collectionName)->deleteMany($filter, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param string $fieldName
+     * @param array  $filter
+     * @param array  $options
+     *
+     * @return \mixed[]
+     */
     public function distinct($collectionName, $fieldName, $filter = [], array $options = [])
     {
-        // TODO: Implement distinct() method.
+        return $this->getCollection($collectionName)->distinct($fieldName, $filter, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $options
+     *
+     * @return object
+     */
+    public function createCollection($collectionName, array $options = [])
+    {
+        return $this->db->createCollection($collectionName, $options);
+    }
+
+    /**
+     * @param string $collectionName
+     * @param array  $options
+     *
+     * @return array|object
+     */
     public function dropCollection($collectionName, array $options = [])
     {
-        // TODO: Implement dropCollection() method.
+        return $this->db->dropCollection($collectionName, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param string $indexName
+     * @param array  $options
+     *
+     * @return array|object
+     */
     public function dropIndex($collectionName, $indexName, array $options = [])
     {
-        // TODO: Implement dropIndex() method.
+        return $this->getCollection($collectionName)->dropIndex($indexName, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $options
+     *
+     * @return array|object
+     */
     public function dropIndexes($collectionName, array $options = [])
     {
-        // TODO: Implement dropIndexes() method.
+        return $this->getCollection($collectionName)->dropIndexes($options);
     }
 
-    public function find($collectionName, $filter = [], $sort = [], $limit = 0, $skip = 0, array $options = [])
+    /**
+     * @param string $collectionName
+     * @param array  $filter
+     * @param array  $options
+     *
+     * @return Cursor
+     */
+    public function find($collectionName, $filter = [], array $options = [])
     {
-        // TODO: Implement find() method.
+        return $this->getCollection($collectionName)->find($filter, $options);
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $filter
+     * @param array  $options
+     *
+     * @return null|object
+     */
     public function findOne($collectionName, $filter = [], array $options = [])
     {
-        // TODO: Implement findOne() method.
+        return $this->getCollection($collectionName)->findOne($filter, $options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $filter
+     * @param array        $options
+     *
+     * @return null|object
+     */
     public function findOneAndDelete($collectionName, $filter, array $options = [])
     {
-        // TODO: Implement findOneAndDelete() method.
+        return $this->getCollection($collectionName)->findOneAndDelete($filter, $options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $filter
+     * @param array|object $replacement
+     * @param array        $options
+     *
+     * @return null|object
+     */
     public function findOneAndReplace($collectionName, $filter, $replacement, array $options = [])
     {
-        // TODO: Implement findOneAndReplace() method.
+        return $this->getCollection($collectionName)->findOneAndReplace($filter, $replacement, $options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $filter
+     * @param array|object $update
+     * @param array        $options
+     *
+     * @return null|object
+     */
     public function findOneAndUpdate($collectionName, $filter, $update, array $options = [])
     {
-        // TODO: Implement findOneAndUpdate() method.
+        return $this->getCollection($collectionName)->findOneAndUpdate($filter, $update, $options);
     }
 
+    /**
+     * @param string $collectionName
+     *
+     * @return string
+     */
     public function getNamespace($collectionName)
     {
-        // TODO: Implement getNamespace() method.
+        return $this->getCollection($collectionName)->getNamespace();
     }
 
+    /**
+     * @param string $collectionName
+     * @param array  $documents
+     * @param array  $options
+     *
+     * @return InsertManyResult
+     */
     public function insertMany($collectionName, array $documents, array $options = [])
     {
-        // TODO: Implement insertMany() method.
+        return $this->getCollection($collectionName)->insertMany($documents, $options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $document
+     * @param array        $options
+     *
+     * @return InsertOneResult
+     */
     public function insertOne($collectionName, $document, array $options = [])
     {
-        // TODO: Implement insertOne() method.
+        return $this->getCollection($collectionName)->insertOne($document, $options);
     }
 
+    /**
+     * @param array $options
+     *
+     * @return \MongoDB\Model\CollectionInfoIterator
+     */
+    public function listCollections(array $options = [])
+    {
+        return $this->db->listCollections($options);
+    }
+
+    /**
+     * @param string $collectionName
+     * @param array  $options
+     *
+     * @return IndexInfoIterator
+     */
     public function listIndexes($collectionName, array $options = [])
     {
-        // TODO: Implement listIndexes() method.
+        return $this->getCollection($collectionName)->listIndexes($options);
     }
 
+    /**
+     * @param string       $collectionName
+     * @param array|object $filter
+     * @param array|object $update
+     * @param array        $options
+     *
+     * @return UpdateResult
+     */
     public function update($collectionName, $filter, $update, array $options = [])
     {
-        // TODO: Implement update() method.
+        return $this->getCollection($collectionName)->updateMany($filter, $update, $options);
+    }
+
+    /**
+     * @param $collectionName
+     *
+     * @return \MongoDB\Collection
+     */
+    private function getCollection($collectionName)
+    {
+        return $this->db->selectCollection($collectionName);
     }
 }
