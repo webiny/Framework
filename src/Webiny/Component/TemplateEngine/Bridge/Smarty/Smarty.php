@@ -55,10 +55,9 @@ class Smarty implements TemplateEngineInterface
 
         // template dir
         $templateDir = $config->get('TemplateDir', false);
-        if (!$templateDir) {
-            throw new SmartyException('Configuration error, "TemplateDir" is missing.');
+        if ($templateDir) {
+            $this->setTemplateDir($templateDir);
         }
-        $this->setTemplateDir($templateDir);
 
         // force compile
         $this->setForceCompile($config->get('ForceCompile', false));
@@ -258,8 +257,8 @@ class Smarty implements TemplateEngineInterface
     {
         try {
             $this->smarty->registerPlugin($plugin->getType(), $plugin->getName(), $plugin->getCallbackFunction(),
-                                           $plugin->getAttribute('Cachable', true),
-                                           $plugin->getAttribute('CacheAttr', null)
+                $plugin->getAttribute('Cachable', true),
+                $plugin->getAttribute('CacheAttr', null)
             );
         } catch (\SmartyException $e) {
             throw new SmartyException($e);
@@ -275,7 +274,7 @@ class Smarty implements TemplateEngineInterface
     {
         // register extensions
         $extensions = $this->servicesByTag('Smarty.Extension',
-                                           '\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionInterface'
+            '\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionInterface'
         );
 
         /**

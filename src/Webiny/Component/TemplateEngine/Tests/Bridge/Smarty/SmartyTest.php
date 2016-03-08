@@ -54,21 +54,6 @@ class SmartyTest extends \PHPUnit_Framework_TestCase
         $smarty = new Smarty($config);
     }
 
-    /**
-     * @expectedException \Webiny\Component\TemplateEngine\Bridge\Smarty\SmartyException
-     * @expectedExceptionMessage Configuration error, "TemplateDir" is missing.
-     */
-    public function testConstructNoTemplateDirException()
-    {
-        $config = new ConfigObject([
-                                       'CompileDir' => '/tmp/',
-                                       'CacheDir'   => '/tmp/cache',
-                                   ]
-        );
-
-        $smarty = new Smarty($config);
-    }
-
     public function testConstruct()
     {
         $config = new ConfigObject([
