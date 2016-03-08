@@ -114,7 +114,7 @@ class Many2OneAttribute extends AttributeAbstract
                 $id = isset($data['id']) ? $data['id'] : null;
                 if (!$this->getUpdateExisting()) {
                     return $this->processToDbValue($id);
-                } elseif ($this->getUpdateExisting() && Entity::getInstance()->getDatabase()->isMongoId($id)) {
+                } elseif ($this->getUpdateExisting() && Entity::getInstance()->getDatabase()->isId($id)) {
                     $this->value = $this->loadEntity($id);
                     if ($this->value) {
                         $this->value->populate($data)->save();
@@ -228,7 +228,7 @@ class Many2OneAttribute extends AttributeAbstract
         if ($this->isInstanceOf($value, $this->entityClass)) {
             $id = $value->id;
             $entity = $value;
-        } elseif (Entity::getInstance()->getDatabase()->isMongoId($value)) {
+        } elseif (Entity::getInstance()->getDatabase()->isId($value)) {
             $id = $value;
         } elseif (is_array($value) && isset($value['id'])) {
             $id = $value['id'];
@@ -308,7 +308,7 @@ class Many2OneAttribute extends AttributeAbstract
      */
     protected function validate(&$value)
     {
-        $mongoId = Entity::getInstance()->getDatabase()->isMongoId($value);
+        $mongoId = Entity::getInstance()->getDatabase()->isId($value);
         $abstractEntityClass = '\Webiny\Component\Entity\EntityAbstract';
 
         if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value, $abstractEntityClass) && !$mongoId) {

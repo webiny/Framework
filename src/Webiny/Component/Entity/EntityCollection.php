@@ -22,14 +22,12 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 {
     use MongoTrait, StdLibTrait;
 
-    /**
-     * @var \MongoCursor
-     */
-    private $cursor;
     private $entityClass;
     private $collectionName;
-    private $count;
+    private $data = [];
+    private $totalCount;
     private $value = [];
+    private $conditions = [];
     private $loaded = false;
     private $randomize = false;
 
@@ -44,14 +42,9 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
         $this->entityClass = $entityClass;
         $this->collectionName = $entityCollection;
+        $this->conditions = $conditions;
 
-        $this->cursor = Entity::getInstance()
-                              ->getDatabase()
-                              ->find($entityCollection, $conditions)
-                              ->sort($order)
-                              ->skip($offset)
-                              ->limit($limit);
-
+        $this->data = Entity::getInstance()->getDatabase()->find($entityCollection, $conditions, $order, $limit, $offset);
     }
 
     /**
@@ -118,30 +111,37 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Count items in collection
+     * Count items in entity collection
+     *
      * @return mixed
      */
     public function count()
     {
-        return $this->cursor->count(true);
+        return count(iterator_to_array($this->getIterator()));
     }
 
     /**
      * Count total number of items without limit and offset
+     *
+     * TODO: unittest
+     *
      * @return mixed
      */
     public function totalCount()
     {
-        if (!$this->count) {
-            $this->count = $this->cursor->count(false);
+        if (!$this->totalCount) {
+            $mongo = Entity::getInstance()->getDatabase();
+            $this->totalCount = $mongo->count($this->collectionName, $this->conditions);
         }
 
-        return $this->count;
+        return $this->totalCount;
     }
 
     /**
      * Check if given item is already in the data set.<br>
      * NOTE: this triggers loading of data from database if not yet loaded
+     *
+     * TODO: unittest
      *
      * @param string|EntityAbstract $item ID or EntityAbstract instance
      *
@@ -150,10 +150,10 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     public function contains($item)
     {
         if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
-            $item = $item->getId()->getValue();
+            $item = $item->id;
         }
         foreach ($this->getIterator() as $entity) {
-            $eId = $entity->getId()->getValue();
+            $eId = $entity->id;
             if (!$this->isNull($eId) && $eId == $item) {
                 return true;
             }
@@ -186,10 +186,10 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     {
         if ($this->loaded) {
             if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
-                $item = $item->getId()->getValue();
+                $item = $item->id;
             }
             foreach ($this->getIterator() as $index => $entity) {
-                if ($entity->getId()->getValue() == $item) {
+                if ($entity->id == $item) {
                     unset($this->value[$index]);
 
                     return;
@@ -199,22 +199,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get mongo query explanation
+     * Get collection data
      *
      * @return array
      */
-    public function explain()
-    {
-        return $this->cursor->explain();
-    }
-
-    /**
-     * Get collection data
-     * @return Traversable
-     */
     public function getData()
     {
-        return $this->getIterator();
+        return iterator_to_array($this->getIterator());
     }
 
     public function randomize()
@@ -238,20 +229,20 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         }
 
         $dbItems = [];
-        foreach ($this->cursor as $data) {
+        foreach ($this->data as $data) {
             $instance = new $this->entityClass;
             $data['__webiny_db__'] = true;
             $instance->populate($data);
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */
-            if ($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->getId()->getValue())) {
+            if ($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->id)) {
                 $dbItems[] = $itemInPool;
             } else {
                 $dbItems[] = EntityPool::getInstance()->add($instance);
             }
         }
-        $this->value = array_merge($dbItems, $this->value);
+        $this->value += $dbItems;
         $this->loaded = true;
 
         if ($this->randomize) {

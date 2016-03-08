@@ -55,13 +55,22 @@ class MongoDb implements MongoInterface
     /**
      * Create a mongo ID instance
      *
-     * @param $id
+     * @param null|string $id
      *
      * @return mixed
      */
-    public function id($id)
+    public function id($id = null)
     {
-        return new ObjectID($id);
+        $args = [];
+        if ($id instanceof ObjectID) {
+            return $id;
+        }
+
+        if ($id !== null) {
+            $args[] = $id;
+        }
+
+        return new ObjectID(...$args);
     }
 
     /**

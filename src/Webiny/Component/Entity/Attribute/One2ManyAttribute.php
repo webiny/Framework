@@ -217,7 +217,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         $newIds = [];
         foreach ($newValues as $nv) {
             if (isset($nv['id']) && $nv['id'] != '') {
-                $newIds[] = new \MongoId($nv['id']);
+                $newIds[] = Entity::getInstance()->getDatabase()->id($nv['id']);
             }
         }
 

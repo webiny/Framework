@@ -10,6 +10,7 @@
 namespace Webiny\Component\Mongo;
 
 use MongoDB\BSON\ObjectID;
+use MongoDB\Model\BSONDocument;
 use Webiny\Component\Mongo\Bridge\MongoInterface;
 use Webiny\Component\Mongo\Index\IndexInterface;
 use Webiny\Component\StdLib\ComponentTrait;
@@ -34,18 +35,6 @@ class Mongo
      */
     private $collectionPrefix = '';
 
-    /**
-     * Check if given string is a valid MongoId string<br>
-     *
-     * @param $id
-     *
-     * @return bool
-     */
-    public function isId($id)
-    {
-        return $this->bridge->isId($id);
-    }
-
     public function __construct($uri, array $uriOptions = [], array $driverOptions = [], $collectionPrefix = '')
     {
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Bridge\MongoDb');
@@ -57,13 +46,25 @@ class Mongo
     /**
      * Construct Mongo ID
      *
-     * @param $id
+     * @param null|string $id (Optional)
      *
      * @return ObjectID
      */
-    public function id($id)
+    public function id($id = null)
     {
         return $this->bridge->id($id);
+    }
+
+    /**
+     * Check if given string is a valid MongoId string<br>
+     *
+     * @param $id
+     *
+     * @return bool
+     */
+    public function isId($id)
+    {
+        return $this->bridge->isId($id);
     }
 
     /**
@@ -129,9 +130,9 @@ class Mongo
         return $this->bridge->count($this->cName($collectionName), $filter, $options);
     }
 
-    public function createIndex($collectionName, IndexInterface $index)
+    public function createIndex($collectionName, IndexInterface $index, array $options = [])
     {
-        return $this->bridge->createIndex($this->cName($collectionName), $index->getFields(), $index->getOptions());
+        return $this->bridge->createIndex($this->cName($collectionName), $index->getFields(), $index->getOptions() + $options);
     }
 
     public function createIndexes($collectionName, array $indexes)
@@ -147,7 +148,7 @@ class Mongo
 
     public function delete($collectionName, $filter, array $options = [])
     {
-        return $this->bridge->delete($collectionName, $filter, $options);
+        return $this->bridge->delete($this->cName($collectionName), $filter, $options);
     }
 
     public function distinct($collectionName, $fieldName, $filter = [], array $options = [])
@@ -173,7 +174,14 @@ class Mongo
             'sort'  => $sort
         ];
 
-        return $this->bridge->find($this->cName($collectionName), $filter, $options)->toArray();
+        $result = $this->bridge->find($this->cName($collectionName), $filter, $options)->toArray();
+        $data = [];
+        /* @var $r BSONDocument */
+        foreach ($result as $r) {
+            $data[] = iterator_to_array($r->getIterator());
+        }
+
+        return $data;
     }
 
     public function findOne($collectionName, $filter = [], array $options = [])

@@ -48,7 +48,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
          * Validate items
          */
         foreach ($item as $i) {
-            if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isMongoId($i)) {
+            if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isId($i)) {
                 $this->expected('entity ID or instance of ' . $this->getEntity() . ' or null', get_class($i));
             }
         }

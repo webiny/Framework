@@ -23,7 +23,7 @@ class IntegerAttribute extends AttributeAbstract
             $this->value = $value;
         }
 
-        return $this->processToDbValue(new \MongoInt32($this->value));
+        return $this->processToDbValue((int)$this->value);
     }
 
     /**

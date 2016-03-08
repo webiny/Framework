@@ -11,6 +11,7 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
+use Webiny\Component\Mongo\Index\CompoundIndex;
 use Webiny\Component\Mongo\MongoTrait;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -40,7 +41,9 @@ class Many2ManyStorage
             $firstClassName => $attribute->getParentEntity()->id
         ];
 
-        $relatedObjects = Entity::getInstance()->getDatabase()->find($attribute->getIntermediateCollection(), $query, [$secondClassName]);
+        $relatedObjects = Entity::getInstance()
+                                ->getDatabase()
+                                ->find($attribute->getIntermediateCollection(), $query, [$secondClassName => 1]);
         $relatedIds = [];
         foreach ($relatedObjects as $rObject) {
             $relatedIds[] = $rObject[$secondClassName];
@@ -69,14 +72,13 @@ class Many2ManyStorage
     public function count(Many2ManyAttribute $attribute)
     {
         $firstClassName = $this->extractClassName($attribute->getParentEntity());
-        $secondClassName = $this->extractClassName($attribute->getEntity());
 
         // Select related IDs from aggregation table
         $query = [
             $firstClassName => $attribute->getParentEntity()->id
         ];
 
-        return Entity::getInstance()->getDatabase()->count($attribute->getIntermediateCollection(), $query, [$secondClassName]);
+        return Entity::getInstance()->getDatabase()->count($attribute->getIntermediateCollection(), $query);
     }
 
     public function save(Many2ManyAttribute $attribute)
@@ -85,16 +87,16 @@ class Many2ManyStorage
         $firstClassName = $this->extractClassName($attribute->getParentEntity());
         $secondClassName = $this->extractClassName($attribute->getEntity());
 
-        // Ensure index
+        // Make sure indexes exist
         $indexOrder = [$firstClassName, $secondClassName];
         list($indexKey1, $indexKey2) = $this->arr($indexOrder)->sort()->val();
 
-        $index = [
+        $index = new CompoundIndex($collectionName, [
             $indexKey1 => 1,
             $indexKey2 => 1
-        ];
+        ], false, true);
 
-        Entity::getInstance()->getDatabase()->ensureIndex($collectionName, $index, ['unique' => 1]);
+        Entity::getInstance()->getDatabase()->createIndex($collectionName, $index, ['background' => true]);
 
         /**
          * Insert values
@@ -106,7 +108,7 @@ class Many2ManyStorage
                 $item->save();
             }
 
-            if ($item instanceof EntityAbstract){
+            if ($item instanceof EntityAbstract) {
                 $secondEntityId = $item->id;
             } else {
                 $secondEntityId = $item;
@@ -120,7 +122,7 @@ class Many2ManyStorage
             ];
 
             try {
-                Entity::getInstance()->getDatabase()->insert($collectionName, $this->arr($data)->sortKey()->val());
+                Entity::getInstance()->getDatabase()->insertOne($collectionName, $this->arr($data)->sortKey()->val());
             } catch (\MongoException $e) {
                 continue;
             }
@@ -135,7 +137,7 @@ class Many2ManyStorage
                 '$nin' => $existingIds
             ]
         ];
-        Entity::getInstance()->getDatabase()->remove($collectionName, $removeQuery);
+        Entity::getInstance()->getDatabase()->delete($collectionName, $removeQuery);
 
         /**
          * The value of many2many attribute must be set to 'null' to trigger data reload on next access.
@@ -157,13 +159,13 @@ class Many2ManyStorage
     {
         // Convert instance to entity ID
         if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
-            $item = $item->getId()->getValue();
+            $item = $item->id;
         }
 
-        $sourceEntityId = $attribute->getParentEntity()->getId()->getValue();
+        $sourceEntityId = $attribute->getParentEntity()->id;
 
         if ($this->isNull($sourceEntityId) || $this->isNull($item)) {
-            return;
+            return false;
         }
 
         $firstClassName = $this->extractClassName($attribute->getParentEntity());
@@ -173,9 +175,9 @@ class Many2ManyStorage
             $secondClassName => $item
         ])->sortKey()->val();
 
-        $res = Entity::getInstance()->getDatabase()->remove($attribute->getIntermediateCollection(), $query);
+        $res = Entity::getInstance()->getDatabase()->delete($attribute->getIntermediateCollection(), $query);
 
-        return $res['n'] == 1;
+        return $res->getDeletedCount() == 1;
     }
 
     /**

@@ -87,7 +87,8 @@ abstract class EntityAbstract implements \ArrayAccess
         if ($instance) {
             return $instance;
         }
-        $data = static::entity()->getDatabase()->findOne(static::$entityCollection, ['_id' => new \MongoId($id)]);
+        $mongo = static::entity()->getDatabase();
+        $data = $mongo->findOne(static::$entityCollection, ['_id' => $mongo->id($id)]);
         if (!$data) {
             return null;
         }
@@ -125,6 +126,7 @@ abstract class EntityAbstract implements \ArrayAccess
         if (!$data) {
             return null;
         }
+
         $instance = new static;
         $data['__webiny_db__'] = true;
         $instance->populate($data);
@@ -308,21 +310,22 @@ abstract class EntityAbstract implements \ArrayAccess
             }
         }
 
+        $mongo = $this->entity()->getDatabase();
         /**
          * Insert or update
          */
         if (!$this->exists()) {
-            $data['_id'] = new \MongoId();
+            $data['_id'] = $mongo->id();
             $data['id'] = (string)$data['_id'];
-            $this->entity()->getDatabase()->insert(static::$entityCollection, $data);
+            $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
         } else {
             // Check if this entity was already saved during save cycle through other relational attributes
             if (array_key_exists($this->id, self::$saved)) {
                 return;
             }
-            $where = ['_id' => new \MongoId($this->id)];
-            $this->entity()->getDatabase()->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
+            $where = ['_id' => $mongo->id($this->id)];
+            $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
 
         // Store this entity's id to prevent infinite saving loop
@@ -422,7 +425,7 @@ abstract class EntityAbstract implements \ArrayAccess
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $firstClassName = $this->extractClassName($attr->getParentEntity());
                 $query = [$firstClassName => $this->id];
-                $this->entity()->getDatabase()->remove($attr->getIntermediateCollection(), $query);
+                $this->entity()->getDatabase()->delete($attr->getIntermediateCollection(), $query);
             }
         }
 
@@ -438,7 +441,7 @@ abstract class EntityAbstract implements \ArrayAccess
         /**
          * Delete $this
          */
-        $this->entity()->getDatabase()->remove(static::$entityCollection, ['_id' => $this->entity()->getDatabase()->id($this->id)]);
+        $this->entity()->getDatabase()->delete(static::$entityCollection, ['_id' => $this->entity()->getDatabase()->id($this->id)]);
 
         static::entity()->remove($this);
 
@@ -722,12 +725,12 @@ abstract class EntityAbstract implements \ArrayAccess
                 foreach ($dataValue as $item) {
                     $itemEntity = false;
 
-                    // $item can be an array of data, EntityAbstract or a simple MongoId string
+                    // $item can be an array of data, EntityAbstract or a simple mongo ID string
                     if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
                         $itemEntity = $item;
                     } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
                         $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
-                    } elseif ($this->isString($item) && $this->entity()->getDatabase()->isMongoId($item)) {
+                    } elseif ($this->isString($item) && $this->entity()->getDatabase()->isId($item)) {
                         $itemEntity = $entityClass::findById($item);
                     }
 

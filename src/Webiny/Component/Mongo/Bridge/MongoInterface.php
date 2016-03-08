@@ -34,11 +34,11 @@ interface MongoInterface
     /**
      * Create a mongo ID instance
      *
-     * @param $id
+     * @param null|string $id
      *
      * @return mixed
      */
-    public function id($id);
+    public function id($id = null);
 
     /**
      * Check if given string/object is a valid mongo ID.

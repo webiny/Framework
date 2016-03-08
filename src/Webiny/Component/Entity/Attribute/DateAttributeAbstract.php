@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use MongoDB\BSON\UTCDatetime;
 use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObjectException;
@@ -35,7 +36,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         }
 
         if ($this->getValue()) {
-            $value = new \MongoDate(strtotime($this->getValue()));
+            $value = new UTCDatetime(strtotime($this->getValue()) * 1000);
         }
 
         return $this->processToDbValue($value);
@@ -63,7 +64,11 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function setValue($value = null, $fromDb = false)
     {
-        if ($this->isInstanceOf($value, '\MongoDate')) {
+        if ($value instanceof UTCDatetime) {
+            $value = $value->toDateTime()->getTimestamp();
+        }
+
+        if ($this->isInstanceOf($value, 'UTCDatetime')) {
             if ($value->sec == 0) {
                 return parent::setValue(null, $fromDb);
             }
@@ -103,7 +108,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
             $value = $value->format($this->attributeFormat);
         }
-        if ($this->isInstanceOf($value, '\MongoDate')) {
+        if ($this->isInstanceOf($value, 'UTCDatetime')) {
             if ($value->sec == 0) {
                 return $this;
             }
