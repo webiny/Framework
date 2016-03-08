@@ -109,7 +109,9 @@ class Facebook extends ServerAbstract
     {
         return [
             'url'    => self::API_ME,
-            'params' => []
+            'params' => [
+                'fields' => 'id,email,first_name,last_name,gender,link'
+            ]
         ];
     }
 
