@@ -62,7 +62,7 @@ class OAuth2User
      * Base constructor.
      *
      * @param string $username Users username.
-     * @param string $email    Users email.
+     * @param string $email Users email.
      */
     public function __construct($username, $email)
     {
@@ -221,9 +221,8 @@ class OAuth2User
     {
         $gender = strtolower($gender);
 
-        if ($gender != 'male' && $gender != 'female') {
-            throw new OAuth2Exception('Gender can be either "male" or "female", you tried to set it to "' . $gender . '".'
-            );
+        if ($gender != '' && $gender != 'male' && $gender != 'female') {
+            throw new OAuth2Exception('Gender can be either "male" or "female", you tried to set it to "' . $gender . '".');
         }
 
         $this->gender = $gender;
