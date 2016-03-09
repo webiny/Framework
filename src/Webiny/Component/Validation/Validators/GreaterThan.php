@@ -6,6 +6,11 @@ use Webiny\Component\Validation\ValidatorInterface;
 
 class GreaterThan implements ValidatorInterface
 {
+    public function getName()
+    {
+        return 'gt';
+    }
+
     public function validate($value, $params = [], $throw = false)
     {
         $cmp = $params[0];

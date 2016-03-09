@@ -4,20 +4,20 @@ namespace Webiny\Component\Validation\Validators;
 use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidatorInterface;
 
-class Email implements ValidatorInterface
+class Phone implements ValidatorInterface
 {
     public function getName()
     {
-        return 'email';
+        return 'phone';
     }
 
     public function validate($value, $params = [], $throw = false)
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (preg_match_all("/^[-+0-9()]+$/", $value)) {
             return true;
         }
 
-        $message = 'Invalid email';
+        $message = 'Value must be a valid phone number';
         if ($throw) {
             throw new ValidationException($message);
         }

@@ -4,24 +4,25 @@ namespace Webiny\Component\Validation\Validators;
 use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidatorInterface;
 
-class Email implements ValidatorInterface
+class InArray implements ValidatorInterface
 {
     public function getName()
     {
-        return 'email';
+        return 'in';
     }
 
     public function validate($value, $params = [], $throw = false)
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (in_array($value, $params)) {
             return true;
         }
 
-        $message = 'Invalid email';
+        $values = join(', ', $params);
+        $message = 'Value must be one of the following: %s';
         if ($throw) {
-            throw new ValidationException($message);
+            throw new ValidationException($message, $values);
         }
 
-        return $message;
+        return sprintf($message, $values);
     }
 }

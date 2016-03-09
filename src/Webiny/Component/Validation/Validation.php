@@ -7,13 +7,26 @@
 
 namespace Webiny\Component\Validation;
 
-use Webiny\Component\Mongo\Mongo;
-use Webiny\Component\Mongo\MongoTrait;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\SingletonTrait;
-use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\Validation\Validators\CountryCode;
+use Webiny\Component\Validation\Validators\CreditCardNumber;
 use Webiny\Component\Validation\Validators\Email;
+use Webiny\Component\Validation\Validators\EuVatNumber;
+use Webiny\Component\Validation\Validators\GeoLocation;
 use Webiny\Component\Validation\Validators\GreaterThan;
+use Webiny\Component\Validation\Validators\GreaterThanOrEqual;
+use Webiny\Component\Validation\Validators\InArray;
+use Webiny\Component\Validation\Validators\Integer;
+use Webiny\Component\Validation\Validators\LessThan;
+use Webiny\Component\Validation\Validators\LessThanOrEqual;
+use Webiny\Component\Validation\Validators\MaxLength;
+use Webiny\Component\Validation\Validators\MinLength;
+use Webiny\Component\Validation\Validators\Number;
+use Webiny\Component\Validation\Validators\Password;
+use Webiny\Component\Validation\Validators\Phone;
+use Webiny\Component\Validation\Validators\Required;
+use Webiny\Component\Validation\Validators\url;
 
 
 /**
@@ -57,13 +70,48 @@ class Validation
         return true;
     }
 
+    /**
+     * Add validator to Validation component
+     *
+     * @param ValidatorInterface $validator
+     *
+     * @return $this
+     */
+    public function addValidator(ValidatorInterface $validator)
+    {
+        $this->validators[$validator->getName()] = $validator;
+
+        return $this;
+    }
+
     protected function init()
     {
-        // Load built-in validators + validation services
-        $this->validators = [
-            'email' => new Email(),
-            'gt'    => new GreaterThan()
+        // Load built-in validators
+        $builtInValidators = [
+            new Email(),
+            new GreaterThan(),
+            new GreaterThanOrEqual(),
+            new GeoLocation(),
+            new LessThan(),
+            new LessThanOrEqual(),
+            new MinLength(),
+            new MaxLength(),
+            new InArray(),
+            new Number(),
+            new Integer(),
+            new Url(),
+            new Password(),
+            new Required(),
+            new Phone(),
+            new CountryCode(),
+            new CreditCardNumber(),
+            new EuVatNumber()
         ];
+
+        /* @var $v ValidatorInterface */
+        foreach ($builtInValidators as $v) {
+            $this->validators[$v->getName()] = $v;
+        }
     }
 
     private function getValidators($validators)
