@@ -236,10 +236,10 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
             /**
              * Check if loaded instance is already in the pool and if yes - use the existing object
              */
-            if ($itemInPool = EntityPool::getInstance()->get($this->entityClass, $instance->id)) {
+            if ($itemInPool = Entity::getInstance()->get($this->entityClass, $instance->id)) {
                 $dbItems[] = $itemInPool;
             } else {
-                $dbItems[] = EntityPool::getInstance()->add($instance);
+                $dbItems[] = Entity::getInstance()->add($instance);
             }
         }
         $this->value += $dbItems;

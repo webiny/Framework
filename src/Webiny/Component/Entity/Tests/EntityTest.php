@@ -9,7 +9,6 @@ namespace Webiny\Component\Entity\Tests;
 
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityPool;
 use Webiny\Component\Entity\EntityTrait;
 use Webiny\Component\Entity\Tests\Classes\Author;
 use Webiny\Component\Entity\Tests\Classes\Comment;
@@ -102,11 +101,11 @@ class EntityTest extends PHPUnit_Framework_TestCase
         /**
          * Remove this instance from pool so we fetch fresh data from database
          */
-        EntityPool::getInstance()->remove($page);
+        Entity::getInstance()->remove($page);
 
         /**
          * Get recently saved Page instance and verify values
-         * Must set to self because EntityPool 'remove()' method unsets reference
+         * Must set to self because Entity 'remove()' method unsets reference
          */
         self::$page = $page = Page::findById($page->id);
         $this->assertEquals('First blog post', $page->title);
@@ -188,7 +187,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $id = $page->id;
 
         // Completely remove current instance
-        EntityPool::getInstance()->remove($page);
+        Entity::getInstance()->remove($page);
 
         // Load fresh instance from database
         $page = Page::findById($id);

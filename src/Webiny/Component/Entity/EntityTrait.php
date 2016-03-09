@@ -16,10 +16,10 @@ trait EntityTrait
 {
     /**
      * Get entity component
-     * @return EntityPool
+     * @return Entity
      */
     protected static function entity()
     {
-        return EntityPool::getInstance();
+        return Entity::getInstance();
     }
 }

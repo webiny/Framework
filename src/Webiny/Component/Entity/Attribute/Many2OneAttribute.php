@@ -9,7 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -303,7 +303,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws ValidationException
+     * @throws EntityValidationException
      * @return $this
      */
     protected function validate(&$value)

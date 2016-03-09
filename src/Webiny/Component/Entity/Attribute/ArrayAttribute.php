@@ -9,8 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\EntityException;
-use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
@@ -94,7 +93,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      *
      * @return $this
      * @throws AttributeValidationException
-     * @throws ValidationException
+     * @throws EntityValidationException
      */
     protected function validate(&$value)
     {

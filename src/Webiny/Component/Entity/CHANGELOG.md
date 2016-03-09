@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+1.5
+---------
+* added built-in attribute validators
+* added support for pluginable validators
+
 
 1.4
 ---------

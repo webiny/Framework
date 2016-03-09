@@ -4,7 +4,7 @@
  *
  * @copyright Copyright Webiny LTD
  */
-namespace Webiny\Component\Entity\Validation;
+namespace Webiny\Component\Entity;
 
 use Webiny\Component\StdLib\Exception\ExceptionAbstract;
 
@@ -13,7 +13,7 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  *
  * @package Webiny\Component\Entity\Attribute\Exception
  */
-class ValidationException extends ExceptionAbstract
+class EntityValidationException extends ExceptionAbstract
 {
     protected $validator;
 

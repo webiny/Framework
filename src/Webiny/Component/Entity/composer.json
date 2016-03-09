@@ -24,7 +24,9 @@
         "php": ">=5.5.9",
         "webiny/config": "~1.4",
         "webiny/std-lib": "~1.4",
-        "webiny/mongo": "~1.4"
+        "webiny/mongo": "~1.4",
+        "webiny/service-manager": "~1.4",
+        "webiny/validation": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~4",

@@ -12,7 +12,7 @@ use Webiny\Component\Entity\Attribute\Exception\ValidationException as Attribute
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityAttributeBuilder;
-use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -47,7 +47,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onGetCallback = null;
     protected $onToArrayCallback = null;
     protected $onToDbCallback = null;
-    protected $validatorInterface = '\Webiny\Component\Entity\Validation\ValidatorInterface';
+    protected $validatorInterface = '\Webiny\Component\Entity\EntityValidatorInterface';
 
     /**
      * @param string         $attribute
@@ -385,7 +385,7 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return $this
      * @throws AttributeValidationException
-     * @throws ValidationException
+     * @throws EntityValidationException
      */
     protected function validate(&$value)
     {
@@ -571,14 +571,14 @@ abstract class AttributeAbstract implements JsonSerializable
             if ($this->isString($validator)) {
                 $params = $this->arr(explode(':', $validator));
                 $vName = '';
-                $validatorParams = [$value, $this, $params->removeFirst($vName)->val()];
+                $validatorParams = [$this, $value, $params->removeFirst($vName)->val()];
                 $validator = $this->factory(self::$entityValidators[$vName], $this->validatorInterface);
                 call_user_func_array([$validator, 'validate'], $validatorParams);
             } elseif ($this->isCallable($validator)) {
                 $vName = 'callable';
                 $validator($value, $this);
             }
-        } catch (ValidationException $e) {
+        } catch (EntityValidationException $e) {
             $msg = isset($messages[$vName]) ? $messages[$vName] : $e->getMessage();
 
             $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);

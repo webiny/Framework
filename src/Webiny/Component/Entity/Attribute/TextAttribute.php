@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\EntityValidationException;
 
 
 /**
@@ -22,7 +22,7 @@ class TextAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws ValidationException
+     * @throws EntityValidationException
      * @return $this
      */
     protected function validate(&$value)
