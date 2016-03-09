@@ -1,6 +1,7 @@
 Validation Component
 =====================
 
+## Using validation
 Use `ValidationTrait` to access the component. The component does not require any configuration.
 You can validate agains single validator or pass an array of validators, or event a comma-separated string of validators:
 
@@ -29,6 +30,7 @@ class MyClass {
 }
 ```
 
+## Adding custom validators
 You can add/override validators by implementing a `ValidatorInterface`:
 
 ```php
@@ -62,5 +64,15 @@ $this->validation()->addValidator(new MyValidator());
 $this->validation()->validate(123, 'myCustomValidator');
 ```
 
+You can also register your validators through services, by tagging them with `validation-plugin`. 
+
+```yaml
+Services:
+    MyCustomValidator:
+        Class: \My\Custom\Validator
+        Tags: ['validation-plugin']
+```
+
+## Validator parameters
 If you pass params to your validator, like `$this->validation()->validate(123, 'myCustomValidator:50:20');` they will be passed to your 
 validator class in `$params`. `$params` are index based, so your parameters will look like `[50, 20]`.

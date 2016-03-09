@@ -9,6 +9,10 @@ namespace Webiny\Component\Validation\Tests;
 
 
 use PHPUnit_Framework_TestCase;
+use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\ServiceManager\ServiceManager;
+use Webiny\Component\ServiceManager\ServiceManagerTrait;
+use Webiny\Component\Validation\Tests\Lib\CustomValidator;
 use Webiny\Component\Validation\Validation;
 use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidationPool;
@@ -22,7 +26,7 @@ use Webiny\Component\Mongo\MongoTrait;
 
 class ValidationTest extends PHPUnit_Framework_TestCase
 {
-    use ValidationTrait;
+    use ValidationTrait, ServiceManagerTrait;
 
     public function testEmail()
     {
@@ -227,5 +231,34 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate('GB9999AB973', 'euVatNumber', false));
         $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
         $this->validation()->validate('12345678', 'euVatNumber');
+    }
+
+    public function testCustomValidator()
+    {
+        $this->validation()->addValidator(new CustomValidator());
+        $this->assertTrue($this->validation()->validate(12, 'customValidator'));
+        $this->assertInternalType('string', $this->validation()->validate(9, 'customValidator', false));
+        $this->assertInternalType('string', $this->validation()->validate(13, 'customValidator', false));
+    }
+
+    public function testCustomValidatorService()
+    {
+        $service = new ConfigObject([
+            'Class' => 'Webiny\Component\Validation\Tests\Lib\CustomValidator',
+            'Tags'  => ['validation-plugin']
+        ]);
+
+        ServiceManager::getInstance()->registerService('CustomValidator', $service);
+
+        Validation::deleteInstance();
+        $this->assertTrue($this->validation()->validate(12, 'customValidator'));
+        $this->assertInternalType('string', $this->validation()->validate(9, 'customValidator', false));
+        $this->assertInternalType('string', $this->validation()->validate(13, 'customValidator', false));
+    }
+
+    public function testUnknownValidator()
+    {
+        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->validation()->validate('whatever', 'missing');
     }
 }

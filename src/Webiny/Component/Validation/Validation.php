@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Validation;
 
+use Webiny\Component\ServiceManager\ServiceManagerTrait;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\Validation\Validators\CountryCode;
@@ -36,7 +37,7 @@ use Webiny\Component\Validation\Validators\url;
  */
 class Validation
 {
-    use ComponentTrait, SingletonTrait;
+    use ComponentTrait, SingletonTrait, ServiceManagerTrait;
 
     private $validators = [];
 
@@ -46,6 +47,7 @@ class Validation
      * @param bool|true    $throw
      *
      * @return bool
+     * @throws ValidationException
      */
     public function validate($data, $validators, $throw = true)
     {
@@ -59,6 +61,9 @@ class Validation
                 $throw
             ];
 
+            if (!array_key_exists($validator[0], $this->validators)) {
+                throw new ValidationException('Validator %s does not exist!', $validator[0]);
+            }
             $res = $this->validators[$validator[0]]->validate(...$functionParams);
 
             // If validation failed and we are not throwing, return error message string
@@ -110,6 +115,12 @@ class Validation
 
         /* @var $v ValidatorInterface */
         foreach ($builtInValidators as $v) {
+            $this->validators[$v->getName()] = $v;
+        }
+
+        // Load validators registered as a service
+        $validators = $this->servicesByTag('validation-plugin', '\Webiny\Component\Validation\ValidatorInterface');
+        foreach ($validators as $v) {
             $this->validators[$v->getName()] = $v;
         }
     }
