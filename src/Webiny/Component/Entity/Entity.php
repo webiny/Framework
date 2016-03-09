@@ -7,24 +7,25 @@
 
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\Entity\Validators\CountryCode;
-use Webiny\Component\Entity\Validators\CreditCardNumber;
-use Webiny\Component\Entity\Validators\Email;
-use Webiny\Component\Entity\Validators\EuVatNumber;
-use Webiny\Component\Entity\Validators\GeoLocation;
-use Webiny\Component\Entity\Validators\GreaterThan;
-use Webiny\Component\Entity\Validators\GreaterThanOrEqual;
-use Webiny\Component\Entity\Validators\InArray;
-use Webiny\Component\Entity\Validators\Integer;
-use Webiny\Component\Entity\Validators\LessThan;
-use Webiny\Component\Entity\Validators\LessThanOrEqual;
-use Webiny\Component\Entity\Validators\MaxLength;
-use Webiny\Component\Entity\Validators\MinLength;
-use Webiny\Component\Entity\Validators\Number;
-use Webiny\Component\Entity\Validators\Password;
-use Webiny\Component\Entity\Validators\Phone;
-use Webiny\Component\Entity\Validators\Required;
-use Webiny\Component\Entity\Validators\Url;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
+use Webiny\Component\Entity\Attribute\Validation\Validators\CountryCode;
+use Webiny\Component\Entity\Attribute\Validation\Validators\CreditCardNumber;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Email;
+use Webiny\Component\Entity\Attribute\Validation\Validators\EuVatNumber;
+use Webiny\Component\Entity\Attribute\Validation\Validators\GeoLocation;
+use Webiny\Component\Entity\Attribute\Validation\Validators\GreaterThan;
+use Webiny\Component\Entity\Attribute\Validation\Validators\GreaterThanOrEqual;
+use Webiny\Component\Entity\Attribute\Validation\Validators\InArray;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Integer;
+use Webiny\Component\Entity\Attribute\Validation\Validators\LessThan;
+use Webiny\Component\Entity\Attribute\Validation\Validators\LessThanOrEqual;
+use Webiny\Component\Entity\Attribute\Validation\Validators\MaxLength;
+use Webiny\Component\Entity\Attribute\Validation\Validators\MinLength;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Number;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Password;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Phone;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Required;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Url;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 use Webiny\Component\ServiceManager\ServiceManagerTrait;
@@ -168,13 +169,13 @@ class Entity
             new EuVatNumber()
         ];
 
-        /* @var $v EntityValidatorInterface */
+        /* @var $v ValidatorInterface */
         foreach ($builtInValidators as $v) {
             $this->validators[$v->getName()] = $v;
         }
 
         // Load validators registered as a service
-        $validators = $this->servicesByTag('entity-validator', '\Webiny\Component\Entity\EntityValidatorInterface');
+        $validators = $this->servicesByTag('entity-validator', '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface');
         foreach ($validators as $v) {
             $this->validators[$v->getName()] = $v;
         }

@@ -10,11 +10,10 @@ namespace Webiny\Component\Entity;
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\CharAttribute;
-use Webiny\Component\Entity\Attribute\Exception\ValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
-use Webiny\Component\Mongo\MongoResult;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -778,10 +777,6 @@ abstract class EntityAbstract implements \ArrayAccess
 
     private function normalizeData($data)
     {
-        if ($data instanceof MongoResult) {
-            return $data->toArray();
-        }
-
         if ($this->isArray($data) || $this->isArrayObject($data)) {
             return StdObjectWrapper::toArray($data);
         }

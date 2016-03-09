@@ -8,11 +8,10 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use JsonSerializable;
-use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityAttributeBuilder;
-use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -384,8 +383,7 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param $value
      *
      * @return $this
-     * @throws AttributeValidationException
-     * @throws EntityValidationException
+     * @throws ValidationException
      */
     protected function validate(&$value)
     {
@@ -562,7 +560,7 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param mixed  $value
      * @param array  $messages
      *
-     * @throws AttributeValidationException
+     * @throws ValidationException
      * @throws \Webiny\Component\StdLib\Exception\Exception
      */
     protected function applyValidator($validator, $key, $value, $messages = [])
@@ -578,10 +576,10 @@ abstract class AttributeAbstract implements JsonSerializable
                 $vName = 'callable';
                 $validator($value, $this);
             }
-        } catch (EntityValidationException $e) {
+        } catch (ValidationException $e) {
             $msg = isset($messages[$vName]) ? $messages[$vName] : $e->getMessage();
 
-            $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+            $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
             $ex->addError($key, $msg);
 
             throw $ex;
@@ -595,13 +593,13 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param string $got
      * @param bool   $return
      *
-     * @return AttributeValidationException
-     * @throws AttributeValidationException
+     * @return ValidationException
+     * @throws ValidationException
      */
     protected function expected($expecting, $got, $return = false)
     {
-        $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
-        $ex->addError($this->attribute, AttributeValidationException::DATA_TYPE, [
+        $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
+        $ex->addError($this->attribute, ValidationException::DATA_TYPE, [
             $expecting,
             $got
         ]);

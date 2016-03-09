@@ -1,11 +1,11 @@
 <?php
-namespace Webiny\Component\Entity\Validators;
+namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\EntityValidatorInterface;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Validation\ValidationTrait;
 
-class Url implements EntityValidatorInterface
+class CreditCardNumber implements ValidatorInterface
 {
     use ValidationTrait;
 
@@ -14,7 +14,7 @@ class Url implements EntityValidatorInterface
      */
     public function getName()
     {
-        return 'url';
+        return 'creditCardNumber';
     }
 
     /**
@@ -22,6 +22,6 @@ class Url implements EntityValidatorInterface
      */
     public function validate(AttributeAbstract $attribute, $data, $params = [])
     {
-        return $this->validation()->validate($data, 'url');
+        return $this->validation()->validate($data, 'creditCardNumber');
     }
 }

@@ -5,11 +5,11 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Entity;
+namespace Webiny\Component\Entity\Attribute\Validation;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 
-interface EntityValidatorInterface
+interface ValidatorInterface
 {
 
     /**
@@ -26,7 +26,7 @@ interface EntityValidatorInterface
      * @param mixed             $data
      * @param array             $params
      *
-     * @throws EntityValidationException
+     * @throws ValidationException
      * @return boolean
      */
     public function validate(AttributeAbstract $attribute, $data, $params = []);

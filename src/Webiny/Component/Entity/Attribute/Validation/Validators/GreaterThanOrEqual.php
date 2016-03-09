@@ -1,11 +1,11 @@
 <?php
-namespace Webiny\Component\Entity\Validators;
+namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\EntityValidatorInterface;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Validation\ValidationTrait;
 
-class Phone implements EntityValidatorInterface
+class GreaterThanOrEqual implements ValidatorInterface
 {
     use ValidationTrait;
 
@@ -14,7 +14,7 @@ class Phone implements EntityValidatorInterface
      */
     public function getName()
     {
-        return 'phone';
+        return 'gte';
     }
 
     /**
@@ -22,6 +22,6 @@ class Phone implements EntityValidatorInterface
      */
     public function validate(AttributeAbstract $attribute, $data, $params = [])
     {
-        return $this->validation()->validate($data, 'phone');
+        return $this->validation()->validate($data, 'gte:' . $params[0]);
     }
 }

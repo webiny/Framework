@@ -1,11 +1,11 @@
 <?php
-namespace Webiny\Component\Entity\Validators;
+namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\EntityValidatorInterface;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Validation\ValidationTrait;
 
-class CountryCode implements EntityValidatorInterface
+class GeoLocation implements ValidatorInterface
 {
     use ValidationTrait;
 
@@ -14,14 +14,14 @@ class CountryCode implements EntityValidatorInterface
      */
     public function getName()
     {
-        return 'countryCode';
+        return 'geoLocation';
     }
-    
+
     /**
      * @inheritDoc
      */
     public function validate(AttributeAbstract $attribute, $data, $params = [])
     {
-        return $this->validation()->validate($data, 'countryCode');
+        return $this->validation()->validate($data, 'geoLocation');
     }
 }

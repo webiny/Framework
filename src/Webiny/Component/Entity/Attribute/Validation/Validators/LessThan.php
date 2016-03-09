@@ -1,11 +1,11 @@
 <?php
-namespace Webiny\Component\Entity\Validators;
+namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\EntityValidatorInterface;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Validation\ValidationTrait;
 
-class MinLength implements EntityValidatorInterface
+class LessThan implements ValidatorInterface
 {
     use ValidationTrait;
 
@@ -14,7 +14,7 @@ class MinLength implements EntityValidatorInterface
      */
     public function getName()
     {
-        return 'minLength';
+        return 'lt';
     }
 
     /**
@@ -22,6 +22,6 @@ class MinLength implements EntityValidatorInterface
      */
     public function validate(AttributeAbstract $attribute, $data, $params = [])
     {
-        return $this->validation()->validate($data, 'minLength:' . $params[0]);
+        return $this->validation()->validate($data, 'lt:' . $params[0]);
     }
 }

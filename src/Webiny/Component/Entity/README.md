@@ -16,13 +16,13 @@ For additional versions of the package, visit the [Packagist page](https://packa
 ## Supported attributes
 - `boolean`
 - `char`
-- `text`
 - `integer`
 - `float`
 - `datetime`
 - `date`
-- `select`
 - `arr`
+- `object`
+- `dynamic`
 - `many2one`
 - `one2many`
 - `many2many`

@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\Attribute\Exception\ValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\EntityAbstract;
 
 /**
