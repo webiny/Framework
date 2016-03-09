@@ -19,7 +19,8 @@ class MyClass {
         }
         
         // You can also tell validation to NOT THROW but simply return `false`
-        if($this->validation()->validate(123, 'number', false)) {
+        // NOTE: make sure you use `===` because if value is invalid we return an error message!
+        if($this->validation()->validate(123, 'number', false) === true) {
             // I am a valid number
         } else {
             // I am an invalid number
