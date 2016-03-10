@@ -70,6 +70,7 @@ class EntityAttributeBuilder
     public function smart(SmartAttributeAbstract $attribute)
     {
         $attribute->setAttribute($this->attribute)->setParent($this->entity);
+
         return $this->attributes[$this->attribute] = $attribute;
     }
 
@@ -111,22 +112,6 @@ class EntityAttributeBuilder
     public function char()
     {
         return $this->attributes[$this->attribute] = new CharAttribute($this->attribute, $this->entity);
-    }
-
-    /**
-     * @return TextAttribute
-     */
-    public function text()
-    {
-        return $this->attributes[$this->attribute] = new TextAttribute($this->attribute, $this->entity);
-    }
-
-    /**
-     * @return SelectAttribute
-     */
-    public function select()
-    {
-        return $this->attributes[$this->attribute] = new SelectAttribute($this->attribute, $this->entity);
     }
 
     /**
