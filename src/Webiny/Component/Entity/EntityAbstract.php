@@ -10,6 +10,7 @@ namespace Webiny\Component\Entity;
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\CharAttribute;
+use Webiny\Component\Entity\Attribute\DynamicAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
@@ -512,6 +513,16 @@ abstract class EntityAbstract implements \ArrayAccess
     public function __get($name)
     {
         return $this->getAttribute($name)->getValue();
+    }
+
+    function __call($name, $arguments)
+    {
+        $attr = $this->getAttribute($name);
+        if ($attr instanceof DynamicAttribute) {
+            return $attr->getValue($arguments);
+        }
+
+        return null;
     }
 
     /**

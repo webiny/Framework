@@ -63,16 +63,18 @@ class DynamicAttribute extends AttributeAbstract
     /**
      * Get attribute value
      *
+     * @param array $arguments
+     *
      * @return $this
      */
-    public function getValue()
+    public function getValue($arguments = [])
     {
         $callable = $this->callable;
         if (is_string($callable)) {
             $callable = [$this->entity, $callable];
         }
 
-        return $this->processGetValue(call_user_func_array($callable, [$this->storedValue]));
+        return $this->processGetValue(call_user_func_array($callable, $arguments));
     }
 
     /**

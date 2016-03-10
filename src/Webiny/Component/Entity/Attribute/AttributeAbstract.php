@@ -24,8 +24,6 @@ abstract class AttributeAbstract implements JsonSerializable
 {
     use StdLibTrait, FactoryLoaderTrait;
 
-    protected static $entityValidators;
-
     /**
      * @var EntityAbstract
      */
@@ -54,9 +52,6 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     public function __construct($attribute, EntityAbstract $entity)
     {
-        if (!self::$entityValidators) {
-            self::$entityValidators = Entity::getConfig()->get('Validators', []);
-        }
         $this->attribute = $attribute;
         $this->entity = $entity;
     }

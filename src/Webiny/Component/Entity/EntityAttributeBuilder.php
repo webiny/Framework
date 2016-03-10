@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity;
 
 use Webiny\Component\Entity\Attribute\ArrayAttribute;
+use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\BooleanAttribute;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\DateAttribute;
@@ -20,6 +21,7 @@ use Webiny\Component\Entity\Attribute\Many2OneAttribute;
 use Webiny\Component\Entity\Attribute\ObjectAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\Entity\Attribute\SelectAttribute;
+use Webiny\Component\Entity\Attribute\SmartAttributeAbstract;
 use Webiny\Component\Entity\Attribute\TextAttribute;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -56,6 +58,19 @@ class EntityAttributeBuilder
         $this->attribute = $attribute;
 
         return $this;
+    }
+
+    /**
+     * Set attribute instance
+     *
+     * @param SmartAttributeAbstract $attribute
+     *
+     * @return AttributeAbstract
+     */
+    public function smart(SmartAttributeAbstract $attribute)
+    {
+        $attribute->setAttribute($this->attribute)->setParent($this->entity);
+        return $this->attributes[$this->attribute] = $attribute;
     }
 
     /**
