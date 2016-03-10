@@ -25,6 +25,7 @@ use Webiny\Component\Entity\Attribute\Validation\Validators\Number;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Password;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Phone;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Required;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Unique;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Url;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
@@ -180,7 +181,8 @@ class Entity
             new Phone(),
             new CountryCode(),
             new CreditCardNumber(),
-            new EuVatNumber()
+            new EuVatNumber(),
+            new Unique()
         ];
 
         /* @var $v ValidatorInterface */
