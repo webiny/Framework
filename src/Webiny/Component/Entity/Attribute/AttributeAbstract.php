@@ -8,11 +8,10 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use JsonSerializable;
-use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityAttributeBuilder;
-use Webiny\Component\Entity\Validation\ValidationException;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -47,7 +46,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onGetCallback = null;
     protected $onToArrayCallback = null;
     protected $onToDbCallback = null;
-    protected $validatorInterface = '\Webiny\Component\Entity\Validation\ValidatorInterface';
+    protected $validatorInterface = '\Webiny\Component\Entity\EntityValidatorInterface';
 
     /**
      * @param string         $attribute
@@ -83,8 +82,7 @@ abstract class AttributeAbstract implements JsonSerializable
             return true;
         }
 
-        // We don't need to execute defaultValue callable at this point, only need to know if there IS a default value
-        return $this->defaultValue !== null;
+        return false;
     }
 
     /**
@@ -384,7 +382,6 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param $value
      *
      * @return $this
-     * @throws AttributeValidationException
      * @throws ValidationException
      */
     protected function validate(&$value)
@@ -562,7 +559,7 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param mixed  $value
      * @param array  $messages
      *
-     * @throws AttributeValidationException
+     * @throws ValidationException
      * @throws \Webiny\Component\StdLib\Exception\Exception
      */
     protected function applyValidator($validator, $key, $value, $messages = [])
@@ -571,7 +568,7 @@ abstract class AttributeAbstract implements JsonSerializable
             if ($this->isString($validator)) {
                 $params = $this->arr(explode(':', $validator));
                 $vName = '';
-                $validatorParams = [$value, $this, $params->removeFirst($vName)->val()];
+                $validatorParams = [$this, $value, $params->removeFirst($vName)->val()];
                 $validator = $this->factory(self::$entityValidators[$vName], $this->validatorInterface);
                 call_user_func_array([$validator, 'validate'], $validatorParams);
             } elseif ($this->isCallable($validator)) {
@@ -581,7 +578,7 @@ abstract class AttributeAbstract implements JsonSerializable
         } catch (ValidationException $e) {
             $msg = isset($messages[$vName]) ? $messages[$vName] : $e->getMessage();
 
-            $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+            $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
             $ex->addError($key, $msg);
 
             throw $ex;
@@ -595,13 +592,13 @@ abstract class AttributeAbstract implements JsonSerializable
      * @param string $got
      * @param bool   $return
      *
-     * @return AttributeValidationException
-     * @throws AttributeValidationException
+     * @return ValidationException
+     * @throws ValidationException
      */
     protected function expected($expecting, $got, $return = false)
     {
-        $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
-        $ex->addError($this->attribute, AttributeValidationException::DATA_TYPE, [
+        $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
+        $ex->addError($this->attribute, ValidationException::DATA_TYPE, [
             $expecting,
             $got
         ]);

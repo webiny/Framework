@@ -8,7 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\Validation\ValidationException;
+use Webiny\Component\Entity\EntityValidationException;
 
 /**
  * DynamicAttribute
@@ -98,7 +98,7 @@ class DynamicAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws ValidationException
+     * @throws EntityValidationException
      * @return $this
      */
     protected function validate(&$value)

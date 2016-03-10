@@ -8,10 +8,8 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\EntityException;
-use Webiny\Component\Entity\Validation\ValidationException;
-use Webiny\Component\Entity\Attribute\Exception\ValidationException as AttributeValidationException;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 /**
@@ -41,7 +39,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
 
         // Make sure it's not an associative array
         if ((bool)count(array_filter(array_keys($value), 'is_string'))) {
-            $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED);
+            $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
             $ex->addError($this->attribute, 'You should use ObjectAttribute for associative array instead of ArrayAttribute');
             throw $ex;
         }
@@ -93,7 +91,6 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
      * @param $value
      *
      * @return $this
-     * @throws AttributeValidationException
      * @throws ValidationException
      */
     protected function validate(&$value)
@@ -323,11 +320,11 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     /**
      * @param mixed $data
      *
-     * @throws Exception\ValidationException
+     * @throws ValidationException
      */
     private function validateNestedKeys($data)
     {
-        $ex = new AttributeValidationException(AttributeValidationException::VALIDATION_FAILED, [$this->attribute]);
+        $ex = new ValidationException(ValidationException::VALIDATION_FAILED, [$this->attribute]);
         $messages = $this->getKeyValidationMessages();
         $keyValidators = $this->getKeyValidators();
         $errors = [];
@@ -347,7 +344,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
             foreach ($validators as $validator) {
                 try {
                     $this->applyValidator($validator, $key, $keyValue, isset($messages[$key]) ? $messages[$key] : []);
-                } catch (AttributeValidationException $e) {
+                } catch (ValidationException $e) {
                     foreach ($e as $key => $error) {
                         $errors[$this->attr() . '.' . $key] = $error;
                     }

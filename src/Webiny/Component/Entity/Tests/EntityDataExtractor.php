@@ -10,8 +10,6 @@ namespace Webiny\Component\Entity\Tests;
 
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityDataExtractor;
-use Webiny\Component\Entity\EntityPool;
 use Webiny\Component\Entity\EntityTrait;
 use Webiny\Component\Entity\Tests\Classes\Author;
 use Webiny\Component\Entity\Tests\Classes\Comment;

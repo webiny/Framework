@@ -7,11 +7,8 @@
 
 namespace Webiny\Component\Entity\Tests;
 
-
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityException;
-use Webiny\Component\Entity\EntityPool;
 use Webiny\Component\Entity\EntityTrait;
 use Webiny\Component\Entity\Tests\Classes\Author;
 use Webiny\Component\Entity\Tests\Classes\Comment;
@@ -82,6 +79,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
                                            ]
         );
         self::$page = $page;
+        $page->save();
     }
 
     public static function tearDownAfterClass()
@@ -97,18 +95,17 @@ class EntityTest extends PHPUnit_Framework_TestCase
     {
         $page = self::$page;
         $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
-        $this->assertTrue($page->save());
         $this->assertInstanceOf('Webiny\Component\Entity\Tests\Classes\Author', $page->author);
         $this->assertEquals('First blog post', $page->labels[1]->pages[0]->title);
 
         /**
          * Remove this instance from pool so we fetch fresh data from database
          */
-        EntityPool::getInstance()->remove($page);
+        Entity::getInstance()->remove($page);
 
         /**
          * Get recently saved Page instance and verify values
-         * Must set to self because EntityPool 'remove()' method unsets reference
+         * Must set to self because Entity 'remove()' method unsets reference
          */
         self::$page = $page = Page::findById($page->id);
         $this->assertEquals('First blog post', $page->title);
@@ -131,6 +128,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $page->getAttribute('settings')->set('key2.key3', 'changedKey3');
         $this->assertEquals('changedKey3', $page->getAttribute('settings')->get('key2.key3'));
 
+        // TODO: tu sam stao
         $page->getAttribute('labels')->remove($page->labels[0]);
         $this->assertEquals(1, $page->labels->count());
 
@@ -150,9 +148,6 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertNull($page);
     }
 
-    /**
-     * This should cause 2 validation errors
-     */
     public function testPopulateValidation()
     {
         $page = self::$page;
@@ -192,7 +187,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $id = $page->id;
 
         // Completely remove current instance
-        EntityPool::getInstance()->remove($page);
+        Entity::getInstance()->remove($page);
 
         // Load fresh instance from database
         $page = Page::findById($id);

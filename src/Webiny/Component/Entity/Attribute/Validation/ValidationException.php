@@ -4,8 +4,9 @@
  *
  * @copyright Copyright Webiny LTD
  */
-namespace Webiny\Component\Entity\Attribute\Exception;
+namespace Webiny\Component\Entity\Attribute\Validation;
 
+use Traversable;
 use Webiny\Component\StdLib\Exception\ExceptionAbstract;
 
 /**
