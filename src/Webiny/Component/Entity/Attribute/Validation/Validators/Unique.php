@@ -2,7 +2,7 @@
 namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
-use Webiny\Component\Entity\EntityValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 
 class Unique implements ValidatorInterface
@@ -38,7 +38,7 @@ class Unique implements ValidatorInterface
 
         $exists = call_user_func_array([$attribute->getEntity(), 'findOne'], [$query]);
         if ($exists) {
-            throw new EntityValidationException('A record with this attribute value already exists.');
+            throw new ValidationException('A record with this attribute value already exists.');
         }
     }
 }
