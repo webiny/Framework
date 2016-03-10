@@ -82,8 +82,7 @@ abstract class AttributeAbstract implements JsonSerializable
             return true;
         }
 
-        // We don't need to execute defaultValue callable at this point, only need to know if there IS a default value
-        return $this->defaultValue !== null;
+        return false;
     }
 
     /**

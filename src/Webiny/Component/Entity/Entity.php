@@ -119,6 +119,20 @@ class Entity
     }
 
     /**
+     * Add attribute validator to Entity component
+     *
+     * @param ValidatorInterface $validator
+     *
+     * @return $this
+     */
+    public function addValidator(ValidatorInterface $validator)
+    {
+        $this->validators[$validator->getName()] = $validator;
+
+        return $this;
+    }
+
+    /**
      * Remove instance from pool
      *
      * @param $instance
