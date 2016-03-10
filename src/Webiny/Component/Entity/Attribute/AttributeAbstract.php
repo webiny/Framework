@@ -46,7 +46,7 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onGetCallback = null;
     protected $onToArrayCallback = null;
     protected $onToDbCallback = null;
-    protected $validatorInterface = '\Webiny\Component\Entity\EntityValidatorInterface';
+    protected $validatorInterface = '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface';
 
     /**
      * @param string         $attribute
@@ -569,8 +569,12 @@ abstract class AttributeAbstract implements JsonSerializable
                 $params = $this->arr(explode(':', $validator));
                 $vName = '';
                 $validatorParams = [$this, $value, $params->removeFirst($vName)->val()];
-                $validator = $this->factory(self::$entityValidators[$vName], $this->validatorInterface);
-                call_user_func_array([$validator, 'validate'], $validatorParams);
+                $validator = Entity::getInstance()->getValidator($vName);
+                if (!$validator) {
+                    // TODO: add exception here
+                    return;
+                }
+                $validator->validate(...$validatorParams);
             } elseif ($this->isCallable($validator)) {
                 $vName = 'callable';
                 $validator($value, $this);

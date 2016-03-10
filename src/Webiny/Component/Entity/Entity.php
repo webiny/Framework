@@ -133,6 +133,11 @@ class Entity
         return $this;
     }
 
+    public function getValidator($name)
+    {
+        return $this->validators[$name];
+    }
+
     /**
      * Remove instance from pool
      *
