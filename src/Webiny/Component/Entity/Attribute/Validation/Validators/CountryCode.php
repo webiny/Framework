@@ -3,6 +3,7 @@ namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
+use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidationTrait;
 
 class CountryCode implements ValidatorInterface
@@ -16,12 +17,16 @@ class CountryCode implements ValidatorInterface
     {
         return 'countryCode';
     }
-    
+
     /**
      * @inheritDoc
      */
     public function validate(AttributeAbstract $attribute, $data, $params = [])
     {
-        return $this->validation()->validate($data, 'countryCode');
+        try {
+            return $this->validation()->validate($data, 'countryCode');
+        } catch (ValidationException $e) {
+            throw ExceptionFactory::getInstance()->attributeValidationException($attribute, $e);
+        }
     }
 }

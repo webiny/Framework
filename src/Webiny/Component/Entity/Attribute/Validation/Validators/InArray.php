@@ -3,6 +3,7 @@ namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
 use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
+use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidationTrait;
 
 class InArray implements ValidatorInterface
@@ -24,6 +25,10 @@ class InArray implements ValidatorInterface
     {
         $params = is_string($params) ? $params : implode(':', $params);
 
-        return $this->validation()->validate($data, 'in:' . $params);
+        try {
+            return $this->validation()->validate($data, 'in:' . $params);
+        } catch (ValidationException $e) {
+            throw ExceptionFactory::getInstance()->attributeValidationException($attribute, $e);
+        }
     }
 }

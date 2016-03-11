@@ -65,14 +65,10 @@ abstract class DateAttributeAbstract extends AttributeAbstract
     public function setValue($value = null, $fromDb = false)
     {
         if ($value instanceof UTCDatetime) {
+            /* @var $value UTCDatetime */
             $value = $value->toDateTime()->getTimestamp();
-        }
 
-        if ($this->isInstanceOf($value, 'UTCDatetime')) {
-            if ($value->sec == 0) {
-                return parent::setValue(null, $fromDb);
-            }
-            $value = (new DateTimeObject($value->sec))->format($this->attributeFormat);
+            $value = (new DateTimeObject($value))->format($this->attributeFormat);
         }
 
         if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {

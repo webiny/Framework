@@ -7,13 +7,14 @@
 
 namespace Webiny\Component\Entity\Tests;
 
+use MongoDB\Model\CollectionInfo;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\Entity;
+use Webiny\Component\Entity\EntityException;
 use Webiny\Component\Entity\EntityTrait;
-use Webiny\Component\Entity\Tests\Classes\Author;
-use Webiny\Component\Entity\Tests\Classes\Comment;
-use Webiny\Component\Entity\Tests\Classes\Label;
-use Webiny\Component\Entity\Tests\Classes\Page;
+use Webiny\Component\Entity\Tests\Classes as Classes;
+use Webiny\Component\Entity\Tests\Classes\NoValidation\Many2Many;
+use Webiny\Component\Entity\Tests\Classes\NoValidation\Many2One;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 
@@ -24,119 +25,276 @@ class EntityTest extends PHPUnit_Framework_TestCase
     const CONFIG = '/ExampleConfig.yaml';
     const MONGO_CONFIG = '/MongoExampleConfig.yaml';
 
-    /**
-     * @var Page
-     */
-    private static $page;
-
     public static function setUpBeforeClass()
     {
         Mongo::setConfig(realpath(__DIR__ . '/' . self::MONGO_CONFIG));
         Entity::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
 
-        /**
-         * Make sure no collections exist
-         */
-        self::mongo()->dropCollection('Author');
-        self::mongo()->dropCollection('Page');
-        self::mongo()->dropCollection('Comment');
-        self::mongo()->dropCollection('Label');
-        self::mongo()->dropCollection('Label2Page');
-
-        /**
-         * Create some test entity instances
-         */
-        $page = new Page();
-        $author = new Author();
-        $comment = new Comment();
-        $label = new Label();
-        $label2 = new Label();
-
-        /**
-         * Try simple assignment (should trigger assign via magic method)
-         */
-        $author->name = 'Pavel Denisjuk';
-
-        /**
-         * Assign using regular way
-         */
-        $comment->getAttribute('text')->setValue('Best blog post ever!');
-        $label->getAttribute('label')->setValue('marketing');
-        $label2->getAttribute('label')->setValue('seo');
-        $page->getAttribute('title')->setValue('First blog post');
-        $page->getAttribute('publishOn')->setValue('2014-11-01');
-        $page->getAttribute('remindOn')->setValue(time());
-        $page->getAttribute('author')->setValue($author);
-        $page->getAttribute('settings')->setValue([
-                                                      'key1' => 'value1',
-                                                      'key2' => ['key3' => 'value3']
-                                                  ]
-        );
-        $page->getAttribute('comments')->add($comment);
-        $page->getAttribute('labels')->add([
-                                               $label,
-                                               $label2
-                                           ]
-        );
-        self::$page = $page;
-        $page->save();
+        self::deleteAllTestCollections();
     }
 
     public static function tearDownAfterClass()
     {
-        /*self::mongo()->dropCollection('Author');
-        self::mongo()->dropCollection('Page');
-        self::mongo()->dropCollection('Comment');
-        self::mongo()->dropCollection('Label');
-        self::mongo()->dropCollection('Label2Page');*/
+        // self::deleteAllTestCollections();
     }
 
-    public function testEntity()
+    /**
+     * This test runs a simple populate on entity with no validators.
+     *
+     * It tests:
+     * - all attribute types
+     * - all reference attributes: many2one, one2many and many2many
+     * - it tests both on-fly creation and linking with existing entities
+     */
+    public function testPopulateNoValidationAllNew()
     {
-        $page = self::$page;
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
-        $this->assertInstanceOf('Webiny\Component\Entity\Tests\Classes\Author', $page->author);
-        $this->assertEquals('First blog post', $page->labels[1]->pages[0]->title);
+        $many2one = new Many2One();
+        $many2one->char = 'many2oneExisting';
+        $many2one->save();
 
-        /**
-         * Remove this instance from pool so we fetch fresh data from database
-         */
-        Entity::getInstance()->remove($page);
+        $many2many = new Many2Many();
+        $many2many->char = 'many2many1';
+        $many2many->save();
 
-        /**
-         * Get recently saved Page instance and verify values
-         * Must set to self because Entity 'remove()' method unsets reference
-         */
-        self::$page = $page = Page::findById($page->id);
-        $this->assertEquals('First blog post', $page->title);
-        $this->assertEquals(2, $page->labels->count());
-        $this->assertEquals('Pavel Denisjuk', $page->author->name);
-        $this->assertEquals('Best blog post ever!', $page->comments[0]->text);
-        $this->assertEquals('value1', $page->settings['key1']);
-        $this->assertEquals('value3', $page->settings['key2']['key3']);
-        $this->assertEquals('seo', $page->labels[1]->label);
+        $many2many2 = new Many2Many();
+        $many2many2->char = 'many2many2';
+        $many2many2->save();
 
-        // Test date attributes
-        $createdOn = $page->getAttribute('createdOn')->getValue(true)->format('Y-m-d');
-        $this->assertEquals(date('Y-m-d'), $createdOn);
-        $pubishOn = $page->publishOn;
-        $this->assertEquals('2014-11-01', $pubishOn);
-        $remindOn = $page->remindOn;
-        $this->assertEquals(date('Y-m-d'), $remindOn);
+        $data = [
+            'boolean'          => true,
+            'char'             => 'char',
+            'integer'          => 12,
+            'float'            => 20.35,
+            'date'             => '2016-03-14',
+            'datetime'         => '2016-03-14 13:45:20',
+            'arr'              => [1, 2, 3],
+            'object'           => [
+                'key1' => 'value',
+                'key2' => 12
+            ],
+            'many2oneNew'      => [
+                'char' => 'many2oneNew'
+            ],
+            'many2oneExisting' => $many2one,
+            'one2many'         => [
+                [
+                    'char' => 'one2many1'
+                ],
+                [
+                    'char' => 'one2many2'
+                ]
+            ],
+            'many2many'        => [
+                $many2many->id, // Store using simple ID
+                $many2many2 // Store using entity instance
+            ]
+        ];
 
-        // Test nested modification
-        $page->getAttribute('settings')->set('key2.key3', 'changedKey3');
-        $this->assertEquals('changedKey3', $page->getAttribute('settings')->get('key2.key3'));
+        $class = Classes\Classes::ENTITY_NO_VALIDATION;
+        $entity = new $class;
+        $entity->populate($data)->save();
 
-        // TODO: tu sam stao
-        $page->getAttribute('labels')->remove($page->labels[0]);
-        $this->assertEquals(1, $page->labels->count());
+        // Test current $entity state
+        $this->assertEntityStateNoValidation($entity);
 
-        $page->comments->delete();
-        $this->assertEquals(0, $page->comments->count());
+        // Load entity from DB and test state again
+        $id = $entity->id;
+        Entity::getInstance()->remove($entity);
+        $entity = $class::findById($id);
+        $this->assertEntityStateNoValidation($entity);
     }
 
-    public function testFindOne()
+    /**
+     * @expectedException \Webiny\Component\Entity\EntityException
+     * @dataProvider requiredData
+     */
+    public function testRequiredValidation($data)
+    {
+        try {
+            $entity = new Classes\Validation\EntityRequired();
+            $entity->populate($data);
+        } catch (EntityException $e) {
+            //print_r($e->getInvalidAttributes());
+            throw $e;
+        }
+    }
+
+    public function requiredData()
+    {
+        return [
+            [[]],
+            [
+                [
+                    'boolean' => true,
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char' => 'abc',
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char' => 'abc',
+                    'integer' => 12
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char' => 'uye',
+                    'integer' => 12
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char'    => 'def',
+                    'integer' => 12,
+                    'float' => 56.24
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char'    => 'def',
+                    'integer' => 2,
+                    'float' => 56.24,
+                    'object' => [
+                        'key1' => 'value'
+                    ]
+                ]
+            ],
+            [
+                [
+                    'boolean' => true,
+                    'char'    => 'def',
+                    'integer' => 2,
+                    'float' => 56.24,
+                    'object' => [
+                        'key1' => 'value'
+                    ],
+                    'many2one' => []
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @expectedException \Webiny\Component\Entity\EntityException
+     * @dataProvider validationData
+     */
+    public function testPopulateValidation($data)
+    {
+        try {
+            $entity = new Classes\Validation\Entity();
+            $entity->populate($data);
+        } catch (EntityException $e) {
+            //print_r($e->getInvalidAttributes());
+            throw $e;
+        }
+    }
+
+    public function validationData()
+    {
+        return [
+            [
+                [
+                    'char' => 'ab',
+                ]
+            ],
+            [
+                [
+                    'char' => 'abcdefg',
+                ]
+            ],
+            [
+                [
+                    'char' => 'uye',
+                ]
+            ],
+            [
+                [
+                    'integer' => '',
+                ]
+            ],
+            [
+                [
+                    'integer' => 2,
+                ]
+            ],
+            [
+                [
+                    'integer' => 6,
+                ]
+            ],
+            [
+                [
+                    'float'   => 1,
+                ]
+            ],
+            [
+                [
+                    'float'   => 6,
+                ]
+            ],
+            [
+                [
+                    'object'  => [
+                        'key2' => 'something'
+                    ]
+                ]
+            ],
+            [
+                [
+                    'object'  => [
+                        'key1' => '',
+                        'key2' => 'something'
+                    ]
+                ]
+            ],
+            [
+                [
+                    'many2one' => ''
+                ]
+            ],
+            [
+                [
+                    'many2one' => 123
+                ]
+            ]
+
+        ];
+    }
+
+    private function assertEntityStateNoValidation($entity)
+    {
+        $this->assertTrue($entity->boolean);
+        $this->assertEquals('char', $entity->char);
+        $this->assertEquals(12, $entity->integer);
+        $this->assertEquals(20.35, $entity->float);
+        $this->assertEquals('2016-03-14', $entity->date);
+        $this->assertEquals('2016-03-14 13:45:20', $entity->datetime);
+        $this->assertEquals('dynamic-value', $entity->dynamic);
+        $this->assertEquals('dynamic-value-db', $entity->dynamicDb);
+        $this->assertEquals([1, 2, 3], $entity->arr->val());
+        $this->assertEquals([
+            'key1' => 'value',
+            'key2' => 12
+        ], $entity->object->val());
+        $this->assertEquals('many2oneNew', $entity->many2oneNew->char);
+        $this->assertEquals('many2oneExisting', $entity->many2oneExisting->char);
+        $this->assertEquals(2, $entity->one2many->count());
+        $this->assertEquals('one2many1', $entity->one2many[0]->char);
+        $this->assertEquals('one2many2', $entity->one2many[1]->char);
+        $this->assertEquals(2, $entity->many2many->count());
+        $this->assertEquals('many2many1', $entity->many2many[0]->char);
+        $this->assertEquals('many2many2', $entity->many2many[1]->char);
+    }
+
+    /*public function testFindOne()
     {
         $page = Page::findOne(['id' => self::$page->id]);
         $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
@@ -152,7 +310,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     {
         $page = self::$page;
         $data = [
-            'title' => 12,
+            'title'  => 12,
             'author' => false
         ];
         $this->setExpectedException('\Webiny\Component\Entity\EntityException');
@@ -214,5 +372,15 @@ class EntityTest extends PHPUnit_Framework_TestCase
         // Enable update of 'title' attribute
         $page->getAttribute('title')->setOnce(false)->setValue('New title');
         $this->assertEquals('New title', $page->title);
+    }*/
+
+    private static function deleteAllTestCollections()
+    {
+        /* @var $collection CollectionInfo */
+        foreach (self::mongo()->listCollections() as $collection) {
+            if (strpos($collection->getName(), 'Entity_') === 0) {
+                self::mongo()->dropCollection(substr($collection->getName(), 7));
+            }
+        }
     }
 }

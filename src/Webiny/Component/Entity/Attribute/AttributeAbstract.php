@@ -155,6 +155,22 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this->isNull($this->value) ? '' : (string)$this->value;
     }
 
+    /**
+     * Get attribute name
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->attribute;
+    }
+
+    /**
+     * Set attribute name
+     *
+     * @param string $attribute
+     *
+     * @return $this
+     */
     public function setName($attribute)
     {
         $this->attribute = $attribute;

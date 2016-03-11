@@ -18,8 +18,8 @@ For additional versions of the package, visit the [Packagist page](https://packa
 - `char`
 - `integer`
 - `float`
-- `datetime`
 - `date`
+- `datetime`
 - `arr`
 - `object`
 - `dynamic`

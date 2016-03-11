@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use MongoDB\Model\BSONDocument;
+
 /**
  * ObjectAttribute
  * @package Webiny\Component\Entity\AttributeType
@@ -28,5 +30,14 @@ class ObjectAttribute extends ArrayAttribute
         }
 
         return $this->processToDbValue($value);
+    }
+
+    public function setValue($value = null, $fromDb = false)
+    {
+        if ($fromDb && $value instanceof BSONDocument) {
+            $value = $value->getArrayCopy();
+        }
+
+        return parent::setValue($value, $fromDb);
     }
 }

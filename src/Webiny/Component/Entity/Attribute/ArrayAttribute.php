@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use MongoDB\Model\BSONArray;
 use Traversable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\EntityAbstract;
@@ -51,6 +52,10 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     {
         if ($this->isNull($value)) {
             $value = new ArrayObject();
+        }
+
+        if ($fromDb && $value instanceof BSONArray) {
+            $value = $value->getArrayCopy();
         }
 
         parent::setValue($value, $fromDb);
