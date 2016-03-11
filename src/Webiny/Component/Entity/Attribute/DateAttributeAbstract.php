@@ -8,7 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use MongoDB\BSON\UTCDatetime;
-use Webiny\Component\Entity\EntityValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
 use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObjectException;
 
@@ -31,7 +31,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
             $this->setDefaultValueInternal();
         }
 
-        if ($this->autoUpdate && $this->entity->exists()) {
+        if ($this->autoUpdate && $this->parent->exists()) {
             $this->setValue(date($this->attributeFormat));
         }
 
@@ -100,7 +100,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws EntityValidationException
+     * @throws ValidationException
      * @return $this
      */
     protected function validate(&$value)

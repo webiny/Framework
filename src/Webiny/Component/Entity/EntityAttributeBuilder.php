@@ -20,10 +20,6 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Many2OneAttribute;
 use Webiny\Component\Entity\Attribute\ObjectAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
-use Webiny\Component\Entity\Attribute\SelectAttribute;
-use Webiny\Component\Entity\Attribute\SmartAttributeAbstract;
-use Webiny\Component\Entity\Attribute\TextAttribute;
-use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 
@@ -63,13 +59,13 @@ class EntityAttributeBuilder
     /**
      * Set attribute instance
      *
-     * @param SmartAttributeAbstract $attribute
+     * @param AttributeAbstract $attribute
      *
      * @return AttributeAbstract
      */
-    public function smart(SmartAttributeAbstract $attribute)
+    public function smart(AttributeAbstract $attribute)
     {
-        $attribute->setAttribute($this->attribute)->setParent($this->entity);
+        $attribute->setName($this->attribute)->setParent($this->entity);
 
         return $this->attributes[$this->attribute] = $attribute;
     }

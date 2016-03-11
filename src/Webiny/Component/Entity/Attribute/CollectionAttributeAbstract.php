@@ -9,6 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
+use Webiny\Component\Entity\EntityException;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
@@ -122,7 +123,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
      */
     public function getParentEntity()
     {
-        return $this->entity;
+        return $this->parent;
     }
 
     /**
@@ -180,7 +181,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *

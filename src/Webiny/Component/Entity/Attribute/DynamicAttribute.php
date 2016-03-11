@@ -19,16 +19,31 @@ class DynamicAttribute extends AttributeAbstract
 
     protected $storeToDb = false;
     protected $storedValue = null;
+    protected $callable = null;
 
     /**
-     * @param string         $attribute
-     * @param EntityAbstract $entity
+     * @param string         $name
+     * @param EntityAbstract $parent
      * @param callable       $callable
      */
-    public function __construct($attribute, EntityAbstract $entity, $callable)
+    public function __construct($name = null, EntityAbstract $parent = null, $callable = null)
     {
         $this->callable = $callable;
-        parent::__construct($attribute, $entity);
+        parent::__construct($name, $parent);
+    }
+
+    /**
+     * Set dynamic attribute function
+     *
+     * @param $callable
+     *
+     * @return $this
+     */
+    public function setCallable($callable)
+    {
+        $this->callable = $callable;
+
+        return $this;
     }
 
     /**
@@ -37,9 +52,10 @@ class DynamicAttribute extends AttributeAbstract
     public function getDbValue()
     {
         $value = $this->getValue();
-        if($value instanceof EntityAbstract){
+        if ($value instanceof EntityAbstract) {
             return $this->processToDbValue($value->id);
         }
+
         return parent::getDbValue();
     }
 
@@ -71,7 +87,7 @@ class DynamicAttribute extends AttributeAbstract
     {
         $callable = $this->callable;
         if (is_string($callable)) {
-            $callable = [$this->entity, $callable];
+            $callable = [$this->parent, $callable];
         }
 
         return $this->processGetValue(call_user_func_array($callable, $arguments));

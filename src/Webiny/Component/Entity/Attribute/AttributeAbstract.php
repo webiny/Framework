@@ -25,35 +25,119 @@ abstract class AttributeAbstract implements JsonSerializable
     use StdLibTrait, FactoryLoaderTrait;
 
     /**
+     * Entity this attribute belongs to
+     *
      * @var EntityAbstract
      */
+    protected $parent;
 
-    protected $entity;
+    /**
+     * Attribute name
+     * @var null|string
+     */
     protected $attribute = '';
+
+    /**
+     * Default value
+     * @var null
+     */
     protected $defaultValue = null;
+
+    /**
+     * Actual value
+     * @var null
+     */
     protected $value = null;
+
+    /**
+     * Is this attribute required
+     * @var bool
+     */
     protected $required = false;
+
+    /**
+     * If true - updating will be disabled
+     * @var bool
+     */
     protected $once = false;
+
+    /**
+     * If true - mass populate will skip this attribute
+     * @var bool
+     */
     protected $skipOnPopulate = false;
+
+    /**
+     * Attribute validators
+     * @var array
+     */
     protected $validators = [];
+
+    /**
+     * Validation messages
+     * @var array
+     */
     protected $validationMessages = [];
+
+    /**
+     * If true - will store this attribute to database
+     * @var bool
+     */
     protected $storeToDb = true;
+
+    /**
+     * If true - will wait until mass populate is finished and assign the value afterwards
+     * @var bool
+     */
     protected $setAfterPopulate = false;
+
+    /**
+     * Value to trigger $onSetCallback
+     * @var null
+     */
     protected $onSetValue = null;
+
+    /**
+     * Callback to execute before setting a new value.
+     * The value returned from the callback will be set as a new attribute value.
+     * @var null
+     */
     protected $onSetCallback = null;
+
+    /**
+     * Callback to execute when attribute value is being accessed.
+     * The value returned from the callback will be returned as attribute value.
+     * @var null
+     */
     protected $onGetCallback = null;
+
+    /**
+     * Callback to execute when toArray() is called on Entity.
+     * The value returned from the callback will be returned as attribute value.
+     * @var null
+     */
     protected $onToArrayCallback = null;
+
+    /**
+     * Callback to execute when attribute is being stored to database.
+     * The value returned from the callback will be returned as attribute value for database.
+     * @var null
+     */
     protected $onToDbCallback = null;
+
+    /**
+     * @var string
+     */
     protected $validatorInterface = '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface';
 
     /**
-     * @param string         $attribute
-     * @param EntityAbstract $entity
+     * @param string         $name
+     * @param EntityAbstract $parent
      */
-    public function __construct($attribute, EntityAbstract $entity)
+    public function __construct($name = null, EntityAbstract $parent = null)
     {
-        $this->attribute = $attribute;
-        $this->entity = $entity;
+        $this->attribute = $name;
+        $this->parent = $parent;
     }
 
     /**
@@ -71,6 +155,20 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this->isNull($this->value) ? '' : (string)$this->value;
     }
 
+    public function setName($attribute)
+    {
+        $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    public function setParent(EntityAbstract $entity)
+    {
+        $this->parent = $entity;
+
+        return $this;
+    }
+
     public function hasValue()
     {
         if ($this->value !== null) {
@@ -85,9 +183,9 @@ abstract class AttributeAbstract implements JsonSerializable
      *
      * @return EntityAbstract
      */
-    public function getEntity()
+    public function getParent()
     {
-        return $this->entity;
+        return $this->parent;
     }
 
     /**
@@ -173,7 +271,7 @@ abstract class AttributeAbstract implements JsonSerializable
             return $this->attribute;
         }
 
-        return $this->entity->attr($attribute);
+        return $this->parent->attr($attribute);
     }
 
     /**
@@ -487,7 +585,7 @@ abstract class AttributeAbstract implements JsonSerializable
      */
     protected function canAssign()
     {
-        if ($this->entity->id && $this->getOnce() && $this->value !== null) {
+        if ($this->parent->id && $this->getOnce() && $this->value !== null) {
             return false;
         }
 
@@ -623,7 +721,7 @@ abstract class AttributeAbstract implements JsonSerializable
     {
         if ($callback) {
             if (is_string($callback)) {
-                $callback = [$this->entity, $callback];
+                $callback = [$this->parent, $callback];
             }
             $value = call_user_func_array($callback, [$value]);
         }

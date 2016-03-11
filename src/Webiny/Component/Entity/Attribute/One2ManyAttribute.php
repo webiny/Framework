@@ -31,17 +31,17 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     /**
      * @var null|\Webiny\Component\Entity\EntityAbstract
      */
-    protected $entity = null;
+    protected $parent = null;
 
     /**
-     * @param string         $attribute
-     * @param EntityAbstract $entity
+     * @param null|string    $name
+     * @param EntityAbstract $parent
      * @param string         $relatedAttribute
      */
-    public function __construct($attribute, EntityAbstract $entity, $relatedAttribute)
+    public function __construct($name, EntityAbstract $parent, $relatedAttribute)
     {
         $this->relatedAttribute = $relatedAttribute;
-        parent::__construct($attribute, $entity);
+        parent::__construct($name, $parent);
     }
 
     public function isLoaded()
@@ -146,7 +146,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     public function getValue()
     {
         if ($this->isNull($this->value)) {
-            $entityId = $this->entity->id;
+            $entityId = $this->parent->id;
             $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
             $query = [
                 $this->relatedAttribute => $entityId
@@ -154,7 +154,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
             $filters = $this->filter;
             if (is_string($filters) || is_callable($filters)) {
-                $callable = is_string($filters) ? [$this->entity, $filters] : $filters;
+                $callable = is_string($filters) ? [$this->parent, $filters] : $filters;
                 $filters = call_user_func_array($callable, []);
             }
 
@@ -174,7 +174,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     public function hasValue()
     {
         if ($this->isNull($this->value)) {
-            $entityId = $this->entity->id;
+            $entityId = $this->parent->id;
             $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
             $query = [
                 $this->relatedAttribute => $entityId
@@ -225,7 +225,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             '_id' => ['$nin' => $newIds]
         ];
 
-        $where[$this->relatedAttribute] = $this->entity->id;
+        $where[$this->relatedAttribute] = $this->parent->id;
 
         $toRemove = call_user_func_array([$this->entityClass, 'find'], [$where]);
         foreach ($toRemove as $r) {
