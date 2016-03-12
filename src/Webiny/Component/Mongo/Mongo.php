@@ -95,7 +95,7 @@ class Mongo
      * @param string $name Name
      * @param array  $options
      *
-     * @return MongoResult
+     * @return array|object
      */
     public function createCollection($name, array $options = [])
     {
@@ -108,7 +108,7 @@ class Mongo
      * @param string $collectionName
      * @param array  $options
      *
-     * @return MongoResult
+     * @return array|object
      */
     public function dropCollection($collectionName, array $options = [])
     {
