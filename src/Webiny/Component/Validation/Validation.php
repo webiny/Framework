@@ -27,7 +27,7 @@ use Webiny\Component\Validation\Validators\Number;
 use Webiny\Component\Validation\Validators\Password;
 use Webiny\Component\Validation\Validators\Phone;
 use Webiny\Component\Validation\Validators\Required;
-use Webiny\Component\Validation\Validators\url;
+use Webiny\Component\Validation\Validators\Url;
 
 
 /**
