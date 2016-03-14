@@ -154,6 +154,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
             }
 
             $this->data->key($keys[0])->set($keys[1], $value);
+
+            return $this;
         }
 
         if (!$this->data->keyExists($name)) {
