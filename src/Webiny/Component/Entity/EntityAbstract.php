@@ -756,10 +756,11 @@ abstract class EntityAbstract implements \ArrayAccess
 
                     $values[] = $itemEntity;
                 }
-                // Set attribute value
-                $entityAttribute->setValue($values);
-            } elseif ($isMany2Many) {
-                $entityAttribute->setValue($dataValue);
+                try {
+                    $entityAttribute->setValue($values, $fromDb);
+                } catch (ValidationException $e) {
+                    $validation[$attributeName] = $e;
+                }
             } else {
                 try {
                     $entityAttribute->setValue($dataValue, $fromDb);

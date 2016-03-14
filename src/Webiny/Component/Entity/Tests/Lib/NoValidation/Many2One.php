@@ -1,8 +1,8 @@
 <?php
-namespace Webiny\Component\Entity\Tests\Classes\NoValidation;
+namespace Webiny\Component\Entity\Tests\lib\NoValidation;
 
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\Tests\Classes\Classes;
+use Webiny\Component\Entity\Tests\Lib\Classes;
 
 class Many2One extends EntityAbstract
 {

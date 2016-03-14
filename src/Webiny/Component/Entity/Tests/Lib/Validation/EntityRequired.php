@@ -1,8 +1,8 @@
 <?php
-namespace Webiny\Component\Entity\Tests\Classes\Validation;
+namespace Webiny\Component\Entity\Tests\Lib\Validation;
 
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\Tests\Classes\Classes;
+use Webiny\Component\Entity\Tests\Lib\Classes;
 
 class EntityRequired extends EntityAbstract
 {

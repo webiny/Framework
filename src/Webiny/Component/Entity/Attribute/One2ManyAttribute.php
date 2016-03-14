@@ -127,6 +127,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
         if (!$fromDb) {
             $value = $this->processSetValue($value);
+            $this->validate($value);
 
             // If new value is being set - delete all existing records that are NOT in the new data set
             $this->cleanUpRecords($value);

@@ -24,6 +24,7 @@ use Webiny\Component\Entity\Attribute\Validation\Validators\MinLength;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Number;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Password;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Phone;
+use Webiny\Component\Entity\Attribute\Validation\Validators\Regex;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Required;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Unique;
 use Webiny\Component\Entity\Attribute\Validation\Validators\Url;
@@ -187,7 +188,8 @@ class Entity
             new CountryCode(),
             new CreditCardNumber(),
             new EuVatNumber(),
-            new Unique()
+            new Unique(),
+            new Regex()
         ];
 
         /* @var $v ValidatorInterface */

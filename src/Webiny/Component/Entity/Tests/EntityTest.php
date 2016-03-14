@@ -12,9 +12,9 @@ use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityException;
 use Webiny\Component\Entity\EntityTrait;
-use Webiny\Component\Entity\Tests\Classes as Classes;
-use Webiny\Component\Entity\Tests\Classes\NoValidation\Many2Many;
-use Webiny\Component\Entity\Tests\Classes\NoValidation\Many2One;
+use Webiny\Component\Entity\Tests\Lib as Lib;
+use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2Many;
+use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2One;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 
@@ -90,7 +90,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $class = Classes\Classes::ENTITY_NO_VALIDATION;
+        $class = Lib\Classes::ENTITY_NO_VALIDATION;
         $entity = new $class;
         $entity->populate($data)->save();
 
@@ -111,75 +111,16 @@ class EntityTest extends PHPUnit_Framework_TestCase
     public function testRequiredValidation($data)
     {
         try {
-            $entity = new Classes\Validation\EntityRequired();
+            $entity = new Lib\Validation\EntityRequired();
             $entity->populate($data);
         } catch (EntityException $e) {
-            //print_r($e->getInvalidAttributes());
             throw $e;
         }
     }
 
     public function requiredData()
     {
-        return [
-            [[]],
-            [
-                [
-                    'boolean' => true,
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char' => 'abc',
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char' => 'abc',
-                    'integer' => 12
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char' => 'uye',
-                    'integer' => 12
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char'    => 'def',
-                    'integer' => 12,
-                    'float' => 56.24
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char'    => 'def',
-                    'integer' => 2,
-                    'float' => 56.24,
-                    'object' => [
-                        'key1' => 'value'
-                    ]
-                ]
-            ],
-            [
-                [
-                    'boolean' => true,
-                    'char'    => 'def',
-                    'integer' => 2,
-                    'float' => 56.24,
-                    'object' => [
-                        'key1' => 'value'
-                    ],
-                    'many2one' => []
-                ]
-            ],
-        ];
+        return include_once __DIR__ . '/Lib/RequiredData.php';
     }
 
     /**
@@ -188,85 +129,24 @@ class EntityTest extends PHPUnit_Framework_TestCase
      */
     public function testPopulateValidation($data)
     {
-        try {
-            $entity = new Classes\Validation\Entity();
-            $entity->populate($data);
-        } catch (EntityException $e) {
-            //print_r($e->getInvalidAttributes());
-            throw $e;
+        /**
+         * This block is only for unique validator.
+         * We need to create a record with the same value in order to successfully test unique validator.
+         */
+        if (isset($data['unique'])) {
+            $entity = new Lib\Validation\Entity();
+            $entity->unique = $data['unique'];
+            $entity->save();
         }
+
+        $entity = new Lib\Validation\Entity();
+        $entity->populate($data);
     }
+
 
     public function validationData()
     {
-        return [
-            [
-                [
-                    'char' => 'ab',
-                ]
-            ],
-            [
-                [
-                    'char' => 'abcdefg',
-                ]
-            ],
-            [
-                [
-                    'char' => 'uye',
-                ]
-            ],
-            [
-                [
-                    'integer' => '',
-                ]
-            ],
-            [
-                [
-                    'integer' => 2,
-                ]
-            ],
-            [
-                [
-                    'integer' => 6,
-                ]
-            ],
-            [
-                [
-                    'float'   => 1,
-                ]
-            ],
-            [
-                [
-                    'float'   => 6,
-                ]
-            ],
-            [
-                [
-                    'object'  => [
-                        'key2' => 'something'
-                    ]
-                ]
-            ],
-            [
-                [
-                    'object'  => [
-                        'key1' => '',
-                        'key2' => 'something'
-                    ]
-                ]
-            ],
-            [
-                [
-                    'many2one' => ''
-                ]
-            ],
-            [
-                [
-                    'many2one' => 123
-                ]
-            ]
-
-        ];
+        return include_once __DIR__ . '/Lib/ValidationData.php';
     }
 
     private function assertEntityStateNoValidation($entity)
