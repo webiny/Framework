@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Traversable;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
@@ -127,6 +128,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
         if (!$fromDb) {
             $value = $this->processSetValue($value);
+            $value = $this->normalizeValue($value);
             $this->validate($value);
 
             // If new value is being set - delete all existing records that are NOT in the new data set
@@ -211,6 +213,57 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         }
 
         return $sorters;
+    }
+
+    /**
+     * Normalize given value to be a valid array of entity instances
+     *
+     * @param mixed $value
+     *
+     * @return array
+     * @throws ValidationException
+     */
+    private function normalizeValue($value)
+    {
+        $entityClass = $this->getEntity();
+        $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
+
+        // Validate One2Many attribute value
+        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
+            throw new ValidationException(ValidationException::DATA_TYPE, [
+                'array, ArrayObject or EntityCollection',
+                gettype($value)
+            ]);
+        }
+
+        /* @var $entityAttribute One2ManyAttribute */
+        $values = [];
+        foreach ($value as $item) {
+            $itemEntity = false;
+
+            // $item can be an array of data, EntityAbstract or a simple mongo ID string
+            if ($this->isInstanceOf($item, $entityClass)) {
+                $itemEntity = $item;
+            } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+            } elseif ($this->isString($item) && $this->entity()->getDatabase()->isId($item)) {
+                $itemEntity = $entityClass::findById($item);
+            }
+
+            // If instance was not found, create a new entity instance
+            if (!$itemEntity) {
+                $itemEntity = new $entityClass;
+            }
+
+            // If $item is an array - use it to populate the entity instance
+            if ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity->populate($item);
+            }
+
+            $values[] = $itemEntity;
+        }
+
+        return $values;
     }
 
     private function cleanUpRecords($newValues)

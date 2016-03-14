@@ -9,6 +9,7 @@ namespace Webiny\Component\Entity\Tests;
 
 use MongoDB\Model\CollectionInfo;
 use PHPUnit_Framework_TestCase;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityException;
 use Webiny\Component\Entity\EntityTrait;
@@ -17,6 +18,7 @@ use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2Many;
 use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2One;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 class EntityTest extends PHPUnit_Framework_TestCase
 {
@@ -63,6 +65,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $data = [
             'boolean'          => true,
             'char'             => 'char',
+            'skip'             => 'this value will not be set',
             'integer'          => 12,
             'float'            => 20.35,
             'date'             => '2016-03-14',
@@ -102,6 +105,18 @@ class EntityTest extends PHPUnit_Framework_TestCase
         Entity::getInstance()->remove($entity);
         $entity = $class::findById($id);
         $this->assertEntityStateNoValidation($entity);
+
+        // Test toArray conversion
+        $array = new ArrayObject($entity->toArray('*,arr,object,many2oneNew[char,relations.integer],one2many,many2many', 2));
+        $this->assertEquals('char', $array->keyNested('char'));
+        $this->assertEquals([1, 2, 3], $array->keyNested('arr'));
+        $this->assertEquals('value', $array->keyNested('object.key1'));
+        $this->assertEquals('many2oneNew', $array->keyNested('many2oneNew.char'));
+        $this->assertEquals(12, $array->keyNested('many2oneNew.relations.0.integer'));
+        $this->assertEquals('one2many1', $array->keyNested('one2many.0.char'));
+        $this->assertEquals('one2many2', $array->keyNested('one2many.1.char'));
+        $this->assertEquals('many2many1', $array->keyNested('many2many.0.char'));
+        $this->assertEquals('many2many2', $array->keyNested('many2many.1.char'));
     }
 
     /**
@@ -143,6 +158,30 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $entity->populate($data);
     }
 
+    public function testCustomValidationMessages()
+    {
+        $entity = new Lib\NoValidation\Entity();
+        $entity->getAttribute('char')->setValidators('required')->setValidationMessages(['required' => 'Custom message']);
+        try {
+            $entity->populate([]);
+        } catch (EntityException $e) {
+            $this->assertEquals('Custom message', $e->getInvalidAttributes()['char']);
+        }
+    }
+
+    public function testCustomValidator()
+    {
+        $validator = function ($value) {
+            throw new ValidationException('Custom validator ' . $value);
+        };
+        $entity = new Lib\NoValidation\Entity();
+        $entity->getAttribute('char')->setValidators([$validator]);
+        try {
+            $entity->populate(['char' => 'value']);
+        } catch (EntityException $e) {
+            $this->assertEquals('Custom validator value', $e->getInvalidAttributes()['char']);
+        }
+    }
 
     public function validationData()
     {
@@ -153,6 +192,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($entity->boolean);
         $this->assertEquals('char', $entity->char);
+        $this->assertNull($entity->skip);
         $this->assertEquals(12, $entity->integer);
         $this->assertEquals(20.35, $entity->float);
         $this->assertEquals('2016-03-14', $entity->date);
@@ -174,85 +214,116 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('many2many2', $entity->many2many[1]->char);
     }
 
-    /*public function testFindOne()
+    /**
+     * Test entity finding
+     */
+    public function testFind()
     {
-        $page = Page::findOne(['id' => self::$page->id]);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
+        $entity = new Lib\NoValidation\Entity();
+        $entity->char = 'Webiny Test';
+        $entity->save();
 
-        $page = Page::findOne(['title' => 'First blog post']);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $page);
+        $id = $entity->id;
 
-        $page = Page::findOne(['title' => 'NO TITLE']);
-        $this->assertNull($page);
+        // Clear entity instance cache
+        Entity::getInstance()->reset();
+
+        $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+
+        $entity = Lib\NoValidation\Entity::findOne(['char' => 'NO TITLE']);
+        $this->assertNull($entity);
+
+        $entity = Lib\NoValidation\Entity::findById($id);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+
+        $collection = Lib\NoValidation\Entity::find(['char' => 'Webiny Test']);
+        $this->assertEquals(1, $collection->count());
     }
 
-    public function testPopulateValidation()
-    {
-        $page = self::$page;
-        $data = [
-            'title'  => 12,
-            'author' => false
-        ];
-        $this->setExpectedException('\Webiny\Component\Entity\EntityException');
-        $page->populate($data);
-    }
-
+    /**
+     * Test delete on parent entity when one2many attribute has a 'restrict' flag - the delete action on parent should not be permitted.
+     *
+     * @expectedException \Webiny\Component\Entity\EntityException
+     */
     public function testRestrictException()
     {
-        $page = self::$page;
-        $this->setExpectedException('\Webiny\Component\Entity\EntityException');
-        $page->author->delete();
+        $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+        $entity->one2many = [
+            ['char' => 'first']
+        ];
+        $entity->save();
+
+        $entity->getAttribute('one2many')->setOnDelete('restrict');
+        $entity->delete();
     }
 
+    /**
+     * Test cascade deletion of one2many attribute values when parent entity is deleted
+     */
     public function testCascade()
     {
-        $page = self::$page;
-        $authorId = $page->author->id;
+        $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
+        $entity->getAttribute('one2many')->setOnDelete('cascade');
+        $entity->delete();
 
-        $page->author->getAttribute('pages')->setOnDelete('cascade');
-        $page->author->delete();
-
-        $author = Author::findById($authorId);
-        $this->assertNull($author);
+        $one2many = Lib\Classes::ONE_2_MANY_NO_VALIDATION;
+        $this->assertNull($one2many::findOne(['char' => 'first']));
     }
 
+    /**
+     * Test update protection on attribute - if set, new value should not be assigned after initial value was set.
+     */
     public function testSetOnce()
     {
-        $page = new Page();
-        $page->title = 'Initial title';
-        $page->save();
+        $entity = new Lib\NoValidation\Entity();
+        $entity->char = 'Initial title';
+        $entity->save();
 
-        $id = $page->id;
+        // Disable update of 'char' attribute
+        $entity->getAttribute('char')->setOnce()->setValue('New title');
+        $this->assertEquals('Initial title', $entity->char);
 
-        // Completely remove current instance
-        Entity::getInstance()->remove($page);
-
-        // Load fresh instance from database
-        $page = Page::findById($id);
-
-        // Disable update of 'title' attribute
-        $page->getAttribute('title')->setOnce()->setValue('New title');
-        $this->assertEquals('Initial title', $page->title);
-
-        $page->populate(['title' => 'Some title']);
-        $this->assertEquals('Initial title', $page->title);
-
-        // Try populating a null value attribute
-        $page->getAttribute('settings')->setOnce()->setValue([]);
-        $this->assertEquals([], $page->settings->val());
-
-        // Try updating an attribute that has a value already assigned to it
-        $page->settings = [
-            1,
-            2,
-            3
-        ];
-        $this->assertEquals([], $page->settings->val());
+        $entity->populate(['char' => 'Some title']);
+        $this->assertEquals('Initial title', $entity->char);
 
         // Enable update of 'title' attribute
-        $page->getAttribute('title')->setOnce(false)->setValue('New title');
-        $this->assertEquals('New title', $page->title);
-    }*/
+        $entity->getAttribute('char')->setOnce(false)->setValue('New title');
+        $this->assertEquals('New title', $entity->char);
+    }
+
+    /**
+     * Test default value of the attribute
+     */
+    public function testDefaultValue()
+    {
+        $entity = new Lib\NoValidation\Entity();
+        $entity->getAttribute('char')->setDefaultValue('Default Title');
+        $entity->save();
+
+        Entity::getInstance()->reset();
+
+        $entity = Lib\NoValidation\Entity::findOne(['char' => 'Default Title']);
+        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+    }
+
+    /**
+     * Test onSet, onGet, onToDb and onToArray callbacks as well as setAfterPopulate (only useful in combination with onSet callback)
+     */
+    public function testOnCallbacks()
+    {
+        $entity = new Lib\EntityOnCallbacks();
+        $entity->populate(['char' => 'value', 'number' => 12])->save();
+
+        Entity::getInstance()->reset();
+
+        $entity = Lib\EntityOnCallbacks::findOne(['number' => 12]);
+        $this->assertEquals('get-db-get-set-12-value', $entity->char);
+
+        $array = $entity->toArray();
+        $this->assertEquals(['key' => 'value'], $array['char']);
+    }
 
     private static function deleteAllTestCollections()
     {

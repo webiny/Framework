@@ -12,6 +12,8 @@ class Entity extends EntityAbstract
     {
         $this->attr('boolean')->boolean();
         $this->attr('char')->char();
+        $this->attr('skip')->char()->setSkipOnPopulate();
+        $this->attr('after')->char();
         $this->attr('integer')->integer();
         $this->attr('float')->float();
         $this->attr('date')->date();

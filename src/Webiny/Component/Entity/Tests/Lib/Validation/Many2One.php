@@ -9,6 +9,6 @@ class Many2One extends EntityAbstract
 
     protected function entityStructure()
     {
-        $this->attr('char')->char();
+        $this->attr('char')->char()->setValidators('required');
     }
 }

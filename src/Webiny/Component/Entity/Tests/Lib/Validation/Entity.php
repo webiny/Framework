@@ -4,6 +4,13 @@ namespace Webiny\Component\Entity\Tests\Lib\Validation;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\Tests\Lib\Classes;
 
+/**
+ * Class Entity
+ *
+ * This class tests all validators except 'required' on relevant attribute types
+ *
+ * @package Webiny\Component\Entity\Tests\Lib\Validation
+ */
 class Entity extends EntityAbstract
 {
     protected static $entityCollection = "Validation_Entity";
@@ -17,8 +24,8 @@ class Entity extends EntityAbstract
             'key1' => 'required',
             'key2' => 'email'
         ]);
-        $this->attr('many2one')->many2one()->setEntity(Classes::MANY_2_ONE_NO_VALIDATION);
-        $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_NO_VALIDATION)->setValidators('minLength:2');
+        $this->attr('many2one')->many2one()->setEntity(Classes::MANY_2_ONE_VALIDATION);
+        $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_VALIDATION)->setValidators('minLength:2');
         $this->attr('many2many')->many2many('Whatever')->setEntity(Classes::MANY_2_MANY_NO_VALIDATION)->setValidators('minLength:2');
         $this->attr('vatNumber')->char()->setValidators('euVatNumber');
         $this->attr('creditCardNumber')->char()->setValidators('creditCardNumber');

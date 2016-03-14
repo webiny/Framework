@@ -694,79 +694,11 @@ abstract class EntityAbstract implements \ArrayAccess
         $canPopulate = !$this->exists() || $fromDb || !$entityAttribute->getOnce();
         if ($dataIsSet && $canPopulate) {
             $dataValue = $data[$attributeName];
-            $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
-            $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
-            $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
 
-            if ($isMany2One) {
-                try {
-                    // If simple ID or null - set and forget
-                    if (is_string($dataValue) || is_null($dataValue)) {
-                        $entityAttribute->setValue($dataValue, $fromDb);
-
-                        return;
-                    }
-
-                    $entityAttribute->setValue($dataValue, $fromDb);
-                } catch (ValidationException $e) {
-                    $validation[$attributeName] = $e;
-
-                    return;
-                }
-            } elseif ($isOne2Many) {
-                $entityClass = $entityAttribute->getEntity();
-                $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
-
-                // Validate One2Many attribute value
-                if (!$this->isArray($dataValue) && !$this->isArrayObject($dataValue) && !$this->isInstanceOf($dataValue,
-                        $entityCollectionClass)
-                ) {
-                    $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
-                    $ex->addError($attributeName, ValidationException::DATA_TYPE, [
-                        'array, ArrayObject or EntityCollection',
-                        gettype($dataValue)
-                    ]);
-                    $validation[$attributeName] = $ex;
-
-                    return;
-                }
-                /* @var $entityAttribute One2ManyAttribute */
-                $values = [];
-                foreach ($dataValue as $item) {
-                    $itemEntity = false;
-
-                    // $item can be an array of data, EntityAbstract or a simple mongo ID string
-                    if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
-                        $itemEntity = $item;
-                    } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
-                        $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
-                    } elseif ($this->isString($item) && $this->entity()->getDatabase()->isId($item)) {
-                        $itemEntity = $entityClass::findById($item);
-                    }
-
-                    // If instance was not found, create a new entity instance
-                    if (!$itemEntity) {
-                        $itemEntity = new $entityClass;
-                    }
-
-                    // If $item is an array - use it to populate the entity instance
-                    if ($this->isArray($item) || $this->isArrayObject($item)) {
-                        $itemEntity->populate($item);
-                    }
-
-                    $values[] = $itemEntity;
-                }
-                try {
-                    $entityAttribute->setValue($values, $fromDb);
-                } catch (ValidationException $e) {
-                    $validation[$attributeName] = $e;
-                }
-            } else {
-                try {
-                    $entityAttribute->setValue($dataValue, $fromDb);
-                } catch (ValidationException $e) {
-                    $validation[$attributeName] = $e;
-                }
+            try {
+                $entityAttribute->setValue($dataValue, $fromDb);
+            } catch (ValidationException $e) {
+                $validation[$attributeName] = $e;
             }
         }
     }
