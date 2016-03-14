@@ -26,6 +26,7 @@ use Webiny\Component\Validation\Validators\MinLength;
 use Webiny\Component\Validation\Validators\Number;
 use Webiny\Component\Validation\Validators\Password;
 use Webiny\Component\Validation\Validators\Phone;
+use Webiny\Component\Validation\Validators\Regex;
 use Webiny\Component\Validation\Validators\Required;
 use Webiny\Component\Validation\Validators\Url;
 
@@ -110,7 +111,8 @@ class Validation
             new Phone(),
             new CountryCode(),
             new CreditCardNumber(),
-            new EuVatNumber()
+            new EuVatNumber(),
+            new Regex()
         ];
 
         /* @var $v ValidatorInterface */

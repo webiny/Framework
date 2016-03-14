@@ -233,6 +233,14 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->validation()->validate('12345678', 'euVatNumber');
     }
 
+    public function testRegex()
+    {
+        $this->assertTrue($this->validation()->validate('+385(0)98000-0000', 'regex:/^[-+0-9()]+$/'));
+        $this->assertInternalType('string', $this->validation()->validate('abcdefg', 'regex:/^[-+0-9()]+$/', false));
+        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->validation()->validate('abcdefg', 'regex:/^[-+0-9()]+$/');
+    }
+
     public function testCustomValidator()
     {
         $this->validation()->addValidator(new CustomValidator());
