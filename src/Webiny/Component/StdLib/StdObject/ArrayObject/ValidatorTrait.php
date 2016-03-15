@@ -39,7 +39,7 @@ trait ValidatorTrait
      * Checks if $key exists in current array as index. If it exists, true is returned.
      * If the $key doesn't exist, $default is returned,
      *
-     * @param string|StringObject $key     Array key.
+     * @param string|StringObject $key Array key.
      * @param mixed               $default If key is not found, $default is returned.
      *
      * @return bool|mixed True is returned if the key exists, otherwise $default is returned.
@@ -61,12 +61,14 @@ trait ValidatorTrait
      *
      * @return bool
      */
-    public function keysExist($keys = []){
-        foreach($keys as $key){
-            if(!$this->keyExists($key)){
+    public function keysExist($keys = [])
+    {
+        foreach ($keys as $key) {
+            if (!$this->keyExists($key)) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -75,7 +77,7 @@ trait ValidatorTrait
      * If the $key doesn't exist, $default is returned.
      * This method supports nested keys access: 'level1.level2.level3'
      *
-     * @param string|StringObject $key     Array key. Eg: 'level1.level2.level3'
+     * @param string|StringObject $key Array key. Eg: 'level1.level2.level3'
      * @param mixed               $default If key is not found, $default is returned.
      *
      * @return bool|mixed True is returned if the key exists, otherwise $default is returned.
@@ -86,10 +88,15 @@ trait ValidatorTrait
 
         if (strpos($key, '.') !== false) {
             $keys = explode('.', trim($key, '.'), 2);
-            if(!isset($this->val()[$keys[0]])){
+            if (!isset($this->val()[$keys[0]])) {
                 return $default;
             }
-            $sourceArray = new ArrayObject($this->val()[$keys[0]]);
+
+            try {
+                $sourceArray = new ArrayObject($this->val()[$keys[0]]);
+            } catch (ArrayObjectException $e) {
+                return $default;
+            }
 
             return $sourceArray->keyExistsNested($keys[1], $default);
         }
