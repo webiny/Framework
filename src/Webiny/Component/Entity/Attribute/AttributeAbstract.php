@@ -218,7 +218,9 @@ abstract class AttributeAbstract implements JsonSerializable
             $this->value = $value;
         }
 
-        return $this->processToDbValue($value);
+        $value = $this->processToDbValue($value);
+
+        return $this->value = $value;
     }
 
     /**

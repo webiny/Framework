@@ -110,7 +110,17 @@ class EntityDataExtractor
                     }
                 }
             } elseif ($isObject) {
-                $data[$attr] = $entityAttribute->toArray();
+                $value = $entityAttribute->toArray();
+
+                if ($subAttributes) {
+                    $keys = $this->buildNestedKeys($subAttributes);
+                    $value = $this->arr();
+                    foreach($keys as $key){
+                        $value->keyNested($key, $entityAttribute->getValue()->keyNested($key));
+                    }
+                    $value = $value->val();
+                }
+                $data[$attr] = $value;
             } elseif ($isArray) {
                 $value = $entityAttribute->toArray();
                 if ($subAttributes) {

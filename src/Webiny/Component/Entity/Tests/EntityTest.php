@@ -107,10 +107,11 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEntityStateNoValidation($entity);
 
         // Test toArray conversion
-        $array = new ArrayObject($entity->toArray('*,arr,object,many2oneNew[char,relations.integer],one2many,many2many', 2));
+        $array = new ArrayObject($entity->toArray('*,arr,object[key1],many2oneNew[char,relations.integer],one2many,many2many', 2));
         $this->assertEquals('char', $array->keyNested('char'));
         $this->assertEquals([1, 2, 3], $array->keyNested('arr'));
         $this->assertEquals('value', $array->keyNested('object.key1'));
+        $this->assertNull($array->keyNested('object.key2'));
         $this->assertEquals('many2oneNew', $array->keyNested('many2oneNew.char'));
         $this->assertEquals(12, $array->keyNested('many2oneNew.relations.0.integer'));
         $this->assertEquals('one2many1', $array->keyNested('one2many.0.char'));
@@ -315,6 +316,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     {
         $entity = new Lib\EntityOnCallbacks();
         $entity->populate(['char' => 'value', 'number' => 12])->save();
+        $this->assertEquals('get-db-get-set-12-value', $entity->char);
 
         Entity::getInstance()->reset();
 
