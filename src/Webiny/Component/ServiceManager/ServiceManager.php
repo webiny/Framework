@@ -20,7 +20,15 @@ class ServiceManager
     use StdLibTrait, SingletonTrait;
 
     private $compiledConfig;
+
+    /**
+     * @var ArrayObject
+     */
     private $instantiatedServices;
+
+    /**
+     * @var ArrayObject
+     */
     private $registeredServices;
     private $parameters;
     private $taggedServices;
@@ -50,7 +58,7 @@ class ServiceManager
     /**
      * Get multiple services by tag
      *
-     * @param string      $tag       Tag to use for services filter
+     * @param string      $tag Tag to use for services filter
      * @param null|string $forceType (Optional) Return only services which are instances of $forceType
      *
      * @return array
@@ -90,6 +98,10 @@ class ServiceManager
         }
         $this->registeredServices[$serviceName] = $config;
 
+        if ($this->instantiatedServices->keyExists($serviceName) && $overwrite) {
+            $this->instantiatedServices->removeKey($serviceName);
+        }
+
         /**
          * Tagify service
          */
@@ -119,7 +131,7 @@ class ServiceManager
     /**
      * Register parameter for use in service configs
      *
-     * @param string $name  Parameter name
+     * @param string $name Parameter name
      * @param mixed  $value Parameter value
      *
      * @return $this
