@@ -24,6 +24,7 @@ class Entity extends EntityAbstract
             'key1' => 'required',
             'key2' => 'email'
         ]);
+        $this->attr('geoPoint')->geoPoint();
         $this->attr('many2one')->many2one()->setEntity(Classes::MANY_2_ONE_VALIDATION);
         $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_VALIDATION)->setValidators('minLength:2');
         $this->attr('many2many')->many2many('Whatever')->setEntity(Classes::MANY_2_MANY_NO_VALIDATION)->setValidators('minLength:2');

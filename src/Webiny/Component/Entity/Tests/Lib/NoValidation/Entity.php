@@ -20,6 +20,7 @@ class Entity extends EntityAbstract
         $this->attr('datetime')->datetime();
         $this->attr('arr')->arr();
         $this->attr('object')->object();
+        $this->attr('geoPoint')->geoPoint();
         $this->attr('dynamic')->dynamic(function () {
             return 'dynamic-value';
         });

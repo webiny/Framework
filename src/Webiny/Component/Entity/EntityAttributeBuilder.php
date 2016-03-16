@@ -15,6 +15,7 @@ use Webiny\Component\Entity\Attribute\DateAttribute;
 use Webiny\Component\Entity\Attribute\DateTimeAttribute;
 use Webiny\Component\Entity\Attribute\DynamicAttribute;
 use Webiny\Component\Entity\Attribute\FloatAttribute;
+use Webiny\Component\Entity\Attribute\GeoPointAttribute;
 use Webiny\Component\Entity\Attribute\IntegerAttribute;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Many2OneAttribute;
@@ -170,5 +171,13 @@ class EntityAttributeBuilder
     public function dynamic($callable)
     {
         return $this->attributes[$this->attribute] = new DynamicAttribute($this->attribute, $this->entity, $callable);
+    }
+
+    /**
+     * @return GeoPointAttribute
+     */
+    public function geoPoint()
+    {
+        return $this->attributes[$this->attribute] = new GeoPointAttribute($this->attribute, $this->entity);
     }
 }

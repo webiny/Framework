@@ -75,6 +75,11 @@ class EntityTest extends PHPUnit_Framework_TestCase
                 'key1' => 'value',
                 'key2' => 12
             ],
+            'geoPoint' => [
+                'lat' => 50,
+                'lng' => 100,
+                'stripThisKey' => 'whatever'
+            ],
             'many2oneNew'      => [
                 'char' => 'many2oneNew'
             ],
@@ -112,6 +117,9 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals([1, 2, 3], $array->keyNested('arr'));
         $this->assertEquals('value', $array->keyNested('object.key1'));
         $this->assertNull($array->keyNested('object.key2'));
+        $this->assertEquals(50, $array->keyNested('geoPoint.lat'));
+        $this->assertEquals(100, $array->keyNested('geoPoint.lng'));
+        $this->assertArrayNotHasKey('stripThisKey', $array->keyNested('geoPoint'));
         $this->assertEquals('many2oneNew', $array->keyNested('many2oneNew.char'));
         $this->assertEquals(12, $array->keyNested('many2oneNew.relations.0.integer'));
         $this->assertEquals('one2many1', $array->keyNested('one2many.0.char'));
@@ -209,6 +217,9 @@ class EntityTest extends PHPUnit_Framework_TestCase
             'key1' => 'value',
             'key2' => 12
         ], $entity->object->val());
+        $this->assertEquals(50, $entity->geoPoint['lat']);
+        $this->assertEquals(100, $entity->geoPoint['lng']);
+        $this->assertArrayNotHasKey('stripThisKey', $entity->geoPoint);
         $this->assertEquals('many2oneNew', $entity->many2oneNew->char);
         $this->assertEquals('many2oneExisting', $entity->many2oneExisting->char);
         $this->assertEquals(2, $entity->one2many->count());

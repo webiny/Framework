@@ -68,6 +68,33 @@ return [
     ],
     [
         [
+            'geoPoint' => ''
+        ]
+    ],
+    [
+        [
+            'geoPoint' => []
+        ]
+    ],
+    [
+        [
+            'geoPoint' => [
+                'key' => null
+            ]
+        ]
+    ],
+    [
+        [
+            'geoPoint' => ['lat' => 123]
+        ]
+    ],
+    [
+        [
+            'geoPoint' => ['lng' => 500]
+        ]
+    ],
+    [
+        [
             'many2one' => 123
         ]
     ],
