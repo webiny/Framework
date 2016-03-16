@@ -35,8 +35,8 @@ class SingleIndex extends IndexAbstract
         $this->ttl = $ttl;
         $fields = $this->isArray($field) ? $field : [$field];
 
-        if(count($fields) != 1) {
-            throw new MongoException(MongoException::SINGLE_INDEX_TOO_MANY_FIELDS, [count($field)]);
+        if(count($fields) > 1) {
+            throw new MongoException(MongoException::SINGLE_INDEX_TOO_MANY_FIELDS, [count($fields)]);
         }
 
         parent::__construct($name, $fields, $sparse, $unique, $dropDuplicates);
@@ -50,26 +50,5 @@ class SingleIndex extends IndexAbstract
         }
 
         return $options;
-    }
-
-    /**
-     * Set index field
-     *
-     * @param string|array $field String (ex: -title | title) or array (ex: ['title' => -1])
-     *
-     * @throws \Webiny\Component\Mongo\MongoException
-     * @return $this
-     */
-    public function setFields($field)
-    {
-        if($this->isString($field)) {
-            $field = [$field];
-        }
-
-        if($this->isArray($field) && count($field) != 1) {
-            throw new MongoException(MongoException::SINGLE_INDEX_TOO_MANY_FIELDS, [count($field)]);
-        }
-
-        return parent::setFields($field);
     }
 }

@@ -12,6 +12,7 @@ use MongoDB\Model\BSONDocument;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Mongo\Index\CompoundIndex;
 use Webiny\Component\Mongo\Index\SingleIndex;
+use Webiny\Component\Mongo\Index\SphereIndex;
 use Webiny\Component\Mongo\Index\TextIndex;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
@@ -21,6 +22,16 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
     use MongoTrait;
 
     const CONFIG = '/ExampleConfig.yaml';
+
+    public static function setUpBeforeClass()
+    {
+        self::deleteAllTestCollections();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::deleteAllTestCollections();
+    }
 
     /**
      * @dataProvider driverSet
@@ -42,8 +53,12 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $indexName = $mongo->createIndex($collection, $index);
         $this->assertEquals('Title', $indexName);
 
+        $index = new SphereIndex('Location', 'location');
+        $indexName = $mongo->createIndex($collection, $index);
+        $this->assertEquals('Location', $indexName);
+
         $indexes = $mongo->listIndexes($collection);
-        $this->assertEquals(4, count($indexes));
+        $this->assertEquals(5, count($indexes));
     }
 
     /**
@@ -57,7 +72,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
 
         $indexes = $mongo->listIndexes($collection);
         $this->assertNotContains('Name', $indexes);
-        $this->assertEquals(3, count($indexes));
+        $this->assertEquals(4, count($indexes));
 
         $mongo->dropIndexes($collection);
         // _id_ index is always present so the count is 1 at least
@@ -73,4 +88,8 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    private static function deleteAllTestCollections()
+    {
+        self::mongo()->dropCollection('TestIndexCollection');
+    }
 }

@@ -45,37 +45,11 @@ abstract class IndexAbstract implements IndexInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @param array $fields
-     *
-     * @return $this
-     */
-    public function setFields($fields)
-    {
-        $this->fields = $fields;
-
-        $this->normalizeFields();
-
-        return $this;
     }
 
     /**
@@ -86,28 +60,9 @@ abstract class IndexAbstract implements IndexInterface
         return $this->fields;
     }
 
-    public function setSparse($flag)
-    {
-        $this->sparse = $flag;
-
-        return $this;
-    }
-
     public function getSparse()
     {
         return $this->sparse;
-    }
-
-    /**
-     * @param boolean $dropDuplicates
-     *
-     * @return $this
-     */
-    public function setDropDuplicates($dropDuplicates)
-    {
-        $this->dropDuplicates = $dropDuplicates;
-
-        return $this;
     }
 
     /**
@@ -116,18 +71,6 @@ abstract class IndexAbstract implements IndexInterface
     public function getDropDuplicates()
     {
         return $this->dropDuplicates;
-    }
-
-    /**
-     * @param boolean $unique
-     *
-     * @return $this
-     */
-    public function setUnique($unique)
-    {
-        $this->unique = $unique;
-
-        return $this;
     }
 
     /**

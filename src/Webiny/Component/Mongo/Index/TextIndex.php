@@ -50,13 +50,6 @@ class TextIndex extends IndexAbstract
         return $options;
     }
 
-    public function setDefaultLanguage($language)
-    {
-        $this->language = $language;
-
-        return $this;
-    }
-
     public function getDefaultLanguage()
     {
         return $this->language;
