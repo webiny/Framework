@@ -25,7 +25,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     use EntityTrait, MongoTrait;
 
     const CONFIG = '/ExampleConfig.yaml';
-    const MONGO_CONFIG = '/MongoExampleConfig.yaml';
+    const MONGO_CONFIG = '/MongoConfig.yaml';
 
     public static function setUpBeforeClass()
     {
@@ -37,7 +37,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        // self::deleteAllTestCollections();
+        self::deleteAllTestCollections();
     }
 
     /**
