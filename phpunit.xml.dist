@@ -45,6 +45,7 @@
             <directory>./src/Webiny/Component/Storage/Tests</directory>
             <directory>./src/Webiny/Component/TemplateEngine/Tests</directory>
             <directory>./src/Webiny/Component/TwitterOAuth/Tests</directory>
+            <directory>./src/Webiny/Component/Validation/Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
