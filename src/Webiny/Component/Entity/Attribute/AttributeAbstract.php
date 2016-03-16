@@ -693,7 +693,7 @@ abstract class AttributeAbstract implements JsonSerializable
         } catch (ValidationException $e) {
             $msg = isset($messages[$vName]) ? $messages[$vName] : $e->getMessage();
 
-            $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
+            $ex = new ValidationException($msg);
             $ex->addError($key, $msg);
 
             throw $ex;

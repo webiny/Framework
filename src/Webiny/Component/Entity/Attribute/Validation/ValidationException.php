@@ -21,7 +21,6 @@ class ValidationException extends ExceptionAbstract implements \IteratorAggregat
     const REQUIRED = 103;
 
     protected $errors = [];
-    protected $attribute = null;
 
     protected static $messages = [
         101 => "Validation failed",

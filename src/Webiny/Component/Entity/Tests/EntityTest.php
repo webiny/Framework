@@ -150,9 +150,13 @@ class EntityTest extends PHPUnit_Framework_TestCase
          * We need to create a record with the same value in order to successfully test unique validator.
          */
         if (isset($data['unique'])) {
-            $entity = new Lib\Validation\Entity();
-            $entity->unique = $data['unique'];
-            $entity->save();
+            try {
+                $entity = new Lib\Validation\Entity();
+                $entity->unique = $data['unique'];
+                $entity->save();
+            } catch (ValidationException $e) {
+                // 'unique' attribute already exists
+            }
         }
 
         $entity = new Lib\Validation\Entity();
