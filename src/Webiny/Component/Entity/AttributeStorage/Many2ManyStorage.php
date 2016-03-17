@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity\AttributeStorage;
 
+use MongoDB\Driver\Exception\BulkWriteException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
@@ -123,7 +124,8 @@ class Many2ManyStorage
 
             try {
                 Entity::getInstance()->getDatabase()->insertOne($collectionName, $this->arr($data)->sortKey()->val());
-            } catch (\MongoException $e) {
+            } catch (BulkWriteException $e) {
+                // Unique index was hit and an exception is thrown - that's ok, means the values are already inserted
                 continue;
             }
         }

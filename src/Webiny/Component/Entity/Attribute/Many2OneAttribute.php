@@ -7,8 +7,8 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -94,7 +94,8 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function getDbValue()
     {
-        if (is_null($this->value)) {
+        $value = $this->getValue();
+        if (is_null($value)) {
             // Process default value
             $value = $this->getDefaultValue();
             if ($this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract')) {
@@ -108,30 +109,7 @@ class Many2OneAttribute extends AttributeAbstract
             return $this->processToDbValue($value);
         }
 
-        // Array or string
-        if (!$this->isInstanceOf($this->value, $this->entityClass) && !empty($this->value)) {
-            if ($this->isArray($this->value)) {
-                $id = isset($data['id']) ? $data['id'] : null;
-                if (!$this->getUpdateExisting()) {
-                    return $this->processToDbValue($id);
-                } elseif ($this->getUpdateExisting() && Entity::getInstance()->getDatabase()->isId($id)) {
-                    $this->value = $this->loadEntity($id);
-                    if ($this->value) {
-                        $this->value->populate($data)->save();
-                    } elseif ($data) {
-                        $this->value = new $this->entityClass;
-                        $this->value->populate($data)->save();
-                    }
-
-                    return $this->processToDbValue($this->value->id);
-                }
-            }
-
-            // String ID
-            return $this->processToDbValue($this->value);
-        }
-
-        // Entity value
+        // Save if new or if updating is allowed
         if (!$this->value->exists() || $this->getUpdateExisting()) {
             $this->value->save();
         }
@@ -303,7 +281,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws EntityValidationException
+     * @throws ValidationException
      * @return $this
      */
     protected function validate(&$value)
