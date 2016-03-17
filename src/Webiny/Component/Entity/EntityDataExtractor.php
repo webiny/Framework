@@ -137,7 +137,6 @@ class EntityDataExtractor
                 $data[$attr] = $entityAttribute->toArray();
             }
         }
-        $data['_name'] = $this->entity->getMaskedValue();
 
         // Populate alias value
         $copy = $data;
