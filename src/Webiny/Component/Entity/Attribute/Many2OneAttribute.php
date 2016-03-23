@@ -138,7 +138,8 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function getEntity()
     {
-        return $this->entityClass;
+        $entityClass = $this->entityClass;
+        return is_callable($entityClass) ? $entityClass() : $entityClass;
     }
 
     /**
@@ -310,7 +311,7 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         return call_user_func_array([
-            $this->entityClass,
+            $this->getEntity(),
             'findById'
         ], [$id]);
     }
