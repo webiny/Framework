@@ -358,7 +358,8 @@ class EntityDataExtractor
                 $this->isInstanceOf($attribute, AttributeType::MANY2MANY),
                 $this->isInstanceOf($attribute, AttributeType::MANY2ONE),
                 $this->isInstanceOf($attribute, AttributeType::ARR),
-                $this->isInstanceOf($attribute, AttributeType::OBJECT)
+                $this->isInstanceOf($attribute, AttributeType::OBJECT),
+                $this->isInstanceOf($attribute, AttributeType::DYNAMIC)
             ];
 
             if (in_array(true, $default)) {
