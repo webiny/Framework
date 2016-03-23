@@ -17,7 +17,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  */
 class GeoPointAttribute extends AttributeAbstract
 {
-    public function __construct($name, EntityAbstract $parent)
+    public function __construct($name = null, EntityAbstract $parent = null)
     {
         parent::__construct($name, $parent);
 

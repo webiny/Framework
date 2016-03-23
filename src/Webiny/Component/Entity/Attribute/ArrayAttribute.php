@@ -22,7 +22,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     protected $keyValidators = [];
     protected $keyValidationMessages = [];
 
-    public function __construct($name, EntityAbstract $parent)
+    public function __construct($name = null, EntityAbstract $parent = null)
     {
         parent::__construct($name, $parent);
         $this->value = new ArrayObject();

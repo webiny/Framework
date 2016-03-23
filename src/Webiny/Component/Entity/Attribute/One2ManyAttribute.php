@@ -39,7 +39,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      * @param EntityAbstract $parent
      * @param string         $relatedAttribute
      */
-    public function __construct($name, EntityAbstract $parent, $relatedAttribute)
+    public function __construct($name = null, EntityAbstract $parent = null, $relatedAttribute)
     {
         $this->relatedAttribute = $relatedAttribute;
         parent::__construct($name, $parent);

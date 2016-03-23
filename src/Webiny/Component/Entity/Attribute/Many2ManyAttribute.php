@@ -24,7 +24,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
     protected $addedItems = [];
 
-    public function __construct($attribute, EntityAbstract $entity, $collectionName)
+    public function __construct($attribute = null, EntityAbstract $entity = null, $collectionName)
     {
         $this->intermediateCollection = $collectionName;
         parent::__construct($attribute, $entity);
