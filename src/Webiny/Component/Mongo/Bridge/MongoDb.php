@@ -82,6 +82,10 @@ class MongoDb implements MongoInterface
      */
     public function isId($id)
     {
+        if (!$id) {
+            return false;
+        }
+
         if ($id instanceof ObjectID) {
             return true;
         }
