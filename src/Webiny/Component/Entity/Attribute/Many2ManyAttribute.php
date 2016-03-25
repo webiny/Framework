@@ -164,10 +164,14 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      */
     private function normalizeValue($value)
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         $entityClass = $this->getEntity();
         $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
 
-        // Validate One2Many attribute value
+        // Validate Many2many attribute value
         if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
             $exception = new ValidationException(ValidationException::DATA_TYPE, [
                 'array, ArrayObject or EntityCollection',
