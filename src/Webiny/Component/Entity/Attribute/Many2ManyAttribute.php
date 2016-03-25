@@ -11,7 +11,7 @@ use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
 use Webiny\Component\Entity\EntityCollection;
-use Webiny\Component\Entity\EntityException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 
 
 /**
@@ -115,6 +115,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
         if (!$fromDb) {
             $value = $this->processSetValue($value);
+            $value = $this->normalizeValue($value);
             $this->validate($value);
         }
 
@@ -151,5 +152,58 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
         $this->addedItems = [];
 
         return $this->processGetValue($this->value);
+    }
+
+    /**
+     * Normalize given value to be a valid array of entity instances
+     *
+     * @param mixed $value
+     *
+     * @return array
+     * @throws ValidationException
+     */
+    private function normalizeValue($value)
+    {
+        $entityClass = $this->getEntity();
+        $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
+
+        // Validate One2Many attribute value
+        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
+            $exception = new ValidationException(ValidationException::DATA_TYPE, [
+                'array, ArrayObject or EntityCollection',
+                gettype($value)
+            ]);
+            $exception->setAttribute($this->getName());
+            throw $exception;
+        }
+
+        /* @var $entityAttribute One2ManyAttribute */
+        $values = [];
+        foreach ($value as $item) {
+            $itemEntity = false;
+
+            // $item can be an array of data, EntityAbstract or a simple mongo ID string
+            if ($this->isInstanceOf($item, $entityClass)) {
+                $itemEntity = $item;
+            } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+            } elseif ($this->isString($item) && Entity::getInstance()->getDatabase()->isId($item)) {
+                $itemEntity = $entityClass::findById($item);
+            }
+
+            // If instance was not found, create a new entity instance
+            if (!$itemEntity) {
+                $itemEntity = new $entityClass;
+            }
+
+            // If $item is an array - use it to populate the entity instance
+            if ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity->populate($item);
+            }
+
+            $values[] = $itemEntity;
+        }
+
+        return $values;
     }
 }

@@ -7,11 +7,9 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Traversable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -230,10 +228,12 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
         // Validate One2Many attribute value
         if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
-            throw new ValidationException(ValidationException::DATA_TYPE, [
+            $exception = new ValidationException(ValidationException::DATA_TYPE, [
                 'array, ArrayObject or EntityCollection',
                 gettype($value)
             ]);
+            $exception->setAttribute($this->getName());
+            throw $exception;
         }
 
         /* @var $entityAttribute One2ManyAttribute */
@@ -246,7 +246,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
                 $itemEntity = $item;
             } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
                 $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
-            } elseif ($this->isString($item) && $this->entity()->getDatabase()->isId($item)) {
+            } elseif ($this->isString($item) && Entity::getInstance()->getDatabase()->isId($item)) {
                 $itemEntity = $entityClass::findById($item);
             }
 
