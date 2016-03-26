@@ -194,7 +194,7 @@ class EntityDataExtractor
             return $fields;
         }
 
-        $parsedFields = $this->arr();
+        $parsedFields = $this->arr(['id' => true]);
         $unsetFields = [];
 
         foreach ($fields as $f) {
