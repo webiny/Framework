@@ -11,22 +11,22 @@ class Entity extends EntityAbstract
     protected function entityStructure()
     {
         $this->attr('boolean')->boolean();
-        $this->attr('char')->char();
+        $this->attr('char')->char()->setToArrayDefault();
         $this->attr('skip')->char()->setSkipOnPopulate();
         $this->attr('after')->char();
         $this->attr('integer')->integer();
         $this->attr('float')->float();
-        $this->attr('date')->date();
-        $this->attr('datetime')->datetime();
+        $this->attr('date')->date()->setToArrayDefault();
+        $this->attr('datetime')->datetime()->setToArrayDefault();
         $this->attr('arr')->arr();
         $this->attr('object')->object();
-        $this->attr('geoPoint')->geoPoint();
+        $this->attr('geoPoint')->geoPoint()->setToArrayDefault();
         $this->attr('dynamic')->dynamic(function () {
             return 'dynamic-value';
-        });
+        })->setToArrayDefault();
         $this->attr('dynamicDb')->dynamic(function () {
             return 'dynamic-value-db';
-        })->setStoreToDb();
+        })->setStoreToDb()->setToArrayDefault();
         $this->attr('many2oneNew')->many2one()->setEntity(Classes::MANY_2_ONE_NO_VALIDATION);
         $this->attr('many2oneExisting')->many2one()->setEntity(Classes::MANY_2_ONE_NO_VALIDATION);
         $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_NO_VALIDATION);

@@ -25,7 +25,7 @@ class EntityOnCallbacks extends EntityAbstract
             return ['key' => 'value'];
         })->onToDb(function ($value) {
             return 'db-' . $value;
-        });
+        })->setToArrayDefault();
         $this->attr('number')->integer();
     }
 }

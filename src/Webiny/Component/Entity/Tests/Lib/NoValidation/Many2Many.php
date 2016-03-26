@@ -10,7 +10,7 @@ class Many2Many extends EntityAbstract
 
     protected function entityStructure()
     {
-        $this->attr('char')->char();
+        $this->attr('char')->char()->setToArrayDefault();
         $this->attr('many2many')->many2many('NoValidation_Many2Many2Entity')->setEntity(Classes::ENTITY_NO_VALIDATION);
     }
 }

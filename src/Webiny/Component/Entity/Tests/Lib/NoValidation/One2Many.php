@@ -10,7 +10,7 @@ class One2Many extends EntityAbstract
 
     protected function entityStructure()
     {
-        $this->attr('char')->char();
+        $this->attr('char')->char()->setToArrayDefault();
         $this->attr('entity')->many2one()->setEntity(Classes::ENTITY_NO_VALIDATION);
     }
 }

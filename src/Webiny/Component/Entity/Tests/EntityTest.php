@@ -114,6 +114,8 @@ class EntityTest extends PHPUnit_Framework_TestCase
         // Test toArray conversion
         $array = new ArrayObject($entity->toArray('*,arr,object[key1],many2oneNew[char,relations.integer],one2many,many2many', 2));
         $this->assertEquals('char', $array->keyNested('char'));
+        $this->assertArrayNotHasKey('boolean', $array->val());
+        $this->assertArrayNotHasKey('skip', $array->val());
         $this->assertEquals([1, 2, 3], $array->keyNested('arr'));
         $this->assertEquals('value', $array->keyNested('object.key1'));
         $this->assertNull($array->keyNested('object.key2'));
