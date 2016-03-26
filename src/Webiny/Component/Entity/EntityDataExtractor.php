@@ -7,9 +7,8 @@
 
 namespace Webiny\Component\Entity;
 
+use Webiny\Component\Entity\Attribute\AttributeAbstract;
 use Webiny\Component\Entity\Attribute\AttributeType;
-use Webiny\Component\Mongo\MongoTrait;
-use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
@@ -351,22 +350,12 @@ class EntityDataExtractor
      */
     private function getDefaultAttributes()
     {
-        $attributes = [];
+        $attributes = ['id'];
         foreach ($this->entity->getAttributes() as $name => $attribute) {
-            $default = [
-                $this->isInstanceOf($attribute, AttributeType::ONE2MANY),
-                $this->isInstanceOf($attribute, AttributeType::MANY2MANY),
-                $this->isInstanceOf($attribute, AttributeType::MANY2ONE),
-                $this->isInstanceOf($attribute, AttributeType::ARR),
-                $this->isInstanceOf($attribute, AttributeType::OBJECT),
-                $this->isInstanceOf($attribute, AttributeType::DYNAMIC)
-            ];
-
-            if (in_array(true, $default)) {
-                continue;
+            /* @var AttributeAbstract $attribute */
+            if ($attribute->getToArrayDefault()) {
+                $attributes[] = $name;
             }
-
-            $attributes[] = $name;
         }
 
         return $this->arr($attributes)->implode(',')->val();

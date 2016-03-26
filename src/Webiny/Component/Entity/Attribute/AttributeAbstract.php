@@ -119,6 +119,12 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onToArrayCallback = null;
 
     /**
+     * If true - this attribute will be included in the output of entity's toArray method
+     * @var null
+     */
+    protected $toArrayDefault = null;
+
+    /**
      * Callback to execute when attribute is being stored to database.
      * The value returned from the callback will be returned as attribute value for database.
      * @var null
@@ -253,6 +259,30 @@ abstract class AttributeAbstract implements JsonSerializable
     public function onToArray($callback)
     {
         $this->onToArrayCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Get toArrayDefault flag
+     *
+     * @return bool
+     */
+    public function getToArrayDefault()
+    {
+        return $this->toArrayDefault;
+    }
+
+    /**
+     * Set if this attribute will be by default included in the output of entity's toArray method
+     *
+     * @param boolean $flag
+     *
+     * @return $this
+     */
+    public function setToArrayDefault($flag = true)
+    {
+        $this->toArrayDefault = $flag;
 
         return $this;
     }
