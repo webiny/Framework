@@ -82,6 +82,7 @@ class EntityDataExtractor
             $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
             $isArray = $this->isInstanceOf($entityAttribute, AttributeType::ARR);
             $isObject = $this->isInstanceOf($entityAttribute, AttributeType::OBJECT);
+            $isDynamic = $this->isInstanceOf($entityAttribute, AttributeType::DYNAMIC);
 
             if ($isMany2One) {
                 if ($this->isNull($entityAttributeValue)) {
@@ -114,7 +115,7 @@ class EntityDataExtractor
                 if ($subAttributes) {
                     $keys = $this->buildNestedKeys($subAttributes);
                     $value = $this->arr();
-                    foreach($keys as $key){
+                    foreach ($keys as $key) {
                         $value->keyNested($key, $entityAttribute->getValue()->keyNested($key));
                     }
                     $value = $value->val();
@@ -131,6 +132,12 @@ class EntityDataExtractor
                     $value['__webiny_array__'] = true;
                 }
 
+                $data[$attr] = $value;
+            } elseif ($isDynamic) {
+                $value = $entityAttribute->toArray();
+                if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
+                    $value = $value->toArray();
+                }
                 $data[$attr] = $value;
             } else {
                 $data[$attr] = $entityAttribute->toArray();

@@ -119,8 +119,17 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals([1, 2, 3], $array->keyNested('arr'));
         $this->assertEquals('value', $array->keyNested('object.key1'));
         $this->assertNull($array->keyNested('object.key2'));
+        // GeoPoint should return an array of lat/lng values
         $this->assertEquals(50, $array->keyNested('geoPoint.lat'));
         $this->assertEquals(100, $array->keyNested('geoPoint.lng'));
+        // If return value of dynamic attribute is EntityAbstract or EntityCollection,
+        // EntityDataExtractor should call toArray() an those objects
+        $this->assertInternalType('array', $array->key('dynamicEntity'));
+        $this->assertInternalType('array', $array->key('dynamicEntityCollection'));
+        $this->assertCount(2, $array->key('dynamicEntityCollection'));
+        $this->assertEquals('many2oneExisting', $array->keyNested('dynamicEntityCollection.0.char'));
+        $this->assertEquals('many2oneNew', $array->keyNested('dynamicEntityCollection.1.char'));
+        // GeoPoint attribute should strips all values not related to mongo Point
         $this->assertArrayNotHasKey('stripThisKey', $array->keyNested('geoPoint'));
         $this->assertEquals('many2oneNew', $array->keyNested('many2oneNew.char'));
         $this->assertEquals(12, $array->keyNested('many2oneNew.relations.0.integer'));
@@ -339,6 +348,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
         $entity = Lib\EntityOnCallbacks::findOne(['number' => 12]);
         $this->assertEquals('get-db-get-set-12-value', $entity->char);
+        $this->assertEquals(120, $entity->number);
 
         $array = $entity->toArray();
         $this->assertEquals(['key' => 'value'], $array['char']);

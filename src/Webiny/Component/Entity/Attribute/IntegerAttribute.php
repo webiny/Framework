@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\EntityValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 
 /**
  * IntegerAttribute
@@ -42,7 +42,7 @@ class IntegerAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws EntityValidationException
+     * @throws ValidationException
      * @return $this
      */
     protected function validate(&$value)

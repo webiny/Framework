@@ -132,6 +132,13 @@ abstract class AttributeAbstract implements JsonSerializable
     protected $onToDbCallback = null;
 
     /**
+     * Callback to execute when attribute is being loaded from database.
+     * The value returned from the callback will be set as attribute value
+     * @var null
+     */
+    protected $onFromDbCallback = null;
+
+    /**
      * @var string
      */
     protected $validatorInterface = '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface';
@@ -297,6 +304,20 @@ abstract class AttributeAbstract implements JsonSerializable
     public function onToDb($callback)
     {
         $this->onToDbCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set callback that will be used to process value when data is loaded from DB
+     *
+     * @param $callback
+     *
+     * @return $this
+     */
+    public function onFromDb($callback)
+    {
+        $this->onFromDbCallback = $callback;
 
         return $this;
     }
@@ -482,7 +503,7 @@ abstract class AttributeAbstract implements JsonSerializable
     public function setValue($value = null, $fromDb = false)
     {
         if ($fromDb) {
-            $this->value = $value;
+            $this->value = $this->processFromDbValue($value);
 
             return $this;
         }
@@ -679,6 +700,18 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
+     * Triggered when calling 'setValue()' with $fromDb=true on attribute instance
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function processFromDbValue($value)
+    {
+        return $this->processCallback($this->onFromDbCallback, $value);
+    }
+
+    /**
      * Triggered when calling 'toArray()' on the entity instance
      *
      * @param $value
@@ -710,8 +743,7 @@ abstract class AttributeAbstract implements JsonSerializable
                 $validatorParams = [$this, $value, $params->removeFirst($vName)->val()];
                 $validator = Entity::getInstance()->getValidator($vName);
                 if (!$validator) {
-                    // TODO: add exception here
-                    return;
+                    throw new ValidationException('Validator does not exist');
                 }
                 $validator->validate(...$validatorParams);
             } elseif ($this->isCallable($validator)) {

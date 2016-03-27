@@ -24,9 +24,8 @@ class AttributeType
     const MANY2MANY = '\Webiny\Component\Entity\Attribute\Many2ManyAttribute';
     const MANY2ONE = '\Webiny\Component\Entity\Attribute\Many2OneAttribute';
     const ONE2MANY = '\Webiny\Component\Entity\Attribute\One2ManyAttribute';
-    const SELECT = '\Webiny\Component\Entity\Attribute\SelectAttribute';
-    const TEXT = '\Webiny\Component\Entity\Attribute\TextAttribute';
     const ARR = '\Webiny\Component\Entity\Attribute\ArrayAttribute';
     const OBJECT = '\Webiny\Component\Entity\Attribute\ObjectAttribute';
     const DYNAMIC = '\Webiny\Component\Entity\Attribute\DynamicAttribute';
+    const GEOPOINT = '\Webiny\Component\Entity\Attribute\GeoPointAttribute';
 }

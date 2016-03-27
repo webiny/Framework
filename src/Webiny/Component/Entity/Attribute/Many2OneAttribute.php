@@ -9,7 +9,6 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityValidationException;
 use Webiny\Component\StdLib\StdLibTrait;
 
 

@@ -8,7 +8,6 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\EntityAbstract;
-use Webiny\Component\Entity\EntityValidationException;
 
 /**
  * DynamicAttribute
@@ -104,7 +103,7 @@ class DynamicAttribute extends AttributeAbstract
     public function setValue($value = null, $fromDb = false)
     {
         if ($fromDb) {
-            $this->storedValue = $value;
+            $this->storedValue = $this->processFromDbValue($value);
         }
 
         return $this;
@@ -116,7 +115,6 @@ class DynamicAttribute extends AttributeAbstract
      *
      * @param $value
      *
-     * @throws EntityValidationException
      * @return $this
      */
     protected function validate(&$value)
