@@ -66,12 +66,12 @@ class EntityDataExtractor
         $attributes = $this->buildEntityFields($attributes);
 
         foreach ($attributes as $attr => $subAttributes) {
-            if ($attr == '_name') {
-                continue;
-            }
+            $parts = explode(':', $attr);
+            $attrName = $parts[0];
+            $params = array_slice($parts, 1);
 
             try {
-                $entityAttribute = $this->entity->getAttribute($attr);
+                $entityAttribute = $this->entity->getAttribute($attrName);
             } catch (EntityException $e) {
                 continue;
             }
@@ -86,26 +86,26 @@ class EntityDataExtractor
 
             if ($isMany2One) {
                 if ($this->isNull($entityAttributeValue)) {
-                    $data[$attr] = null;
+                    $data[$attrName] = null;
                     continue;
                 }
 
                 if ($entityAttribute->hasToArrayCallback()) {
-                    $data[$attr] = $entityAttribute->toArray();
+                    $data[$attrName] = $entityAttribute->toArray();
                     continue;
                 }
 
                 if (self::$currentLevel < $this->nestedLevel) {
                     self::$currentLevel++;
-                    $data[$attr] = $entityAttributeValue->toArray($subAttributes, $this->nestedLevel);
+                    $data[$attrName] = $entityAttributeValue->toArray($subAttributes, $this->nestedLevel);
                     self::$currentLevel--;
                 }
             } elseif ($isOne2Many || $isMany2Many) {
-                $data[$attr] = [];
+                $data[$attrName] = [];
                 foreach ($entityAttributeValue as $item) {
                     if (self::$currentLevel < $this->nestedLevel) {
                         self::$currentLevel++;
-                        $data[$attr][] = $item->toArray($subAttributes, $this->nestedLevel);
+                        $data[$attrName][] = $item->toArray($subAttributes, $this->nestedLevel);
                         self::$currentLevel--;
                     }
                 }
@@ -120,7 +120,7 @@ class EntityDataExtractor
                     }
                     $value = $value->val();
                 }
-                $data[$attr] = $value;
+                $data[$attrName] = $value;
             } elseif ($isArray) {
                 $value = $entityAttribute->toArray();
                 if ($subAttributes) {
@@ -132,15 +132,11 @@ class EntityDataExtractor
                     $value['__webiny_array__'] = true;
                 }
 
-                $data[$attr] = $value;
+                $data[$attrName] = $value;
             } elseif ($isDynamic) {
-                $value = $entityAttribute->toArray();
-                if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
-                    $value = $value->toArray();
-                }
-                $data[$attr] = $value;
+                $data[$attrName] = $entityAttribute->toArray($params);
             } else {
-                $data[$attr] = $entityAttribute->toArray();
+                $data[$attrName] = $entityAttribute->toArray();
             }
         }
 

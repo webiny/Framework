@@ -112,7 +112,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEntityStateNoValidation($entity);
 
         // Test toArray conversion
-        $array = new ArrayObject($entity->toArray('*,arr,object[key1],many2oneNew[char,relations.integer],one2many,many2many', 2));
+        $array = new ArrayObject($entity->toArray('*,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many', 2));
         $this->assertEquals('char', $array->keyNested('char'));
         $this->assertArrayNotHasKey('boolean', $array->val());
         $this->assertArrayNotHasKey('skip', $array->val());
@@ -124,6 +124,8 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(100, $array->keyNested('geoPoint.lng'));
         // If return value of dynamic attribute is EntityAbstract or EntityCollection,
         // EntityDataExtractor should call toArray() an those objects
+        $this->assertEquals(24, $array->key('dynamicWithDefaultParams'));
+        $this->assertEquals(48, $array->key('dynamicWithParams'));
         $this->assertInternalType('array', $array->key('dynamicEntity'));
         $this->assertInternalType('array', $array->key('dynamicEntityCollection'));
         $this->assertCount(2, $array->key('dynamicEntityCollection'));
@@ -222,6 +224,8 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('2016-03-14', $entity->date);
         $this->assertEquals('2016-03-14 13:45:20', $entity->datetime);
         $this->assertEquals('dynamic-value', $entity->dynamic);
+        $this->assertEquals(24, $entity->dynamicWithDefaultParams);
+        $this->assertEquals(48, $entity->dynamicWithParams(4));
         $this->assertEquals('dynamic-value-db', $entity->dynamicDb);
         $this->assertEquals([1, 2, 3], $entity->arr->val());
         $this->assertEquals([

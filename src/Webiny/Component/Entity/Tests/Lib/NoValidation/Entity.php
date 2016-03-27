@@ -27,6 +27,12 @@ class Entity extends EntityAbstract
         $this->attr('dynamicDb')->dynamic(function () {
             return 'dynamic-value-db';
         })->setStoreToDb()->setToArrayDefault();
+        $this->attr('dynamicWithDefaultParams')->dynamic(function ($multiplier = 2) {
+            return $this->integer * $multiplier;
+        })->setToArrayDefault();
+        $this->attr('dynamicWithParams')->dynamic(function ($multiplier = 1) {
+            return $this->integer * $multiplier;
+        });
         $this->attr('dynamicEntity')->dynamic(function () {
             return Many2One::findOne(['char' => 'many2oneNew']);
         })->setToArrayDefault();

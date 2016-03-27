@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\EntityCollection;
 
 /**
  * DynamicAttribute
@@ -58,13 +59,17 @@ class DynamicAttribute extends AttributeAbstract
         return parent::getDbValue();
     }
 
-
     /**
      * @inheritDoc
      */
-    public function toArray()
+    public function toArray($params = [])
     {
-        return $this->processToArrayValue($this->getValue());
+        $value = $this->processToArrayValue($this->getValue($params));
+        if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
+            $value = $value->toArray();
+        }
+
+        return $value;
     }
 
 
