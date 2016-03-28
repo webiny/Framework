@@ -109,6 +109,13 @@ class DynamicAttribute extends AttributeAbstract
     {
         if ($fromDb) {
             $this->storedValue = $this->processFromDbValue($value);
+
+            return $this;
+        }
+
+        $currentValue = $this->getValue();
+        if ($currentValue instanceof EntityAbstract && is_array($value)) {
+            $currentValue->populate($value);
         }
 
         return $this;
