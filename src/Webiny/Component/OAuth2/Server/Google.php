@@ -99,9 +99,9 @@ class Google extends ServerAbstract
      */
     protected function processUserDetails($result)
     {
-        $result = self::arr($result['result']);
+        $result = $this->arr($result['result']);
         if ($result->keyExists('error')) {
-            throw new OAuth2Exception($result->key('error'));
+            throw new OAuth2Exception($result->keyNested('error.message'));
         }
 
         $user = new OAuth2User($result->key('given_name'), $result->key('email', '', true));

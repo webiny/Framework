@@ -126,9 +126,9 @@ class Facebook extends ServerAbstract
      */
     public function processUserDetails($result)
     {
-        $result = self::arr($result['result']);
+        $result = $this->arr($result['result']);
         if ($result->keyExists('error')) {
-            throw new OAuth2Exception($result->key('error')['message']);
+            throw new OAuth2Exception($result->keyNested('error.message'));
         }
 
         $user = new OAuth2User($result->key('username', '', true), $result->key('email', '', true));
