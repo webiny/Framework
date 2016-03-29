@@ -28,6 +28,7 @@ class EntityDataExtractor
     protected $entity;
 
     protected static $currentLevel = 0;
+    protected static $cache = [];
     protected $nestedLevel = 1;
     protected $aliases = [];
     protected $dottedFields = ['_name'];
@@ -179,6 +180,11 @@ class EntityDataExtractor
     private function buildEntityFields($fields)
     {
         if (!$this->isArray($fields)) {
+            $cacheKey = $fields;
+            if (array_key_exists($cacheKey, self::$cache)) {
+                return self::$cache[$cacheKey];
+            }
+
             $fields = $this->str($fields);
 
             if ($fields->contains('[')) {
@@ -187,6 +193,11 @@ class EntityDataExtractor
 
             $fields = $fields->explode(',')->filter()->map('trim')->val();
         } else {
+            $cacheKey = serialize($fields);
+            if (array_key_exists($cacheKey, self::$cache)) {
+                return self::$cache[$cacheKey];
+            }
+
             // Check if asterisk is present and replace it with actual attribute names
             if ($this->arr($fields)->keyExists('*')) {
                 unset($fields['*']);
@@ -194,7 +205,7 @@ class EntityDataExtractor
                 $fields = $this->arr($fields)->merge($defaultFields)->val();
             }
 
-            return $fields;
+            return self::$cache[$cacheKey] = $fields;
         }
 
         $parsedFields = $this->arr(['id' => true]);
@@ -230,7 +241,7 @@ class EntityDataExtractor
             $parsedFields->removeKey($field);
         }
 
-        return $parsedFields->val();
+        return self::$cache[$cacheKey] = $parsedFields->val();
     }
 
     /**
