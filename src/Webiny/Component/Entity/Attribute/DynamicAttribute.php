@@ -20,6 +20,7 @@ class DynamicAttribute extends AttributeAbstract
     protected $storeToDb = false;
     protected $storedValue = null;
     protected $callable = null;
+    protected $defaultParams = [];
 
     /**
      * @param string         $name
@@ -29,6 +30,19 @@ class DynamicAttribute extends AttributeAbstract
     public function __construct($name = null, EntityAbstract $parent = null, $callable = null)
     {
         $this->callable = $callable;
+
+        if (is_string($callable)) {
+            $callable = [$parent, $callable];
+        }
+        $rf = new \ReflectionFunction($callable);
+        $params = $rf->getParameters();
+        if ($params) {
+            /* @var $p \ReflectionParameter */
+            foreach ($params as $p) {
+                $this->defaultParams[] = $p->getDefaultValue();
+            }
+        }
+
         parent::__construct($name, $parent);
     }
 
@@ -93,6 +107,14 @@ class DynamicAttribute extends AttributeAbstract
         if (is_string($callable)) {
             $callable = [$this->parent, $callable];
         }
+
+        foreach ($this->defaultParams as $i => $defaultValue) {
+            if (!isset($arguments[$i])) {
+                $arguments[$i] = $defaultValue;
+            }
+        }
+
+        $arguments[] = $this->storedValue;
 
         return $this->processGetValue(call_user_func_array($callable, $arguments));
     }

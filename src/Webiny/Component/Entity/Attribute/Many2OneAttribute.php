@@ -109,11 +109,11 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         // Save if new or if updating is allowed
-        if (!$this->value->exists() || $this->getUpdateExisting()) {
-            $this->value->save();
+        if (!$value->exists() || $this->getUpdateExisting()) {
+            $value->save();
         }
 
-        return $this->processToDbValue($this->value->id);
+        return $this->processToDbValue($value->id);
     }
 
     /**
@@ -138,6 +138,7 @@ class Many2OneAttribute extends AttributeAbstract
     public function getEntity()
     {
         $entityClass = $this->entityClass;
+
         return is_callable($entityClass) ? $entityClass() : $entityClass;
     }
 
