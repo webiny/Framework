@@ -29,17 +29,22 @@ class DynamicAttribute extends AttributeAbstract
      */
     public function __construct($name = null, EntityAbstract $parent = null, $callable = null)
     {
-        $this->callable = $callable;
+        $this->callable = is_string($callable) ? [$parent, $callable] : $callable;
 
         if (is_string($callable)) {
-            $callable = [$parent, $callable];
+            $rfc = new \ReflectionClass($parent);
+            $params = $rfc->getMethod($callable)->getParameters();
+        } else {
+            $rf = new \ReflectionFunction($callable);
+            $params = $rf->getParameters();
         }
-        $rf = new \ReflectionFunction($callable);
-        $params = $rf->getParameters();
+
         if ($params) {
             /* @var $p \ReflectionParameter */
             foreach ($params as $p) {
-                $this->defaultParams[] = $p->getDefaultValue();
+                if($p->isDefaultValueAvailable()){
+                    $this->defaultParams[] = $p->getDefaultValue();
+                }
             }
         }
 
