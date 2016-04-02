@@ -38,7 +38,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testIndexes(Mongo $mongo)
     {
-        $collection = 'TestIndexCollection';
+        $collection = 'IndexCollection';
         $mongo->dropCollection($collection);
 
         $index = new SingleIndex('Name', 'name', false, true);
@@ -66,7 +66,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
      */
     public function testDropIndexes(Mongo $mongo)
     {
-        $collection = 'TestIndexCollection';
+        $collection = 'IndexCollection';
         /* @var $drop BSONDocument */
         $mongo->dropIndex($collection, 'Name');
 
@@ -90,6 +90,6 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
 
     private static function deleteAllTestCollections()
     {
-        self::mongo()->dropCollection('TestIndexCollection');
+        self::mongo()->dropCollection('IndexCollection');
     }
 }

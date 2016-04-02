@@ -10,7 +10,6 @@ namespace Webiny\Component\Mongo\Tests;
 
 use MongoDB\Model\CollectionInfo;
 use PHPUnit_Framework_TestCase;
-use Webiny\Component\Mongo\Index\SingleIndex;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 
@@ -44,7 +43,7 @@ class MongoTest extends PHPUnit_Framework_TestCase
         foreach ($collections as $c) {
             $collectionNames[] = $c->getName();
         }
-        $this->assertContains($collection, $collectionNames);
+        $this->assertContains('Mongo_' . $collection, $collectionNames);
 
         // Test insert data
         $data = ['name' => 'Webiny'];

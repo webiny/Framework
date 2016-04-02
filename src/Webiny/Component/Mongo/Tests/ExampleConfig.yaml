@@ -18,5 +18,5 @@ Mongo:
                 UriOptions:
                     database: webiny_test
                 DriverOptions: []
-                CollectionPrefix: ''
+                CollectionPrefix: 'Mongo_'
     Driver: \Webiny\Component\Mongo\Bridge\MongoDb
