@@ -33,10 +33,15 @@ class S3 implements S3ClientInterface
      */
     private $instance;
 
-    public function __construct($accessKeyId, $secretAccessKey)
+    /**
+     * @param $accessKeyId
+     * @param $secretAccessKey
+     * @param $region
+     */
+    public function __construct($accessKeyId, $secretAccessKey, $region)
     {
         $bridgeClass = $this->getConfig()->get('Bridge');
-        $this->instance = new $bridgeClass($accessKeyId, $secretAccessKey);
+        $this->instance = new $bridgeClass($accessKeyId, $secretAccessKey, $region);
     }
 
     /**
@@ -400,5 +405,21 @@ class S3 implements S3ClientInterface
     public function downloadBucket($directory, $bucket, $keyPrefix = '', array $options = [])
     {
         $this->instance->downloadBucket($directory, $bucket, $keyPrefix, $options);
+    }
+
+    /**
+     * In case of large files, use the multipartUpload method, so the file is sent in chunks to S3, without the need
+     * to read the complete file in memory.
+     *
+     * @param     $bucket
+     * @param     $key
+     * @param     $sourcePath
+     * @param int $concurrency
+     *
+     * @return mixed
+     */
+    public function multipartUpload($bucket, $key, $sourcePath, $concurrency = 1)
+    {
+        return $this->instance->multipartUpload($bucket, $key, $sourcePath, $concurrency);
     }
 }

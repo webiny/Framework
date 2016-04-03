@@ -19,7 +19,7 @@ class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterf
 {
     private $instance;
 
-    public function __construct($accessKeyId, $secretAccessKey)
+    public function __construct($accessKeyId, $secretAccessKey, $region)
     {
         $this->instance = $this->getMockBuilder('\Aws\S3\S3Client')
                      ->disableOriginalConstructor()
@@ -390,5 +390,21 @@ class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterf
     public function downloadBucket($directory, $bucket, $keyPrefix = '', array $options = [])
     {
         // TODO: Implement downloadBucket() method.
+    }
+
+    /**
+     * In case of large files, use the multipartUpload method, so the file is sent in chunks to S3, without the need
+     * to read the complete file in memory.
+     *
+     * @param     $bucket
+     * @param     $key
+     * @param     $sourcePath
+     * @param int $concurrency
+     *
+     * @return mixed
+     */
+    public function multipartUpload($bucket, $key, $sourcePath, $concurrency = 1)
+    {
+        // TODO: Implement multipartUpload() method.
     }
 }

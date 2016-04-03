@@ -14,8 +14,9 @@ interface S3ClientInterface
      *
      * @param $accessKeyId
      * @param $secretAccessKey
+     * @param $region
      */
-    public function  __construct($accessKeyId, $secretAccessKey);
+    public function  __construct($accessKeyId, $secretAccessKey, $region);
 
     /**
      * Get object identified by bucket and key
@@ -212,6 +213,19 @@ interface S3ClientInterface
      * @see Aws\S3\S3Sync\S3Sync for more options and customization
      */
     public function uploadDirectory($directory, $bucket, $keyPrefix = null, array $options = []);
+
+    /**
+     * In case of large files, use the multipartUpload method, so the file is sent in chunks to S3, without the need
+     * to read the complete file in memory.
+     *
+     * @param     $bucket
+     * @param     $key
+     * @param     $sourcePath
+     * @param int $concurrency
+     *
+     * @return mixed
+     */
+    public function multipartUpload($bucket, $key, $sourcePath, $concurrency = 1);
 
     /**
      * Creates a copy of an object that is already stored in Amazon S3.

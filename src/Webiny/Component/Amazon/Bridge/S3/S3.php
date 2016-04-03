@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Amazon\Bridge\S3;
 
+use Aws\Common\Exception\MultipartUploadException;
+use Aws\S3\Model\MultipartUpload\UploadBuilder;
 use Aws\S3\S3Client;
 
 /**
@@ -22,12 +24,20 @@ class S3 implements S3ClientInterface
      */
     private $instance;
 
-    public function __construct($accessKeyId, $secretAccessKey)
+
+    /**
+     * @param $accessKeyId
+     * @param $secretAccessKey
+     * @param $region
+     */
+    public function __construct($accessKeyId, $secretAccessKey, $region)
     {
         $this->instance = S3Client::factory([
-                'key'    => $accessKeyId,
-                'secret' => $secretAccessKey,
-            ]);
+            'key'       => $accessKeyId,
+            'secret'    => $secretAccessKey,
+            'region'    => $region,
+            'signature' => 'v4'
+        ]);
     }
 
 
@@ -458,5 +468,36 @@ class S3 implements S3ClientInterface
     public function downloadBucket($directory, $bucket, $keyPrefix = '', array $options = [])
     {
         return $this->instance->downloadBucket($directory, $bucket, $keyPrefix, $options);
+    }
+
+    /**
+     * In case of large files, use the multipartUpload method, so the file is sent in chunks to S3, without the need
+     * to read the complete file in memory.
+     *
+     * @param     $bucket
+     * @param     $key
+     * @param     $sourcePath
+     * @param int $concurrency
+     *
+     * @return mixed
+     */
+    public function multipartUpload($bucket, $key, $sourcePath, $concurrency = 1)
+    {
+        $uploader = UploadBuilder::newInstance()
+                                 ->setClient($this->instance)
+                                 ->setSource($sourcePath)
+                                 ->setBucket($bucket)
+                                 ->setKey($key)
+                                 ->setConcurrency($concurrency)
+                                 ->build();
+
+        // Perform the upload. Abort the upload if something goes wrong
+        try {
+            $uploader->upload();
+            return true;
+        } catch (MultipartUploadException $e) {
+            $uploader->abort();
+            return false;
+        }
     }
 }

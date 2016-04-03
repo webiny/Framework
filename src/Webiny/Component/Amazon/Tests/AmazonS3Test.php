@@ -50,7 +50,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
         S3::setConfig($config);
         
         return [
-            [new S3(false, false)]
+            [new S3(false, false, false)]
         ];
     }
 
