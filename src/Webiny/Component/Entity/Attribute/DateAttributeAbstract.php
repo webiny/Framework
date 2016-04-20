@@ -59,25 +59,22 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function toArray()
     {
-        return $this->processToArrayValue($this->formatValue(parent::getValue()));
+        return $this->processToArrayValue(parent::getValue());
     }
 
     public function setValue($value = null, $fromDb = false)
     {
         if ($value instanceof UTCDatetime) {
-            /* @var $value UTCDatetime */
-            $value = $value->toDateTime()->getTimestamp();
-
-            $value = (new DateTimeObject($value))->format($this->attributeFormat);
+            $value = $value->toDateTime()->format(DATE_ISO8601);
+        }elseif ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
+            $value = $value->format(DATE_ISO8601);
+        }else if ($value == 'now') {
+            $value = $this->datetime()->format(DATE_ISO8601);
+        }else{
+            // convert to utc
+            $value = $this->datetime($value)->setTimezone("UTC")->format(DATE_ISO8601);
         }
 
-        if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
-            $value = $value->format($this->attributeFormat);
-        }
-
-        if ($value == 'now') {
-            $value = date($this->attributeFormat);
-        }
 
         return parent::setValue($value, $fromDb);
     }
@@ -88,7 +85,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
             return $this->processGetValue(new DateTimeObject(parent::getValue()));
         }
 
-        return $this->processGetValue($this->formatValue(parent::getValue()));
+        return $this->processGetValue(parent::getValue());
     }
 
     /**
@@ -117,22 +114,6 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         }
 
         return $this;
-    }
-
-    /**
-     * Format attribute value
-     *
-     * @param $value
-     *
-     * @return int|null|string
-     */
-    private function formatValue($value)
-    {
-        if ($this->isNull($value)) {
-            return null;
-        }
-
-        return (new DateTimeObject($value))->format($this->attributeFormat);
     }
 
     /**
