@@ -15,8 +15,6 @@ namespace Webiny\Component\Entity\Attribute;
 class DateTimeAttribute extends DateAttributeAbstract
 {
 
-    protected $attributeFormat = 'Y-m-d H:i:s';
-
     /**
      * Get unix timestamp from current attribute value<br>
      * Returns null if value is not set

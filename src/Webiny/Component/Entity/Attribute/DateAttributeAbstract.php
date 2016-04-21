@@ -18,9 +18,6 @@ use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObjectException;
  */
 abstract class DateAttributeAbstract extends AttributeAbstract
 {
-
-    protected $attributeFormat = 'Y-m-d H:i:s';
-
     protected $autoUpdate = false;
 
     public function getDbValue()
@@ -32,7 +29,7 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         }
 
         if ($this->autoUpdate && $this->parent->exists()) {
-            $this->setValue(date($this->attributeFormat));
+            $this->setValue(new DateTimeObject());
         }
 
         if ($this->getValue()) {
@@ -66,15 +63,13 @@ abstract class DateAttributeAbstract extends AttributeAbstract
     {
         if ($value instanceof UTCDatetime) {
             $value = $value->toDateTime()->format(DATE_ISO8601);
-        }elseif ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
+        } elseif ($value instanceof DateTimeObject) {
             $value = $value->format(DATE_ISO8601);
-        }else if ($value == 'now') {
+        } elseif ($value == 'now') {
             $value = $this->datetime()->format(DATE_ISO8601);
-        }else{
-            // convert to utc
-            $value = $this->datetime($value)->setTimezone("UTC")->format(DATE_ISO8601);
+        } else {
+            $value = $this->datetime($value)->setTimezone('UTC')->format(DATE_ISO8601);
         }
-
 
         return parent::setValue($value, $fromDb);
     }
@@ -98,14 +93,15 @@ abstract class DateAttributeAbstract extends AttributeAbstract
      */
     protected function validate(&$value)
     {
-        if ($this->isInstanceOf($value, '\Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
-            $value = $value->format($this->attributeFormat);
+        if ($value instanceof DateTimeObject) {
+            $value = $value->format(DATE_ISO8601);
         }
-        if ($this->isInstanceOf($value, 'UTCDatetime')) {
+
+        if ($value instanceof UTCDatetime) {
             if ($value->sec == 0) {
                 return $this;
             }
-            $value = (new DateTimeObject($value->sec))->format($this->attributeFormat);
+            $value = $value->toDateTime()->format(DATE_ISO8601);
         }
         try {
             new DateTimeObject($value);

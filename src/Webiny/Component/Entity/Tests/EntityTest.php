@@ -37,7 +37,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        self::deleteAllTestCollections();
+        //self::deleteAllTestCollections();
     }
 
     /**
@@ -69,15 +69,15 @@ class EntityTest extends PHPUnit_Framework_TestCase
             'integer'          => 12,
             'float'            => 20.35,
             'date'             => '2016-03-14',
-            'datetime'         => '2016-03-14 13:45:20',
+            'datetime'         => '2016-03-14T13:45:20+0000',
             'arr'              => [1, 2, 3],
             'object'           => [
                 'key1' => 'value',
                 'key2' => 12
             ],
-            'geoPoint' => [
-                'lat' => 50,
-                'lng' => 100,
+            'geoPoint'         => [
+                'lat'          => 50,
+                'lng'          => 100,
                 'stripThisKey' => 'whatever'
             ],
             'many2oneNew'      => [
@@ -112,7 +112,8 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEntityStateNoValidation($entity);
 
         // Test toArray conversion
-        $array = new ArrayObject($entity->toArray('*,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many', 2));
+        $array = new ArrayObject($entity->toArray('*,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many',
+            2));
         $this->assertEquals('char', $array->keyNested('char'));
         $this->assertArrayNotHasKey('boolean', $array->val());
         $this->assertArrayNotHasKey('skip', $array->val());
@@ -222,7 +223,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(12, $entity->integer);
         $this->assertEquals(20.35, $entity->float);
         $this->assertEquals('2016-03-14', $entity->date);
-        $this->assertEquals('2016-03-14 13:45:20', $entity->datetime);
+        $this->assertEquals('2016-03-14T13:45:20+0000', $entity->datetime);
         $this->assertEquals('dynamic-value', $entity->dynamic);
         $this->assertEquals(24, $entity->dynamicWithDefaultParams);
         $this->assertEquals(48, $entity->dynamicWithParams(4));
