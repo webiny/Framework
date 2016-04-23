@@ -218,7 +218,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @return array
      */
-    public function toArray($fields = '', $nestedLevel = 1)
+    public function toArray($fields = '', $nestedLevel = 10)
     {
         $dataExtractor = new EntityDataExtractor($this, $nestedLevel);
 

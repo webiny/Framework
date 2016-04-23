@@ -37,11 +37,12 @@ class S3 implements S3ClientInterface
      * @param $accessKeyId
      * @param $secretAccessKey
      * @param $region
+     * @param $endpoint
      */
-    public function __construct($accessKeyId, $secretAccessKey, $region)
+    public function __construct($accessKeyId, $secretAccessKey, $region, $endpoint=null)
     {
         $bridgeClass = $this->getConfig()->get('Bridge');
-        $this->instance = new $bridgeClass($accessKeyId, $secretAccessKey, $region);
+        $this->instance = new $bridgeClass($accessKeyId, $secretAccessKey, $region, $endpoint);
     }
 
     /**

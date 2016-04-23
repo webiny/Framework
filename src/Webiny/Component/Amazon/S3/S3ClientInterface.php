@@ -15,8 +15,9 @@ interface S3ClientInterface
      * @param $accessKeyId
      * @param $secretAccessKey
      * @param $region
+     * @param $endpoint
      */
-    public function  __construct($accessKeyId, $secretAccessKey, $region);
+    public function  __construct($accessKeyId, $secretAccessKey, $region, $endpoint = null);
 
     /**
      * Get object identified by bucket and key

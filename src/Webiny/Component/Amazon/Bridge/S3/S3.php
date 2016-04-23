@@ -29,15 +29,22 @@ class S3 implements S3ClientInterface
      * @param $accessKeyId
      * @param $secretAccessKey
      * @param $region
+     * @param $endpoint
      */
-    public function __construct($accessKeyId, $secretAccessKey, $region)
+    public function __construct($accessKeyId, $secretAccessKey, $region, $endpoint = null)
     {
-        $this->instance = S3Client::factory([
+        $settings = [
             'key'       => $accessKeyId,
             'secret'    => $secretAccessKey,
             'region'    => $region,
             'signature' => 'v4'
-        ]);
+        ];
+
+        if(!empty($endpoint)){
+            $settings['endpoint'] = $endpoint;
+        }
+
+        $this->instance = S3Client::factory($settings);
     }
 
 
