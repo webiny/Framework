@@ -61,6 +61,10 @@ abstract class DateAttributeAbstract extends AttributeAbstract
 
     public function setValue($value = null, $fromDb = false)
     {
+        if ($value === null) {
+            return parent::setValue($value, $fromDb);
+        }
+
         if ($value instanceof UTCDatetime) {
             $value = $value->toDateTime()->format(DATE_ISO8601);
         } elseif ($value instanceof DateTimeObject) {
