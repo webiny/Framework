@@ -135,7 +135,7 @@ class EntityDataExtractor
 
                 $data[$attrName] = $value;
             } elseif ($isDynamic) {
-                $data[$attrName] = $entityAttribute->toArray($params);
+                $data[$attrName] = $entityAttribute->toArray($subAttributes, $params);
             } else {
                 $data[$attrName] = $entityAttribute->toArray();
             }

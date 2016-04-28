@@ -81,11 +81,11 @@ class DynamicAttribute extends AttributeAbstract
     /**
      * @inheritDoc
      */
-    public function toArray($params = [])
+    public function toArray($fields = [], $params = [])
     {
         $value = $this->processToArrayValue($this->getValue($params));
         if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
-            $value = $value->toArray($params);
+            $value = $value->toArray($fields);
         }
 
         return $value;
