@@ -85,7 +85,7 @@ class DynamicAttribute extends AttributeAbstract
     {
         $value = $this->processToArrayValue($this->getValue($params));
         if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
-            $value = $value->toArray();
+            $value = $value->toArray($params);
         }
 
         return $value;
