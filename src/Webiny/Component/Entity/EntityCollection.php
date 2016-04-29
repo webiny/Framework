@@ -43,6 +43,8 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         $this->entityClass = $entityClass;
         $this->collectionName = $entityCollection;
         $this->conditions = $conditions;
+        $this->limit = $limit;
+        $this->offset = $offset;
 
         $this->data = Entity::getInstance()->getDatabase()->find($entityCollection, $conditions, $order, $limit, $offset);
     }
@@ -60,6 +62,24 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         }
 
         return $this->arr($references)->implode(', ')->val();
+    }
+
+    /**
+     * Get collection limit
+     * @return mixed
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * Get collection offset
+     * @return mixed
+     */
+    public function getOffset()
+    {
+        return $this->offset;
     }
 
     /**
