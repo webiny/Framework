@@ -86,23 +86,17 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
 
 
     /**
-     * Set related entity class for this attribute<br>
-     * You can either use absolute namespace path or <b>App.Component.Entity</b> notation:<br><br>
-     *
-     * <b>'Cms.Content.PageEntity'</b> will be translated to: <b>'\WebinyPlatform\Apps\Cms\Components\Content\Entities\PageEntity'</b>
+     * Set related entity class for this attribute
      *
      * @param string $entityClass
      *
      * @return $this
+     * @throws EntityException
      */
     public function setEntity($entityClass)
     {
-        $entityClass = $this->str($entityClass);
-        if ($entityClass->contains('.')) {
-            $parts = $entityClass->explode('.');
-            $entityClass = '\\WebinyPlatform\\Apps\\' . $parts[0] . '\\Components\\' . $parts[1] . '\\Entities\\' . $parts[2];
-        }
-        $this->entityClass = StdObjectWrapper::toString($entityClass);
+        class_exists($entityClass);
+        $this->entityClass = $entityClass;
 
         return $this;
     }

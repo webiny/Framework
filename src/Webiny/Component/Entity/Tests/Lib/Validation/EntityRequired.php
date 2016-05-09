@@ -15,8 +15,9 @@ class EntityRequired extends EntityAbstract
 {
     protected static $entityCollection = "Validation_Entity";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('boolean')->boolean()->setValidators('required');
         $this->attr('char')->char()->setValidators('required');
         $this->attr('integer')->integer()->setValidators('required');

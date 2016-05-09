@@ -125,6 +125,7 @@ class Many2OneAttribute extends AttributeAbstract
      */
     public function setEntity($entityClass)
     {
+        class_exists($entityClass);
         $this->entityClass = $entityClass;
 
         return $this;

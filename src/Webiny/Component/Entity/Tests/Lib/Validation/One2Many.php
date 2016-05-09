@@ -8,8 +8,9 @@ class One2Many extends EntityAbstract
 {
     protected static $entityCollection = "Validation_One2Many";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('char')->char()->setValidators('required');
         $this->attr('entity')->many2one()->setEntity(Classes::ENTITY_VALIDATION);
     }

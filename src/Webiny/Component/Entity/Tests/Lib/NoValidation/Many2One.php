@@ -8,8 +8,9 @@ class Many2One extends EntityAbstract
 {
     protected static $entityCollection = "NoValidation_Many2One";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('char')->char()->setToArrayDefault();
         $this->attr('relations')->one2many('many2oneNew')->setEntity(Classes::ENTITY_NO_VALIDATION);
     }

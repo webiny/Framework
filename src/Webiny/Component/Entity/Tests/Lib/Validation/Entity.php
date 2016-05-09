@@ -15,8 +15,9 @@ class Entity extends EntityAbstract
 {
     protected static $entityCollection = "Validation_Entity";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('char')->char()->setValidators('minLength:3,maxLength:5,in:abc:def');
         $this->attr('integer')->integer()->setValidators('integer,gt:2,lt:5');
         $this->attr('float')->float()->setValidators('gte:2,lte:5');

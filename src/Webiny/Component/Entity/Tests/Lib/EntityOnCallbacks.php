@@ -15,8 +15,9 @@ class EntityOnCallbacks extends EntityAbstract
 {
     protected static $entityCollection = "OnCallbacks_Entity";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('char')->char()->setAfterPopulate()->onSet(function ($value) {
             return 'set-' . $this->number . '-' . $value;
         })->onGet(function ($value) {

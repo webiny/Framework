@@ -7,8 +7,9 @@ class Many2One extends EntityAbstract
 {
     protected static $entityCollection = "Validation_Many2One";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('char')->char()->setValidators('required');
     }
 }

@@ -57,12 +57,6 @@ abstract class EntityAbstract implements \ArrayAccess
     protected static $entityMask = '{id}';
 
     /**
-     * This method is called during instantiation to build entity structure
-     * @return void
-     */
-    protected abstract function entityStructure();
-
-    /**
      * Get collection name
      * @return string
      */
@@ -194,8 +188,6 @@ abstract class EntityAbstract implements \ArrayAccess
          * Add ID to the list of attributes
          */
         $this->attr('id')->char();
-
-        $this->entityStructure();
     }
 
     /**
