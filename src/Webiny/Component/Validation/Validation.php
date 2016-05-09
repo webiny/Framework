@@ -13,6 +13,7 @@ use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\Validation\Validators\CountryCode;
 use Webiny\Component\Validation\Validators\CreditCardNumber;
 use Webiny\Component\Validation\Validators\Email;
+use Webiny\Component\Validation\Validators\EuCountry;
 use Webiny\Component\Validation\Validators\EuVatNumber;
 use Webiny\Component\Validation\Validators\GeoLocation;
 use Webiny\Component\Validation\Validators\GreaterThan;
@@ -112,6 +113,7 @@ class Validation
             new CountryCode(),
             new CreditCardNumber(),
             new EuVatNumber(),
+            new EuCountry(),
             new Regex()
         ];
 
