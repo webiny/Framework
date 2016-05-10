@@ -58,11 +58,10 @@ abstract class DriverAbstract
         $this->resource = $resource;
 
         if (self::isNull($this->resource) || !$this->resource) {
-            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.'
-            );
+            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.');
         }
 
-        if($this->isStdObject($resource)){
+        if ($this->isStdObject($resource)) {
             $this->resource = $resource->val();
         }
 
@@ -74,8 +73,7 @@ abstract class DriverAbstract
          * Perform string checks
          */
         if ($this->str($this->resource)->trim()->length() == 0) {
-            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
-            );
+            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
         }
 
         /**
@@ -83,7 +81,7 @@ abstract class DriverAbstract
          */
         if ($this->isFilepath($this->resource)) {
             if (!$this->isFile($this->resource)) {
-                throw new ConfigException('Invalid config file path given!');
+                throw new ConfigException('Invalid config file path given: ' . $this->resource);
             }
             $path = dirname($this->resource);
             $this->resource = file_get_contents($this->resource);
