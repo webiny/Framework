@@ -57,12 +57,6 @@ abstract class EntityAbstract implements \ArrayAccess
     protected static $entityMask = '{id}';
 
     /**
-     * This method is called during instantiation to build entity structure
-     * @return void
-     */
-    protected abstract function entityStructure();
-
-    /**
      * Get collection name
      * @return string
      */
@@ -194,8 +188,6 @@ abstract class EntityAbstract implements \ArrayAccess
          * Add ID to the list of attributes
          */
         $this->attr('id')->char();
-
-        $this->entityStructure();
     }
 
     /**
@@ -301,6 +293,13 @@ abstract class EntityAbstract implements \ArrayAccess
      */
     public function save()
     {
+        $objectHash = spl_object_hash($this);
+        if (array_key_exists($objectHash, self::$saved)) {
+            return true;
+        }
+
+        self::$saved[$objectHash] = true;
+
         $data = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
@@ -320,16 +319,9 @@ abstract class EntityAbstract implements \ArrayAccess
             $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
         } else {
-            // Check if this entity was already saved during save cycle through other relational attributes
-            if (array_key_exists($this->id, self::$saved)) {
-                return;
-            }
             $where = ['_id' => $mongo->id($this->id)];
             $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
-
-        // Store this entity's id to prevent infinite saving loop
-        self::$saved[$this->id] = true;
 
         /**
          * Now save One2Many values
@@ -360,8 +352,8 @@ abstract class EntityAbstract implements \ArrayAccess
             }
         }
 
-        // Now that this entity is saved, remove its id from save log
-        unset(self::$saved[$this->id]);
+        // Now that this entity is saved, remove it from save log
+        unset(self::$saved[$objectHash]);
 
         return true;
     }

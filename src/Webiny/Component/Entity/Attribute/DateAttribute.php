@@ -19,7 +19,10 @@ class DateAttribute extends AttributeAbstract
 
     public function getDbValue()
     {
-        $value = $this->datetime($this->getValue())->getTimestamp();
+        $value = $this->getValue();
+        if ($value) {
+            $value = $this->datetime($this->getValue())->getTimestamp();
+        }
 
         return $this->processToDbValue($value);
     }

@@ -8,8 +8,9 @@ class Entity extends EntityAbstract
 {
     protected static $entityCollection = "NoValidation_Entity";
 
-    protected function entityStructure()
+    public function  __construct()
     {
+        parent::__construct();
         $this->attr('boolean')->boolean();
         $this->attr('char')->char()->setToArrayDefault();
         $this->attr('skip')->char()->setSkipOnPopulate();
