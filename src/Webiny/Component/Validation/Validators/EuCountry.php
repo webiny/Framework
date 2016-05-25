@@ -46,7 +46,7 @@ class EuCountry implements ValidatorInterface
             'GB',
         ];
 
-        if (in_array($value, [$euCountries])) {
+        if (in_array($value, $euCountries)) {
             return true;
         }
 
