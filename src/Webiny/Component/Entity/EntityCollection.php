@@ -141,6 +141,26 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Gets first entity in collection
+     * @return EntityAbstract|null
+     */
+    public function first()
+    {
+        return $this->getIterator()[0] ?? null;
+    }
+
+    /**
+     * Gets last entity in collection
+     * @return EntityAbstract|null
+     */
+    public function last()
+    {
+        $lastIndex = $this->getIterator()->count() - 1;
+
+        return $this->getIterator()[$lastIndex] ?? null;
+    }
+
+    /**
      * Count total number of items without limit and offset
      *
      * TODO: unittest
