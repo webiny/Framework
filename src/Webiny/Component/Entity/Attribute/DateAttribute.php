@@ -21,7 +21,7 @@ class DateAttribute extends AttributeAbstract
     {
         $value = $this->getValue();
         if ($value) {
-            $value = $this->datetime($this->getValue())->getTimestamp();
+            $value = $this->datetime($this->getValue())->setTime(0, 0, 0)->getTimestamp();
         }
 
         return $this->processToDbValue($value);
