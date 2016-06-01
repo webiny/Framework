@@ -58,7 +58,7 @@ class Mailer
      */
     public function getMessage($config = null)
     {
-        if($config && !$config instanceof ConfigObject){
+        if ($config && !$config instanceof ConfigObject) {
             $config = new ConfigObject($config);
         }
         return Loader::getMessage($this->mailerName, $config);
@@ -90,5 +90,15 @@ class Mailer
         $this->transport->setDecorators($replacements);
 
         return $this;
+    }
+
+    /**
+     * Returns the current transport instance.
+     *
+     * @return TransportInterface
+     */
+    public function getTransport()
+    {
+        return $this->transport;
     }
 }

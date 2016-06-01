@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Mailer\Bridge\SwiftMailer;
 
+use Webiny\Component\Mailer\Bridge\MailerException;
 use Webiny\Component\Mailer\Bridge\TransportInterface;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Mailer\MessageInterface;
@@ -19,7 +20,14 @@ use Webiny\Component\Mailer\MessageInterface;
 class Transport implements TransportInterface
 {
 
+    /**
+     * @var null|\Swift_Mailer
+     */
     private $mailer = null;
+    /**
+     * @var null|\Swift_Plugins_Loggers_ArrayLogger
+     */
+    private $logger = null;
     private $config;
 
     /**
@@ -43,9 +51,7 @@ class Transport implements TransportInterface
         switch ($transportType) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($config->get('Transport.Host', 'localhost'),
-                                                               $config->get('Transport.Port', 25),
-                                                               $config->get('Transport.AuthMode', null)
-                );
+                    $config->get('Transport.Port', 25), $config->get('Transport.AuthMode', null));
                 $transport->setUsername($config->get('Transport.Username', ''));
                 $transport->setPassword($config->get('Transport.Password', ''));
                 $transport->setEncryption($config->get('Transport.Encryption', null));
@@ -58,9 +64,7 @@ class Transport implements TransportInterface
 
             case 'sendmail':
                 $transport = \Swift_SendmailTransport::newInstance($config->get('Transport.Command',
-                                                                                '/usr/sbin/sendmail -bs'
-                )
-                );
+                    '/usr/sbin/sendmail -bs'));
                 break;
 
             case 'null':
@@ -69,8 +73,7 @@ class Transport implements TransportInterface
 
             default:
                 throw new SwiftMailerException('Invalid transport.type provided.
-												Supported types are [smtp, mail, sendmail, null].'
-                );
+												Supported types are [smtp, mail, sendmail, null].');
                 break;
         }
 
@@ -124,6 +127,21 @@ class Transport implements TransportInterface
     }
 
     /**
+     * Returns the debug log.
+     * Note that SwiftMailer requires you set 'Debug: true' in your config.
+     * @return array
+     * @throws MailerException
+     */
+    public function getDebugLog()
+    {
+        if (empty($this->logger)) {
+            throw new MailerException('Logger is not turned on in the config.');
+        }
+
+        return $this->logger->dump();
+    }
+
+    /**
      * Returns the current Swift_Transport instance.
      *
      * @return \Swift_Transport
@@ -142,10 +160,15 @@ class Transport implements TransportInterface
     {
         // antiflood
         if ($config->get('AntiFlood', false)) {
-            $antiflood = new \Swift_Plugins_AntiFloodPlugin($config->get('AntiFlood.Threshold', 99
-            ), $config->get('AntiFlood.Sleep', 1)
-            );
+            $antiflood = new \Swift_Plugins_AntiFloodPlugin($config->get('AntiFlood.Threshold', 99),
+                $config->get('AntiFlood.Sleep', 1));
             $this->mailer->registerPlugin($antiflood);
+        }
+
+        // array logger
+        if ($config->get('Debug', false)) {
+            $this->logger = new \Swift_Plugins_Loggers_ArrayLogger();
+            $this->mailer->registerPlugin(new \Swift_Plugins_LoggerPlugin($this->logger));
         }
     }
 }
