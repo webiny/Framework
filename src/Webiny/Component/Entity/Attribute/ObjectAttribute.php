@@ -43,4 +43,20 @@ class ObjectAttribute extends ArrayAttribute
 
         return parent::setValue($value, $fromDb);
     }
+
+    public function toArray()
+    {
+        if ($this->value->count() == 0) {
+            $defaultValue = $this->getDefaultValue();
+            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
+
+            if (count($value) === 0) {
+                $value = new \stdClass();
+            }
+
+            return $this->processToArrayValue($value);
+        }
+
+        return $this->processToArrayValue($this->value->val());
+    }
 }
