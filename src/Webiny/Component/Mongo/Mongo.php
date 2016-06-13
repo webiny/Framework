@@ -235,6 +235,11 @@ class Mongo
         return $this->bridge->update($this->cName($collectionName), $filter, $update, $options);
     }
 
+    public function command($command, array $options = [])
+    {
+        return $this->bridge->command($command, $options);
+    }
+
     /**
      * Get collection name
      *

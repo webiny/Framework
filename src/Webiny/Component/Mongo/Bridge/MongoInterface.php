@@ -361,4 +361,13 @@ interface MongoInterface
      */
     public function update($collectionName, $filter, $update, array $options = []);
 
+    /**
+     * Execute a command on this database.
+     *
+     * @param array|object $command Command document
+     * @param array        $options Options for command execution
+     * @return Cursor
+     * @throws InvalidArgumentException
+     */
+    public function command($command, array $options = []);
 }

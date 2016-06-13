@@ -359,6 +359,17 @@ class MongoDb implements MongoInterface
     }
 
     /**
+     * @param array|object $command
+     * @param array        $options
+     *
+     * @return Cursor
+     */
+    public function command($command, array $options = [])
+    {
+        return $this->db->command($command, $options);
+    }
+
+    /**
      * @param $collectionName
      *
      * @return \MongoDB\Collection
