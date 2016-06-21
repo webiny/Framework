@@ -67,6 +67,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
             'char'             => 'char',
             'skip'             => 'this value will not be set',
             'integer'          => 12,
+            'calculation'      => 5,
             'float'            => 20.35,
             'date'             => '2016-03-14',
             'datetime'         => '2016-03-14T13:45:20+0000',
@@ -222,6 +223,9 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('char', $entity->char);
         $this->assertNull($entity->skip);
         $this->assertEquals(12, $entity->integer);
+        $this->assertEquals(5, $entity->calculation);
+        $this->assertEquals(5, $entity->calculation());
+        $this->assertEquals(10, $entity->calculation(2));
         $this->assertEquals(20.35, $entity->float);
         $this->assertEquals('2016-03-14', $entity->date);
         $this->assertEquals('2016-03-14T13:45:20+0000', $entity->datetime);

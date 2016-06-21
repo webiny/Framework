@@ -510,11 +510,8 @@ abstract class EntityAbstract implements \ArrayAccess
     function __call($name, $arguments)
     {
         $attr = $this->getAttribute($name);
-        if ($attr instanceof DynamicAttribute) {
-            return $attr->getValue($arguments);
-        }
 
-        return null;
+        return $attr->getValue($arguments);
     }
 
     /**
