@@ -8,6 +8,7 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use MongoDB\Model\BSONArray;
+use MongoDB\Model\BSONDocument;
 use Traversable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\EntityAbstract;
@@ -58,7 +59,7 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
         }
 
         if ($fromDb && $value instanceof BSONArray) {
-            $value = $value->getArrayCopy();
+            $value = $this->convertToArray($value->getArrayCopy());
         }
 
         parent::setValue($value, $fromDb);
@@ -83,13 +84,13 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     /**
      * @inheritDoc
      */
-    public function getValue()
+    public function getValue($params = [])
     {
         if ($this->value->count() == 0 && !$this->isNull($this->defaultValue)) {
-            return $this->processGetValue($this->getDefaultValue());
+            return $this->processGetValue($this->getDefaultValue(), $params);
         }
 
-        return $this->processGetValue($this->value);
+        return $this->processGetValue($this->value, $params);
     }
 
 
@@ -120,16 +121,19 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
         return $this;
     }
 
-    public function toArray()
+    public function toArray($params = [])
     {
-        if ($this->value->count() == 0) {
-            $defaultValue = $this->getDefaultValue();
-            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
-
-            return $this->processToArrayValue($value);
+        $value = $this->getValue($params);
+        if ($this->isStdObject($value)) {
+            $value = $value->val();
         }
 
-        return $this->processToArrayValue($this->value->val());
+        if (count($value) === 0) {
+            $defaultValue = $this->getDefaultValue();
+            $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
+        }
+
+        return $this->processToArrayValue($value);
     }
 
 
@@ -323,6 +327,20 @@ class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \A
     public function offsetUnset($offset)
     {
         unset($this->value[$offset]);
+    }
+
+    protected function convertToArray($source)
+    {
+        $value = [];
+        foreach ($source as $k => $v) {
+            if ($v instanceof BSONDocument || $v instanceof BSONArray) {
+                $value[$k] = $this->convertToArray($v->getArrayCopy());
+            } else {
+                $value[$k] = $v;
+            }
+        }
+
+        return $value;
     }
 
     /**

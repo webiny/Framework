@@ -249,11 +249,13 @@ abstract class AttributeAbstract implements JsonSerializable
     /**
      * Get value that will be used to represent this attribute when converting EntityAbstract to array
      *
+     * @param array $params
+     *
      * @return string
      */
-    public function toArray()
+    public function toArray($params = [])
     {
-        return $this->processToArrayValue((string)$this);
+        return $this->processToArrayValue($this->getValue($params));
     }
 
     /**
@@ -523,9 +525,11 @@ abstract class AttributeAbstract implements JsonSerializable
     /**
      * Get attribute value
      *
+     * @param array $params
+     *
      * @return $this
      */
-    public function getValue()
+    public function getValue($params = [])
     {
         $value = $this->value;
         $defaultValue = $this->getDefaultValue();
@@ -533,7 +537,7 @@ abstract class AttributeAbstract implements JsonSerializable
             $value = $defaultValue;
         }
 
-        return $this->processGetValue($value);
+        return $this->processGetValue($value, $params);
     }
 
     /**
@@ -662,13 +666,14 @@ abstract class AttributeAbstract implements JsonSerializable
     /**
      * Triggered when calling 'getValue()' on attribute instance
      *
-     * @param $value
+     * @param       $value
+     * @param array $params
      *
      * @return mixed
      */
-    protected function processGetValue($value)
+    protected function processGetValue($value, $params = [])
     {
-        return $this->processCallback($this->onGetCallback, $value);
+        return $this->processCallback($this->onGetCallback, $value, $params);
     }
 
     /**
@@ -790,18 +795,21 @@ abstract class AttributeAbstract implements JsonSerializable
      * Take $value and check if a valid callback is given<br/>
      * If yes, return the processed value.
      *
-     * @param $callback
-     * @param $value
+     * @param       $callback
+     * @param       $value
+     * @param array $params
      *
      * @return mixed
      */
-    private function processCallback($callback, $value)
+    private function processCallback($callback, $value, $params = [])
     {
         if ($callback) {
             if (is_string($callback)) {
                 $callback = [$this->parent, $callback];
             }
-            $value = call_user_func_array($callback, [$value]);
+
+            array_unshift($params, $value);
+            $value = call_user_func_array($callback, $params);
         }
 
         return $value;

@@ -146,9 +146,11 @@ class Many2OneAttribute extends AttributeAbstract
     /**
      * Get attribute value
      *
+     * @param array $params
+     *
      * @return bool|null|\Webiny\Component\Entity\EntityAbstract
      */
-    public function getValue()
+    public function getValue($params = [])
     {
         if (!$this->isInstanceOf($this->value, $this->entityClass) && !empty($this->value)) {
             $data = null;
@@ -168,10 +170,10 @@ class Many2OneAttribute extends AttributeAbstract
         }
 
         if (!$this->value && !$this->isNull($this->defaultValue)) {
-            return $this->processGetValue($this->getDefaultValue());
+            return $this->processGetValue($this->getDefaultValue(), $params);
         }
 
-        return $this->processGetValue($this->value);
+        return $this->processGetValue($this->value, $params);
     }
 
     /**

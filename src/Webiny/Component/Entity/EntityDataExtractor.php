@@ -77,7 +77,7 @@ class EntityDataExtractor
                 continue;
             }
 
-            $entityAttributeValue = $entityAttribute->getValue();
+            $entityAttributeValue = $entityAttribute->getValue($params);
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
             $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
@@ -92,7 +92,7 @@ class EntityDataExtractor
                 }
 
                 if ($entityAttribute->hasToArrayCallback()) {
-                    $data[$attrName] = $entityAttribute->toArray();
+                    $data[$attrName] = $entityAttribute->toArray($params);
                     continue;
                 }
 
@@ -111,7 +111,7 @@ class EntityDataExtractor
                     }
                 }
             } elseif ($isObject) {
-                $value = $entityAttribute->toArray();
+                $value = $entityAttribute->toArray($params);
 
                 if ($subAttributes) {
                     $keys = $this->buildNestedKeys($subAttributes);
@@ -137,7 +137,7 @@ class EntityDataExtractor
             } elseif ($isDynamic) {
                 $data[$attrName] = $entityAttribute->toArray($subAttributes, $params);
             } else {
-                $data[$attrName] = $entityAttribute->toArray();
+                $data[$attrName] = $entityAttribute->toArray($params);
             }
         }
 

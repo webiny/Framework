@@ -142,9 +142,11 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     /**
      * Set or get attribute value
      *
-     * @return bool|null|\Webiny\Component\Entity\EntityAbstract
+     * @param array $params
+     *
+     * @return bool|null|EntityAbstract
      */
-    public function getValue()
+    public function getValue($params = [])
     {
         if ($this->isNull($this->value)) {
             $entityId = $this->parent->id;
@@ -169,7 +171,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
             $this->dataLoaded = true;
         }
 
-        return $this->processGetValue($this->value);
+        return $this->processGetValue($this->value, $params);
     }
 
     public function hasValue()
@@ -268,10 +270,6 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
     private function cleanUpRecords($newValues)
     {
-        if (!$this->parent->exists()) {
-            return;
-        }
-
         $newIds = [];
         foreach ($newValues as $nv) {
             if (isset($nv['id']) && $nv['id'] != '') {

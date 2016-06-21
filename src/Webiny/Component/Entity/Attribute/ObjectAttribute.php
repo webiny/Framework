@@ -38,25 +38,28 @@ class ObjectAttribute extends ArrayAttribute
     public function setValue($value = null, $fromDb = false)
     {
         if ($fromDb && $value instanceof BSONDocument) {
-            $value = $value->getArrayCopy();
+            $value = $this->convertToArray($value->getArrayCopy());
         }
 
         return parent::setValue($value, $fromDb);
     }
 
-    public function toArray()
+    public function toArray($params = [])
     {
-        if ($this->value->count() == 0) {
+        $value = $this->getValue($params);
+        if ($this->isStdObject($value)) {
+            $value = $value->val();
+        }
+
+        if (count($value) == 0) {
             $defaultValue = $this->getDefaultValue();
             $value = $this->isStdObject($defaultValue) ? $defaultValue->val() : $defaultValue;
 
             if (count($value) === 0) {
                 $value = new \stdClass();
             }
-
-            return $this->processToArrayValue($value);
         }
 
-        return $this->processToArrayValue($this->value->val());
+        return $this->processToArrayValue($value);
     }
 }

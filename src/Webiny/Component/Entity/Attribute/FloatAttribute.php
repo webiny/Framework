@@ -29,11 +29,13 @@ class FloatAttribute extends AttributeAbstract
     /**
      * Get value that will be used to represent this attribute when converting EntityAbstract to array
      *
+     * @param array $params
+     *
      * @return string
      */
-    public function toArray()
+    public function toArray($params = [])
     {
-        return (float)parent::toArray();
+        return (float)parent::toArray($params);
     }
 
 

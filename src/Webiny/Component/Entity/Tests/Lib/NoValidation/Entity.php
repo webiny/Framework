@@ -16,7 +16,9 @@ class Entity extends EntityAbstract
         $this->attr('skip')->char()->setSkipOnPopulate();
         $this->attr('after')->char();
         $this->attr('integer')->integer();
-        $this->attr('float')->float();
+        $this->attr('float')->float()->onGet(function ($value, $x = null) {
+            return $x ? 2 * $x : $value;
+        });
         $this->attr('date')->date()->setToArrayDefault();
         $this->attr('datetime')->datetime()->setToArrayDefault();
         $this->attr('arr')->arr();

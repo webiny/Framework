@@ -54,11 +54,6 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         return $this;
     }
 
-    public function toArray()
-    {
-        return $this->processToArrayValue(parent::getValue());
-    }
-
     public function setValue($value = null, $fromDb = false)
     {
         if ($value === null) {
@@ -78,13 +73,13 @@ abstract class DateAttributeAbstract extends AttributeAbstract
         return parent::setValue($value, $fromDb);
     }
 
-    public function getValue($asDateTimeObject = false)
+    public function getValue($params = [], $asDateTimeObject = false)
     {
         if ($asDateTimeObject) {
-            return $this->processGetValue(new DateTimeObject(parent::getValue()));
+            return $this->processGetValue(new DateTimeObject(parent::getValue()), $params);
         }
 
-        return $this->processGetValue(parent::getValue());
+        return $this->processGetValue(parent::getValue(), $params);
     }
 
     /**

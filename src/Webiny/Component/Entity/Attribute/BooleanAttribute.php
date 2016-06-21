@@ -32,8 +32,8 @@ class BooleanAttribute extends AttributeAbstract
         return $this;
     }
 
-    public function toArray()
+    public function toArray($params = [])
     {
-        return $this->processToArrayValue(StdObjectWrapper::toBool(parent::toArray()));
+        return $this->processToArrayValue(StdObjectWrapper::toBool(parent::toArray($params)));
     }
 }

@@ -27,11 +27,6 @@ class GeoPointAttribute extends AttributeAbstract
         ];
     }
 
-    public function toArray()
-    {
-        return $this->processToArrayValue($this->getValue());
-    }
-
     public function getDbValue()
     {
         $value = $this->getValue();

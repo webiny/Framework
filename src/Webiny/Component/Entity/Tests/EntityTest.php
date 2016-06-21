@@ -112,9 +112,10 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEntityStateNoValidation($entity);
 
         // Test toArray conversion
-        $array = new ArrayObject($entity->toArray('*,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many',
+        $array = new ArrayObject($entity->toArray('*,float:2,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many',
             2));
         $this->assertEquals('char', $array->keyNested('char'));
+        $this->assertEquals(4, $array->keyNested('float'));
         $this->assertArrayNotHasKey('boolean', $array->val());
         $this->assertArrayNotHasKey('skip', $array->val());
         $this->assertEquals([1, 2, 3], $array->keyNested('arr'));

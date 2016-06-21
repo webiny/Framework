@@ -132,9 +132,11 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
     /**
      * Get attribute value
      *
+     * @param array $params
+     *
      * @return null|EntityCollection
      */
-    public function getValue()
+    public function getValue($params = [])
     {
         if ($this->isNull($this->value)) {
             $this->value = Many2ManyStorage::getInstance()->load($this);
@@ -151,7 +153,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
         }
         $this->addedItems = [];
 
-        return $this->processGetValue($this->value);
+        return $this->processGetValue($this->value, $params);
     }
 
     /**
