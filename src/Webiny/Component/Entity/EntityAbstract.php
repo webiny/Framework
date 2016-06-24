@@ -314,7 +314,7 @@ abstract class EntityAbstract implements \ArrayAccess
          * Insert or update
          */
         if (!$this->exists()) {
-            $data['_id'] = $mongo->id();
+            $data['_id'] = $mongo->isId($data['id']) ? $mongo->id($data['id']) : $mongo->id();
             $data['id'] = (string)$data['_id'];
             $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
@@ -372,7 +372,7 @@ abstract class EntityAbstract implements \ArrayAccess
          */
 
         /* @var $attr Many2ManyAttribute */
-        $thisClass = '\\' . get_class($this);
+        $thisClass = get_class($this);
         foreach ($this->getAttributes() as $attrName => $attr) {
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
                 $foundMatch = false;
@@ -380,7 +380,7 @@ abstract class EntityAbstract implements \ArrayAccess
                 $relatedEntity = new $relatedClass;
                 /* @var $relAttr Many2ManyAttribute */
                 foreach ($relatedEntity->getAttributes() as $relAttr) {
-                    if ($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $relAttr->getEntity() == $thisClass) {
+                    if ($this->isInstanceOf($relAttr, AttributeType::MANY2MANY) && $this->isInstanceOf($this, $relAttr->getEntity())) {
                         $foundMatch = true;
                     }
                 }
