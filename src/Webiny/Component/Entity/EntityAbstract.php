@@ -143,10 +143,23 @@ abstract class EntityAbstract implements \ArrayAccess
             return null;
         }
 
-        $instance = new static;
         $data = static::find($conditions, [], 1, rand(0, $count));
 
         return $data[0];
+    }
+
+    /**
+     * Finds one or more latest entities
+     *
+     * @param int $limit
+     *
+     * @return mixed|null
+     */
+    public static function latest($limit = 1)
+    {
+        $data = static::find([], ['_id' => -1], $limit);
+
+        return $limit == 1 ? $data->first() : $data;
     }
 
     /**
