@@ -44,6 +44,16 @@ class Mongo
     }
 
     /**
+     * Select database
+     *
+     * @param string $database
+     */
+    public function selectDatabase($database)
+    {
+       $this->bridge->selectDatabase($database);
+    }
+
+    /**
      * Construct Mongo ID
      *
      * @param null|string $id (Optional)

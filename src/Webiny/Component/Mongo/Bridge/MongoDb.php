@@ -46,11 +46,21 @@ class MongoDb implements MongoInterface
         $server = 'mongodb://' . $uri;
         try {
             $this->connection = new Client($server, $uriOptions, $driverOptions);
-            $this->db = $this->connection->selectDatabase($uriOptions['database']);
         } catch (InvalidArgumentException $e) {
             throw new MongoException($e->getMessage());
         }
     }
+
+    /**
+     * Select database
+     *
+     * @param string $database
+     */
+    public function selectDatabase($database)
+    {
+        $this->db = $this->connection->selectDatabase($database);
+    }
+
 
     /**
      * Create a mongo ID instance
@@ -191,7 +201,7 @@ class MongoDb implements MongoInterface
      */
     public function createCollection($collectionName, array $options = [])
     {
-        return $this->db->createCollection($collectionName, $options);
+        return $this->getDb()->createCollection($collectionName, $options);
     }
 
     /**
@@ -202,7 +212,7 @@ class MongoDb implements MongoInterface
      */
     public function dropCollection($collectionName, array $options = [])
     {
-        return $this->db->dropCollection($collectionName, $options);
+        return $this->getDb()->dropCollection($collectionName, $options);
     }
 
     /**
@@ -331,7 +341,7 @@ class MongoDb implements MongoInterface
      */
     public function listCollections(array $options = [])
     {
-        return $this->db->listCollections($options);
+        return $this->getDb()->listCollections($options);
     }
 
     /**
@@ -363,19 +373,34 @@ class MongoDb implements MongoInterface
      * @param array        $options
      *
      * @return Cursor
+     * @throws MongoException
      */
     public function command($command, array $options = [])
     {
-        return $this->db->command($command, $options);
+        return $this->getDb()->command($command, $options);
+    }
+
+    /**
+     * @return Database
+     * @throws MongoException
+     */
+    private function getDb()
+    {
+        if (!$this->db) {
+            throw new MongoException('No database selected!');
+        }
+
+        return $this->db;
     }
 
     /**
      * @param $collectionName
      *
      * @return \MongoDB\Collection
+     * @throws MongoException
      */
     private function getCollection($collectionName)
     {
-        return $this->db->selectCollection($collectionName);
+        return $this->getDb()->selectCollection($collectionName);
     }
 }

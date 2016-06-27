@@ -32,6 +32,13 @@ interface MongoInterface
     public function connect($uri, array $uriOptions = [], array $driverOptions = []);
 
     /**
+     * Select database
+     *
+     * @param string $database
+     */
+    public function selectDatabase($database);
+
+    /**
      * Create a mongo ID instance
      *
      * @param null|string $id
