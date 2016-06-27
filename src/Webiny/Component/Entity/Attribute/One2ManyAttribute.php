@@ -270,6 +270,10 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
     private function cleanUpRecords($newValues)
     {
+        if (!$this->parent->exists()) {
+            return;
+        }
+
         $newIds = [];
         foreach ($newValues as $nv) {
             if (isset($nv['id']) && $nv['id'] != '') {
