@@ -15,8 +15,9 @@ Mongo:
             Class: \Webiny\Component\Mongo\Mongo
             Arguments:
                 Uri: 127.0.0.1:27017
-                UriOptions:
-                    database: webiny_test
+                UriOptions: []
                 DriverOptions: []
                 CollectionPrefix: 'Mongo_'
+            Calls:
+                - [selectDatabase, [webiny_test]]
     Driver: \Webiny\Component\Mongo\Bridge\MongoDb
