@@ -280,15 +280,6 @@ abstract class EntityAbstract implements \ArrayAccess
         return $this->attributes;
     }
 
-    /**
-     * Get entity ID
-     * @return CharAttribute
-     */
-    public function getId()
-    {
-        return $this->attributes['id'];
-    }
-
     public function getMaskedValue()
     {
         $maskItems = [];

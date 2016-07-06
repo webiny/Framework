@@ -48,20 +48,6 @@ class Many2OneAttribute extends AttributeAbstract
     }
 
     /**
-     * Get related entity ID
-     * @return CharAttribute
-     */
-    public function getId()
-    {
-        $value = $this->getValue();
-        if ($value) {
-            return $value->getId();
-        }
-
-        return null;
-    }
-
-    /**
      * Allow update of existing entity
      *
      * By default, only new Many2One records are created but updates are not allowed.
