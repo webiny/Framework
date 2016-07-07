@@ -305,18 +305,42 @@ abstract class EntityAbstract implements \ArrayAccess
         self::$saved[$objectHash] = true;
 
         $data = [];
+        $validation = [];
+        $one2many = AttributeType::ONE2MANY;
+        $many2many = AttributeType::MANY2MANY;
+        /* @var $attr AttributeAbstract */
         foreach ($this->getAttributes() as $key => $attr) {
-            if (!$this->isInstanceOf($attr, AttributeType::ONE2MANY) && !$this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
+            if ($attr->isRequired() && !$attr->hasValue()) {
+                $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
+                $ex->addError($key, ValidationException::REQUIRED);
+                $validation[$key] = $ex;
+                continue;
+            }
+
+            if (!count($validation) && !$this->isInstanceOf($attr, $one2many) && !$this->isInstanceOf($attr, $many2many)) {
                 if ($attr->getStoreToDb()) {
                     $data[$key] = $attr->getDbValue();
                 }
             }
         }
 
-        $mongo = $this->entity()->getDatabase();
+        // Throw EntityException with invalid attributes
+        if (count($validation)) {
+            $attributes = [];
+            foreach ($validation as $attr => $error) {
+                foreach ($error as $key => $value) {
+                    $attributes[$key] = $value;
+                }
+            }
+            $ex = new EntityException(EntityException::VALIDATION_FAILED, [count($validation)]);
+            $ex->setInvalidAttributes($attributes);
+            throw $ex;
+        }
+
         /**
          * Insert or update
          */
+        $mongo = $this->entity()->getDatabase();
         if (!$this->exists()) {
             $data['_id'] = $mongo->isId($data['id']) ? $mongo->id($data['id']) : $mongo->id();
             $data['id'] = (string)$data['_id'];

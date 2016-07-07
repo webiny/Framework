@@ -217,6 +217,17 @@ class EntityTest extends PHPUnit_Framework_TestCase
         return include_once __DIR__ . '/Lib/ValidationData.php';
     }
 
+    /**
+     * @expectedException \Webiny\Component\Entity\EntityException
+     * @expectedExceptionCode 101
+     */
+    public function testMissingRequiredValues()
+    {
+        $entity = new Lib\Validation\EntityRequired();
+        $entity->boolean = true;
+        $entity->save();
+    }
+
     private function assertEntityStateNoValidation($entity)
     {
         $this->assertTrue($entity->boolean);
