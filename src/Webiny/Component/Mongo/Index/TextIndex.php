@@ -16,7 +16,7 @@ use Webiny\Component\Mongo\MongoException;
  *
  * @package Webiny\Component\Mongo\Index
  */
-class TextIndex extends IndexAbstract
+class TextIndex extends AbstractIndex
 {
     private $language;
 

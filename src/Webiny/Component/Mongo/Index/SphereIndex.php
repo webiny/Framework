@@ -16,7 +16,7 @@ use Webiny\Component\Mongo\MongoException;
  *
  * @package Webiny\Component\Mongo\Index
  */
-class SphereIndex extends IndexAbstract
+class SphereIndex extends AbstractIndex
 {
     /**
      * @param string $name Index name

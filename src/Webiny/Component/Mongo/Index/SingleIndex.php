@@ -16,7 +16,7 @@ use Webiny\Component\Mongo\MongoException;
  *
  * @package Webiny\Component\Mongo\Index
  */
-class SingleIndex extends IndexAbstract
+class SingleIndex extends AbstractIndex
 {
     protected $ttl = false;
 

@@ -16,7 +16,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package Webiny\Component\Mongo\Index
  */
-abstract class IndexAbstract implements IndexInterface
+abstract class AbstractIndex implements IndexInterface
 {
     use StdLibTrait;
 
