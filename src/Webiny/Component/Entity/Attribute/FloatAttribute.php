@@ -13,7 +13,7 @@ use Webiny\Component\Entity\Attribute\Validation\ValidationException;
  * FloatAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class FloatAttribute extends AttributeAbstract
+class FloatAttribute extends AbstractAttribute
 {
 
     public function getDbValue()
@@ -27,7 +27,7 @@ class FloatAttribute extends AttributeAbstract
     }
 
     /**
-     * Get value that will be used to represent this attribute when converting EntityAbstract to array
+     * Get value that will be used to represent this attribute when converting AbstractEntity to array
      *
      * @param array $params
      *

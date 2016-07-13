@@ -8,13 +8,13 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 
 /**
  * CharAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class CharAttribute extends AttributeAbstract
+class CharAttribute extends AbstractAttribute
 {
 
     /**
@@ -27,11 +27,11 @@ class CharAttribute extends AttributeAbstract
      */
     protected function validate(&$value)
     {
-        if ($value instanceof EntityAbstract) {
+        if ($value instanceof AbstractEntity) {
             $value = $value->id;
         }
         if ($value != null && !$this->isString($value) && !$this->isNumber($value)) {
-            $this->expected('string, number or EntityAbstract', gettype($value));
+            $this->expected('string, number or AbstractEntity', gettype($value));
         }
 
         // Make sure it's a string even if it is a number (convert to numeric string)

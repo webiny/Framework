@@ -91,7 +91,7 @@ class Entity
      * @param $class
      * @param $id
      *
-     * @return bool|EntityAbstract
+     * @return bool|AbstractEntity
      */
     public function get($class, $id)
     {
@@ -146,7 +146,7 @@ class Entity
      *
      * @return bool
      */
-    public function remove(EntityAbstract $instance)
+    public function remove(AbstractEntity $instance)
     {
         $entityPool = $this->pool->key(get_class($instance), $this->arr(), true);
         $entityPool->removeKey($instance->id);

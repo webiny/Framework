@@ -16,7 +16,7 @@ use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObjectException;
  * DateAttributeAbstract
  * @package Webiny\Component\Entity\AttributeType
  */
-abstract class DateAttributeAbstract extends AttributeAbstract
+abstract class DateAttributeAbstract extends AbstractAttribute
 {
     protected $autoUpdate = false;
 

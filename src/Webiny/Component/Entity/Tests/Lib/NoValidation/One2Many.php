@@ -1,10 +1,10 @@
 <?php
 namespace Webiny\Component\Entity\Tests\Lib\NoValidation;
 
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\Tests\Lib\Classes;
 
-class One2Many extends EntityAbstract
+class One2Many extends AbstractEntity
 {
     protected static $entityCollection = "NoValidation_One2Many";
 

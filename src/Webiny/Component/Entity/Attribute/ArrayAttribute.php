@@ -11,19 +11,19 @@ use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use Traversable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 /**
  * ArrayAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class ArrayAttribute extends AttributeAbstract implements \IteratorAggregate, \ArrayAccess
+class ArrayAttribute extends AbstractAttribute implements \IteratorAggregate, \ArrayAccess
 {
     protected $keyValidators = [];
     protected $keyValidationMessages = [];
 
-    public function __construct($name = null, EntityAbstract $parent = null)
+    public function __construct($name = null, AbstractEntity $parent = null)
     {
         parent::__construct($name, $parent);
         $this->value = new ArrayObject();

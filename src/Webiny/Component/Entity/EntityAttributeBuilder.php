@@ -8,7 +8,7 @@
 namespace Webiny\Component\Entity;
 
 use Webiny\Component\Entity\Attribute\ArrayAttribute;
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\BooleanAttribute;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\DateAttribute;
@@ -37,7 +37,7 @@ class EntityAttributeBuilder
     /**
      * @inheritDoc
      */
-    function __construct(EntityAbstract $entity, ArrayObject $attributes)
+    function __construct(AbstractEntity $entity, ArrayObject $attributes)
     {
         $this->entity = $entity;
         $this->attributes = $attributes;
@@ -60,11 +60,11 @@ class EntityAttributeBuilder
     /**
      * Set attribute instance
      *
-     * @param AttributeAbstract $attribute
+     * @param AbstractAttribute $attribute
      *
-     * @return AttributeAbstract
+     * @return AbstractAttribute
      */
-    public function smart(AttributeAbstract $attribute)
+    public function smart(AbstractAttribute $attribute)
     {
         $attribute->setName($this->attribute)->setParent($this->entity);
 

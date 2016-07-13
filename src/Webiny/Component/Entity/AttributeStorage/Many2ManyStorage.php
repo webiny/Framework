@@ -10,7 +10,7 @@ namespace Webiny\Component\Entity\AttributeStorage;
 use MongoDB\Driver\Exception\BulkWriteException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Mongo\Index\CompoundIndex;
 use Webiny\Component\Mongo\MongoTrait;
@@ -105,11 +105,11 @@ class Many2ManyStorage
         $existingIds = [];
         $firstEntityId = $attribute->getParentEntity()->id;
         foreach ($attribute->getValue() as $item) {
-            if ($item instanceof EntityAbstract && !$item->exists()) {
+            if ($item instanceof AbstractEntity && !$item->exists()) {
                 $item->save();
             }
 
-            if ($item instanceof EntityAbstract) {
+            if ($item instanceof AbstractEntity) {
                 $secondEntityId = $item->id;
             } else {
                 $secondEntityId = $item;
@@ -152,7 +152,7 @@ class Many2ManyStorage
      * Unlink given item (only removes the aggregation record) and remove it from current loaded values
      *
      * @param Many2ManyAttribute    $attribute
-     * @param string|EntityAbstract $item
+     * @param string|AbstractEntity $item
      *
      * @return bool
      */
@@ -160,7 +160,7 @@ class Many2ManyStorage
     public function unlink(Many2ManyAttribute $attribute, $item)
     {
         // Convert instance to entity ID
-        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\AbstractEntity')) {
             $item = $item->id;
         }
 

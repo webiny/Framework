@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 
 /**
- * EntityDataExtractor class converts EntityAbstract instance to an array representation.
+ * EntityDataExtractor class converts AbstractEntity instance to an array representation.
  *
  * @package Webiny\Component\Entity
  */
@@ -23,7 +23,7 @@ class EntityDataExtractor
     use StdLibTrait;
 
     /**
-     * @var EntityAbstract
+     * @var AbstractEntity
      */
     protected $entity;
 
@@ -33,7 +33,7 @@ class EntityDataExtractor
     protected $aliases = [];
     protected $dottedFields = ['_name'];
 
-    public function __construct(EntityAbstract $entity, $nestedLevel = 1)
+    public function __construct(AbstractEntity $entity, $nestedLevel = 1)
     {
         if ($nestedLevel < 0) {
             $nestedLevel = 1;
@@ -49,7 +49,7 @@ class EntityDataExtractor
     }
 
     /**
-     * Extract EntityAbstract data to array using specified list of attributes.
+     * Extract AbstractEntity data to array using specified list of attributes.
      * If no attributes are specified, only simple and Many2One attributes will be extracted.
      * If you need to get One2Many and Many2Many attributes, you need to explicitly specify a list of attributes.
      *
@@ -366,7 +366,7 @@ class EntityDataExtractor
     {
         $attributes = ['id'];
         foreach ($this->entity->getAttributes() as $name => $attribute) {
-            /* @var AttributeAbstract $attribute */
+            /* @var AbstractAttribute $attribute */
             if ($attribute->getToArrayDefault()) {
                 $attributes[] = $name;
             }

@@ -9,7 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -28,16 +28,16 @@ class One2ManyAttribute extends CollectionAttributeAbstract
     protected $dataLoaded = false;
 
     /**
-     * @var null|\Webiny\Component\Entity\EntityAbstract
+     * @var null|\Webiny\Component\Entity\AbstractEntity
      */
     protected $parent = null;
 
     /**
      * @param null|string    $name
-     * @param EntityAbstract $parent
+     * @param AbstractEntity $parent
      * @param string         $relatedAttribute
      */
-    public function __construct($name = null, EntityAbstract $parent = null, $relatedAttribute)
+    public function __construct($name = null, AbstractEntity $parent = null, $relatedAttribute)
     {
         $this->relatedAttribute = $relatedAttribute;
         parent::__construct($name, $parent);
@@ -144,7 +144,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
      *
      * @param array $params
      *
-     * @return bool|null|EntityAbstract
+     * @return bool|null|AbstractEntity
      */
     public function getValue($params = [])
     {
@@ -243,7 +243,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         foreach ($value as $item) {
             $itemEntity = false;
 
-            // $item can be an array of data, EntityAbstract or a simple mongo ID string
+            // $item can be an array of data, AbstractEntity or a simple mongo ID string
             if ($this->isInstanceOf($item, $entityClass)) {
                 $itemEntity = $item;
             } elseif ($this->isArray($item) || $this->isArrayObject($item)) {

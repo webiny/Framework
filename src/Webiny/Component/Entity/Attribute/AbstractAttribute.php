@@ -10,24 +10,24 @@ namespace Webiny\Component\Entity\Attribute;
 use JsonSerializable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityAttributeBuilder;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
 /**
- * AttributeAbstract
+ * AbstractAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-abstract class AttributeAbstract implements JsonSerializable
+abstract class AbstractAttribute implements JsonSerializable
 {
     use StdLibTrait, FactoryLoaderTrait;
 
     /**
      * Entity this attribute belongs to
      *
-     * @var EntityAbstract
+     * @var AbstractEntity
      */
     protected $parent;
 
@@ -145,9 +145,9 @@ abstract class AttributeAbstract implements JsonSerializable
 
     /**
      * @param string         $name
-     * @param EntityAbstract $parent
+     * @param AbstractEntity $parent
      */
-    public function __construct($name = null, EntityAbstract $parent = null)
+    public function __construct($name = null, AbstractEntity $parent = null)
     {
         $this->attribute = $name;
         $this->parent = $parent;
@@ -191,7 +191,7 @@ abstract class AttributeAbstract implements JsonSerializable
         return $this;
     }
 
-    public function setParent(EntityAbstract $entity)
+    public function setParent(AbstractEntity $entity)
     {
         $this->parent = $entity;
 
@@ -210,7 +210,7 @@ abstract class AttributeAbstract implements JsonSerializable
     /**
      * Get entity instance this attribute belongs to
      *
-     * @return EntityAbstract
+     * @return AbstractEntity
      */
     public function getParent()
     {
@@ -247,7 +247,7 @@ abstract class AttributeAbstract implements JsonSerializable
     }
 
     /**
-     * Get value that will be used to represent this attribute when converting EntityAbstract to array
+     * Get value that will be used to represent this attribute when converting AbstractEntity to array
      *
      * @param array $params
      *
@@ -421,7 +421,7 @@ abstract class AttributeAbstract implements JsonSerializable
 
     /**
      * Set 'once' flag<br>
-     * If true, it tells EntityAbstract to only populate this attribute if it's a new entity<br>
+     * If true, it tells AbstractEntity to only populate this attribute if it's a new entity<br>
      * This is useful when you want to protect values from being populate on later updates.
      *
      * @param boolean $flag
@@ -437,7 +437,7 @@ abstract class AttributeAbstract implements JsonSerializable
 
     /**
      * Get 'once' flag<br>
-     * This flag tells you whether this attribute should only be populated when it's a new EntityAbstract instance.<br>
+     * This flag tells you whether this attribute should only be populated when it's a new AbstractEntity instance.<br>
      * By default, attributes are populated each time.
      *
      * @return $this

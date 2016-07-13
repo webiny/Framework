@@ -14,7 +14,7 @@ namespace Webiny\Component\Entity\Attribute;
  *
  * @package Webiny\Component\Entity\AttributeType
  */
-class DateAttribute extends AttributeAbstract
+class DateAttribute extends AbstractAttribute
 {
 
     public function getDbValue()

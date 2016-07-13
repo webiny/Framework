@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
 
 /**
  * DynamicAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class DynamicAttribute extends AttributeAbstract
+class DynamicAttribute extends AbstractAttribute
 {
 
     protected $storeToDb = false;
@@ -24,10 +24,10 @@ class DynamicAttribute extends AttributeAbstract
 
     /**
      * @param string         $name
-     * @param EntityAbstract $parent
+     * @param AbstractEntity $parent
      * @param callable       $callable
      */
-    public function __construct($name = null, EntityAbstract $parent = null, $callable = null)
+    public function __construct($name = null, AbstractEntity $parent = null, $callable = null)
     {
         $this->callable = is_string($callable) ? [$parent, $callable] : $callable;
 
@@ -71,7 +71,7 @@ class DynamicAttribute extends AttributeAbstract
     public function getDbValue()
     {
         $value = $this->getValue();
-        if ($value instanceof EntityAbstract) {
+        if ($value instanceof AbstractEntity) {
             return $this->processToDbValue($value->id);
         }
 
@@ -84,7 +84,7 @@ class DynamicAttribute extends AttributeAbstract
     public function toArray($fields = [], $params = [])
     {
         $value = $this->processToArrayValue($this->getValue($params));
-        if ($value instanceof EntityAbstract || $value instanceof EntityCollection) {
+        if ($value instanceof AbstractEntity || $value instanceof EntityCollection) {
             $value = $value->toArray($fields);
         }
 
@@ -141,7 +141,7 @@ class DynamicAttribute extends AttributeAbstract
         }
 
         $currentValue = $this->getValue();
-        if ($currentValue instanceof EntityAbstract && is_array($value)) {
+        if ($currentValue instanceof AbstractEntity && is_array($value)) {
             $currentValue->populate($value);
         }
 

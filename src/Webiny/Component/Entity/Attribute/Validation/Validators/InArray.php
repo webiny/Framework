@@ -1,7 +1,7 @@
 <?php
 namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Validation\ValidationException;
 use Webiny\Component\Validation\ValidationTrait;
@@ -21,7 +21,7 @@ class InArray implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(AttributeAbstract $attribute, $data, $params = [])
+    public function validate(AbstractAttribute $attribute, $data, $params = [])
     {
         $params = is_string($params) ? $params : implode(':', $params);
 

@@ -16,7 +16,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  * Many2One attribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class Many2OneAttribute extends AttributeAbstract
+class Many2OneAttribute extends AbstractAttribute
 {
     use StdLibTrait;
 
@@ -83,7 +83,7 @@ class Many2OneAttribute extends AttributeAbstract
         if (is_null($value)) {
             // Process default value
             $value = $this->getDefaultValue();
-            if ($this->isInstanceOf($value, '\Webiny\Component\Entity\EntityAbstract')) {
+            if ($this->isInstanceOf($value, '\Webiny\Component\Entity\AbstractEntity')) {
                 if (!$value->exists()) {
                     $value->save();
                 }
@@ -134,7 +134,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @param array $params
      *
-     * @return bool|null|\Webiny\Component\Entity\EntityAbstract
+     * @return bool|null|\Webiny\Component\Entity\AbstractEntity
      */
     public function getValue($params = [])
     {
@@ -188,7 +188,7 @@ class Many2OneAttribute extends AttributeAbstract
         $entity = null;
 
         // Normalize $value using one of 5 scenarios:
-        // 1: EntityAbstract instance
+        // 1: AbstractEntity instance
         // 2: ID
         // 3: Array with ID
         // 4: Array without ID
@@ -246,7 +246,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @param $name
      *
-     * @return AttributeAbstract
+     * @return AbstractAttribute
      */
     public function getAttribute($name)
     {
@@ -259,7 +259,7 @@ class Many2OneAttribute extends AttributeAbstract
      *
      * @param $name
      *
-     * @return AttributeAbstract
+     * @return AbstractAttribute
      */
     public function _get($name)
     {
@@ -277,7 +277,7 @@ class Many2OneAttribute extends AttributeAbstract
     protected function validate(&$value)
     {
         $mongoId = Entity::getInstance()->getDatabase()->isId($value);
-        $abstractEntityClass = '\Webiny\Component\Entity\EntityAbstract';
+        $abstractEntityClass = '\Webiny\Component\Entity\AbstractEntity';
 
         if (!$this->isNull($value) && !is_array($value) && !$this->isInstanceOf($value, $abstractEntityClass) && !$mongoId) {
             $this->expected('entity ID, instance of ' . $abstractEntityClass . ' or null', gettype($value));

@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute\Validation;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 
 interface ValidatorInterface
 {
@@ -22,12 +22,12 @@ interface ValidatorInterface
     /**
      * Validate given data
      *
-     * @param AttributeAbstract $attribute
+     * @param AbstractAttribute $attribute
      * @param mixed             $data
      * @param array             $params
      *
      * @throws ValidationException
      * @return boolean
      */
-    public function validate(AttributeAbstract $attribute, $data, $params = []);
+    public function validate(AbstractAttribute $attribute, $data, $params = []);
 }

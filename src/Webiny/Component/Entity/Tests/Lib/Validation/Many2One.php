@@ -1,9 +1,9 @@
 <?php
 namespace Webiny\Component\Entity\Tests\Lib\Validation;
 
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 
-class Many2One extends EntityAbstract
+class Many2One extends AbstractEntity
 {
     protected static $entityCollection = "Validation_Many2One";
 

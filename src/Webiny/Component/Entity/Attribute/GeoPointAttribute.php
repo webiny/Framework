@@ -8,16 +8,16 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
  * GeoPointAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class GeoPointAttribute extends AttributeAbstract
+class GeoPointAttribute extends AbstractAttribute
 {
-    public function __construct($name = null, EntityAbstract $parent = null)
+    public function __construct($name = null, AbstractEntity $parent = null)
     {
         parent::__construct($name, $parent);
 

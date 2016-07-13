@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\DynamicAttribute;
@@ -24,7 +24,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  * Entity
  * @package \Webiny\Component\Entity
  */
-abstract class EntityAbstract implements \ArrayAccess
+abstract class AbstractEntity implements \ArrayAccess
 {
     use StdLibTrait, EntityTrait, FactoryLoaderTrait;
 
@@ -70,7 +70,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @param $id
      *
-     * @return null|EntityAbstract
+     * @return null|AbstractEntity
      */
     public static function findById($id)
     {
@@ -111,7 +111,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @param array $conditions
      *
-     * @return null|EntityAbstract
+     * @return null|AbstractEntity
      * @throws EntityException
      */
     public static function findOne(array $conditions = [])
@@ -133,7 +133,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @param array $conditions
      *
-     * @return null|EntityAbstract
+     * @return null|AbstractEntity
      * @throws EntityException
      */
     public static function random(array $conditions = [])
@@ -214,7 +214,7 @@ abstract class EntityAbstract implements \ArrayAccess
     }
 
     /**
-     * Convert EntityAbstract to array with specified fields.
+     * Convert AbstractEntity to array with specified fields.
      * If no fields are specified, array will contain all simple and Many2One attributes
      *
      * @param string $fields List of fields to extract
@@ -256,7 +256,7 @@ abstract class EntityAbstract implements \ArrayAccess
      * @param string $attribute
      *
      * @throws EntityException
-     * @return AttributeAbstract
+     * @return AbstractAttribute
      */
     public function getAttribute($attribute)
     {
@@ -308,7 +308,7 @@ abstract class EntityAbstract implements \ArrayAccess
         $validation = [];
         $one2many = AttributeType::ONE2MANY;
         $many2many = AttributeType::MANY2MANY;
-        /* @var $attr AttributeAbstract */
+        /* @var $attr AbstractAttribute */
         foreach ($this->getAttributes() as $key => $attr) {
             if ($attr->isRequired() && !$attr->hasValue()) {
                 $ex = new ValidationException(ValidationException::VALIDATION_FAILED);
@@ -494,7 +494,7 @@ abstract class EntityAbstract implements \ArrayAccess
 
         $validation = $this->arr();
 
-        /* @var $entityAttribute AttributeAbstract */
+        /* @var $entityAttribute AbstractAttribute */
         foreach ($this->attributes as $attributeName => $entityAttribute) {
             if (!$entityAttribute->getAfterPopulate()) {
                 $this->populateAttribute($attributeName, $entityAttribute, $validation, $data, $fromDb);
@@ -528,7 +528,7 @@ abstract class EntityAbstract implements \ArrayAccess
      *
      * @param $name
      *
-     * @return AttributeAbstract
+     * @return AbstractAttribute
      */
     public function __get($name)
     {
@@ -668,7 +668,7 @@ abstract class EntityAbstract implements \ArrayAccess
         return $parsedOrder;
     }
 
-    private function populateAttribute($attributeName, AttributeAbstract $entityAttribute, $validation, $data, $fromDb)
+    private function populateAttribute($attributeName, AbstractAttribute $entityAttribute, $validation, $data, $fromDb)
     {
         // Skip population of protected attributes if data is not coming from DB
         if (!$fromDb && $entityAttribute->getSkipOnPopulate()) {
@@ -721,7 +721,7 @@ abstract class EntityAbstract implements \ArrayAccess
     /**
      * Extract short class name from class namespace or class instance
      *
-     * @param string|EntityAbstract $class
+     * @param string|AbstractEntity $class
      *
      * @return string
      */

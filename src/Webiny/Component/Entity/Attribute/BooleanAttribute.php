@@ -14,7 +14,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  * BooleanAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class BooleanAttribute extends AttributeAbstract
+class BooleanAttribute extends AbstractAttribute
 {
     /**
      * Perform validation against given value

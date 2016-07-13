@@ -1,7 +1,7 @@
 <?php
 namespace Webiny\Component\Entity\Tests\Lib\Validation;
 
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\Tests\Lib\Classes;
 
 /**
@@ -11,7 +11,7 @@ use Webiny\Component\Entity\Tests\Lib\Classes;
  *
  * @package Webiny\Component\Entity\Tests\Lib\Validation
  */
-class Entity extends EntityAbstract
+class Entity extends AbstractEntity
 {
     protected static $entityCollection = "Validation_Entity";
 

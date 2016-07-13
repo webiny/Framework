@@ -125,7 +125,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         // GeoPoint should return an array of lat/lng values
         $this->assertEquals(50, $array->keyNested('geoPoint.lat'));
         $this->assertEquals(100, $array->keyNested('geoPoint.lng'));
-        // If return value of dynamic attribute is EntityAbstract or EntityCollection,
+        // If return value of dynamic attribute is AbstractEntity or EntityCollection,
         // EntityDataExtractor should call toArray() an those objects
         $this->assertEquals(24, $array->key('dynamicWithDefaultParams'));
         $this->assertEquals(48, $array->key('dynamicWithParams'));
@@ -277,13 +277,13 @@ class EntityTest extends PHPUnit_Framework_TestCase
         Entity::getInstance()->reset();
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'NO TITLE']);
         $this->assertNull($entity);
 
         $entity = Lib\NoValidation\Entity::findById($id);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
 
         $collection = Lib\NoValidation\Entity::find(['char' => 'Webiny Test']);
         $this->assertEquals(1, $collection->count());
@@ -297,7 +297,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     public function testRestrictException()
     {
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
         $entity->one2many = [
             ['char' => 'first']
         ];
@@ -353,7 +353,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         Entity::getInstance()->reset();
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Default Title']);
-        $this->assertInstanceOf('Webiny\Component\Entity\EntityAbstract', $entity);
+        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
     }
 
     /**

@@ -84,7 +84,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
     /**
      * Convert EntityCollection to array.<br>
-     * Each EntityAbstract wil be converted to array using $fields and $nestedLevel specified.<br>
+     * Each AbstractEntity wil be converted to array using $fields and $nestedLevel specified.<br>
      * If no fields are specified, array will contain all simple and Many2One attributes
      *
      * @param string $fields List of fields to extract
@@ -106,7 +106,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     /**
      * Add item to collection
      *
-     * @param array|EntityAbstract $item
+     * @param array|AbstractEntity $item
      *
      * @return $this
      */
@@ -117,7 +117,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
         }
 
         foreach ($item as $addItem) {
-            if (!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\EntityAbstract')) {
+            if (!$this->isInstanceOf($addItem, '\Webiny\Component\Entity\AbstractEntity')) {
                 $class = $this->entityClass;
                 $addItem = $class::findById($addItem);
             }
@@ -142,7 +142,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
     /**
      * Gets first entity in collection
-     * @return EntityAbstract|null
+     * @return AbstractEntity|null
      */
     public function first()
     {
@@ -151,7 +151,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
 
     /**
      * Gets last entity in collection
-     * @return EntityAbstract|null
+     * @return AbstractEntity|null
      */
     public function last()
     {
@@ -183,13 +183,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
      *
      * TODO: unittest
      *
-     * @param string|EntityAbstract $item ID or EntityAbstract instance
+     * @param string|AbstractEntity $item ID or AbstractEntity instance
      *
      * @return bool
      */
     public function contains($item)
     {
-        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\AbstractEntity')) {
             $item = $item->id;
         }
         foreach ($this->getIterator() as $entity) {
@@ -225,7 +225,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess
     public function removeItem($item)
     {
         if ($this->loaded) {
-            if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+            if ($this->isInstanceOf($item, '\Webiny\Component\Entity\AbstractEntity')) {
                 $item = $item->id;
             }
             foreach ($this->getIterator() as $index => $entity) {

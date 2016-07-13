@@ -9,7 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
 use Webiny\Component\Entity\Entity;
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 
@@ -24,7 +24,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
     protected $addedItems = [];
 
-    public function __construct($attribute = null, EntityAbstract $entity = null, $collectionName)
+    public function __construct($attribute = null, AbstractEntity $entity = null, $collectionName)
     {
         $this->intermediateCollection = $collectionName;
         parent::__construct($attribute, $entity);
@@ -34,13 +34,13 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
      * Add item to this entity collection<br>
      * NOTE: you need to call save() on parent entity to actually insert link into database
      *
-     * @param array|\Webiny\Component\Entity\EntityAbstract $item
+     * @param array|\Webiny\Component\Entity\AbstractEntity $item
      *
      * @return $this
      */
     public function add($item)
     {
-        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\EntityAbstract')) {
+        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\AbstractEntity')) {
             $item = [$item];
         }
 
@@ -66,7 +66,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
     /**
      * Remove item from many2many collection (Removes the link between entities)
      *
-     * @param string|EntityAbstract $item Entity ID or instance of EntityAbstract
+     * @param string|AbstractEntity $item Entity ID or instance of AbstractEntity
      *
      * @return bool
      */
@@ -188,7 +188,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
         foreach ($value as $item) {
             $itemEntity = false;
 
-            // $item can be an array of data, EntityAbstract or a simple mongo ID string
+            // $item can be an array of data, AbstractEntity or a simple mongo ID string
             if ($this->isInstanceOf($item, $entityClass)) {
                 $itemEntity = $item;
             } elseif ($this->isArray($item) || $this->isArrayObject($item)) {

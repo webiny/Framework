@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Entity\EntityException;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -18,7 +18,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  * CollectionAttributeAbstract
  * @package Webiny\Component\Entity\AttributeType
  */
-abstract class CollectionAttributeAbstract extends AttributeAbstract implements \IteratorAggregate, \ArrayAccess
+abstract class CollectionAttributeAbstract extends AbstractAttribute implements \IteratorAggregate, \ArrayAccess
 {
     use StdLibTrait;
 
@@ -113,7 +113,7 @@ abstract class CollectionAttributeAbstract extends AttributeAbstract implements 
 
     /**
      * Returns entity instance to which this attribute belongs
-     * @return EntityAbstract
+     * @return AbstractEntity
      */
     public function getParentEntity()
     {

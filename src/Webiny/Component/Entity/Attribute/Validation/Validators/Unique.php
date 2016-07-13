@@ -1,7 +1,7 @@
 <?php
 namespace Webiny\Component\Entity\Attribute\Validation\Validators;
 
-use Webiny\Component\Entity\Attribute\AttributeAbstract;
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 
@@ -19,7 +19,7 @@ class Unique implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(AttributeAbstract $attribute, $data, $params = [])
+    public function validate(AbstractAttribute $attribute, $data, $params = [])
     {
         if (empty($data)) {
             return;
