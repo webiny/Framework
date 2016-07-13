@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package         Webiny\Component\OAuth2\Bridge
  */
-abstract class OAuth2Abstract implements OAuth2Interface
+abstract class AbstractOAuth2 implements OAuth2Interface
 {
 
     use StdLibTrait;

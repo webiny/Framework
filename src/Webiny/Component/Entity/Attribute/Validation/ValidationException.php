@@ -7,14 +7,14 @@
 namespace Webiny\Component\Entity\Attribute\Validation;
 
 use Traversable;
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the Entity attribute
  *
  * @package         Webiny\Component\Entity
  */
-class ValidationException extends ExceptionAbstract implements \IteratorAggregate
+class ValidationException extends AbstractException implements \IteratorAggregate
 {
     const VALIDATION_FAILED = 101;
     const DATA_TYPE = 102;

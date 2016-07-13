@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Router;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for Router component.
  *
  * @package         Webiny\Component\Router
  */
-class RouterException extends ExceptionAbstract
+class RouterException extends AbstractException
 {
     const STRING_CALLBACK_NOT_PARSABLE = 101;
     const CALLBACK_CLASS_NOT_FOUND = 102;

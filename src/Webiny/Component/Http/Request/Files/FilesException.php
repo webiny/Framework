@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Http\Request\Files;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Files exception class.
  *
  * @package         Webiny\Component\Http\Request\Files
  */
-class FilesException extends ExceptionAbstract
+class FilesException extends AbstractException
 {
 }

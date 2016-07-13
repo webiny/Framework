@@ -19,7 +19,7 @@ To use the common exceptions:
 To extend this library and throw custom exceptions:
 
 ```php
-    class MyCustomExceptionClass extends \Webiny\Component\StdLib\Exception\ExceptionAbstract
+    class MyCustomExceptionClass extends \Webiny\Component\StdLib\Exception\AbstractException
     {
 
     }
@@ -28,7 +28,7 @@ To extend this library and throw custom exceptions:
 To define custom exception codes and messages:
 
 ```php
-    class MyCustomExceptionClass extends \Webiny\Component\StdLib\Exception\ExceptionAbstract
+    class MyCustomExceptionClass extends \Webiny\Component\StdLib\Exception\AbstractException
     {
         const MSG_INVALID_URL = 101;
 
@@ -42,6 +42,6 @@ To define custom exception codes and messages:
 ```
 
 Important rules when defining custom exceptions:
-- Always extend the \Webiny\Component\StdLib\Exception\ExceptionAbstract` class
+- Always extend the \Webiny\Component\StdLib\Exception\AbstractException` class
 - Internal constants that contain the exception code must start from `101`. Lower numbers are reserved for core exception messages.
 - You must define `static protected $_messages` array. `$_messages` keys must match the numbers in the constants.

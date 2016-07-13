@@ -19,7 +19,7 @@ class S3BridgeMock extends \PHPUnit_Framework_TestCase implements S3ClientInterf
 {
     private $instance;
 
-    public function __construct($accessKeyId, $secretAccessKey, $region)
+    public function __construct($accessKeyId, $secretAccessKey, $region, $endpoint = null)
     {
         $this->instance = $this->getMockBuilder('\Aws\S3\S3Client')
                      ->disableOriginalConstructor()

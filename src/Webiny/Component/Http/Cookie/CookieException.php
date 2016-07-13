@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Http\Cookie;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Cookie exception class.
  *
  * @package         Webiny\Component\Http\Cookie
  */
-class CookieException extends ExceptionAbstract
+class CookieException extends AbstractException
 {
 }

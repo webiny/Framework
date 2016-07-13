@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Mailer\Bridge\Sendgrid;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Sendgrid exception class.
  *
  * @package         Webiny\Component\Mailer\Bridge\Sendgrid
  */
-class SendgridException extends ExceptionAbstract
+class SendgridException extends AbstractException
 {
 }

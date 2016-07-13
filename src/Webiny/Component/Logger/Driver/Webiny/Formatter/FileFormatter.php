@@ -17,7 +17,7 @@ use Webiny\Component\Logger\Logger;
  *
  * @package Webiny\Component\Logger\Driver\Webiny\Formatter
  */
-class FileFormatter extends FormatterAbstract
+class FileFormatter extends AbstractFormatter
 {
     protected $format;
 

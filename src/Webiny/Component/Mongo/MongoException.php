@@ -6,14 +6,14 @@
  */
 namespace Webiny\Component\Mongo;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the Mongo component.
  *
  * @package         Webiny\Component\Mongo
  */
-class MongoException extends ExceptionAbstract
+class MongoException extends AbstractException
 {
 
     const SINGLE_INDEX_TOO_MANY_FIELDS = 101;

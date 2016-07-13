@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\OAuth2\Tests\Mocks;
 
-use Webiny\Component\OAuth2\Bridge\OAuth2Abstract;
+use Webiny\Component\OAuth2\Bridge\AbstractOAuth2;
 
 /**
  * A mocked OAuth2 bridge.
  *
  * @package         Webiny\Component\OAuth2\Tests\Mocks
  */
-class OAuth2BridgeMock extends OAuth2Abstract
+class OAuth2BridgeMock extends AbstractOAuth2
 {
 
     /**

@@ -6,7 +6,7 @@
  */
 namespace Webiny\Component\Entity;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
@@ -14,7 +14,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  *
  * @package         Webiny\Component\Entity
  */
-class EntityException extends ExceptionAbstract
+class EntityException extends AbstractException
 {
 
     const VALIDATION_FAILED = 101;

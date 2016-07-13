@@ -286,7 +286,7 @@ Security:
 
 To implement a custom user provider you need to create a class that implements
 `\Webiny\Component\Security\User\UserProviderInterface`. And you need to create a user class that extends
-`\Webiny\Component\Security\User\UserAbstract`. And that's it, all other details are described inside the interface and
+`\Webiny\Component\Security\User\AbstractUser`. And that's it, all other details are described inside the interface and
 the abstract class.
 
 ### Combining multiple user providers

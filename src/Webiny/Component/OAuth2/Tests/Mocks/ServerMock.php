@@ -8,14 +8,14 @@
 namespace Webiny\Component\OAuth2\Tests\Mocks;
 
 use Webiny\Component\OAuth2\OAuth2User;
-use Webiny\Component\OAuth2\ServerAbstract;
+use Webiny\Component\OAuth2\AbstractServer;
 
 /**
  * A mocked OAuth2 bridge.
  *
  * @package         Webiny\Component\OAuth2\Tests\Mocks
  */
-class ServerMock extends ServerAbstract
+class ServerMock extends AbstractServer
 {
 
     /**

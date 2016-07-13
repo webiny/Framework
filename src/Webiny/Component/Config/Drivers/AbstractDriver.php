@@ -22,7 +22,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObjectException;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-abstract class DriverAbstract
+abstract class AbstractDriver
 {
     use StdLibTrait;
 
@@ -99,7 +99,7 @@ abstract class DriverAbstract
     {
         $res = $this->getStringInternal();
         if (!$this->isString($res) && !$this->isStringObject($res)) {
-            throw new ConfigException('DriverAbstract method _getString() must return string or StringObject.');
+            throw new ConfigException('AbstractDriver method _getString() must return string or StringObject.');
         }
 
         return StdObjectWrapper::toString($res);
@@ -115,7 +115,7 @@ abstract class DriverAbstract
     {
         $res = $this->getArrayInternal();
         if (!$this->isArray($res) && !$this->isArrayObject($res)) {
-            $errorMessage = 'DriverAbstract method _getArray() must return array or ArrayObject.';
+            $errorMessage = 'AbstractDriver method _getArray() must return array or ArrayObject.';
             $errorMessage .= ' Make sure you have provided a valid config file path with file extension.';
             throw new ConfigException($errorMessage);
         }

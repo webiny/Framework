@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\Exception\Exception;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-class JsonDriver extends DriverAbstract
+class JsonDriver extends AbstractDriver
 {
     /**
      * Get config data as string

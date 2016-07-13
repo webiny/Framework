@@ -14,7 +14,7 @@ use Webiny\Component\Config\ConfigException;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-class PhpDriver extends DriverAbstract
+class PhpDriver extends AbstractDriver
 {
     /**
      * Get config data as string

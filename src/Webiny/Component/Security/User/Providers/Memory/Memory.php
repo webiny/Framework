@@ -9,7 +9,7 @@ namespace Webiny\Component\Security\User\Providers\Memory;
 
 use Webiny\Component\Security\User\Exceptions\UserNotFoundException;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\Security\User\UserProviderInterface;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -79,7 +79,7 @@ class Memory implements UserProviderInterface
      *
      * @param Login $login Instance of Login object.
      *
-     * @return UserAbstract
+     * @return AbstractUser
      * @throws UserNotFoundException
      */
     public function getUser(Login $login)

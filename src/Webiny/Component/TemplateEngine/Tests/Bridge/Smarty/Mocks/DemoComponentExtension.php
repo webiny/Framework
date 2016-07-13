@@ -7,10 +7,10 @@
 
 namespace Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks;
 
-use Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionAbstract;
+use Webiny\Component\TemplateEngine\Drivers\Smarty\AbstractSmartyExtension;
 use Webiny\Component\TemplateEngine\Drivers\Smarty\SmartySimplePlugin;
 
-class DemoComponentExtension extends SmartyExtensionAbstract
+class DemoComponentExtension extends AbstractSmartyExtension
 {
     public static function myCallback($val)
     {

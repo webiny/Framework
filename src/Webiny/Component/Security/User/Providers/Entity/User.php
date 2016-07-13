@@ -4,9 +4,9 @@ namespace Webiny\Component\Security\User\Providers\Entity;
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
 use Webiny\Component\Security\Role\Role;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
-class User extends UserAbstract
+class User extends AbstractUser
 {
     private $entity;
     private $username = 'username';

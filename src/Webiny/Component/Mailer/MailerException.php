@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Mailer;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Mailer exception class.
  *
  * @package         Webiny\Component\Mailer
  */
-class MailerException extends ExceptionAbstract
+class MailerException extends AbstractException
 {
     const MESSAGE_INTERFACE = 101;
     const TRANSPORT_INTERFACE = 102;

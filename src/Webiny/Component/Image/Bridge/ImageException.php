@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Image\Bridge;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception for image bridge library.
  *
  * @package         Webiny\Component\Image\Bridge
  */
-class ImageException extends ExceptionAbstract
+class ImageException extends AbstractException
 {
 }

@@ -6,14 +6,14 @@
  */
 namespace Webiny\Component\ServiceManager;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the ServiceManager component.
  *
  * @package         Webiny\Component\ServiceManager
  */
-class ServiceManagerException extends ExceptionAbstract
+class ServiceManagerException extends AbstractException
 {
 
     const SERVICE_DEFINITION_NOT_FOUND = 101;

@@ -3,7 +3,7 @@ namespace Webiny\Component\Security\User\Providers\Entity;
 
 use Webiny\Component\Security\Authentication\Providers\Login;
 use Webiny\Component\Security\User\Exceptions\UserNotFoundException;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\Security\User\UserProviderInterface;
 
 class Entity implements UserProviderInterface
@@ -21,7 +21,7 @@ class Entity implements UserProviderInterface
      *
      * @param Login $login Instance of Login object.
      *
-     * @return UserAbstract
+     * @return AbstractUser
      * @throws UserNotFoundException
      */
     public function getUser(Login $login)

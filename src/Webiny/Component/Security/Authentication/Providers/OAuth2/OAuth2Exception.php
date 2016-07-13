@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Authentication\Providers\OAuth2;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * OAuth2 user auth exception class.
  *
  * @package         Webiny\Component\Security\Authentication\Providers\OAuth2
  */
-class OAuth2Exception extends ExceptionAbstract
+class OAuth2Exception extends AbstractException
 {
 }

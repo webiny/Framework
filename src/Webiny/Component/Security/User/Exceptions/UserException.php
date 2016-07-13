@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\User\Exceptions;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * User exception class.
  *
  * @package         Webiny\Component\Security\User\Exceptions;
  */
-class UserException extends ExceptionAbstract
+class UserException extends AbstractException
 {
 }

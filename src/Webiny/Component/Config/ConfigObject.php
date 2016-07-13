@@ -9,7 +9,7 @@ namespace Webiny\Component\Config;
 
 use Serializable;
 use Traversable;
-use Webiny\Component\Config\Drivers\DriverAbstract;
+use Webiny\Component\Config\Drivers\AbstractDriver;
 use Webiny\Component\Config\Drivers\IniDriver;
 use Webiny\Component\Config\Drivers\JsonDriver;
 use Webiny\Component\Config\Drivers\PhpDriver;
@@ -96,7 +96,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         return $driver->getString();
     }
 
-    public function getAs(DriverAbstract $driver)
+    public function getAs(AbstractDriver $driver)
     {
         return $driver->getString();
     }
@@ -170,7 +170,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     /**
      * ConfigObject is an object representing config data in an OO way
      *
-     * @param  array|ArrayObject|DriverAbstract $resource Config resource
+     * @param  array|ArrayObject|AbstractDriver $resource Config resource
      *
      * @param bool                              $cache    Store ConfigObject to cache or not
      *
@@ -178,7 +178,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __construct($resource = [], $cache = true)
     {
-        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\DriverAbstract';
+        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\AbstractDriver';
         $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
 
         // Validate given resources

@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Rest;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for Rest component.
  *
  * @package         Webiny\Component\Rest
  */
-class RestException extends ExceptionAbstract
+class RestException extends AbstractException
 {
     private $class = null;
 

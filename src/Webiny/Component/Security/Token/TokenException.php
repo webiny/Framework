@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Token;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Token exception class.
  *
  * @package         Webiny\Component\Security\User\Token
  */
-class TokenException extends ExceptionAbstract
+class TokenException extends AbstractException
 {
 }

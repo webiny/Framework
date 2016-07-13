@@ -16,7 +16,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-class IniDriver extends DriverAbstract
+class IniDriver extends AbstractDriver
 {
     private $delimiter = '.';
     private $useSections = true;

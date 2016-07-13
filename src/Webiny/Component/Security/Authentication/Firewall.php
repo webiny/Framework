@@ -20,7 +20,7 @@ use Webiny\Component\Security\SecurityEvent;
 use Webiny\Component\Security\User\AnonymousUser;
 use Webiny\Component\Security\User\Providers\Memory;
 use Webiny\Component\Security\Token\Token;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -62,7 +62,7 @@ class Firewall
     private $token;
 
     /**
-     * @var bool|UserAbstract
+     * @var bool|AbstractUser
      */
     private $user = false;
 
@@ -202,7 +202,7 @@ class Firewall
      * If the token does not exist, AnonymousUser is returned.
      *
      * @throws FirewallException
-     * @return bool|\Webiny\Component\Security\User\UserAbstract
+     * @return bool|\Webiny\Component\Security\User\AbstractUser
      */
     public function getUser()
     {
@@ -385,14 +385,14 @@ class Firewall
      *
      * @param Login $login
      *
-     * @return bool|UserAbstract
+     * @return bool|AbstractUser
      * @throws FirewallException
      */
     private function authenticate(Login $login)
     {
         foreach ($this->userProviders as $name => $provider) {
             try {
-                /* @var UserAbstract $user */
+                /* @var AbstractUser $user */
                 $user = $provider->getUser($login);
                 if ($user && $user->authenticate($login, $this)) {
                     $user->setUserProviderName($name);

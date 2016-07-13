@@ -11,7 +11,7 @@
 namespace Webiny\Component\StdLib\StdObject\ArrayObject;
 
 use Traversable;
-use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
+use Webiny\Component\StdLib\StdObject\AbstractStdObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
@@ -21,7 +21,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  *
  * @package         Webiny\Component\StdLib\StdObject\ArrayObject
  */
-class ArrayObject extends StdObjectAbstract implements \IteratorAggregate, \ArrayAccess, \Countable
+class ArrayObject extends AbstractStdObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     use ManipulatorTrait, ValidatorTrait;
 

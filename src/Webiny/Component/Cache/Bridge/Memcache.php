@@ -14,7 +14,7 @@ use Webiny\Component\Cache\Cache;
  *
  * @package         Webiny\Component\Cache\Bridge
  */
-class Memcache extends CacheAbstract
+class Memcache extends AbstractCache
 {
 
     /**
@@ -45,7 +45,7 @@ class Memcache extends CacheAbstract
     }
 
     /**
-     * Override the CacheAbstract::getInstance method.
+     * Override the AbstractCache::getInstance method.
      *
      * @see CacheAbstract::getInstance()
      *

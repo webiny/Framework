@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Config\Bridge\Yaml;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\FileObject\FileObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
@@ -65,7 +65,7 @@ class Yaml implements YamlInterface
                     return;
                 }
             }
-            throw new YamlException(ExceptionAbstract::MSG_INVALID_ARG, [
+            throw new YamlException(AbstractException::MSG_INVALID_ARG, [
                     '$driver',
                     self::$driverInterface
                 ]

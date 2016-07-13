@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  * Base Handler class providing the Handler structure
  * @package Webiny\Component\Logger\Driver\Webiny\Handler
  */
-abstract class HandlerAbstract
+abstract class AbstractHandler
 {
     use StdLibTrait;
 
@@ -54,7 +54,7 @@ abstract class HandlerAbstract
      * @param Boolean           $bubble Whether the messages that are handled can bubble up the stack or not
      * @param bool              $buffer
      *
-     * @return HandlerAbstract Instance of HandlerAbstract
+     * @return AbstractHandler Instance of AbstractHandler
      */
     public function __construct($levels = [], $bubble = true, $buffer = false)
     {
@@ -141,7 +141,7 @@ abstract class HandlerAbstract
 
     /**
      * Process given record
-     * This will pass given record to ProcessorInterface instance, then format the record and output it according to current HandlerAbstract instance
+     * This will pass given record to ProcessorInterface instance, then format the record and output it according to current AbstractHandler instance
      *
      * @param Record $record
      *

@@ -18,7 +18,7 @@ use Webiny\Component\Entity\Attribute\Validation\ValidationException;
  * One2Many attribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class Many2ManyAttribute extends CollectionAttributeAbstract
+class Many2ManyAttribute extends AbstractCollectionAttribute
 {
     protected $intermediateCollection;
 

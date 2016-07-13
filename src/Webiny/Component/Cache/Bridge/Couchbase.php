@@ -15,7 +15,7 @@ use Webiny\Component\Cache\CacheException;
  *
  * @package         Webiny\Component\Cache\Bridge
  */
-class Couchbase extends CacheAbstract
+class Couchbase extends AbstractCache
 {
 
     /**
@@ -46,7 +46,7 @@ class Couchbase extends CacheAbstract
     }
 
     /**
-     * Override the CacheAbstract::getInstance method.
+     * Override the AbstractCache::getInstance method.
      *
      * @see      CacheAbstract::getInstance()
      *

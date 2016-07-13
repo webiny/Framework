@@ -14,7 +14,7 @@ use Webiny\Component\Cache\Cache;
  *
  * @package         Webiny\Component\Cache\Bridge
  */
-class APC extends CacheAbstract
+class APC extends AbstractCache
 {
 
     /**

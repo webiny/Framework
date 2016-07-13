@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Bootstrap;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Bootstrap exception class.
@@ -15,4 +15,4 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  * @package		 Webiny\Component\Bootstrap
  */
  
-class BootstrapException extends ExceptionAbstract {}
+class BootstrapException extends AbstractException {}

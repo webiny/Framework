@@ -9,7 +9,7 @@
  */
 namespace Webiny\Component\Logger\Driver\Webiny\Formatter\Exception;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 
 /**
@@ -17,7 +17,7 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  *
  * @package      Webiny\Component\Logger\Driver\Webiny\Handler\Exception
  */
-class FileFormatterException extends ExceptionAbstract
+class FileFormatterException extends AbstractException
 {
     const CONFIG_NOT_FOUND = 101;
 

@@ -8,7 +8,7 @@
 namespace Webiny\Component\Security\Authorization\Voters;
 
 use Webiny\Component\Security\Role\Role;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * Authentication voter checks if user is authorized or not.
@@ -49,12 +49,12 @@ class AuthenticationVoter implements VoterInterface
      * This function gets the current user object and needs to validate its access against the required roles.
      * The function must either return ACCESS_GRANTED, ACCESS_ABSTAIN or ACCESS_DENIED.
      *
-     * @param UserAbstract $user           Current user instance.
+     * @param AbstractUser $user           Current user instance.
      * @param array        $requestedRoles An array of requested roles for the current access map.
      *
      * @return integer ACCESS_GRANTED, ACCESS_ABSTAIN or ACCESS_DENIED.
      */
-    public function vote(UserAbstract $user, array $requestedRoles)
+    public function vote(AbstractUser $user, array $requestedRoles)
     {
         $result = self::ACCESS_DENIED;
         if ($user->isAuthenticated()) {

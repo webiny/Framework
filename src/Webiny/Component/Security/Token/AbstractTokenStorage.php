@@ -11,7 +11,7 @@ use Webiny\Component\Crypt\CryptTrait;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Security\Role\Role;
 use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\StdLib\StdLibTrait;
 
 /**
@@ -20,7 +20,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package         Webiny\Component\Security\User\Token
  */
-abstract class TokenStorageAbstract implements TokenStorageInterface
+abstract class AbstractTokenStorage implements TokenStorageInterface
 {
     use HttpTrait, CryptTrait, StdLibTrait;
 
@@ -100,11 +100,11 @@ abstract class TokenStorageAbstract implements TokenStorageInterface
     /**
      * Stores user data into an array, encrypts it and returns the encrypted string.
      *
-     * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.
+     * @param AbstractUser $user Instance of AbstractUser class that holds the pre-filled object from user provider.
      *
      * @return string
      */
-    public function encryptUserData(UserAbstract $user)
+    public function encryptUserData(AbstractUser $user)
     {
         // extract the roles
         $roles = $user->getRoles();

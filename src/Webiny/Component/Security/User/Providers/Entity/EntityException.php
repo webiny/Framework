@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\User\Providers\Entity;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Memory provider exception class.
  *
  * @package         Webiny\Component\Security\User\Providers\Memory
  */
-class EntityException extends ExceptionAbstract
+class EntityException extends AbstractException
 {
 }

@@ -15,10 +15,10 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 
 /**
- * CollectionAttributeAbstract
+ * AbstractCollectionAttribute
  * @package Webiny\Component\Entity\AttributeType
  */
-abstract class CollectionAttributeAbstract extends AbstractAttribute implements \IteratorAggregate, \ArrayAccess
+abstract class AbstractCollectionAttribute extends AbstractAttribute implements \IteratorAggregate, \ArrayAccess
 {
     use StdLibTrait;
 

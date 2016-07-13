@@ -11,7 +11,7 @@
 namespace Webiny\Component\StdLib\StdObject\StringObject;
 
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
+use Webiny\Component\StdLib\StdObject\AbstractStdObject;
 use Webiny\Component\StdLib\StdObject\StringObject\ManipulatorTrait;
 use Webiny\Component\StdLib\StdObject\StringObject\ValidatorTrait;
 
@@ -21,7 +21,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\ValidatorTrait;
  *
  * @package         Webiny\Component\StdLib\StdObject\StringObject
  */
-class StringObject extends StdObjectAbstract implements \ArrayAccess
+class StringObject extends AbstractStdObject implements \ArrayAccess
 {
     use ManipulatorTrait, ValidatorTrait;
 

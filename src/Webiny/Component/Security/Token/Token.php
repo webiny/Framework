@@ -8,7 +8,7 @@
 namespace Webiny\Component\Security\Token;
 
 use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 
@@ -27,7 +27,7 @@ class Token
     const TOKEN_SESSION_STORAGE = '\Webiny\Component\Security\Token\Storage\Session';
 
     /**
-     * @var TokenStorageAbstract
+     * @var AbstractTokenStorage
      */
     private $storage;
 
@@ -64,7 +64,7 @@ class Token
             if (!$storageClass) {
                 $storageClass = $this->getStorageName();
             }
-            $this->storage = $this->factory($storageClass, '\Webiny\Component\Security\Token\TokenStorageAbstract');
+            $this->storage = $this->factory($storageClass, '\Webiny\Component\Security\Token\AbstractTokenStorage');
             $this->storage->setSecurityKey($securityKey);
             $this->storage->setCrypt($cryptDriver);
         } catch (Exception $e) {
@@ -122,11 +122,11 @@ class Token
     /**
      * Creates a token for the given $user.
      *
-     * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.
+     * @param AbstractUser $user Instance of AbstractUser class that holds the pre-filled object from user provider.
      *
      * @return bool
      */
-    public function saveUser(UserAbstract $user)
+    public function saveUser(AbstractUser $user)
     {
         return $this->storage->saveUserToken($user);
     }

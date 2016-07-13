@@ -8,7 +8,7 @@
 namespace Webiny\Component\Logger\Driver\Webiny\Handler;
 
 use Webiny\Component\Logger\Driver\Webiny\Formatter\FileFormatter;
-use Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterAbstract;
+use Webiny\Component\Logger\Driver\Webiny\Formatter\AbstractFormatter;
 use Webiny\Component\Logger\Driver\Webiny\Record;
 use Webiny\Component\Logger\LoggerException;
 use Webiny\Component\StdLib\StdObject\StdObjectException;
@@ -19,7 +19,7 @@ use Webiny\Component\Storage\File\File;
  *
  * @package         Webiny\Component\Logger\Driver\Webiny\Handler
  */
-class FileHandler extends HandlerAbstract
+class FileHandler extends AbstractHandler
 {
     /**
      * @var File
@@ -52,7 +52,7 @@ class FileHandler extends HandlerAbstract
     /**
      * Get default formatter for this handler
      *
-     * @return FormatterAbstract
+     * @return AbstractFormatter
      */
     protected function getDefaultFormatter()
     {

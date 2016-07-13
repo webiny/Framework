@@ -26,7 +26,7 @@ interface FormatterInterface
 
     /**
      * Formats multiple log records
-     * The second parameter contains the Record object that will be passed to HandlerAbstract->write($record) method.
+     * The second parameter contains the Record object that will be passed to AbstractHandler->write($record) method.
      * Modify the Record object as you see fit.
      *
      * Assign formatted value using $record->setFormattedRecord($formattedRecord)

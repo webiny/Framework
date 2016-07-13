@@ -98,7 +98,7 @@ supports these plugin types:
 - **resources** - http://www.smarty.net/docs/en/plugins.resources.tpl
 - **inserts** - http://www.smarty.net/docs/en/plugins.inserts.tpl
 
-To create a smarty extension, create a class that extends `\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionAbstract`
+To create a smarty extension, create a class that extends `\Webiny\Component\TemplateEngine\Drivers\Smarty\AbstractSmartyExtension`
 and then overwrite the methods, based on the plugin type your wish to create.
 
 For example, let's say we want to register a modifier called 'customUpper'. First we create our extension class like this:

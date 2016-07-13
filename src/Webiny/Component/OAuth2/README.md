@@ -73,12 +73,12 @@ $result = $instance->request()->rawRequest($url, $params);
 
 ## Registering additional servers
 
-First create a class that extends `\Webiny\Component\OAuth2\ServerAbstract` and then implement the abstract methods.
-All of the abstract methods are described inside `ServerAbstract` class, and additionally you should also check out how
+First create a class that extends `\Webiny\Component\OAuth2\AbstractServer` and then implement the abstract methods.
+All of the abstract methods are described inside `AbstractServer` class, and additionally you should also check out how
 implementations of current servers looks like. They are located in `\Webiny\Component\OAuth2\Server` folder.
 
 ```php
-class Instagram extends \Webiny\Component\OAuth2\ServerAbstract
+class Instagram extends \Webiny\Component\OAuth2\AbstractServer
 {
     public function getAuthorizeUrl(){
         // TODO: Implement _getUserDetailsTargetData() method.

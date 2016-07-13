@@ -24,7 +24,7 @@ CHANGELOG
 * Security now provides a shorter access to firewall: instead of `$this->security()->firewall('admin');` we can now use `$this->security('admin')`
 * `createPasswordHash($password)` method is now exposed in a Firewall: `$this->security('admin')->createPasswordHash($password);`
 * `json_encode()` now triggers `__toString()` magic method on EntityAbstract
-* ArrayObject now has a `mergeSmart()` method which works exactly as ConfigObject mergeWith() algorithm. 
+* ArrayObjectStdObject now has a `mergeSmart()` method which works exactly as ConfigObject mergeWith() algorithm. 
 
 1.0.0
 ---------

@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Http\Response;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception for Response class
  *
  * @package         Webiny\Component\Http\Response
  */
-class ResponseException extends ExceptionAbstract
+class ResponseException extends AbstractException
 {
 }

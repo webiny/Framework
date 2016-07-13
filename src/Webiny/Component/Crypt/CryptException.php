@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Crypt;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the Crypt component.
  *
  * @package         Webiny\Component\Crypt
  */
-class CryptException extends ExceptionAbstract
+class CryptException extends AbstractException
 {
 
 }

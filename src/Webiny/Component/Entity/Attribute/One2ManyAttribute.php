@@ -17,7 +17,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  * One2Many attribute
  * @package Webiny\Component\Entity\AttributeType
  */
-class One2ManyAttribute extends CollectionAttributeAbstract
+class One2ManyAttribute extends AbstractCollectionAttribute
 {
     use StdLibTrait;
 

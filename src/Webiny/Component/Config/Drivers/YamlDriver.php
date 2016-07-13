@@ -16,7 +16,7 @@ use Webiny\Component\Config\ConfigException;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-class YamlDriver extends DriverAbstract
+class YamlDriver extends AbstractDriver
 {
     private $indent = 4;
     /**

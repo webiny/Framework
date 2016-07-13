@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Authorization;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Access control exception class.
  *
  * @package         Webiny\Component\Security\Authorization
  */
-class AccessControlException extends ExceptionAbstract
+class AccessControlException extends AbstractException
 {
 }
