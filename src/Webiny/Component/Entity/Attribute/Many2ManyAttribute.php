@@ -126,7 +126,7 @@ class Many2ManyAttribute extends CollectionAttributeAbstract
 
     public function hasValue()
     {
-        return boolval(Many2ManyStorage::getInstance()->count($this));
+        return count($this->getValue()) > 0;
     }
 
     /**

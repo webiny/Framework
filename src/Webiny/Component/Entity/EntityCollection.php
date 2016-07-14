@@ -18,7 +18,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
  *
  * @package Webiny\Component\Entity
  */
-class EntityCollection implements \IteratorAggregate, \ArrayAccess
+class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     use MongoTrait, StdLibTrait;
 

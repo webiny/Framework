@@ -685,8 +685,7 @@ abstract class AbstractEntity implements \ArrayAccess
         /**
          * Check if attribute is required and it's value is set or maybe value was already assigned
          */
-        $hasValue = $entityAttribute->hasValue();
-        if (!$fromDb && $entityAttribute->isRequired() && !isset($data[$attributeName]) && !$hasValue) {
+        if (!$fromDb && $entityAttribute->isRequired() && !isset($data[$attributeName]) && !$entityAttribute->hasValue()) {
             $message = $entityAttribute->getValidationMessages('required');
             if (!$message) {
                 $message = ValidationException::REQUIRED;
