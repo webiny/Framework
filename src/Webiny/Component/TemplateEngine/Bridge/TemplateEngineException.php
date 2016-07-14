@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\TemplateEngine\Bridge;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Template engine exception class.
  *
  * @package         Webiny\Component\TemplateEngine\Bridge
  */
-class TemplateEngineException extends ExceptionAbstract
+class TemplateEngineException extends AbstractException
 {
 
 }

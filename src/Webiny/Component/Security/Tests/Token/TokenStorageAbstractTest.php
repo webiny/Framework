@@ -19,7 +19,7 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $instance = new TokenStorageMock();
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\TokenStorageAbstract', $instance);
+        $this->assertInstanceOf('\Webiny\Component\Security\Token\AbstractTokenStorage', $instance);
     }
 
     public function testSetGetTokenName()

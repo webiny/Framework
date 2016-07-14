@@ -9,14 +9,14 @@
  */
 namespace Webiny\Component\Logger;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Logger exception class.
  *
  * @package      Webiny\Component\Logger
  */
-class LoggerException extends ExceptionAbstract
+class LoggerException extends AbstractException
 {
     const FORMATTER_CONFIG_NOT_FOUND = 101;
     const HANDLER_CONFIG_NOT_FOUND = 102;

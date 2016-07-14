@@ -32,7 +32,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
      */
     public function testRequest($oauth2)
     {
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\ServerAbstract', $oauth2->request());
+        $this->assertInstanceOf('\Webiny\Component\OAuth2\AbstractServer', $oauth2->request());
     }
 
     /**

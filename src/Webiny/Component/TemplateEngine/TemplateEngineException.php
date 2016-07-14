@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\TemplateEngine;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for template engine component.
  *
  * @package         Webiny\Component\TemplateEngine
  */
-class TemplateEngineException extends ExceptionAbstract
+class TemplateEngineException extends AbstractException
 {
 }

@@ -6,14 +6,14 @@
  */
 namespace Webiny\Component\EventManager;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the EventManager component.
  *
  * @package         Webiny\Component\EventManager
  */
-class EventManagerException extends ExceptionAbstract
+class EventManagerException extends AbstractException
 {
     const INVALID_PRIORITY_VALUE = 101;
     const INVALID_EVENT_HANDLER = 102;

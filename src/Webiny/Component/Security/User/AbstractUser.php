@@ -20,7 +20,7 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  *
  * @package         Webiny\Component\Security\User
  */
-abstract class UserAbstract implements UserInterface
+abstract class AbstractUser implements UserInterface
 {
     use StdLibTrait;
 

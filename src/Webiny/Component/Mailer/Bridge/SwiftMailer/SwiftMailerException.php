@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Mailer\Bridge\SwiftMailer;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * SwiftMailer exception class.
  *
  * @package         Webiny\Component\Mailer\Bridge\SwiftMailer
  */
-class SwiftMailerException extends ExceptionAbstract
+class SwiftMailerException extends AbstractException
 {
 }

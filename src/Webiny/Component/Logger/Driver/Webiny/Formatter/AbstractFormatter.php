@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  * Base Formatter class providing the Handler structure
  * @package Webiny\Component\Logger\Driver\Webiny\Formatter
  */
-abstract class FormatterAbstract implements FormatterInterface
+abstract class AbstractFormatter implements FormatterInterface
 {
     use StdLibTrait;
 

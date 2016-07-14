@@ -12,10 +12,10 @@ namespace Webiny\Component\ClassLoader\Loaders;
  *
  * @package         Webiny\Component\ClassLoader\Loaders
  */
-class Pear extends LoaderAbstract
+class Pear extends AbstractLoader
 {
     /**
-     * @var LoaderAbstract Holds the loader instance.
+     * @var AbstractLoader Holds the loader instance.
      */
     protected static $instance = null;
 

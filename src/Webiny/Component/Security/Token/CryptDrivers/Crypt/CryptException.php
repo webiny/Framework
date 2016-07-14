@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Token\CryptDrivers\Crypt;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Exception class for the Crypt token crypt driver class.
  *
  * @package         Webiny\Component\Security\Token\CryptDrivers\Crypt
  */
-class CryptException extends ExceptionAbstract
+class CryptException extends AbstractException
 {
 }

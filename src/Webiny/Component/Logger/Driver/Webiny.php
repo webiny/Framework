@@ -9,7 +9,7 @@ namespace Webiny\Component\Logger\Driver;
 
 use Webiny\Component\Logger\Bridge\LoggerDriverInterface;
 use Webiny\Component\Logger\Bridge\LoggerLevel;
-use Webiny\Component\Logger\Driver\Webiny\Handler\HandlerAbstract;
+use Webiny\Component\Logger\Driver\Webiny\Handler\AbstractHandler;
 use Webiny\Component\Logger\Driver\Webiny\Record;
 use Webiny\Component\Logger\LoggerException;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -56,9 +56,9 @@ class Webiny implements LoggerDriverInterface
      * Add handler to logger
      * Handlers are being prepended to the handlers array, so the last added handler will be executed first
      *
-     * @param HandlerAbstract $handler
+     * @param AbstractHandler $handler
      */
-    public function addHandler(HandlerAbstract $handler)
+    public function addHandler(AbstractHandler $handler)
     {
         $this->handlers->prepend($handler);
     }
@@ -205,7 +205,7 @@ class Webiny implements LoggerDriverInterface
     protected function addRecord($level, $message, array $context = array())
     {
         if ($this->handlers->count() < 1) {
-            throw new LoggerException('To log a record you must add at least one HandlerAbstract object to handle the messages.'
+            throw new LoggerException('To log a record you must add at least one AbstractHandler object to handle the messages.'
             );
         }
 

@@ -13,7 +13,7 @@ use Webiny\Component\Security\Authorization\Voters\AuthenticationVoter;
 use Webiny\Component\Security\Authorization\Voters\RoleVoter;
 use Webiny\Component\Security\Authorization\Voters\VoterInterface;
 use Webiny\Component\Security\Role\Role;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\ServiceManager\ServiceManagerTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -58,10 +58,10 @@ class AccessControl
     /**
      * Base constructor.
      *
-     * @param UserAbstract $user   Instance of current user.
+     * @param AbstractUser $user   Instance of current user.
      * @param ConfigObject $config Access control configuration.
      */
-    public function __construct(UserAbstract $user, ConfigObject $config)
+    public function __construct(AbstractUser $user, ConfigObject $config)
     {
         $this->config = $config;
         $this->user = $user;

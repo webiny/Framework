@@ -10,14 +10,14 @@
 
 namespace Webiny\Component\Storage;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Storage exception class
  *
  * @package      Webiny\Bridge\Storage
  */
-class StorageException extends ExceptionAbstract
+class StorageException extends AbstractException
 {
 
     const FILE_NOT_FOUND = 101;

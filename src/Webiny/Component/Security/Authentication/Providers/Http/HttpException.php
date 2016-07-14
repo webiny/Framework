@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Authentication\Providers\Http;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * TwitterOAuth exception class
  *
  * @package         Webiny\Component\Security\Authentication\Providers\Http
  */
-class HttpException extends ExceptionAbstract
+class HttpException extends AbstractException
 {
 }

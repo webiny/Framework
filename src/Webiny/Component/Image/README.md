@@ -108,7 +108,7 @@ which perform all the image manipulations.
 
 If you wish to expand or change the current bridged library you need to create two classes:
 - a loader class that implements `Webiny\Component\Image\Bridge\ImageLoaderInterface`
-- an image manipulation class that extends `Webiny\Component\Image\Bridge\ImageAbstract`
+- an image manipulation class that extends `Webiny\Component\Image\Bridge\AbstractImage`
 
 After that just change the `Bridge` in the configuration and the framework will use your bridge instead the
 default one.

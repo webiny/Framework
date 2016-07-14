@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\TwitterOAuth\Bridge\League;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * TwitterOAuth exception class.
  *
  * @package         Webiny\Component\TemplateEngine\Bridge\TwitterOAuth
  */
-class TwitterOAuthException extends ExceptionAbstract
+class TwitterOAuthException extends AbstractException
 {
 
 }

@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\OAuth2;
 
-use Webiny\Component\OAuth2\Bridge\OAuth2Abstract;
+use Webiny\Component\OAuth2\Bridge\AbstractOAuth2;
 use Webiny\Component\StdLib\ComponentTrait;
 
 /**
@@ -22,12 +22,12 @@ class OAuth2
     use ComponentTrait;
 
     /**
-     * @var OAuth2Abstract
+     * @var AbstractOAuth2
      */
     private $instance;
 
     /**
-     * @var ServerAbstract
+     * @var AbstractServer
      */
     private $server;
 
@@ -36,9 +36,9 @@ class OAuth2
      * Base constructor.
      * NOTE: Use OAuth2Loader::getInstance method to get an OAuth2 instance.
      *
-     * @param OAuth2Abstract $instance
+     * @param AbstractOAuth2 $instance
      */
-    public function __construct(OAuth2Abstract $instance)
+    public function __construct(AbstractOAuth2 $instance)
     {
         $this->instance = $instance;
 
@@ -48,7 +48,7 @@ class OAuth2
     }
 
     /**
-     * @return ServerAbstract
+     * @return AbstractServer
      */
     public function request()
     {

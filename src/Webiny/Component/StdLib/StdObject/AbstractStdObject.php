@@ -18,7 +18,7 @@ use Webiny\Component\StdLib\ValidatorTrait;
  *
  * @package         Webiny\Component\StdLib\StdObject
  */
-abstract class StdObjectAbstract implements StdObjectInterface
+abstract class AbstractStdObject implements StdObjectInterface
 {
     use ValidatorTrait;
 

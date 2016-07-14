@@ -8,13 +8,13 @@
 
 namespace Webiny\Component\Cache;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Class CacheException.
  * @package Webiny\Component\Cache
  */
-class CacheException extends ExceptionAbstract
+class CacheException extends AbstractException
 {
     const MSG_UNSUPPORTED_DRIVER = 101;
 

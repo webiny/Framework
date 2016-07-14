@@ -9,14 +9,14 @@
  */
 namespace Webiny\Component\Config;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Config exception class.
  *
  * @package      Webiny\Component\Config
  */
-class ConfigException extends ExceptionAbstract
+class ConfigException extends AbstractException
 {
 
 }

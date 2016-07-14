@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Rest;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * RestErrorExceptions are thrown by the api service methods.
@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  *
  * @package         Webiny\Component\Rest
  */
-class RestErrorException extends ExceptionAbstract
+class RestErrorException extends AbstractException
 {
     /**
      * @var string Error message.

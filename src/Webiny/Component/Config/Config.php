@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Config;
 
-use Webiny\Component\Config\Drivers\DriverAbstract;
+use Webiny\Component\Config\Drivers\AbstractDriver;
 use Webiny\Component\Config\Drivers\IniDriver;
 use Webiny\Component\Config\Drivers\JsonDriver;
 use Webiny\Component\Config\Drivers\PhpDriver;
@@ -114,9 +114,9 @@ class Config
 
     /**
      * Parse resource and create a Config object
-     * A valid resource is a PHP array, ArrayObject or an instance of DriverAbstract
+     * A valid resource is a PHP array, ArrayObject or an instance of AbstractDriver
      *
-     * @param array|ArrayObject|DriverAbstract $resource   Config resource
+     * @param array|ArrayObject|AbstractDriver $resource   Config resource
      * @param bool                             $flushCache Flush existing cache and load config file
      *
      * @return ConfigObject
@@ -124,7 +124,7 @@ class Config
     public function parseResource($resource, $flushCache = false)
     {
         $driver = $resource;
-        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\DriverAbstract';
+        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\AbstractDriver';
         if (self::isInstanceOf($resource, $driverAbstractClassName)) {
             $resource = $resource->getResource();
         }

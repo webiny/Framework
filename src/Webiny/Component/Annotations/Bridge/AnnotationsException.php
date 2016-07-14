@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\Annotations\Bridge;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Annotations exception class.
  *
  * @package         Webiny\Component\Annotations\Bridge
  */
-class AnnotationsException extends ExceptionAbstract
+class AnnotationsException extends AbstractException
 {
 
 }

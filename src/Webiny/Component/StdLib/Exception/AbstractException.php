@@ -19,7 +19,7 @@ use Webiny\Component\StdLib\ValidatorTrait;
  *
  * @package         Webiny\Component\StdLib\Exception
  */
-abstract class ExceptionAbstract extends \Exception
+abstract class AbstractException extends \Exception
 {
     use StdObjectTrait, ValidatorTrait;
 

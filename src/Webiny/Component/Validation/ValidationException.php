@@ -2,9 +2,9 @@
 
 namespace Webiny\Component\Validation;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
-class ValidationException extends ExceptionAbstract
+class ValidationException extends AbstractException
 {
 
 }

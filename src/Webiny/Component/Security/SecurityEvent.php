@@ -8,7 +8,7 @@
 namespace Webiny\Component\Security;
 
 use Webiny\Component\EventManager\Event;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * This class is passed along with the events fired by Security component.
@@ -37,7 +37,7 @@ class SecurityEvent extends Event
     const AUTHENTICATED = 'wf.security.authenticated';
 
     /**
-     * @var User\UserAbstract
+     * @var User\AbstractUser
      */
     private $user;
 
@@ -45,9 +45,9 @@ class SecurityEvent extends Event
     /**
      * Base constructor.
      *
-     * @param UserAbstract $user
+     * @param AbstractUser $user
      */
-    public function __construct(UserAbstract $user)
+    public function __construct(AbstractUser $user)
     {
         $this->user = $user;
 
@@ -57,7 +57,7 @@ class SecurityEvent extends Event
     /**
      * Returns the instance of current user.
      *
-     * @return UserAbstract
+     * @return AbstractUser
      */
     public function getUser()
     {

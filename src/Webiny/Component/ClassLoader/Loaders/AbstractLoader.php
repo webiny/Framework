@@ -13,7 +13,7 @@ namespace Webiny\Component\ClassLoader\Loaders;
  * @package         Webiny\Component\ClassLoader\Loaders
  */
 
-abstract class LoaderAbstract
+abstract class AbstractLoader
 {
     /**
      * @var bool|array A list of registered maps.

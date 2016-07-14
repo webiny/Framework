@@ -14,7 +14,7 @@ use Webiny\Component\Cache\Cache;
  *
  * @package         Webiny\Component\Cache\Bridge
  */
-class Redis extends CacheAbstract
+class Redis extends AbstractCache
 {
 
     /**
@@ -45,7 +45,7 @@ class Redis extends CacheAbstract
     }
 
     /**
-     * Override the CacheAbstract::getInstance method.
+     * Override the AbstractCache::getInstance method.
      *
      * @see CacheAbstract::getInstance()
      *

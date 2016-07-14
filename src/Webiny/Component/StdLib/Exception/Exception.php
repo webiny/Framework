@@ -15,7 +15,7 @@ namespace Webiny\Component\StdLib\Exception;
  *
  * @package             Webiny\Component\StdLib\Exception
  */
-class Exception extends ExceptionAbstract
+class Exception extends AbstractException
 {
 
 }

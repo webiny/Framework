@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Security\Token;
 
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * Token storage interface.
@@ -34,16 +34,16 @@ interface TokenStorageInterface
     /**
      * Save user authentication token.
      *
-     * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.
+     * @param AbstractUser $user Instance of AbstractUser class that holds the pre-filled object from user provider.
      *
      * @return bool
      */
-    public function saveUserToken(UserAbstract $user);
+    public function saveUserToken(AbstractUser $user);
 
     /**
      * Check if auth token is present, if true, try to load the right user and return it's username.
      *
-     * @return bool|UserAbstract False it user token is not available, otherwise the UserAbstract object is returned.
+     * @return bool|AbstractUser False it user token is not available, otherwise the AbstractUser object is returned.
      */
     public function loadUserFromToken();
 

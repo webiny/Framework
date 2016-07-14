@@ -56,7 +56,7 @@ class OAuth2
      * @param string $certificateFile
      *
      * @throws Exception
-     * @return OAuth2Abstract
+     * @return AbstractOAuth2
      */
     static function getInstance($clientId, $clientSecret, $redirectUri, $certificateFile = '')
     {

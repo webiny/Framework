@@ -18,7 +18,7 @@ use Webiny\Component\StdLib\ValidatorTrait;
  *
  * @package         Webiny\Component\StdLib\StdObject
  */
-class StdObjectWrapper extends StdObjectAbstract
+class StdObjectWrapper extends AbstractStdObject
 {
     use ValidatorTrait;
 
@@ -45,7 +45,7 @@ class StdObjectWrapper extends StdObjectAbstract
     public static function returnStdObject(&$var)
     {
         // check if $var is already a standard object
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\StdObjectAbstract')) {
+        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\AbstractStdObject')) {
             return $var;
         }
 

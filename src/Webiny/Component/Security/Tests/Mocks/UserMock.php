@@ -9,14 +9,14 @@ namespace Webiny\Component\Security\Tests\Mocks;
 
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * User mock.
  *
  * @package         Webiny\Component\Security\Tests\Mocks
  */
-class UserMock extends UserAbstract
+class UserMock extends AbstractUser
 {
 
     /**

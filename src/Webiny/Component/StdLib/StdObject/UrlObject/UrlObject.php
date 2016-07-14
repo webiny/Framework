@@ -14,7 +14,7 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 use Webiny\Component\StdLib\StdObjectTrait;
 use Webiny\Component\StdLib\ValidatorTrait;
-use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
+use Webiny\Component\StdLib\StdObject\AbstractStdObject;
 
 /**
  * Url standard object.
@@ -22,7 +22,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectAbstract;
  *
  * @package         Webiny\Component\StdLib\StdObject\UrlObject
  */
-class UrlObject extends StdObjectAbstract
+class UrlObject extends AbstractStdObject
 {
     use ValidatorTrait, ManipulatorTrait, StdObjectTrait;
 

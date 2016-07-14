@@ -10,7 +10,7 @@ namespace Webiny\Component\Image\Bridge\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Color;
 use Imagine\Image\Point;
-use Webiny\Component\Image\Bridge\ImageAbstract;
+use Webiny\Component\Image\Bridge\AbstractImage;
 use Webiny\Component\Image\ArrayObject;
 use Webiny\Component\Image\ImageInterface;
 use Webiny\Component\Image\ImageLoader;
@@ -21,7 +21,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package         Webiny\Component\Image\Bridge\Imagine
  */
-class Image extends ImageAbstract
+class Image extends AbstractImage
 {
     use StdLibTrait;
 

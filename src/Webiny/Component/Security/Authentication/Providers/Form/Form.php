@@ -12,7 +12,7 @@ use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Security\Authentication\Providers\AuthenticationInterface;
 use Webiny\Component\Security\Authentication\Providers\Login;
 use Webiny\Component\Security\Token\Token;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * Form authentication provider.
@@ -59,9 +59,9 @@ class Form implements AuthenticationInterface
     /**
      * This callback is triggered after we have validated user credentials and have created a user auth token.
      *
-     * @param UserAbstract $user
+     * @param AbstractUser $user
      */
-    public function loginSuccessfulCallback(UserAbstract $user)
+    public function loginSuccessfulCallback(AbstractUser $user)
     {
         // nothing to do
     }
@@ -70,12 +70,12 @@ class Form implements AuthenticationInterface
      * This callback is triggered when the system has managed to retrieve the user from the stored token (either session)
      * or cookie.
      *
-     * @param UserAbstract $user
+     * @param AbstractUser $user
      * @param Token        $token
      *
      * @return mixed
      */
-    public function userAuthorizedByTokenCallback(UserAbstract $user, Token $token)
+    public function userAuthorizedByTokenCallback(AbstractUser $user, Token $token)
     {
         // nothing to do
     }

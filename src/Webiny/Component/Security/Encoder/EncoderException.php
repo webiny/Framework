@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security\Encoder;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Encoder exception class.
  *
  * @package         Webiny\Component\Security\Encoder
  */
-class EncoderException extends ExceptionAbstract
+class EncoderException extends AbstractException
 {
 }

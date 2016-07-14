@@ -9,9 +9,9 @@ These are the drivers currently provided by Webiny:
 - Yaml
 - PHP
 
-If you are interested in developing a new config driver, you must extend the `DriverAbstract` class. It will have you implement the following methods:
+If you are interested in developing a new config driver, you must extend the `AbstractDriver` class. It will have you implement the following methods:
 ```php
-class MyCustomDriver extends DriverAbstract
+class MyCustomDriver extends AbstractDriver
 {
     /**
      * Get config data as string
@@ -31,7 +31,7 @@ class MyCustomDriver extends DriverAbstract
     }
 }
 ```
-By default, `DriverAbstract` class has built-in validation of driver resource and checks for string, `StringObject`, array, `ArrayObject` and `FileObject`.
+By default, `AbstractDriver` class has built-in validation of driver resource and checks for string, `StringObject`, array, `ArrayObject` and `FileObject`.
 If you want to handle the validation yourself, you will have to override the `_validateResource()` method:
 
 ```php

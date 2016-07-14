@@ -17,7 +17,7 @@ use Webiny\Component\Storage\File\File;
  *
  * @package         Webiny\Component\Image\Bridge
  */
-abstract class ImageAbstract implements ImageInterface
+abstract class AbstractImage implements ImageInterface
 {
     use StdLibTrait;
 

@@ -16,7 +16,7 @@ use Webiny\Component\Security\Authentication\Providers\Login;
  *
  * @package         Webiny\Component\Security\User
  */
-class AnonymousUser extends UserAbstract
+class AnonymousUser extends AbstractUser
 {
 
     /**

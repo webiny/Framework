@@ -9,7 +9,7 @@ namespace Webiny\Component\OAuth2\Server;
 
 use Webiny\Component\OAuth2\OAuth2User;
 use Webiny\Component\OAuth2\OAuth2Exception;
-use Webiny\Component\OAuth2\ServerAbstract;
+use Webiny\Component\OAuth2\AbstractServer;
 use Webiny\Component\StdLib\StdLibTrait;
 
 /**
@@ -17,7 +17,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package         Webiny\Component\OAuth2\Server
  */
-class LinkedIn extends ServerAbstract
+class LinkedIn extends AbstractServer
 {
     use StdLibTrait;
 

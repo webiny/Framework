@@ -14,7 +14,7 @@ use \Webiny\Component\StdLib\ValidatorTrait;
  *
  * @package         Webiny\Component\Cache\Bridge;
  */
-abstract class CacheAbstract implements StorageInterface
+abstract class AbstractCache implements StorageInterface
 {
     use ValidatorTrait;
 

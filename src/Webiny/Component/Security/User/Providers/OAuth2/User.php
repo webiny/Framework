@@ -9,14 +9,14 @@ namespace Webiny\Component\Security\User\Providers\OAuth2;
 
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * OAuth2 user class.
  *
  * @package         namespace Webiny\Component\Security\User\Providers\OAuth2
  */
-class User extends UserAbstract
+class User extends AbstractUser
 {
 
     /**

@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Security\User\Exceptions;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * User not found exception.
@@ -15,6 +15,6 @@ use Webiny\Component\StdLib\Exception\ExceptionAbstract;
  *
  * @package         Webiny\Component\Security\User\Exceptions
  */
-class UserNotFoundException extends ExceptionAbstract
+class UserNotFoundException extends AbstractException
 {
 }

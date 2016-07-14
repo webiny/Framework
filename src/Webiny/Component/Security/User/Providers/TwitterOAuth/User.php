@@ -9,14 +9,14 @@ namespace Webiny\Component\Security\User\Providers\TwitterOAuth;
 
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Authentication\Providers\Login;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * TwitterOauth user class.
  *
  * @package    Webiny\Component\Security\User\Providers\TwitterOAuth
  */
-class User extends UserAbstract
+class User extends AbstractUser
 {
 
     /**

@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Security;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Security exception class.
  *
  * @package         Webiny\Component\Security
  */
-class SecurityException extends ExceptionAbstract
+class SecurityException extends AbstractException
 {
 }

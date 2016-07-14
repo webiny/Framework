@@ -9,14 +9,14 @@
  */
 namespace Webiny\Component\Config\Bridge\Yaml;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Config exception class.
  *
  * @package      Webiny\Component\Config\Bridge\Yaml
  */
-class YamlException extends ExceptionAbstract
+class YamlException extends AbstractException
 {
 
 }

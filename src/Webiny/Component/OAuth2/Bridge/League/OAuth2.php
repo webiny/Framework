@@ -8,7 +8,7 @@
 namespace Webiny\Component\OAuth2\Bridge\League;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
-use Webiny\Component\OAuth2\Bridge\OAuth2Abstract;
+use Webiny\Component\OAuth2\Bridge\AbstractOAuth2;
 use Webiny\Component\OAuth2\Bridge\OAuth2Exception;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -18,7 +18,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  *
  * @package         Webiny\Component\OAuth2\Bridge\OAuth2
  */
-class OAuth2 extends OAuth2Abstract
+class OAuth2 extends AbstractOAuth2
 {
     use HttpTrait, StdLibTrait;
 

@@ -10,8 +10,8 @@ namespace Webiny\Component\Security\Token\Storage;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Security\Token\TokenData;
 use Webiny\Component\Security\Token\TokenException;
-use Webiny\Component\Security\Token\TokenStorageAbstract;
-use Webiny\Component\Security\User\UserAbstract;
+use Webiny\Component\Security\Token\AbstractTokenStorage;
+use Webiny\Component\Security\User\AbstractUser;
 
 /**
  * Stateless token storage.
@@ -20,7 +20,7 @@ use Webiny\Component\Security\User\UserAbstract;
  *
  * @package         Webiny\Component\Security\User\Token\Storage
  */
-class Stateless extends TokenStorageAbstract
+class Stateless extends AbstractTokenStorage
 {
     use HttpTrait;
 
@@ -29,11 +29,11 @@ class Stateless extends TokenStorageAbstract
     /**
      * Save user authentication token.
      *
-     * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.
+     * @param AbstractUser $user Instance of AbstractUser class that holds the pre-filled object from user provider.
      *
      * @return bool
      */
-    public function saveUserToken(UserAbstract $user)
+    public function saveUserToken(AbstractUser $user)
     {
         $this->tokenString = $this->encryptUserData($user);
 
@@ -43,7 +43,7 @@ class Stateless extends TokenStorageAbstract
     /**
      * Check if auth token is present, if true, try to load the right user and return it's username.
      *
-     * @return bool|UserAbstract False it user token is not available, otherwise the UserAbstract object is returned.
+     * @return bool|AbstractUser False it user token is not available, otherwise the AbstractUser object is returned.
      */
     public function loadUserFromToken()
     {
@@ -68,11 +68,11 @@ class Stateless extends TokenStorageAbstract
     /**
      * Stores user data into an array, encrypts it and returns the encrypted string.
      *
-     * @param UserAbstract $user Instance of UserAbstract class that holds the pre-filled object from user provider.
+     * @param AbstractUser $user Instance of AbstractUser class that holds the pre-filled object from user provider.
      *
      * @return string
      */
-    public function encryptUserData(UserAbstract $user)
+    public function encryptUserData(AbstractUser $user)
     {
         // data (we use short syntax to reduce the size of the cookie or session)
         $data = [

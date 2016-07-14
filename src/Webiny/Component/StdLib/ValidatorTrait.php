@@ -244,7 +244,7 @@ trait ValidatorTrait
      */
     protected static function isStdObject($instance)
     {
-        if (self::isInstanceOf($instance, 'Webiny\Component\StdLib\StdObject\StdObjectAbstract')) {
+        if (self::isInstanceOf($instance, 'Webiny\Component\StdLib\StdObject\AbstractStdObject')) {
             return true;
         }
 

@@ -24,7 +24,7 @@ interface UserProviderInterface
      *
      * @param Login $login Instance of Login object.
      *
-     * @return UserAbstract
+     * @return AbstractUser
      * @throws UserNotFoundException
      */
     public function getUser(Login $login);

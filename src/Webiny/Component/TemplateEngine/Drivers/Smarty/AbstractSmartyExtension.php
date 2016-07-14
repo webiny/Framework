@@ -14,7 +14,7 @@ namespace Webiny\Component\TemplateEngine\Drivers\Smarty;
  * @package         Webiny\Component\TemplateEngine\Bridge\Drivers\Smarty
  */
 
-abstract class SmartyExtensionAbstract implements SmartyExtensionInterface
+abstract class AbstractSmartyExtension implements SmartyExtensionInterface
 {
 
     /**

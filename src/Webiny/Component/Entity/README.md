@@ -27,7 +27,7 @@ For additional versions of the package, visit the [Packagist page](https://packa
 - `one2many`
 - `many2many`
 
-`one2many` and `many2many` attributes extend `CollectionAttributeAbstract` class. These 2 attributes are the most complex because their value
+`one2many` and `many2many` attributes extend `AbstractCollectionAttribute` class. These 2 attributes are the most complex because their value
 is represented by `EntityCollection` class, which is a wrapper for actual array of data returned from database. This wrapper allows us to implement lazy loading
 and provide simple interface for counting data in result set (per page and total).
 
@@ -107,7 +107,7 @@ $authorName = $page->author->firstName . ' '. $page->author->lastName;
 
 ## Setting values
 ```php
-// Recommended way (provides you with autocomplete on AttributeAbstract methods)
+// provides you with autocomplete on AbstractAttribute methods
 $page->getAttribute('title')->setValue('New title');
 
 // or (no autocomplete is the only downside of this)

@@ -12,7 +12,7 @@ namespace Webiny\Component\Entity\Attribute;
  *
  * @package Webiny\Component\Entity\AttributeType
  */
-class DateTimeAttribute extends DateAttributeAbstract
+class DateTimeAttribute extends AbstractDateAttribute
 {
 
     /**

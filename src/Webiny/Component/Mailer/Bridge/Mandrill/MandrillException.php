@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Mailer\Bridge\Mandrill;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Mandrill exception class.
  *
  * @package         Webiny\Component\Mailer\Bridge\Mandrill
  */
-class MandrillException extends ExceptionAbstract
+class MandrillException extends AbstractException
 {
 }

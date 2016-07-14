@@ -9,7 +9,7 @@ namespace Webiny\Component\ClassLoader;
 
 use Webiny\Component\Cache\CacheStorage;
 
-require_once __DIR__ . '/Loaders/LoaderAbstract.php';
+require_once __DIR__ . '/Loaders/AbstractLoader.php';
 require_once __DIR__ . '/Loaders/Pear.php';
 require_once __DIR__ . '/Loaders/Psr0.php';
 require_once __DIR__ . '/Loaders/Psr4.php';

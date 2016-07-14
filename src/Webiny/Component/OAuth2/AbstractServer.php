@@ -17,7 +17,7 @@ namespace Webiny\Component\OAuth2;
  * @package         Webiny\Component\OAuth2
  */
 
-abstract class ServerAbstract
+abstract class AbstractServer
 {
 
     /**

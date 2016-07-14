@@ -7,14 +7,14 @@
 
 namespace Webiny\Component\StdLib\StdObject;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Standard object exception handler
  *
  * @package         Webiny\Component\StdLib\StdObject
  */
-class StdObjectException extends ExceptionAbstract
+class StdObjectException extends AbstractException
 {
 
 }

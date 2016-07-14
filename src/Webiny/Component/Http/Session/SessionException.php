@@ -7,13 +7,13 @@
 
 namespace Webiny\Component\Http\Session;
 
-use Webiny\Component\StdLib\Exception\ExceptionAbstract;
+use Webiny\Component\StdLib\Exception\AbstractException;
 
 /**
  * Session exception class.
  *
  * @package         Webiny\Component\Http\Session
  */
-class SessionException extends ExceptionAbstract
+class SessionException extends AbstractException
 {
 }

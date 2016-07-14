@@ -265,10 +265,6 @@ class CountryCode implements ValidatorInterface
             'ZW',
         ];
 
-        if (!$value) {
-            return true;
-        }
-
         if (in_array($value, $twoLetterCodes)) {
             return true;
         }
