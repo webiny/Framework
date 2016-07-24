@@ -21,23 +21,19 @@ class TextIndex extends AbstractIndex
     private $language;
 
     /**
-     * @param string $name           Index name
-     * @param array  $fields         Index fields
-     * @param bool   $sparse         Is index sparse?
-     * @param bool   $unique         Is index unique?
-     * @param bool   $dropDuplicates Drop duplicate documents (only if $unique is used)
-     * @param string $language       Default language
+     * @param string       $name Index name
+     * @param string|array $field Index field(s)
+     * @param bool         $sparse Is index sparse?
+     * @param bool         $unique Is index unique?
+     * @param bool         $dropDuplicates Drop duplicate documents (only if $unique is used)
+     * @param string       $language Default language
      *
      * @throws MongoException
      */
-    public function __construct($name, array $fields, $sparse = false, $unique = false, $dropDuplicates = false,
-                                $language = 'english')
+    public function __construct($name, $field, $sparse = false, $unique = false, $dropDuplicates = false, $language = 'english')
     {
         $this->language = $language;
-
-        if(count($fields) < 2) {
-            throw new MongoException(MongoException::COMPOUND_INDEX_NOT_ENOUGH_FIELDS);
-        }
+        $fields = $this->isArray($field) ? $field : [$field];
 
         parent::__construct($name, $fields, $sparse, $unique, $dropDuplicates);
     }
@@ -59,7 +55,7 @@ class TextIndex extends AbstractIndex
     {
         $normalizedFields = [];
         foreach ($this->fields as $key => $field) {
-            if($this->isNumber($key)) {
+            if ($this->isNumber($key)) {
                 $normalizedFields[$this->str($field)->trimLeft('-+')->val()] = 'text';
             } else {
                 $normalizedFields[$key] = 'text';

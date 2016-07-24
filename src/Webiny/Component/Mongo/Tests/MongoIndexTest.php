@@ -49,9 +49,16 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $indexName = $mongo->createIndex($collection, $index);
         $this->assertEquals('TitleCategory', $indexName);
 
-        $index = new TextIndex('Title', ['title', 'category']);
+        $index = new TextIndex('CompoundTextIndex', ['title', 'category']);
         $indexName = $mongo->createIndex($collection, $index);
-        $this->assertEquals('Title', $indexName);
+        $this->assertEquals('CompoundTextIndex', $indexName);
+
+        // Drop index because we can't have 2 text indexes in one collection
+        $mongo->dropIndex($collection, 'CompoundTextIndex');
+
+        $index = new TextIndex('SingleTextIndex', 'name');
+        $indexName = $mongo->createIndex($collection, $index);
+        $this->assertEquals('SingleTextIndex', $indexName);
 
         $index = new SphereIndex('Location', 'location');
         $indexName = $mongo->createIndex($collection, $index);
@@ -67,7 +74,6 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
     public function testDropIndexes(Mongo $mongo)
     {
         $collection = 'IndexCollection';
-        /* @var $drop BSONDocument */
         $mongo->dropIndex($collection, 'Name');
 
         $indexes = $mongo->listIndexes($collection);
