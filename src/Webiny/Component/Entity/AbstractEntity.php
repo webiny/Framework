@@ -9,8 +9,6 @@ namespace Webiny\Component\Entity;
 
 use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\AttributeType;
-use Webiny\Component\Entity\Attribute\CharAttribute;
-use Webiny\Component\Entity\Attribute\DynamicAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
@@ -219,13 +217,11 @@ abstract class AbstractEntity implements \ArrayAccess
      *
      * @param string $fields List of fields to extract
      *
-     * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
-     *
      * @return array
      */
-    public function toArray($fields = '', $nestedLevel = 10)
+    public function toArray($fields = '')
     {
-        $dataExtractor = new EntityDataExtractor($this, $nestedLevel);
+        $dataExtractor = new EntityDataExtractor($this);
 
         return $dataExtractor->extractData($fields);
     }
