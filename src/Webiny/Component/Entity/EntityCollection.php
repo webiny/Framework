@@ -89,15 +89,13 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
      *
      * @param string $fields List of fields to extract
      *
-     * @param int    $nestedLevel How many levels to extract (Default: 1, means SELF + 1 level)
-     *
      * @return array
      */
-    public function toArray($fields = '', $nestedLevel = 1)
+    public function toArray($fields = '')
     {
         $data = [];
         foreach ($this->getIterator() as $entity) {
-            $data[] = $entity->toArray($fields, $nestedLevel);
+            $data[] = $entity->toArray($fields);
         }
 
         return $data;
