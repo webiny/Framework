@@ -29,23 +29,13 @@ class EntityDataExtractor
 
     protected static $currentLevel = 0;
     protected static $cache = [];
-    protected $nestedLevel = 1;
+    protected $nestedLevel = 10; // Maximum depth is 10 which is hard to achieve
     protected $aliases = [];
     protected $dottedFields = ['_name'];
 
-    public function __construct(AbstractEntity $entity, $nestedLevel = 1)
+    public function __construct(AbstractEntity $entity)
     {
-        if ($nestedLevel < 0) {
-            $nestedLevel = 1;
-        }
-
-        // Do not allow depth greater than 10
-        if ($nestedLevel > 10) {
-            $nestedLevel = 10;
-        }
-
         $this->entity = $entity;
-        $this->nestedLevel = $nestedLevel;
     }
 
     /**
