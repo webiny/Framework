@@ -83,10 +83,9 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     }
 
     /**
-     * Convert EntityCollection to array.<br>
-     * Each AbstractEntity wil be converted to array using $fields and $nestedLevel specified.<br>
-     * If no fields are specified, array will contain all simple and Many2One attributes
-     *
+     * Convert EntityCollection to array.
+     * Each AbstractEntity wil be converted to array using $fields which can be defined as a comma-separated keys, or as a function
+     * which will be ran with each entity - this gives the possibility to return different data sets depending on the given function
      * @param string $fields List of fields to extract
      *
      * @return array
@@ -95,6 +94,9 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     {
         $data = [];
         foreach ($this->getIterator() as $entity) {
+            if (is_callable($fields)) {
+                $fields = $fields($entity);
+            }
             $data[] = $entity->toArray($fields);
         }
 
