@@ -94,10 +94,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     {
         $data = [];
         foreach ($this->getIterator() as $entity) {
-            if (is_callable($fields)) {
-                $fields = $fields($entity);
-            }
-            $data[] = $entity->toArray($fields);
+            $data[] = is_callable($fields) ? $fields($entity) : $entity->toArray($fields);
         }
 
         return $data;
