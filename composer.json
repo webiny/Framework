@@ -23,7 +23,7 @@
         "php": ">=5.5.9",
         "symfony/yaml": "2.5.*",
         "smarty/smarty": "3.1.*",
-        "aws/aws-sdk-php": "2.7.*",
+        "aws/aws-sdk-php": "3.*",
         "imagine/imagine": "0.6.*",
         "minime/annotations": "~1.13",
         "swiftmailer/swiftmailer": "5.2.1",
