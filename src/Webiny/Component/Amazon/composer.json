@@ -21,7 +21,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.9",
-        "aws/aws-sdk-php": "~2.0",
+        "aws/aws-sdk-php": "3.*",
         "webiny/std-lib": "~1.4",
         "webiny/config": "~1.4"
     },
