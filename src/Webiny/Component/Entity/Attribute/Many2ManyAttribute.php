@@ -133,10 +133,11 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
      * Get attribute value
      *
      * @param array $params
+     * @param bool  $processCallbacks
      *
      * @return null|EntityCollection
      */
-    public function getValue($params = [])
+    public function getValue($params = [], $processCallbacks = true)
     {
         if ($this->isNull($this->value)) {
             $this->value = Many2ManyStorage::getInstance()->load($this);
@@ -153,7 +154,7 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
         }
         $this->addedItems = [];
 
-        return $this->processGetValue($this->value, $params);
+        return $this->processGetValue($this->value, $params, $processCallbacks);
     }
 
     /**

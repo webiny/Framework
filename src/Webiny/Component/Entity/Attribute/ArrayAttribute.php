@@ -84,13 +84,14 @@ class ArrayAttribute extends AbstractAttribute implements \IteratorAggregate, \A
     /**
      * @inheritDoc
      */
-    public function getValue($params = [])
+    public function getValue($params = [], $processCallbacks = true)
     {
-        if ($this->value->count() == 0 && !$this->isNull($this->defaultValue)) {
-            return $this->processGetValue($this->getDefaultValue(), $params);
+        $value = $this->value;
+        if ($value->count() == 0 && !$this->isNull($this->defaultValue)) {
+            $value = $this->getDefaultValue();
         }
 
-        return $this->processGetValue($this->value, $params);
+        return $this->processGetValue($value, $params, $processCallbacks);
     }
 
 

@@ -73,13 +73,14 @@ abstract class AbstractDateAttribute extends AbstractAttribute
         return parent::setValue($value, $fromDb);
     }
 
-    public function getValue($params = [], $asDateTimeObject = false)
+    public function getValue($params = [], $asDateTimeObject = false, $processCallbacks = true)
     {
+        $value = parent::getValue([], false);
         if ($asDateTimeObject) {
-            return $this->processGetValue(new DateTimeObject(parent::getValue()), $params);
+            $value = new DateTimeObject($value);
         }
 
-        return $this->processGetValue(parent::getValue(), $params);
+        return $this->processGetValue($value, $params, $processCallbacks);
     }
 
     /**

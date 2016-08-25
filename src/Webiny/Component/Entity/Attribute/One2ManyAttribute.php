@@ -143,10 +143,11 @@ class One2ManyAttribute extends AbstractCollectionAttribute
      * Set or get attribute value
      *
      * @param array $params
+     * @param bool  $processCallbacks
      *
      * @return bool|null|AbstractEntity
      */
-    public function getValue($params = [])
+    public function getValue($params = [], $processCallbacks = true)
     {
         if ($this->isNull($this->value)) {
             $entityId = $this->parent->id;
@@ -171,7 +172,7 @@ class One2ManyAttribute extends AbstractCollectionAttribute
             $this->dataLoaded = true;
         }
 
-        return $this->processGetValue($this->value, $params);
+        return $processCallbacks ? $this->processGetValue($this->value, $params) : $this->value;
     }
 
     public function hasValue()

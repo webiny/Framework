@@ -133,10 +133,11 @@ class Many2OneAttribute extends AbstractAttribute
      * Get attribute value
      *
      * @param array $params
+     * @param bool  $processCallbacks Process `onGet` callbacks
      *
      * @return bool|null|\Webiny\Component\Entity\AbstractEntity
      */
-    public function getValue($params = [])
+    public function getValue($params = [], $processCallbacks = true)
     {
         if (!$this->isInstanceOf($this->value, $this->entityClass) && !empty($this->value)) {
             $data = null;
@@ -155,11 +156,12 @@ class Many2OneAttribute extends AbstractAttribute
             }
         }
 
-        if (!$this->value && !$this->isNull($this->defaultValue)) {
-            return $this->processGetValue($this->getDefaultValue(), $params);
+        $value = $this->value;
+        if (!$value && !$this->isNull($this->defaultValue)) {
+            $value = $this->getDefaultValue();
         }
 
-        return $this->processGetValue($this->value, $params);
+        return $this->processGetValue($value, $params, $processCallbacks);
     }
 
     /**

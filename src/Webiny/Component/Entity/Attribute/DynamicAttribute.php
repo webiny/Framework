@@ -31,18 +31,13 @@ class DynamicAttribute extends AbstractAttribute
     {
         $this->callable = is_string($callable) ? [$parent, $callable] : $callable;
 
-        if (is_string($callable)) {
-            $rfc = new \ReflectionClass($parent);
-            $params = $rfc->getMethod($callable)->getParameters();
-        } else {
-            $rf = new \ReflectionFunction($callable);
-            $params = $rf->getParameters();
-        }
+        $rf = new \ReflectionFunction($callable);
+        $params = $rf->getParameters();
 
         if ($params) {
             /* @var $p \ReflectionParameter */
             foreach ($params as $p) {
-                if($p->isDefaultValueAvailable()){
+                if ($p->isDefaultValueAvailable()) {
                     $this->defaultParams[] = $p->getDefaultValue();
                 }
             }
@@ -102,26 +97,24 @@ class DynamicAttribute extends AbstractAttribute
     /**
      * Get attribute value
      *
-     * @param array $arguments
+     * @param array $params
+     * @param bool  $processCallbacks Process `onGet` callbacks
      *
      * @return $this
      */
-    public function getValue($arguments = [])
+    public function getValue($params = [], $processCallbacks = true)
     {
-        $callable = $this->callable;
-        if (is_string($callable)) {
-            $callable = [$this->parent, $callable];
-        }
-
         foreach ($this->defaultParams as $i => $defaultValue) {
-            if (!isset($arguments[$i])) {
-                $arguments[$i] = $defaultValue;
+            if (!isset($params[$i])) {
+                $params[$i] = $defaultValue;
             }
         }
 
-        $arguments[] = $this->storedValue;
+        // In case the value of this dynamic attribute is stored to DB, we pass the stored value as the last parameter to the function
+        $params[] = $this->storedValue;
+        $value = call_user_func_array($this->callable, $params);
 
-        return $this->processGetValue(call_user_func_array($callable, $arguments));
+        return $this->processGetValue($value, [], $processCallbacks);
     }
 
     /**
