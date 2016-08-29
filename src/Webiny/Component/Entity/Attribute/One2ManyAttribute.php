@@ -282,15 +282,11 @@ class One2ManyAttribute extends AbstractCollectionAttribute
             }
         }
 
-        $where = [
-            '_id' => ['$nin' => $newIds]
-        ];
-
-        $where[$this->relatedAttribute] = $this->parent->id;
-
-        $toRemove = call_user_func_array([$this->entityClass, 'find'], [$where]);
-        foreach ($toRemove as $r) {
-            $r->delete();
+        $attrValues = $this->getValue();
+        foreach ($attrValues as $r) {
+            if (!in_array($r->id, $newValues)) {
+                $r->delete();
+            }
         }
     }
 }
