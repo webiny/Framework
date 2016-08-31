@@ -10,10 +10,11 @@ Storage:
     Parameters:
         StorageClass: \Webiny\Component\Storage\Storage
         StorageS3DriverArgs:
-            - AAAA
-            - /FOO
-            - foo # Bucket name
-            - false # DateFolderStructure
+            AccessId: AAAAAA
+            AccessKey: /FOO
+            Bucket: foo
+            Region: eu-west-1
+            Endpoint: http://s3.eu-west-1.amazonaws.com
     Services:
         CloudStorage:
             Class: %StorageClass%

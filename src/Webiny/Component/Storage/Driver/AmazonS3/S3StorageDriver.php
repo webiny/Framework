@@ -11,6 +11,7 @@ use Aws\S3\Exception\NoSuchKeyException;
 use Webiny\Component\Amazon\S3;
 use Webiny\Component\StdLib\StdObjectTrait;
 use Webiny\Component\Storage\Driver\DriverInterface;
+use Webiny\Component\Storage\Driver\SizeAwareInterface;
 use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageException;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
@@ -24,7 +25,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
  *
  * @package  Webiny\Component\Storage\Driver\AmazonS3
  */
-class S3StorageDriver implements DriverInterface
+class S3StorageDriver implements DriverInterface, SizeAwareInterface
 {
     use StdObjectTrait;
 
@@ -41,21 +42,23 @@ class S3StorageDriver implements DriverInterface
     /**
      * Constructor
      *
-     * @param      $accessKeyId
-     * @param      $secretAccessKey
-     * @param      $bucket
-     * @param bool $dateFolderStructure If true, will append Y/m/d to the key
-     * @param bool $cdnDomain
+     * @param string      $accessKeyId
+     * @param string      $secretAccessKey
+     * @param string      $bucket
+     * @param string      $region
+     * @param string|null $endpoint
+     * @param bool        $date If true, will append Y/m/d to the key
+     * @param bool        $cdnDomain
      *
      * @internal param $config
      */
-    public function __construct($accessKeyId, $secretAccessKey, $bucket, $dateFolderStructure = false, $cdnDomain = false)
+    public function __construct($accessKeyId, $secretAccessKey, $bucket, $region, $endpoint = null, $date = false, $cdnDomain = false)
     {
         $bridge = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
-        $this->s3Client = new $bridge($accessKeyId, $secretAccessKey);
+        $this->s3Client = new $bridge($accessKeyId, $secretAccessKey, $region, $endpoint);
 
         $this->bucket = $bucket;
-        $this->dateFolderStructure = $dateFolderStructure;
+        $this->dateFolderStructure = $date;
         $this->cdnDomain = $cdnDomain;
     }
 
@@ -169,13 +172,15 @@ class S3StorageDriver implements DriverInterface
             $this->recentFiles[$key]['ObjectURL'] = $this->s3Client->getObjectUrl($this->bucket, $key);
         }
 
-        if($this->cdnDomain){
+        if ($this->cdnDomain) {
             $objectUrl = $this->url($this->recentFiles[$key]['ObjectURL']);
             $cdnDomain = $this->url($this->cdnDomain);
 
             $objectUrl->setHost($cdnDomain->getHost())->setScheme($cdnDomain->getScheme());
+
             return $objectUrl->val();
         }
+
         return $this->recentFiles[$key]['ObjectURL'];
     }
 
