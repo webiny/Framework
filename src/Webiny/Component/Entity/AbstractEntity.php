@@ -27,12 +27,6 @@ abstract class AbstractEntity implements \ArrayAccess
     use StdLibTrait, EntityTrait, FactoryLoaderTrait;
 
     /**
-     * This array serves as a log to prevent infinite save loop
-     * @var array
-     */
-    private static $saved = [];
-
-    /**
      * Entity attributes
      * @var ArrayObject
      */
@@ -53,6 +47,19 @@ abstract class AbstractEntity implements \ArrayAccess
      * @var string
      */
     protected static $entityMask = '{id}';
+
+    /**
+     * This array serves as a log to prevent infinite save loop
+     * @var array
+     */
+    private static $saved = [];
+
+    /**
+     * Is this a recently created instance?
+     * This flag will be true only the first time the record is inserted into the DB.
+     * @var bool
+     */
+    private $isRecent = false;
 
     /**
      * Get collection name
@@ -247,6 +254,16 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
+     * Is this a recently created instance?
+     *
+     * @return bool
+     */
+    public function isRecent()
+    {
+        return $this->isRecent;
+    }
+
+    /**
      * Get entity attribute
      *
      * @param string $attribute
@@ -342,9 +359,11 @@ abstract class AbstractEntity implements \ArrayAccess
             $data['id'] = (string)$data['_id'];
             $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
+            $this->isRecent = true;
         } else {
             $where = ['_id' => $mongo->id($this->id)];
             $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
+            $this->isRecent = false;
         }
 
         /**
