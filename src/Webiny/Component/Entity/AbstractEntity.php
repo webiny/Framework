@@ -59,7 +59,7 @@ abstract class AbstractEntity implements \ArrayAccess
      * This flag will be true only the first time the record is inserted into the DB.
      * @var bool
      */
-    private $isRecent = false;
+    private $recent = 0;
 
     /**
      * Get collection name
@@ -256,11 +256,11 @@ abstract class AbstractEntity implements \ArrayAccess
     /**
      * Is this a recently created instance?
      *
-     * @return bool
+     * @return int Number of saves that were performed on this instance.
      */
-    public function isRecent()
+    public function recent()
     {
-        return $this->isRecent;
+        return $this->recent;
     }
 
     /**
@@ -359,11 +359,14 @@ abstract class AbstractEntity implements \ArrayAccess
             $data['id'] = (string)$data['_id'];
             $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
-            $this->isRecent = true;
+            // Mark this instance as `recent` until this instance exists in the memory
+            $this->recent++;
         } else {
+            if ($this->recent) {
+                $this->recent++;
+            }
             $where = ['_id' => $mongo->id($this->id)];
             $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
-            $this->isRecent = false;
         }
 
         /**
