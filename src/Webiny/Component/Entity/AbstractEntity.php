@@ -27,6 +27,12 @@ abstract class AbstractEntity implements \ArrayAccess
     use StdLibTrait, EntityTrait, FactoryLoaderTrait;
 
     /**
+     * This array serves as a log to prevent infinite save loop
+     * @var array
+     */
+    private static $saved = [];
+
+    /**
      * Entity attributes
      * @var ArrayObject
      */
@@ -47,19 +53,6 @@ abstract class AbstractEntity implements \ArrayAccess
      * @var string
      */
     protected static $entityMask = '{id}';
-
-    /**
-     * This array serves as a log to prevent infinite save loop
-     * @var array
-     */
-    private static $saved = [];
-
-    /**
-     * Is this a recently created instance?
-     * This flag will be true only the first time the record is inserted into the DB.
-     * @var bool
-     */
-    private $recent = 0;
 
     /**
      * Get collection name
@@ -254,16 +247,6 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
-     * Is this a recently created instance?
-     *
-     * @return int Number of saves that were performed on this instance.
-     */
-    public function recent()
-    {
-        return $this->recent;
-    }
-
-    /**
      * Get entity attribute
      *
      * @param string $attribute
@@ -359,12 +342,7 @@ abstract class AbstractEntity implements \ArrayAccess
             $data['id'] = (string)$data['_id'];
             $mongo->insertOne(static::$entityCollection, $data);
             $this->id = $data['id'];
-            // Mark this instance as `recent` until this instance exists in the memory
-            $this->recent++;
         } else {
-            if ($this->recent) {
-                $this->recent++;
-            }
             $where = ['_id' => $mongo->id($this->id)];
             $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
         }
@@ -473,6 +451,18 @@ abstract class AbstractEntity implements \ArrayAccess
         foreach ($deleteAttributes as $attr) {
             foreach ($this->getAttribute($attr)->getValue() as $item) {
                 $item->delete();
+            }
+        }
+
+        /**
+         * Delete many2one records that are set to 'cascade'
+         */
+        foreach ($this->getAttributes() as $attr) {
+            if ($this->isInstanceOf($attr, AttributeType::MANY2ONE) && $attr->getOnDelete() === 'cascade') {
+                $value = $attr->getValue();
+                if ($value && $value instanceof AbstractEntity) {
+                    $value->delete();
+                }
             }
         }
 

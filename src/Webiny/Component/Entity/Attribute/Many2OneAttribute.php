@@ -21,7 +21,7 @@ class Many2OneAttribute extends AbstractAttribute
     use StdLibTrait;
 
     protected $entityClass = null;
-
+    protected $onDelete = 'ignore';
     protected $updateExisting = false;
 
     /**
@@ -70,6 +70,34 @@ class Many2OneAttribute extends AbstractAttribute
     public function getUpdateExisting()
     {
         return $this->updateExisting;
+    }
+
+    /**
+     * Get action to perform when parent entity is being deleted.
+     *
+     * @return string
+     */
+    public function getOnDelete()
+    {
+        return $this->onDelete;
+    }
+
+    /**
+     * Set action to perform when parent entity is being deleted.
+     *
+     * @param string $action cascade|ignore Default value is 'ignore'
+     *
+     * @return $this
+     */
+    public function setOnDelete($action = 'cascade')
+    {
+        if ($action != 'cascade' && $action != 'ignore') {
+            $action = 'ignore';
+        }
+
+        $this->onDelete = $action;
+
+        return $this;
     }
 
     /**

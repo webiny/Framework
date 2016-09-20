@@ -105,8 +105,6 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $entity = new $class;
         $entity->populate($data)->save();
 
-        $this->assertEquals(1, $entity->recent());
-
         // Test current $entity state
         $this->assertEntityStateNoValidation($entity);
 
@@ -114,7 +112,6 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $id = $entity->id;
         Entity::getInstance()->remove($entity);
         $entity = $class::findById($id);
-        $this->assertEquals(0, $entity->recent());
         $this->assertEntityStateNoValidation($entity);
 
         // Test toArray conversion
