@@ -30,6 +30,22 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 class EntityAttributeBuilder
 {
+    public static $classMap = [
+        'boolean'   => '\Webiny\Component\Entity\Attribute\BooleanAttribute',
+        'char'      => '\Webiny\Component\Entity\Attribute\CharAttribute',
+        'integer'   => '\Webiny\Component\Entity\Attribute\IntegerAttribute',
+        'float'     => '\Webiny\Component\Entity\Attribute\FloatAttribute',
+        'arr'       => '\Webiny\Component\Entity\Attribute\ArrayAttribute',
+        'object'    => '\Webiny\Component\Entity\Attribute\ObjectAttribute',
+        'datetime'  => '\Webiny\Component\Entity\Attribute\DateTimeAttribute',
+        'date'      => '\Webiny\Component\Entity\Attribute\DateAttribute',
+        'many2one'  => '\Webiny\Component\Entity\Attribute\Many2OneAttribute',
+        'one2many'  => '\Webiny\Component\Entity\Attribute\One2ManyAttribute',
+        'many2many' => '\Webiny\Component\Entity\Attribute\Many2ManyAttribute',
+        'dynamic'   => '\Webiny\Component\Entity\Attribute\DynamicAttribute',
+        'geoPoint'  => '\Webiny\Component\Entity\Attribute\GeoPointAttribute'
+    ];
+
     protected $entity;
     protected $attributes;
     protected $attribute;
@@ -76,7 +92,7 @@ class EntityAttributeBuilder
      */
     public function boolean()
     {
-        return $this->attributes[$this->attribute] = new BooleanAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['boolean']($this->attribute, $this->entity);
     }
 
     /**
@@ -84,7 +100,7 @@ class EntityAttributeBuilder
      */
     public function arr()
     {
-        return $this->attributes[$this->attribute] = new ArrayAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['arr']($this->attribute, $this->entity);
     }
 
     /**
@@ -92,7 +108,7 @@ class EntityAttributeBuilder
      */
     public function object()
     {
-        return $this->attributes[$this->attribute] = new ObjectAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['object']($this->attribute, $this->entity);
     }
 
     /**
@@ -100,7 +116,7 @@ class EntityAttributeBuilder
      */
     public function integer()
     {
-        return $this->attributes[$this->attribute] = new IntegerAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['integer']($this->attribute, $this->entity);
     }
 
     /**
@@ -108,7 +124,7 @@ class EntityAttributeBuilder
      */
     public function char()
     {
-        return $this->attributes[$this->attribute] = new CharAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['char']($this->attribute, $this->entity);
     }
 
     /**
@@ -116,7 +132,7 @@ class EntityAttributeBuilder
      */
     public function datetime()
     {
-        return $this->attributes[$this->attribute] = new DateTimeAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['datetime']($this->attribute, $this->entity);
     }
 
     /**
@@ -124,7 +140,7 @@ class EntityAttributeBuilder
      */
     public function date()
     {
-        return $this->attributes[$this->attribute] = new DateAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['date']($this->attribute, $this->entity);
     }
 
     /**
@@ -132,7 +148,7 @@ class EntityAttributeBuilder
      */
     public function float()
     {
-        return $this->attributes[$this->attribute] = new FloatAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['float']($this->attribute, $this->entity);
     }
 
     /**
@@ -140,7 +156,7 @@ class EntityAttributeBuilder
      */
     public function many2one()
     {
-        return $this->attributes[$this->attribute] = new Many2OneAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['many2one']($this->attribute, $this->entity);
     }
 
     /**
@@ -150,7 +166,7 @@ class EntityAttributeBuilder
      */
     public function one2many($relatedAttribute)
     {
-        return $this->attributes[$this->attribute] = new One2ManyAttribute($this->attribute, $this->entity, $relatedAttribute);
+        return $this->attributes[$this->attribute] = new self::$classMap['one2many']($this->attribute, $this->entity, $relatedAttribute);
     }
 
     /**
@@ -160,7 +176,7 @@ class EntityAttributeBuilder
      */
     public function many2many($collectionName)
     {
-        return $this->attributes[$this->attribute] = new Many2ManyAttribute($this->attribute, $this->entity, $collectionName);
+        return $this->attributes[$this->attribute] = new self::$classMap['many2many']($this->attribute, $this->entity, $collectionName);
     }
 
     /**
@@ -170,7 +186,7 @@ class EntityAttributeBuilder
      */
     public function dynamic($callable)
     {
-        return $this->attributes[$this->attribute] = new DynamicAttribute($this->attribute, $this->entity, $callable);
+        return $this->attributes[$this->attribute] = new self::$classMap['dynamic']($this->attribute, $this->entity, $callable);
     }
 
     /**
@@ -178,6 +194,6 @@ class EntityAttributeBuilder
      */
     public function geoPoint()
     {
-        return $this->attributes[$this->attribute] = new GeoPointAttribute($this->attribute, $this->entity);
+        return $this->attributes[$this->attribute] = new self::$classMap['geoPoint']($this->attribute, $this->entity);
     }
 }

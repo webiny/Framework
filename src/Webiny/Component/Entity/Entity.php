@@ -203,4 +203,20 @@ class Entity
             $this->validators[$v->getName()] = $v;
         }
     }
+
+    protected static function postSetConfig()
+    {
+        // If attribute class maps are defined - set them into EntityAttributeBuilder
+        $classMap = Entity::getConfig()->get('Attributes');
+        if ($classMap) {
+            $absClass = 'Webiny\Component\Entity\Attribute\AbstractAttribute';
+            foreach ($classMap as $attr => $class) {
+                if (!in_array($absClass, class_parents($class))) {
+                    $message = 'Attribute class for attribute "%s" must extend %s';
+                    throw new EntityException($message, [$attr, $absClass]);
+                }
+                EntityAttributeBuilder::$classMap[$attr] = $class;
+            }
+        }
+    }
 }
