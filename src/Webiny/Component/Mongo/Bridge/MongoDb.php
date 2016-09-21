@@ -118,7 +118,7 @@ class MongoDb implements MongoInterface
      */
     public function aggregate($collectionName, array $pipeline, array $options = [])
     {
-        return $this->getCollection($collectionName)->aggregate($pipeline, $options)->toArray();
+        return $this->getCollection($collectionName)->aggregate($pipeline, $options);
     }
 
     /**
