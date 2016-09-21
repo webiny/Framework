@@ -35,8 +35,17 @@ class Mongo
      */
     private $collectionPrefix = '';
 
+    private $defaultDriverOptions = [
+        'typeMap' => [
+            'root'     => 'array',
+            'document' => 'array',
+            'array'    => 'array'
+        ]
+    ];
+
     public function __construct($uri, array $uriOptions = [], array $driverOptions = [], $collectionPrefix = '')
     {
+        $driverOptions = $this->arr($this->defaultDriverOptions)->mergeSmart($driverOptions)->val();
         $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Bridge\MongoDb');
         $this->bridge = new $mongoBridge();
         $this->bridge->connect($uri, $uriOptions, $driverOptions);
@@ -50,7 +59,7 @@ class Mongo
      */
     public function selectDatabase($database)
     {
-       $this->bridge->selectDatabase($database);
+        $this->bridge->selectDatabase($database);
     }
 
     /**
@@ -96,7 +105,7 @@ class Mongo
      */
     public function listCollections(array $options = [])
     {
-        return iterator_to_array($this->bridge->listCollections($options));
+        return $this->bridge->listCollections($options);
     }
 
     /**
@@ -184,14 +193,7 @@ class Mongo
             'sort'  => $sort
         ];
 
-        $result = $this->bridge->find($this->cName($collectionName), $filter, $options)->toArray();
-        $data = [];
-        /* @var $r BSONDocument */
-        foreach ($result as $r) {
-            $data[] = iterator_to_array($r->getIterator());
-        }
-
-        return $data;
+        return $this->bridge->find($this->cName($collectionName), $filter, $options);
     }
 
     public function findOne($collectionName, $filter = [], array $options = [])
@@ -237,7 +239,7 @@ class Mongo
      */
     public function listIndexes($collectionName, array $options = [])
     {
-        return iterator_to_array($this->bridge->listIndexes($this->cName($collectionName), $options));
+        return $this->bridge->listIndexes($this->cName($collectionName), $options);
     }
 
     public function update($collectionName, $filter, $update, array $options = [])
