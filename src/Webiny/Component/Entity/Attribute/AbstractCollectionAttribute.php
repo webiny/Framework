@@ -8,6 +8,8 @@
 namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\AbstractEntity;
+use Webiny\Component\Entity\Attribute\Validation\ValidationException;
+use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\Entity\EntityException;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -49,22 +51,6 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     }
 
     /**
-     * Add item to this entity collection
-     *
-     * @param $item
-     *
-     * TODO: remove this method and update unit tests
-     *
-     * @return $this
-     */
-    public function add($item)
-    {
-        $this->getValue()->add($item);
-
-        return $this;
-    }
-
-    /**
      * Count items in result set
      * @return int
      */
@@ -82,7 +68,6 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     {
         return $this->getValue()->delete();
     }
-
 
     /**
      * Set related entity class for this attribute
@@ -120,11 +105,7 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return \Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
+     * @inheritdoc
      */
     public function getIterator()
     {
@@ -132,18 +113,7 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Whether a offset exists
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
-     *
-     * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
-     * The return value will be casted to boolean if non-boolean was returned.
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -151,15 +121,7 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to retrieve
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
-     *
-     * @return mixed Can return all value types.
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -167,37 +129,80 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to set
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value <p>
-     *                      The value to set.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
-        $this->getValue()[$offset] = $value;
+        if ($this->isNull($offset))
+        {
+            $this->getValue()[] = $value;
+        } else {
+            $this->getValue()[$offset] = $value;
+        }
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to unset
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
         unset($this->getValue()[$offset]);
+    }
+
+    /**
+     * Normalize given value to be a valid array of entity instances
+     *
+     * @param mixed $value
+     *
+     * @return array
+     * @throws ValidationException
+     */
+    protected function normalizeValue($value)
+    {
+        if (is_null($value)) {
+            return $value;
+        }
+
+        $entityClass = $this->getEntity();
+        $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
+
+        // Validate Many2many attribute value
+        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
+            $exception = new ValidationException(ValidationException::DATA_TYPE, [
+                'array, ArrayObject or EntityCollection',
+                gettype($value)
+            ]);
+            $exception->setAttribute($this->getName());
+            throw $exception;
+        }
+
+        /* @var $entityAttribute One2ManyAttribute */
+        $values = [];
+        foreach ($value as $item) {
+            $itemEntity = false;
+
+            // $item can be an array of data, AbstractEntity or a simple mongo ID string
+            if ($this->isInstanceOf($item, $entityClass)) {
+                $itemEntity = $item;
+            } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+            } elseif ($this->isString($item) && Entity::getInstance()->getDatabase()->isId($item)) {
+                $itemEntity = $entityClass::findById($item);
+            }
+
+            // If instance was not found, create a new entity instance
+            if (!$itemEntity) {
+                $itemEntity = new $entityClass;
+            }
+
+            // If $item is an array - use it to populate the entity instance
+            if ($this->isArray($item) || $this->isArrayObject($item)) {
+                $itemEntity->populate($item);
+            }
+
+            $values[] = $itemEntity;
+        }
+
+        return new EntityCollection($this->getEntity(), $values);
     }
 }

@@ -10,13 +10,14 @@ namespace Webiny\Component\Entity\Tests;
 use MongoDB\Model\CollectionInfo;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\AbstractEntity;
+use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityException;
 use Webiny\Component\Entity\EntityTrait;
 use Webiny\Component\Entity\Tests\Lib as Lib;
 use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2Many;
-use Webiny\Component\Entity\Tests\Lib\NoValidation\Many2One;
+use Webiny\Component\Entity\Tests\lib\NoValidation\Many2One;
 use Webiny\Component\Mongo\Mongo;
 use Webiny\Component\Mongo\MongoTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -89,9 +90,6 @@ class EntityTest extends PHPUnit_Framework_TestCase
             'one2many'         => [
                 [
                     'char' => 'one2many1'
-                ],
-                [
-                    'char' => 'one2many2'
                 ]
             ],
             'many2many'        => [
@@ -103,7 +101,10 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $class = Lib\Classes::ENTITY_NO_VALIDATION;
         /* @var AbstractEntity $entity */
         $entity = new $class;
-        $entity->populate($data)->save();
+        $entity->populate($data);
+        $entity->one2many[] = new Lib\NoValidation\One2Many();
+        $entity->one2many[1]->char = 'one2many2';
+        $entity->save();
 
         // Test current $entity state
         $this->assertEntityStateNoValidation($entity);
@@ -114,9 +115,15 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $entity = $class::findById($id);
         $this->assertEntityStateNoValidation($entity);
 
+        // Append more one2many values after entity is loaded from DB
+        $entity->one2many[] = new Lib\NoValidation\One2Many();
+        $entity->one2many[2]->char = 'one2many3';
+        $this->assertEquals(3, $entity->one2many->count());
+        $this->assertEquals(3, count($entity->one2many));
+
         // Test toArray conversion
-        $array = new ArrayObject($entity->toArray('*,float:2,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many',
-            2));
+        $fields = '*,float:2,arr,object[key1],dynamicWithParams:4,many2oneNew[char,relations.integer],one2many,many2many';
+        $array = new ArrayObject($entity->toArray($fields, 2));
         $this->assertEquals('char', $array->keyNested('char'));
         $this->assertEquals(4, $array->keyNested('float'));
         $this->assertArrayNotHasKey('boolean', $array->val());
@@ -142,6 +149,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(12, $array->keyNested('many2oneNew.relations.0.integer'));
         $this->assertEquals('one2many1', $array->keyNested('one2many.0.char'));
         $this->assertEquals('one2many2', $array->keyNested('one2many.1.char'));
+        $this->assertEquals('one2many3', $array->keyNested('one2many.2.char'));
         $this->assertEquals('many2many1', $array->keyNested('many2many.0.char'));
         $this->assertEquals('many2many2', $array->keyNested('many2many.1.char'));
     }
@@ -356,6 +364,72 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Default Title']);
         $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
+    }
+
+    public function testMany2Many()
+    {
+        $entity = new Lib\NoValidation\Entity();
+        $entity->char = 'Webiny Test';
+        // Set initial value
+        $entity->many2many = [
+            ['char' => 'many1']
+        ];
+        // Append another value
+        $entity->many2many[] = ['char' => 'many2'];
+        $this->assertCount(2, $entity->many2many);
+        $entity->save();
+        $id = $entity->id;
+
+        // Reload entity and assert values are saved
+        Entity::getInstance()->reset();
+        $entity = Lib\NoValidation\Entity::findById($id);
+        $this->assertCount(2, $entity->many2many);
+
+        // Test simple "unset"
+        unset($entity->many2many[0]);
+        $this->assertCount(1, $entity->many2many);
+        // Assert that the correct index was unset
+        $this->assertEquals('many2', $entity->many2many[1]->char);
+
+        // Test appending of entity instances
+        $many3 = new Many2Many();
+        $many3->populate(['char' => 'many3']);
+        $entity->many2many[] = ['char' => 'many2'];
+        $entity->many2many[] = $many3;
+        $entity->save();
+
+        // Reload and test removal of single and all values
+        Entity::getInstance()->reset();
+        $entity = Lib\NoValidation\Entity::findById($id);
+        $this->assertCount(3, $entity->many2many);
+        $entity->getAttribute('many2many')->unlink($many3);
+        $this->assertCount(2, $entity->many2many);
+        $entity->getAttribute('many2many')->unlinkAll();
+        $this->assertCount(0, $entity->many2many);
+        $entity->save();
+
+        // Reload and assert no values are saved
+        Entity::getInstance()->reset();
+        $entity = Lib\NoValidation\Entity::findById($id);
+        $this->assertCount(0, $entity->many2many);
+
+        // Append 2 values, save, reload and try setting an empty array to remove all values
+        $entity->many2many[] = ['char' => 'many1'];
+        $entity->many2many[] = ['char' => 'many2'];
+        $this->assertCount(2, $entity->many2many);
+        $entity->save();
+
+        Entity::getInstance()->reset();
+        $entity = Lib\NoValidation\Entity::findById($id);
+        // Remove all items by setting an empty array
+        $entity->many2many = [];
+        $this->assertCount(0, $entity->many2many);
+        $entity->save();
+
+        // Reload and make sure nothing was loaded from DB
+        Entity::getInstance()->reset();
+        $entity = Lib\NoValidation\Entity::findById($id);
+        $this->assertCount(0, $entity->many2many);
     }
 
     /**

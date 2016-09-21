@@ -12,7 +12,6 @@ use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityAttributeBuilder;
-use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -22,7 +21,7 @@ use Webiny\Component\StdLib\StdLibTrait;
  */
 abstract class AbstractAttribute implements JsonSerializable
 {
-    use StdLibTrait, FactoryLoaderTrait;
+    use StdLibTrait;
 
     /**
      * Entity this attribute belongs to

@@ -7,11 +7,12 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
+use MongoDB\Driver\Exception\BulkWriteException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
-use Webiny\Component\Entity\Attribute\Validation\ValidationException;
+use Webiny\Component\Mongo\Index\CompoundIndex;
+use Webiny\Component\Mongo\MongoTrait;
 
 
 /**
@@ -20,6 +21,8 @@ use Webiny\Component\Entity\Attribute\Validation\ValidationException;
  */
 class Many2ManyAttribute extends AbstractCollectionAttribute
 {
+    use MongoTrait;
+
     protected $intermediateCollection;
 
     protected $addedItems = [];
@@ -31,66 +34,38 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
     }
 
     /**
-     * Add item to this entity collection<br>
-     * NOTE: you need to call save() on parent entity to actually insert link into database
-     *
-     * @param array|\Webiny\Component\Entity\AbstractEntity $item
-     *
-     * @return $this
-     */
-    public function add($item)
-    {
-        if ($this->isInstanceOf($item, '\Webiny\Component\Entity\AbstractEntity')) {
-            $item = [$item];
-        }
-
-        /**
-         * Validate items
-         */
-        foreach ($item as $i) {
-            if (!$this->isInstanceOf($i, $this->getEntity()) && !Entity::getInstance()->getDatabase()->isId($i)) {
-                $this->expected('entity ID or instance of ' . $this->getEntity() . ' or null', get_class($i));
-            }
-        }
-
-        /**
-         * Assign items
-         */
-        foreach ($item as $i) {
-            $this->addedItems[] = $i;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove item from many2many collection (Removes the link between entities)
+     * Remove item from many2many collection (removes the link between entities)
      *
      * @param string|AbstractEntity $item Entity ID or instance of AbstractEntity
      *
      * @return bool
      */
-    public function remove($item)
+    public function unlink($item)
     {
         // Unlink item
-        $deleted = Many2ManyStorage::getInstance()->unlink($this, $item);
+        $deleted = $this->unlinkItem($item);
         // If values are already loaded - remove deleted item from loaded data set
         if (!$this->isNull($this->value)) {
             $this->value->removeItem($item);
         }
 
-        // Rebuild cursor (need to call this to rebuild cursor object with new linked IDs)
-        $this->value = Many2ManyStorage::getInstance()->load($this);
-
         return $deleted;
     }
 
     /**
-     * Get collection that holds entity references
+     * Remove all items from man2many collection (removes the links between entities)
+     * @return bool
      */
-    public function getIntermediateCollection()
+    public function unlinkAll()
     {
-        return $this->intermediateCollection;
+        foreach ($this->getValue() as $value) {
+            $this->unlinkItem($value);
+        }
+
+        // Reset current value
+        $this->value = new EntityCollection($this->getEntity());
+
+        return true;
     }
 
     /**
@@ -140,17 +115,12 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
     public function getValue($params = [], $processCallbacks = true)
     {
         if ($this->isNull($this->value)) {
-            $this->value = Many2ManyStorage::getInstance()->load($this);
+            $this->value = $this->load();
         }
 
         // Add new items to value and unset these new items
         foreach ($this->addedItems as $item) {
-            if ($this->value instanceof EntityCollection) {
-                $this->value->add($item);
-            } else {
-                $this->value[] = $item;
-            }
-
+            $this->value[] = $item;
         }
         $this->addedItems = [];
 
@@ -158,59 +128,152 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
     }
 
     /**
-     * Normalize given value to be a valid array of entity instances
+     * Insert links into DB
      *
-     * @param mixed $value
-     *
-     * @return array
-     * @throws ValidationException
+     * @throws \Webiny\Component\Entity\EntityException
+     * @throws \Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObjectException
      */
-    private function normalizeValue($value)
+    public function save()
     {
-        if (is_null($value)) {
-            return $value;
-        }
+        $collectionName = $this->intermediateCollection;
+        $firstClassName = $this->extractClassName($this->getParentEntity());
+        $secondClassName = $this->extractClassName($this->getEntity());
 
-        $entityClass = $this->getEntity();
-        $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
+        // Make sure indexes exist
+        $indexOrder = [$firstClassName, $secondClassName];
+        list($indexKey1, $indexKey2) = $this->arr($indexOrder)->sort()->val();
 
-        // Validate Many2many attribute value
-        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
-            $exception = new ValidationException(ValidationException::DATA_TYPE, [
-                'array, ArrayObject or EntityCollection',
-                gettype($value)
-            ]);
-            $exception->setAttribute($this->getName());
-            throw $exception;
-        }
+        $index = new CompoundIndex($collectionName, [
+            $indexKey1 => 1,
+            $indexKey2 => 1
+        ], false, true);
 
-        /* @var $entityAttribute One2ManyAttribute */
-        $values = [];
-        foreach ($value as $item) {
-            $itemEntity = false;
+        Entity::getInstance()->getDatabase()->createIndex($collectionName, $index, ['background' => true]);
 
-            // $item can be an array of data, AbstractEntity or a simple mongo ID string
-            if ($this->isInstanceOf($item, $entityClass)) {
-                $itemEntity = $item;
-            } elseif ($this->isArray($item) || $this->isArrayObject($item)) {
-                $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
-            } elseif ($this->isString($item) && Entity::getInstance()->getDatabase()->isId($item)) {
-                $itemEntity = $entityClass::findById($item);
+        /**
+         * Insert values
+         */
+        $existingIds = [];
+        $firstEntityId = $this->getParentEntity()->id;
+        foreach ($this->getValue() as $item) {
+            if ($item instanceof AbstractEntity && !$item->exists()) {
+                $item->save();
             }
 
-            // If instance was not found, create a new entity instance
-            if (!$itemEntity) {
-                $itemEntity = new $entityClass;
+            if ($item instanceof AbstractEntity) {
+                $secondEntityId = $item->id;
+            } else {
+                $secondEntityId = $item;
             }
 
-            // If $item is an array - use it to populate the entity instance
-            if ($this->isArray($item) || $this->isArrayObject($item)) {
-                $itemEntity->populate($item);
-            }
+            $existingIds[] = $secondEntityId;
 
-            $values[] = $itemEntity;
+            $data = [
+                $firstClassName  => $firstEntityId,
+                $secondClassName => $secondEntityId
+            ];
+
+            try {
+                Entity::getInstance()->getDatabase()->insertOne($collectionName, $this->arr($data)->sortKey()->val());
+            } catch (BulkWriteException $e) {
+                // Unique index was hit and an exception is thrown - that's ok, means the values are already inserted
+                continue;
+            }
         }
 
-        return $values;
+        /**
+         * Remove old links
+         */
+        $removeQuery = [
+            $firstClassName  => $firstEntityId,
+            $secondClassName => [
+                '$nin' => $existingIds
+            ]
+        ];
+        Entity::getInstance()->getDatabase()->delete($collectionName, $removeQuery);
+
+        /**
+         * The value of many2many attribute must be set to 'null' to trigger data reload on next access.
+         * If this is not done, we may not have proper links between the 2 entities and it may seem as if data was missing.
+         */
+        $this->setValue(null);
+    }
+
+    /**
+     * Load many2many attribute value (prepares MongoCursor, lazy loads data)
+     *
+     * @return EntityCollection
+     */
+    protected function load()
+    {
+        $firstClassName = $this->extractClassName($this->getParentEntity());
+        $secondClassName = $this->extractClassName($this->getEntity());
+
+        // Select related IDs from aggregation table
+        $query = [
+            $firstClassName => $this->getParentEntity()->id
+        ];
+
+        $relatedObjects = Entity::getInstance()->getDatabase()->find($this->intermediateCollection, $query, [$secondClassName => 1]);
+        $relatedIds = [];
+        foreach ($relatedObjects as $rObject) {
+            $relatedIds[] = $rObject[$secondClassName];
+        }
+
+        // Find all related entities using $relatedIds
+        $callable = [
+            $this->getEntity(),
+            'find'
+        ];
+
+        return call_user_func_array($callable, [['id' => ['$in' => $relatedIds]]]);
+    }
+
+    /**
+     * Unlink given item (only removes the aggregation record)
+     *
+     * @param string|AbstractEntity $item
+     *
+     * @return bool
+     */
+    protected function unlinkItem($item)
+    {
+        // Convert instance to entity ID
+        if ($item instanceof AbstractEntity) {
+            $item = $item->id;
+        }
+
+        $sourceEntityId = $this->getParentEntity()->id;
+
+        if ($this->isNull($sourceEntityId) || $this->isNull($item)) {
+            return false;
+        }
+
+        $firstClassName = $this->extractClassName($this->getParentEntity());
+        $secondClassName = $this->extractClassName($this->getEntity());
+        $query = $this->arr([
+            $firstClassName  => $sourceEntityId,
+            $secondClassName => $item
+        ])->sortKey()->val();
+
+        $res = Entity::getInstance()->getDatabase()->delete($this->intermediateCollection, $query);
+
+        return $res->getDeletedCount() == 1;
+    }
+
+    /**
+     * Extract short class name from class namespace
+     *
+     * @param $class
+     *
+     * @return string
+     */
+    protected function extractClassName($class)
+    {
+        if (!$this->isString($class)) {
+            $class = get_class($class);
+        }
+
+        return $this->str($class)->explode('\\')->last()->val();
     }
 }

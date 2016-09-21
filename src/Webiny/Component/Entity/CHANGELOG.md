@@ -1,5 +1,13 @@
 CHANGELOG
 =========
+
+dev-master
+-----------
+* removed `add()` method from collection attributes, use simple array `attribute[]` syntax to add values
+* collection attributes now always have normalized EntityCollection as their internal value
+* EntityCollection now always internally converts values to instances of AbstractEntity 
+* added possibility of overriding attribute classes via config
+
 1.5
 ---------
 * added built-in attribute validators

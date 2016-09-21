@@ -12,7 +12,6 @@ use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
-use Webiny\Component\Entity\AttributeStorage\Many2ManyStorage;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -115,6 +114,7 @@ abstract class AbstractEntity implements \ArrayAccess
     public static function findOne(array $conditions = [])
     {
         $data = static::entity()->getDatabase()->findOne(static::$entityCollection, $conditions);
+
         if (!$data) {
             return null;
         }
@@ -179,7 +179,15 @@ abstract class AbstractEntity implements \ArrayAccess
         $order = self::parseOrderParameters($order);
         $offset = $limit * ($page > 0 ? $page - 1 : 0);
 
-        return new EntityCollection(get_called_class(), static::$entityCollection, $conditions, $order, $limit, $offset);
+        $data = self::entity()->getDatabase()->find(static::$entityCollection, $conditions, $order, $limit, $offset);
+        $parameters = [
+            'conditions' => $conditions,
+            'order'      => $order,
+            'limit'      => $limit,
+            'offset'     => $offset
+        ];
+
+        return new EntityCollection(get_called_class(), $data, $parameters);
     }
 
     /**
@@ -372,7 +380,7 @@ abstract class AbstractEntity implements \ArrayAccess
         foreach ($this->getAttributes() as $attr) {
             /* @var $attr Many2ManyAttribute */
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
-                Many2ManyStorage::getInstance()->save($attr);
+                $attr->save();
             }
         }
 
@@ -422,47 +430,50 @@ abstract class AbstractEntity implements \ArrayAccess
         /**
          * First check all one2many records to see if deletion is restricted
          */
-        $deleteAttributes = [];
+        $one2manyDelete = [];
+        $many2oneDelete = [];
+        $many2manyDelete = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
                 /* @var $attr One2ManyAttribute */
                 if ($attr->getOnDelete() == 'restrict' && $this->getAttribute($key)->getValue()->count() > 0) {
                     throw new EntityException(EntityException::ENTITY_DELETION_RESTRICTED, [$key]);
                 }
-                $deleteAttributes[] = $key;
+                $one2manyDelete[] = $attr;
             }
-        }
 
-        /**
-         * Delete many2many records
-         */
-        foreach ($this->getAttributes() as $attr) {
-            /* @var $attr Many2ManyAttribute */
+            if ($this->isInstanceOf($attr, AttributeType::MANY2ONE) && $attr->getOnDelete() === 'cascade') {
+                $many2oneDelete[] = $attr;
+            }
+
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
-                $firstClassName = $this->extractClassName($attr->getParentEntity());
-                $query = [$firstClassName => $this->id];
-                $this->entity()->getDatabase()->delete($attr->getIntermediateCollection(), $query);
+                $many2manyDelete[] = $attr;
             }
         }
 
         /**
          * Delete one2many records
          */
-        foreach ($deleteAttributes as $attr) {
-            foreach ($this->getAttribute($attr)->getValue() as $item) {
+        foreach ($one2manyDelete as $attr) {
+            foreach ($attr->getValue() as $item) {
                 $item->delete();
             }
         }
 
         /**
+         * Delete many2many records
+         */
+        foreach ($many2manyDelete as $attr) {
+            $attr->unlinkAll();
+        }
+
+        /**
          * Delete many2one records that are set to 'cascade'
          */
-        foreach ($this->getAttributes() as $attr) {
-            if ($this->isInstanceOf($attr, AttributeType::MANY2ONE) && $attr->getOnDelete() === 'cascade') {
-                $value = $attr->getValue();
-                if ($value && $value instanceof AbstractEntity) {
-                    $value->delete();
-                }
+        foreach ($many2oneDelete as $attr) {
+            $value = $attr->getValue();
+            if ($value && $value instanceof AbstractEntity) {
+                $value->delete();
             }
         }
 
@@ -564,18 +575,7 @@ abstract class AbstractEntity implements \ArrayAccess
 
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Whether a offset exists
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
-     *
-     * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
-     * The return value will be casted to boolean if non-boolean was returned.
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -583,15 +583,7 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to retrieve
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
-     *
-     * @return mixed Can return all value types.
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -599,18 +591,7 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to set
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value <p>
-     *                      The value to set.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
@@ -618,15 +599,7 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to unset
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
@@ -723,22 +696,6 @@ abstract class AbstractEntity implements \ArrayAccess
                 $validation[$attributeName] = $e;
             }
         }
-    }
-
-    /**
-     * Extract short class name from class namespace or class instance
-     *
-     * @param string|AbstractEntity $class
-     *
-     * @return string
-     */
-    private function extractClassName($class)
-    {
-        if (!$this->isString($class)) {
-            $class = get_class($class);
-        }
-
-        return $this->str($class)->explode('\\')->last()->val();
     }
 
     private function normalizeData($data)
