@@ -11,6 +11,7 @@ use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\Config\Config;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\ServiceManager\ServiceManager;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 /**
@@ -29,7 +30,7 @@ trait ComponentTrait
      * If you wish to define a default config, just create a static array called $defaultConfig.
      * When setting/updating a config, it is always merged with the default config and current loaded config.
      *
-     * @param string|ConfigObject $componentConfig Path to the configuration YAML file or ConfigObject instance
+     * @param string|array|ConfigObject $componentConfig Path to the configuration YAML file or ConfigObject instance
      *
      * @throws Exception\Exception
      */
@@ -39,28 +40,22 @@ trait ComponentTrait
         $component = new StringObject(__CLASS__);
         $component = $component->explode('\\')->last();
 
-        // check if we already have a config
-        /*if (!self::$componentConfig) {
-            $defaultConfigArray = [];
-
-            // check if we have default config
-            if (isset(self::$defaultConfig)) {
-                $defaultConfigArray = self::$defaultConfig;
-            }
-
-            self::$componentConfig = new ConfigObject($defaultConfigArray);
-        }*/
+        if (!$componentConfig) {
+            throw new Exception\Exception('Invalid config passed to ' . $component . ' component. Config must be a string, array or ConfigObject.');
+        }
 
         // check if we have default config
         if (isset(self::$defaultConfig)) {
             self::$componentConfig = new ConfigObject(self::$defaultConfig);
-        }else{
+        } else {
             self::$componentConfig = new ConfigObject([]);
         }
 
         // validate config
         if ($componentConfig instanceof ConfigObject) {
             $config = $componentConfig;
+        } elseif (is_array($componentConfig) || $componentConfig instanceof ArrayObject) {
+            $config = new ConfigObject($componentConfig);
         } else {
             $config = Config::getInstance()->yaml($componentConfig)->get($component, false);
         }
