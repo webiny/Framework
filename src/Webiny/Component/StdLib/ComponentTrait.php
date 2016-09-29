@@ -107,6 +107,16 @@ trait ComponentTrait
     }
 
     /**
+     * Append new config to the existing component config
+     *
+     * @param array|ConfigObject $config
+     */
+    public static function appendConfig($config)
+    {
+        self::setConfig(self::getConfig()->mergeWith($config));
+    }
+
+    /**
      * Callback that is called once the config is set.
      */
     protected static function postSetConfig()
