@@ -230,7 +230,7 @@ class One2ManyAttribute extends AbstractCollectionAttribute
 
         $attrValues = $this->getValue();
         foreach ($attrValues as $r) {
-            if (!in_array($r->id, $newValues)) {
+            if (!in_array($r->id, $newIds)) {
                 $r->delete();
             }
         }
