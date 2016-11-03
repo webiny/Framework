@@ -12,7 +12,7 @@ class ConstructorArgumentClass
 {
     private $parameter;
 
-    public function __construct($parameter)
+    public function __construct($parameter, InstanceService $service)
     {
         $this->parameter = $parameter;
     }

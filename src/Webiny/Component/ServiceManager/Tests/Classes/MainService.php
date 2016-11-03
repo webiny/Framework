@@ -12,17 +12,19 @@ class MainService
 {
     private $value;
     private $firstArgument;
-    private $injectedService;
+    private $instanceService;
+    private $factoryService;
 
     /**
      * @var ConstructorArgumentClass
      */
     private $someInstance;
 
-    public function __construct($simpleArgument, $secondService, ConstructorArgumentClass $someInstance)
+    public function __construct($simpleArgument, $factoryService, InstanceService $instanceService, ConstructorArgumentClass $someInstance)
     {
         $this->firstArgument = $simpleArgument;
-        $this->injectedService = $secondService;
+        $this->factoryService = $factoryService;
+        $this->instanceService = $instanceService;
         $this->someInstance = $someInstance;
     }
 
@@ -41,9 +43,14 @@ class MainService
         return $this->firstArgument;
     }
 
-    public function getInjectedServiceValue()
+    public function getInstanceService()
     {
-        return $this->injectedService;
+        return $this->instanceService;
+    }
+
+    public function getFactoryService()
+    {
+        return $this->factoryService;
     }
 
     /**

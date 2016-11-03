@@ -8,7 +8,7 @@
 namespace Webiny\Component\ServiceManager\Tests\Classes;
 
 
-class SecondService
+class FactoryService
 {
 
     public static function getObject($parameter)

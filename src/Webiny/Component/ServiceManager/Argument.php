@@ -44,16 +44,26 @@ class Argument
         /**
          * If 'object' key exists - it's either a class or service
          **/
-        if ($this->isArray($this->value) && $this->arr($this->value)->keyExists('Object')) {
+        if ($this->isArray($this->value) && array_key_exists('Object', $this->value)) {
             $this->value = $this->arr($this->value);
-            $this->value = $this->createValue($this->value->key('Object'),
-                                                $this->value->key('ObjectArguments', [], true)
-            );
+            $objectArguments = $this->value->key('ObjectArguments', [], true);
+            $this->value = $this->createValue($this->value->key('Object'), $this->parseArguments($objectArguments));
         } else {
             $this->value = $this->createValue($this->value);
         }
 
         return $this->value;
+    }
+
+    private function parseArguments($arguments)
+    {
+        $values = [];
+        foreach ($arguments as $arg) {
+            $argument = new Argument($arg);
+            $values[] = $argument->value();
+        }
+
+        return $values;
     }
 
     /**
@@ -84,9 +94,7 @@ class Argument
         $object = $this->str($object);
 
         if ($object->startsWith('@')) {
-            $arguments = $this->arr($arguments)->count() > 0 ? $arguments : null;
-
-            return ServiceManager::getInstance()->getService($object->val(), $arguments);
+            return ServiceManager::getInstance()->getService($object->trimLeft('@')->val());
         } else {
             $value = $object->val();
             if (class_exists($value)) {

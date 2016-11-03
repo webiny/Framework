@@ -24,10 +24,11 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
             'Class'     => '%MainService.Class%',
             'Arguments' => [
                 'first'  => 'FirstArgument',
-                'second' => '@SecondService',
-                'third'  => [
+                'factory' => '@FactoryService',
+                'instance'  => '@InstanceService',
+                'fourth' => [
                     'Object'          => '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass',
-                    'ObjectArguments' => ['SomeParameter']
+                    'ObjectArguments' => ['SomeParameter', '@InstanceService']
                 ]
             ],
             'Calls'     => [
@@ -37,30 +38,35 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         ],
-
-        'SecondService' => [
-            'Factory'         => '\Webiny\Component\ServiceManager\Tests\Classes\SecondService',
+        'FactoryService' => [
+            'Factory'         => '\Webiny\Component\ServiceManager\Tests\Classes\FactoryService',
             'Method'          => 'getObject',
             'MethodArguments' => ['InjectedServiceValue']
+        ],
+        'InstanceService'  => [
+            'Class' => '\Webiny\Component\ServiceManager\Tests\Classes\InstanceService'
         ]
     ];
 
     public function testServiceManager()
     {
         $mainServiceConfig = new ConfigObject(self::$services['MainService']);
-        $secondServiceConfig = new ConfigObject(self::$services['SecondService']);
+        $secondServiceConfig = new ConfigObject(self::$services['FactoryService']);
+        $thirdServiceConfig = new ConfigObject(self::$services['InstanceService']);
         ServiceManager::getInstance()->registerParameters(self::$services['Parameters']);
         ServiceManager::getInstance()->registerService('MainService', $mainServiceConfig);
-        ServiceManager::getInstance()->registerService('SecondService', $secondServiceConfig);
+        ServiceManager::getInstance()->registerService('FactoryService', $secondServiceConfig);
+        ServiceManager::getInstance()->registerService('InstanceService', $thirdServiceConfig);
 
         /* @var $mainService MainService */
         $mainService = ServiceManager::getInstance()->getService('MainService');
 
-        $this->assertEquals('InjectedServiceValue', $mainService->getInjectedServiceValue());
+        $this->assertEquals('InjectedServiceValue', $mainService->getFactoryService());
         $this->assertEquals('Webiny', $mainService->getCallValue());
         $this->assertEquals('FirstArgument', $mainService->getFirstArgumentValue());
         $checkInstance = '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass';
         $this->assertInstanceOf($checkInstance, $mainService->getSomeInstance());
+        $this->assertInstanceOf('\Webiny\Component\ServiceManager\Tests\Classes\InstanceService', $mainService->getInstanceService());
         $this->assertEquals('SomeParameter', $mainService->getSomeInstance()->getConstructorParameterValue());
     }
 }
