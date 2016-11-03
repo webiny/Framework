@@ -46,7 +46,7 @@ class SingleIndex extends AbstractIndex
     {
         $options = parent::getOptions();
         if($this->isNumber($this->ttl)) {
-            $options['ttl'] = $this->ttl;
+            $options['expireAfterSeconds'] = $this->ttl;
         }
 
         return $options;
