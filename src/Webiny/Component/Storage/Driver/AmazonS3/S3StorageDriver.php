@@ -9,6 +9,7 @@ namespace Webiny\Component\Storage\Driver\AmazonS3;
 
 use Aws\S3\Exception\NoSuchKeyException;
 use Webiny\Component\Amazon\S3;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObjectTrait;
 use Webiny\Component\Storage\Driver\DriverInterface;
 use Webiny\Component\Storage\Driver\SizeAwareInterface;
@@ -37,29 +38,36 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
     protected $recentKey = null;
     protected $bucket;
     protected $recentFiles = [];
+    protected $meta = [];
     protected $cdnDomain = false;
 
     /**
      * Constructor
      *
-     * @param string      $accessKeyId
-     * @param string      $secretAccessKey
-     * @param string      $bucket
-     * @param string      $region
-     * @param string|null $endpoint
-     * @param bool        $date If true, will append Y/m/d to the key
-     * @param bool        $cdnDomain
+     * @param array|ArrayObject $config
      *
-     * @internal param $config
+     * @throws StorageException
      */
-    public function __construct($accessKeyId, $secretAccessKey, $bucket, $region, $endpoint = null, $date = false, $cdnDomain = false)
+    public function __construct($config)
     {
+        if (is_array($config)) {
+            $config = new ArrayObject($config);
+        }
+
+        if (!$config instanceof ArrayObject) {
+            throw new StorageException('Storage driver config must be an array or ArrayObject!');
+        }
+
         $bridge = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
+        $accessKeyId = $config->key('AccessKeyId');
+        $secretAccessKey = $config->key('SecretAccessKey');
+        $region = $config->key('Region');
+        $endpoint = $config->key('Endpoint');
         $this->s3Client = new $bridge($accessKeyId, $secretAccessKey, $region, $endpoint);
 
-        $this->bucket = $bucket;
-        $this->dateFolderStructure = $date;
-        $this->cdnDomain = $cdnDomain;
+        $this->bucket = $config->key('Bucket');
+        $this->cdnDomain = $config->key('CdnDomain');
+        $this->meta = $config->key('Meta');
     }
 
 
@@ -117,7 +125,8 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
         }
         $this->recentKey = $key;
         $params = [
-            'ACL' => 'public-read'
+            'ACL'      => 'public-read',
+            'Metadata' => $this->meta
         ];
         $this->recentFiles[$key] = $this->s3Client->putObject($this->bucket, $key, $contents, $params);
 

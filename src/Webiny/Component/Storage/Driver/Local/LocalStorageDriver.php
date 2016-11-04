@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Storage\Driver\Local;
 
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\Storage\Driver\DriverInterface;
 use Webiny\Component\Storage\Driver\AbsolutePathInterface;
 use Webiny\Component\Storage\Driver\DirectoryAwareInterface;
@@ -30,26 +31,31 @@ class LocalStorageDriver implements DirectoryAwareInterface, DriverInterface, Si
     protected $dateFolderStructure;
     protected $recentKey = null;
     protected $directory;
+    protected $publicUrl;
     protected $create;
 
     /**
      * Constructor
      *
-     * @param string  $directory Directory of the storage
-     * @param string  $publicUrl Public storage URL
-     * @param bool    $dateFolderStructure If true, will append Y/m/d to the key
-     * @param boolean $create Whether to create the directory if it does not
-     *                                     exist (default FALSE)
+     * @param array|ArrayObject $config
      *
      * @throws StorageException
      */
-    public function __construct($directory, $publicUrl = '', $dateFolderStructure = false, $create = false)
+    public function __construct($config)
     {
+        if(is_array($config)){
+            $config = new ArrayObject($config);
+        }
+
+        if(!$config instanceof ArrayObject){
+            throw new StorageException('Storage driver config must be an array or ArrayObject!');
+        }
+
         $this->helper = LocalHelper::getInstance();
-        $this->directory = $this->helper->normalizeDirectoryPath($directory);
-        $this->publicUrl = $publicUrl;
-        $this->dateFolderStructure = $dateFolderStructure;
-        $this->create = $create;
+        $this->directory = $this->helper->normalizeDirectoryPath($config->key('Directory', '', true));
+        $this->publicUrl = $config->key('PublicUrl', '', true);
+        $this->dateFolderStructure = $config->key('DateFolderStructure', false, true);
+        $this->create = $config->key('Create', false, true);
     }
 
     /**

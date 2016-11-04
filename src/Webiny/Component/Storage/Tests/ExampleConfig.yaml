@@ -9,19 +9,19 @@ Storage:
     # You can optionally specify parameters for use in services definitions
     Parameters:
         StorageClass: \Webiny\Component\Storage\Storage
-        StorageS3DriverArgs:
-            AccessId: AAAAAA
-            AccessKey: /FOO
-            Bucket: foo
-            Region: eu-west-1
-            Endpoint: http://s3.eu-west-1.amazonaws.com
     Services:
         CloudStorage:
             Class: %StorageClass%
             Arguments:
                 Driver:
                     Object: \Webiny\Component\Storage\Driver\AmazonS3\S3StorageDriver
-                    ObjectArguments: %StorageS3DriverArgs%
+                    ObjectArguments:
+                        Config:
+                            AccessKeyId: AAAAAA
+                            SecretAccessKey: /FOO
+                            Bucket: foo
+                            Region: eu-west-1
+                            Endpoint: http://s3.eu-west-1.amazonaws.com
             Tags: [cloud]
         LocalStorage:
             Class: %StorageClass%
@@ -29,10 +29,10 @@ Storage:
                 Driver:
                     Object: \Webiny\Component\Storage\Driver\Local\LocalStorageDriver
                     ObjectArguments:
-                        - __DIR__/TestFiles # __DIR__ will be replaced with this config's directory
-                        - http://admin.w3.com/Uploads # Web root path
-                        - false # DateFolderStructure
-                        - true # Create folder if it doesn't exist
+                        Config:
+                            Directory: __DIR__/TestFiles # __DIR__ will be replaced with this config's directory
+                            PublicUrl: http://admin.w3.com/Uploads # Web root path
+                            Create: true # Create folder if it doesn't exist
 
     # You can overwrite the default driver bridge by providing your own.
     # Read the Readme.md file for the instructions on how to create a new driver bridge.
