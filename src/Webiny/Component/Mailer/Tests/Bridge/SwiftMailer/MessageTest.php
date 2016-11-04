@@ -39,7 +39,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddAttachment($message)
     {
-        $storage = new Storage(new LocalStorageDriver(__DIR__.'/Attachments'));
+        $storage = new Storage(new LocalStorageDriver(['Directory' => __DIR__.'/Attachments']));
         $message->addAttachment(new File('Attachment.yaml', $storage), 'ExampleConfig.yaml', 'text/yaml');
         $children = $message->getChildren();
 
