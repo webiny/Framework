@@ -182,12 +182,7 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
         }
 
         if ($this->cdnDomain) {
-            $objectUrl = $this->url($this->recentFiles[$key]['ObjectURL']);
-            $cdnDomain = $this->url($this->cdnDomain);
-
-            $objectUrl->setHost($cdnDomain->getHost())->setScheme($cdnDomain->getScheme());
-
-            return $objectUrl->val();
+            return $this->cdnDomain . '/' . $key;
         }
 
         return $this->recentFiles[$key]['ObjectURL'];
