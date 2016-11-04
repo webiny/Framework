@@ -19,7 +19,7 @@ class MinLength implements ValidatorInterface
             return true;
         }
 
-        if ($value < $limit) {
+        if (is_numeric($value) && $value < $limit) {
             return true;
         }
 
