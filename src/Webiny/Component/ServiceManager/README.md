@@ -135,6 +135,8 @@ logger.driver.class: \Webiny\Component\Logger\Drivers\Webiny
 logger.handler.udp.class: \Webiny\Component\Logger\Drivers\Webiny\Handlers\UDPHandler
 ```
 
+> NOTE: At the moment, parameters can not be used in ObjectArguments. 
+
 Services config file (this can also be defined in plain PHP array):
 
 ```yaml
