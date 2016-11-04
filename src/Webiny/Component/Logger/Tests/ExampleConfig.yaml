@@ -6,7 +6,8 @@ Storage:
                 Driver:
                     Object: \Webiny\Component\Storage\Driver\Local\LocalStorageDriver
                     ObjectArguments:
-                        - __DIR__ # Absolute root path
+                        Config:
+                            Directory: __DIR__ # Absolute root path
 Logger:
     Parameters:
         Logger.Class: \Webiny\Component\Logger\Logger
