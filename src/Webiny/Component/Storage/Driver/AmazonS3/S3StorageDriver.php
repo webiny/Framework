@@ -177,12 +177,12 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
      */
     public function getURL($key)
     {
-        if (!$this->arr($this->recentFiles)->keyExists($key)) {
-            $this->recentFiles[$key]['ObjectURL'] = $this->s3Client->getObjectUrl($this->bucket, $key);
-        }
-
         if ($this->cdnDomain) {
             return $this->cdnDomain . '/' . $key;
+        }
+
+        if (!$this->arr($this->recentFiles)->keyExists($key)) {
+            $this->recentFiles[$key]['ObjectURL'] = $this->s3Client->getObjectUrl($this->bucket, $key);
         }
 
         return $this->recentFiles[$key]['ObjectURL'];
