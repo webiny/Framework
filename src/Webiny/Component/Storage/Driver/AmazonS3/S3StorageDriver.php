@@ -15,7 +15,6 @@ use Webiny\Component\Storage\Driver\DriverInterface;
 use Webiny\Component\Storage\Driver\SizeAwareInterface;
 use Webiny\Component\Storage\Storage;
 use Webiny\Component\Storage\StorageException;
-use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 /**
  * AmazonS3 storage driver
@@ -34,7 +33,6 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
      * @var S3
      */
     protected $s3Client;
-    protected $dateFolderStructure;
     protected $recentKey = null;
     protected $bucket;
     protected $recentFiles = [];
@@ -117,12 +115,6 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
      */
     public function setContents($key, $contents, $append = false)
     {
-        if ($this->dateFolderStructure) {
-            if (!$this->keyExists($key)) {
-                $key = new StringObject($key);
-                $key = date('Y/m/d') . '/' . $key->trimLeft('/');
-            }
-        }
         $this->recentKey = $key;
         $params = [
             'ACL'      => 'public-read',
@@ -207,6 +199,6 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
      */
     public function createDateFolderStructure()
     {
-        return $this->dateFolderStructure;
+        return false;
     }
 }
