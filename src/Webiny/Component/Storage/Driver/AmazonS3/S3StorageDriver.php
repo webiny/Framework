@@ -117,9 +117,12 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
     {
         $this->recentKey = $key;
         $params = [
-            'ACL'      => 'public-read',
-            'Metadata' => $this->meta
+            'ACL' => 'public-read'
         ];
+
+        if (is_array($this->meta)) {
+            $params['Metadata'] = $this->meta;
+        }
         $this->recentFiles[$key] = $this->s3Client->putObject($this->bucket, $key, $contents, $params);
 
         return true;
