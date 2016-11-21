@@ -10,6 +10,7 @@ namespace Webiny\Component\Entity;
 use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 
@@ -30,8 +31,6 @@ class EntityDataExtractor
     protected static $currentLevel = 0;
     protected static $cache = [];
     protected $nestedLevel = 10; // Maximum depth is 10 which is hard to achieve
-    protected $aliases = [];
-    protected $dottedFields = ['_name'];
 
     public function __construct(AbstractEntity $entity)
     {
@@ -54,9 +53,11 @@ class EntityDataExtractor
         }
 
         $data = [];
+
+        /* @var array $attributes Array that contains all fields, aliases and dotted fields */
         $attributes = $this->buildEntityFields($attributes);
 
-        foreach ($attributes as $attr => $subAttributes) {
+        foreach ($attributes['fields'] as $attr => $subAttributes) {
             $parts = explode(':', $attr);
             $attrName = $parts[0];
             $params = array_slice($parts, 1);
@@ -136,11 +137,11 @@ class EntityDataExtractor
         $data = $this->arr($data);
 
         // If aliases were used, recreate the entire array to remove junk keys of aliased attributes
-        if (count($this->aliases)) {
+        if (count($attributes['aliases'])) {
             $cleanData = $this->arr();
-            foreach ($this->dottedFields as $key) {
-                if (array_key_exists($key, $this->aliases)) {
-                    $cleanData->keyNested($this->aliases[$key], $data->keyNested($key), true);
+            foreach ($attributes['dottedFields'] as $key) {
+                if (array_key_exists($key, $attributes['aliases'])) {
+                    $cleanData->keyNested($attributes['aliases'][$key], $data->keyNested($key), true);
                     continue;
                 }
                 $cleanData->keyNested($key, $data->keyNested($key), true);
@@ -169,6 +170,9 @@ class EntityDataExtractor
      */
     private function buildEntityFields($fields)
     {
+        $aliases = [];
+        $dottedFields = ['_name'];
+
         if (!$this->isArray($fields)) {
             $cacheKey = $fields;
             if (array_key_exists($cacheKey, self::$cache)) {
@@ -195,7 +199,11 @@ class EntityDataExtractor
                 $fields = $this->arr($fields)->merge($defaultFields)->val();
             }
 
-            return self::$cache[$cacheKey] = $fields;
+            return self::$cache[$cacheKey] = [
+                'fields'  => $fields,
+                'aliases' => $aliases,
+                'dottedFields' => $dottedFields
+            ];
         }
 
         $parsedFields = $this->arr(['id' => true]);
@@ -206,11 +214,11 @@ class EntityDataExtractor
 
             if ($f->contains('@')) {
                 list($f, $alias) = $f->explode('@')->val();
-                $this->aliases[$f] = $alias;
+                $aliases[$f] = $alias;
                 $f = $this->str($f);
             }
 
-            $this->dottedFields[] = $f->val();
+            $dottedFields[] = $f->val();
 
             if ($f->startsWith('!')) {
                 $unsetFields[] = $f->trimLeft('!')->val();
@@ -231,7 +239,11 @@ class EntityDataExtractor
             $parsedFields->removeKey($field);
         }
 
-        return self::$cache[$cacheKey] = $parsedFields->val();
+        return self::$cache[$cacheKey] = [
+            'fields'  => $parsedFields->val(),
+            'aliases' => $aliases,
+            'dottedFields' => $dottedFields
+        ];
     }
 
     /**
@@ -297,7 +309,7 @@ class EntityDataExtractor
     /**
      * Parse attribute key recursively
      *
-     * @param array        $parsedFields Reference to array of parsed fields
+     * @param ArrayObject        $parsedFields Reference to array of parsed fields
      * @param StringObject $key Current key to parse
      */
     private function buildFields(&$parsedFields, StringObject $key)
