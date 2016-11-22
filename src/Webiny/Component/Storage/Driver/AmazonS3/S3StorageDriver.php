@@ -36,8 +36,8 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
     protected $recentKey = null;
     protected $bucket;
     protected $recentFiles = [];
-    protected $meta = [];
     protected $cdnDomain = false;
+    protected $params = [];
 
     /**
      * Constructor
@@ -65,7 +65,10 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
 
         $this->bucket = $config->key('Bucket');
         $this->cdnDomain = $config->key('CdnDomain');
-        $this->meta = $config->key('Meta');
+        $this->params = $config->key('Params');
+        if (!is_array($this->params)) {
+            $this->params = [];
+        }
     }
 
 
@@ -116,13 +119,8 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
     public function setContents($key, $contents, $append = false)
     {
         $this->recentKey = $key;
-        $params = [
-            'ACL' => 'public-read'
-        ];
-
-        if (is_array($this->meta)) {
-            $params['Metadata'] = $this->meta;
-        }
+        $params = $this->params;
+        $params['ACL'] = 'public-read';
         $this->recentFiles[$key] = $this->s3Client->putObject($this->bucket, $key, $contents, $params);
 
         return true;

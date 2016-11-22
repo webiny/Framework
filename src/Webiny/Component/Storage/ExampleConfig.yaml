@@ -17,9 +17,10 @@ Storage:
                 Region: eu-west-1
                 Endpoint: http://s3.eu-central-1.amazonaws.com
                 CdnDomain: http://d35gcc3uej2xar.cloudfront.net
-                Meta:
-                    param1: 'value 1'
-                    param2: 'value 2'
+                Params:
+                    CacheControl: max-age=64000
+                    Metadata:
+                        key: value
     Services:
         CloudStorage:
             Class: %StorageClass%
