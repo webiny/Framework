@@ -168,7 +168,7 @@ class EntityDataExtractor
      *
      * @return array
      */
-    private function buildEntityFields($fields)
+    public function buildEntityFields($fields)
     {
         $aliases = [];
         $dottedFields = ['_name'];
@@ -200,8 +200,8 @@ class EntityDataExtractor
             }
 
             return self::$cache[$cacheKey] = [
-                'fields'  => $fields,
-                'aliases' => $aliases,
+                'fields'       => $fields,
+                'aliases'      => $aliases,
                 'dottedFields' => $dottedFields
             ];
         }
@@ -240,8 +240,8 @@ class EntityDataExtractor
         }
 
         return self::$cache[$cacheKey] = [
-            'fields'  => $parsedFields->val(),
-            'aliases' => $aliases,
+            'fields'       => $parsedFields->val(),
+            'aliases'      => $aliases,
             'dottedFields' => $dottedFields
         ];
     }
@@ -309,7 +309,7 @@ class EntityDataExtractor
     /**
      * Parse attribute key recursively
      *
-     * @param ArrayObject        $parsedFields Reference to array of parsed fields
+     * @param ArrayObject  $parsedFields Reference to array of parsed fields
      * @param StringObject $key Current key to parse
      */
     private function buildFields(&$parsedFields, StringObject $key)
