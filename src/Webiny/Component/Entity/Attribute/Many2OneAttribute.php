@@ -296,6 +296,13 @@ class Many2OneAttribute extends AbstractAttribute
         return $this->getAttribute($name);
     }
 
+    public function onSetNull($callable)
+    {
+        $this->onSetNullCallback = $callable;
+
+        return $this;
+    }
+
     /**
      * Perform validation against given value
      *
@@ -316,14 +323,7 @@ class Many2OneAttribute extends AbstractAttribute
         return $this;
     }
 
-    public function onSetNull($callable)
-    {
-        $this->onSetNullCallback = $callable;
-
-        return $this;
-    }
-
-    private function loadEntity($id)
+    protected function loadEntity($id)
     {
         if (!$id) {
             return null;
