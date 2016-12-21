@@ -27,7 +27,7 @@ class EntityException extends AbstractException
     protected $invalidAttributes = [];
 
     protected static $messages = [
-        101 => "Entity validation failed with '%s' errors.",
+        101 => "Validation of '%s' failed with '%s' errors.",
         102 => "Entity is linked with other entities via '%s' attribute and can not be deleted.",
         103 => "No matching Many2Many attribute was found between entities '%s' and '%s' for attribute '%s'.",
         104 => "AttributeType '%s' was not found in '%s' entity.",

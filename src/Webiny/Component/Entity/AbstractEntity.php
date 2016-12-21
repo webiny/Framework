@@ -336,7 +336,7 @@ abstract class AbstractEntity implements \ArrayAccess
                     $attributes[$key] = $value;
                 }
             }
-            $ex = new EntityException(EntityException::VALIDATION_FAILED, [count($validation)]);
+            $ex = new EntityException(EntityException::VALIDATION_FAILED, [get_class($this), count($validation)]);
             $ex->setInvalidAttributes($attributes);
             throw $ex;
         }
@@ -533,7 +533,7 @@ abstract class AbstractEntity implements \ArrayAccess
                     $attributes[$key] = $value;
                 }
             }
-            $ex = new EntityException(EntityException::VALIDATION_FAILED, [$validation->count()]);
+            $ex = new EntityException(EntityException::VALIDATION_FAILED, [get_class($this), $validation->count()]);
             $ex->setInvalidAttributes($attributes);
             throw $ex;
         }
