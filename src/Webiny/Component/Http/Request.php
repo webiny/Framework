@@ -93,17 +93,13 @@ class Request
         $this->files = new Files();
         $this->env = new Env();
         $this->headers = new Headers();
-
-        if (Http::getConfig()->TrustedProxies) {
-            $this->trustedProxies = Http::getConfig()->TrustedProxies->toArray();
-        }
     }
 
     /**
      * Get a value from $_GET param for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return mixed Value of the given $key.
@@ -127,7 +123,7 @@ class Request
      * Get a value from $_POST param for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return mixed Value of the given $key.
@@ -151,7 +147,7 @@ class Request
      * Get a value from HTTP Headers
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return mixed Value of the given $key.
@@ -165,7 +161,7 @@ class Request
      * Get a value from request payload param for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return mixed Value of the given $key.
@@ -189,7 +185,7 @@ class Request
      * Get a value from $_ENV param for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return mixed Value of the given $key.
@@ -214,7 +210,7 @@ class Request
      * If you have a multi-dimensional upload field name, than you should pass the optional $arrayOffset param to get the
      * right File object.
      *
-     * @param string   $name        Name of the upload field.
+     * @param string   $name Name of the upload field.
      * @param null|int $arrayOffset Optional array offset for multi-dimensional upload fields.
      *
      * @throws \Exception|Request\Files\FilesException
@@ -236,7 +232,7 @@ class Request
      */
     public function getTrustedProxies()
     {
-        return $this->trustedProxies;
+        return Http::getConfig()->get('TrustedProxies', [], true);
     }
 
     /**
@@ -321,16 +317,17 @@ class Request
     {
         $remoteAddress = $this->server()->remoteAddress();
         $fwdClientIp = $this->server()->get($this->getTrustedHeaders()['client_ip']);
+
         if ($fwdClientIp && $remoteAddress && in_array($remoteAddress, $this->getTrustedProxies())) {
             // Use the forwarded IP address, typically set when the
             // client is using a proxy server.
             // Format: "X-Forwarded-For: client1, proxy1, proxy2"
             $clientIps = explode(',', $fwdClientIp);
             $clientIp = array_shift($clientIps);
-        } elseif ($this->server()->httpClientIp() && $remoteAddress && in_array($remoteAddress,
-                                                                                $this->getTrustedProxies()
-            )
-        ) {
+        } elseif ($fwdClientIp && in_array('*', $this->getTrustedProxies())) {
+            $clientIps = explode(',', $fwdClientIp);
+            $clientIp = array_shift($clientIps);
+        } elseif ($this->server()->httpClientIp() && $remoteAddress && in_array($remoteAddress, $this->getTrustedProxies())) {
             // Use the forwarded IP address, typically set when the
             // client is using a proxy server.
             $clientIps = explode(',', $this->server()->httpClientIp());
@@ -366,16 +363,14 @@ class Request
                 'https',
                 'on',
                 '1'
-            ]
-        );
+            ]);
 
         if (!$isSecured) {
             if (in_array(strtolower($this->server()->https()), [
                     'https',
                     'on',
                     '1'
-                ]
-            )) {
+                ])) {
                 $isSecured = true;
             }
         }
@@ -393,13 +388,13 @@ class Request
     {
         $port = 80;
         $host = $this->server()->httpHost();
-        if(empty($host)){
+        if (empty($host)) {
             return $port;
         }
 
         $host = $this->str($host);
 
-        if($host->contains(':')){
+        if ($host->contains(':')) {
             $port = $host->explode(':')->last();
         }
 

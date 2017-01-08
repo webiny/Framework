@@ -32,7 +32,7 @@ class Http
                 'ExpireTime' => 86400
             ]
         ],
-        'TrustedProxies' => ['127.0.0.1'],
+        //'TrustedProxies' => ['127.0.0.1'],
         'TrustedHeaders' => [
             //'client_ip'    => 'X_FORWARDED_FOR', # needs to be explicitly enabled because this can be a security issue
             'client_host'  => 'X_FORWARDED_HOST',
