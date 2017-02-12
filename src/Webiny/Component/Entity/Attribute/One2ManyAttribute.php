@@ -9,6 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
+use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -149,26 +150,28 @@ class One2ManyAttribute extends AbstractCollectionAttribute
     public function getValue($params = [], $processCallbacks = true)
     {
         if ($this->isNull($this->value)) {
+            // We need to load records from DB - but ONLY if parent record has an ID (otherwise no child records can exist in DB)
             $entityId = $this->parent->id;
-            $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
-            $query = [
-                $this->relatedAttribute => $entityId
-            ];
+            if (empty($entityId)) {
+                // No child records exist - return an empty EntityCollection
+                $this->value = new EntityCollection($this->entityClass, []);
+                $this->dataLoaded = true;
+            } else {
+                // Try loading child records using parent id
+                $query = [$this->relatedAttribute => $entityId];
 
-            $filters = $this->filter;
-            if (is_string($filters) || is_callable($filters)) {
-                $callable = is_string($filters) ? [$this->parent, $filters] : $filters;
-                $filters = call_user_func_array($callable, []);
+                // Get optional record filters
+                $filters = $this->filter;
+                if (is_string($filters) || is_callable($filters)) {
+                    $callable = is_string($filters) ? [$this->parent, $filters] : $filters;
+                    $filters = call_user_func_array($callable, []);
+                }
+
+                // Merge optional filters with main query
+                $query = array_merge($query, $filters);
+                $this->value = call_user_func_array([$this->entityClass, 'find'], [$query, $this->sorter]);
+                $this->dataLoaded = true;
             }
-
-            $query = array_merge($query, $filters);
-
-            $callable = [
-                $this->entityClass,
-                'find'
-            ];
-            $this->value = call_user_func_array($callable, [$query, $this->sorter]);
-            $this->dataLoaded = true;
         }
 
         return $processCallbacks ? $this->processGetValue($this->value, $params) : $this->value;
@@ -177,12 +180,12 @@ class One2ManyAttribute extends AbstractCollectionAttribute
     public function hasValue()
     {
         if ($this->isNull($this->value)) {
+            // We need to count records in DB - but ONLY if parent record has an ID (otherwise no child records can exist in DB)
             $entityId = $this->parent->id;
-            $entityId = empty($entityId) ? '__webiny_dummy_id__' : $entityId;
-            $query = [
-                $this->relatedAttribute => $entityId
-            ];
-
+            if (empty($entityId)) {
+                return false;
+            }
+            $query = [$this->relatedAttribute => $entityId];
             $entityCollection = call_user_func_array([$this->entityClass, 'getEntityCollection'], []);
 
             return boolval(Entity::getInstance()->getDatabase()->count($entityCollection, $query));
