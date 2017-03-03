@@ -7,8 +7,10 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
+use Traversable;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityAbstract;
+use Webiny\Component\Entity\EntityCollection;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -212,10 +214,6 @@ class One2ManyAttribute extends CollectionAttributeAbstract
 
     private function cleanUpRecords($newValues)
     {
-        if (!$this->entity->id) {
-            return;
-        }
-        
         $newIds = [];
         foreach ($newValues as $nv) {
             if (isset($nv['id']) && $nv['id'] != '') {
