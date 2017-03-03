@@ -215,7 +215,7 @@ class One2ManyAttribute extends CollectionAttributeAbstract
         if (!$this->entity->id) {
             return;
         }
-
+        
         $newIds = [];
         foreach ($newValues as $nv) {
             if (isset($nv['id']) && $nv['id'] != '') {
