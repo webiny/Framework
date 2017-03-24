@@ -35,7 +35,7 @@ class Message implements MessageInterface
 
     public function __construct(ConfigObject $config = null)
     {
-        $this->message = new \SendGrid\Email();
+        $this->message = new \SendGrid\Email('', '');
     }
 
     public function __invoke()
