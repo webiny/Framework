@@ -7,7 +7,9 @@
 
 namespace Webiny\Component\Annotations\Bridge\Minime;
 
+use Minime\Annotations\Cache\ArrayCache;
 use Minime\Annotations\ParserRules;
+use Minime\Annotations\Reader;
 use Webiny\Component\Annotations\Bridge\AnnotationsInterface;
 
 /**
@@ -17,13 +19,16 @@ use Webiny\Component\Annotations\Bridge\AnnotationsInterface;
  */
 class Annotations implements AnnotationsInterface
 {
+    protected $reader;
+
+    public function __construct()
+    {
+        $this->reader = new Reader(new Parser(), new ArrayCache());
+    }
 
     private function parseAnnotations(\Reflector $reflector)
     {
-        $rules = new ParserRules();
-        $annotations = (new Parser($reflector->getDocComment(), $rules))->parse();
-
-        return $annotations;
+        return $this->reader->getAnnotations($reflector)->toArray();
     }
 
     /**
