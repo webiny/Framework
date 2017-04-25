@@ -139,9 +139,6 @@ class Stateless extends AbstractTokenStorage
         // initial key
         $securityKey = $this->securityKey;
 
-        // append user agent
-        $securityKey .= $this->httpRequest()->server()->httpUserAgent();
-
         // hash and return
         return hash('sha512', $securityKey);
     }
