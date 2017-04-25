@@ -209,9 +209,6 @@ abstract class AbstractTokenStorage implements TokenStorageInterface
         // append current session id
         $securityKey .= $this->httpSession()->getSessionId();
 
-        // append user agent
-        $securityKey .= $this->httpRequest()->server()->httpUserAgent();
-
         // hash and return
         return hash('sha512', $securityKey);
     }
