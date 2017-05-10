@@ -23,7 +23,7 @@ Security:
             RealmName: Administration
             Anonymous: true
             Encoder: false
-            RememberMe: true
+            RememberMe: true # or number of seconds (seconds will be forwarded to token storage where it calculates token TTL)
             TokenKey: SecretKey
             UserProviders: [Memory, OAuth2, TwitterOAuth]
             AuthenticationProviders: [Http, Form, OAuth2, TwitterOAuth]

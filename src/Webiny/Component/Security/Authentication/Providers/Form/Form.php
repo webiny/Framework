@@ -36,14 +36,20 @@ class Form implements AuthenticationInterface
      */
     public function getLoginObject(ConfigObject $config)
     {
+        // Fetch data from payload object as a fallback
         $payloadUsername = $this->httpRequest()->payload('username', '');
         $payloadPassword = $this->httpRequest()->payload('password', '');
         $payloadRememberMe = $this->httpRequest()->payload('rememberme', false);
 
-        return new Login($this->httpRequest()->post('username', $payloadUsername),
-                         $this->httpRequest()->post('password', $payloadPassword
-                         ), $this->httpRequest()->post('rememberme', $payloadRememberMe)
-        );
+        // Now try fetching data from POST as main source
+        $payloadUsername = $this->httpRequest()->post('username', $payloadUsername);
+        $payloadPassword = $this->httpRequest()->post('password', $payloadPassword);
+        $payloadRememberMe = $this->httpRequest()->post('rememberme', $payloadRememberMe);
+
+        // If 'rememberme' is set - get remember me duration from Firewall config
+        $rememberMe = $payloadRememberMe ? $config->get('RememberMe') : false;
+
+        return new Login($payloadUsername, $payloadPassword, $rememberMe);
     }
 
     /**
