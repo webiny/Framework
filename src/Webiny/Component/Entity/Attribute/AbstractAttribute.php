@@ -531,13 +531,11 @@ abstract class AbstractAttribute implements JsonSerializable
      */
     public function getValue($params = [], $processCallbacks = true)
     {
-        $value = $this->value;
-        $defaultValue = $this->getDefaultValue();
-        if ($this->isNull($value) && !$this->isNull($defaultValue)) {
-            $value = $defaultValue;
+        if ($this->isNull($this->value) && !$this->isNull($this->defaultValue)) {
+            $this->value = $this->getDefaultValue();
         }
 
-        return $this->processGetValue($value, $params, $processCallbacks);
+        return $this->processGetValue($this->value, $params, $processCallbacks);
     }
 
     /**

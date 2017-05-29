@@ -184,12 +184,11 @@ class Many2OneAttribute extends AbstractAttribute
             }
         }
 
-        $value = $this->value;
-        if (!$value && !$this->isNull($this->defaultValue)) {
-            $value = $this->getDefaultValue();
+        if (!$this->value && !$this->isNull($this->defaultValue)) {
+            $this->value = $this->getDefaultValue();
         }
 
-        return $this->processGetValue($value, $params, $processCallbacks);
+        return $this->processGetValue($this->value, $params, $processCallbacks);
     }
 
     /**

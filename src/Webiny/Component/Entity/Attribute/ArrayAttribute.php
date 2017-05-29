@@ -88,10 +88,10 @@ class ArrayAttribute extends AbstractAttribute implements \IteratorAggregate, \A
     {
         $value = $this->value;
         if ($value->count() == 0 && !$this->isNull($this->defaultValue)) {
-            $value = $this->getDefaultValue();
+            $this->value = $this->getDefaultValue();
         }
 
-        return $this->processGetValue($value, $params, $processCallbacks);
+        return $this->processGetValue($this->value, $params, $processCallbacks);
     }
 
 
