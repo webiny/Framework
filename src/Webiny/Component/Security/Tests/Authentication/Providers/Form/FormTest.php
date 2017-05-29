@@ -31,7 +31,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $_POST = [
             'username'   => 'un',
             'password'   => 'pw',
-            'rememberme' => 'yes'
+            'rememberme' => true
         ];
 
         $form = new Form();
@@ -40,6 +40,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $login);
         $this->assertSame('un', $login->getUsername());
         $this->assertSame('pw', $login->getPassword());
-        $this->assertSame('yes', $login->getRememberMe());
+        $this->assertSame(false, $login->getRememberMe());
     }
 }

@@ -22,7 +22,7 @@ Security:
         Admin:
             RealmName: Administration
             Anonymous: true
-            RememberMe: false
+            RememberMe: true # or number of seconds (seconds will be forwarded to token storage where it calculates token TTL)
             Encoder: MockEncoder # what encoder to use to hash and validate user passwords
             Token: MockToken # what token crypt to use to store user login session and cookie data
             UserProviders: [MockProvider] # what providers to use to get the user account

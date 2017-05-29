@@ -47,7 +47,7 @@ class Form implements AuthenticationInterface
         $payloadRememberMe = $this->httpRequest()->post('rememberme', $payloadRememberMe);
 
         // If 'rememberme' is set - get remember me duration from Firewall config
-        $rememberMe = $payloadRememberMe ? $config->get('RememberMe') : false;
+        $rememberMe = $payloadRememberMe ? $config->get('RememberMe', false, true) : false;
 
         return new Login($payloadUsername, $payloadPassword, $rememberMe);
     }
