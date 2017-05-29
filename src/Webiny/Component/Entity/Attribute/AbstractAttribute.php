@@ -361,7 +361,7 @@ abstract class AbstractAttribute implements JsonSerializable
     /**
      * Get required flag
      *
-     * @return $this
+     * @return bool
      */
     public function isRequired()
     {
