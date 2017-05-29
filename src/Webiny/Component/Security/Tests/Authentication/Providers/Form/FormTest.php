@@ -40,6 +40,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $login);
         $this->assertSame('un', $login->getUsername());
         $this->assertSame('pw', $login->getPassword());
+        // We pass an empty configuration to Form provider, which means `RememberMe` is disabled and we expect to receive `false`
         $this->assertSame(false, $login->getRememberMe());
     }
 }
