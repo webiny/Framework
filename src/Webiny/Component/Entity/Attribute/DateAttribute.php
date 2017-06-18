@@ -29,7 +29,7 @@ class DateAttribute extends AbstractAttribute
 
     public function setValue($value = null, $fromDb = false)
     {
-        if ($fromDb) {
+        if ($fromDb && $value) {
             $value = $this->datetime($value)->format('Y-m-d');
         }
 
