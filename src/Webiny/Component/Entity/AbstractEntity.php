@@ -435,6 +435,10 @@ abstract class AbstractEntity implements \ArrayAccess
         $many2manyDelete = [];
         foreach ($this->getAttributes() as $key => $attr) {
             if ($this->isInstanceOf($attr, AttributeType::ONE2MANY)) {
+                if ($attr->getOnDelete() == 'ignore') {
+                    continue;
+                }
+
                 /* @var $attr One2ManyAttribute */
                 if ($attr->getOnDelete() == 'restrict' && $this->getAttribute($key)->getValue()->count() > 0) {
                     throw new EntityException(EntityException::ENTITY_DELETION_RESTRICTED, [$key]);
@@ -442,8 +446,12 @@ abstract class AbstractEntity implements \ArrayAccess
                 $one2manyDelete[] = $attr;
             }
 
-            if ($this->isInstanceOf($attr, AttributeType::MANY2ONE) && $attr->getOnDelete() === 'cascade') {
-                $many2oneDelete[] = $attr;
+            if ($this->isInstanceOf($attr, AttributeType::MANY2ONE)) {
+                /* @var $attr Many2OneAttribute  */
+                if ($attr->getOnDelete() === 'cascade') {
+                    $many2oneDelete[] = $attr;
+                }
+                continue;
             }
 
             if ($this->isInstanceOf($attr, AttributeType::MANY2MANY)) {
