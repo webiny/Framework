@@ -95,7 +95,7 @@ class One2ManyAttribute extends AbstractCollectionAttribute
      */
     public function setOnDelete($action = 'cascade')
     {
-        if ($action != 'cascade' && $action != 'restrict') {
+        if (!in_array($action, ['cascade', 'restrict', 'ignore'])) {
             $action = 'cascade';
         }
 
