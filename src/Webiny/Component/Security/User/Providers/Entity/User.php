@@ -44,7 +44,7 @@ class User extends AbstractUser
      */
     public function authenticate(Login $login, Firewall $firewall)
     {
-        $user = call_user_func_array([$this->entity, 'findOne'], [[$this->username => $login->getUsername()]]);
+        $user = call_user_func_array([$this->entity, 'findOne'], [[$this->username => strtolower($login->getUsername())]]);
         if ($user) {
             if ($firewall->verifyPasswordHash($login->getPassword(), $user[$this->password])) {
 
