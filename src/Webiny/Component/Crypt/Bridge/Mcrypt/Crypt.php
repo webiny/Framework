@@ -5,7 +5,7 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Crypt\Bridge\Webiny;
+namespace Webiny\Component\Crypt\Bridge\Mcrypt;
 
 use Webiny\Component\Crypt\Bridge\CryptInterface;
 
@@ -46,35 +46,21 @@ class Crypt implements CryptInterface
     const SYMBOLS = '!"#$%&\'()* +,-./:;<=>?@[\]^_`{|}~';
     const HASH = 'sha512';
 
-    /**
-     * @var string Name of the password algorithm.
-     */
-    private $passwordAlgo;
 
     /**
-     * @var string Cipher block.
+     * @var int Password algorithm used by password_hash
      */
-    private $cipherBlock;
+    protected $passwordAlgo = CRYPT_BLOWFISH;
 
     /**
-     * @var string Cipher mode.
+     * @var string Mcrypt mode used for encryption and decryption.
      */
-    private $cipherMode;
-
+    protected $cipherMode = MCRYPT_MODE_CFB;
 
     /**
-     * Base constructor
-     *
-     * @param string $passwordAlgo Password hashing algorithm.
-     * @param string $cipherMode   Cipher mode.
-     * @param string $cipherBlock  Cipher block size.
+     * @var string * @var string Mcrypt cipher used for encryption and decryption.
      */
-    public function __construct($passwordAlgo, $cipherMode, $cipherBlock)
-    {
-        $this->passwordAlgo = $passwordAlgo;
-        $this->cipherMode = $cipherMode;
-        $this->cipherBlock = $cipherBlock;
-    }
+    protected $cipherBlock = MCRYPT_RIJNDAEL_128;
 
     /**
      * Generates a random integer between the given $min and $max values.
@@ -86,33 +72,7 @@ class Crypt implements CryptInterface
      */
     public function generateRandomInt($min = 1, $max = PHP_INT_MAX)
     {
-        // get the range
-        $range = $max - $min;
-        if ($range === 0) {
-            return $min;
-        }
-
-        // explode the range
-        $rangeData = str_split($range);
-
-        // generate the random number within the range
-        $num = '';
-        foreach ($rangeData as $r) {
-            // create char range
-            $chars = '';
-            for ($i = 0; $i <= $r; $i++) {
-                $chars .= $i;
-            }
-
-            // generate a random int from the given chars
-            $num .= $this->generateRandomString(1, $chars);
-        }
-
-        // cast to int
-        $num = (int)$num;
-
-        // add the random range number to min
-        return $num + $min;
+        return random_int($min, $max);
     }
 
     /**
@@ -120,41 +80,23 @@ class Crypt implements CryptInterface
      * If $chars param is empty, the string will be generated using numbers, letters and special characters.
      *
      * @param int    $length Length of the generated string.
-     * @param string $chars  A string containing a list of chars that will be uses for generating the random string.
+     * @param string $chars A string containing a list of chars that will be uses for generating the random string.
      *
      * @return string Random string with the given $length containing only the provided set of $chars.
      */
     public function generateRandomString($length, $chars = '')
     {
-        // generate a random string
-        $random = $this->generator($length);
-
         // define the character map
-        if ($chars == '') {
+        if (empty($chars)) {
             $chars = self::CHARS . self::NUMBERS . self::SYMBOLS;
         }
 
-        $len = $this->strLen($chars);
-        $mask = 256 - (256 % $len);
+        $mapSize = strlen($chars);
 
-        // build a string by converting the generated random string
-        // into a random number that is placed within the defined character map
         $string = '';
-        for ($i = 0; $i < $length; $i++) {
-            // is the current char within the mask range
-            if (ord($random[$i]) >= $mask) {
-                continue;
-            }
-
-            $o = ord($random[$i]) % $len;
-            $string .= $chars[$o];
+        for ($i = 0; $i < $length; ++$i) {
+            $string .= $chars[($this->generateRandomInt(1, $mapSize)-1)];
         }
-
-        // check if we under-generated
-        if ($this->strLen($string) < $length) {
-            $string .= $this->generateRandomString(($length - $this->strLen($string)), $chars);
-        }
-
         return $string;
     }
 
@@ -217,7 +159,6 @@ class Crypt implements CryptInterface
      * @param string $key    The secret key that will be used to encrypt the string.
      *
      * @return string Encrypted string.
-     * @throws CryptException
      */
     public function encrypt($string, $key)
     {

@@ -9,8 +9,12 @@ namespace Webiny\Component\Crypt\Tests;
 
 use Webiny\Component\Crypt\Crypt;
 
-class CryptTest extends \PHPUnit_Framework_TestCase
+class McryptTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        \Webiny\Component\Crypt\Bridge\Crypt::setLibrary('Webiny\Component\Crypt\Bridge\Mcrypt\Crypt');
+    }
 
     public function testConstructor()
     {

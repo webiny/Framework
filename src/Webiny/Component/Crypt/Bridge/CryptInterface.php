@@ -15,16 +15,6 @@ namespace Webiny\Component\Crypt\Bridge;
 
 interface CryptInterface
 {
-
-    /**
-     * Base constructor
-     *
-     * @param string $passwordAlgo Password hashing algorithm.
-     * @param string $cipherMode   Cipher mode.
-     * @param string $cipherBlock  Cipher block size.
-     */
-    public function __construct($passwordAlgo, $cipherMode, $cipherBlock);
-
     // randoms
     /**
      * Generates a random integer between the given $min and $max values.

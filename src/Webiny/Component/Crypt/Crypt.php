@@ -26,22 +26,6 @@ class Crypt
     private $driverInstance = null;
 
     /**
-     * @var int Password algorithm used by password_hash
-     */
-    protected $passwordAlgo = CRYPT_BLOWFISH;
-
-    /**
-     * @var string Mcrypt mode used for encryption and decryption.
-     */
-    protected $cipherMode = MCRYPT_MODE_CFB;
-
-    /**
-     * @var string * @var string Mcrypt cipher used for encryption and decryption.
-     */
-    protected $cipher = MCRYPT_RIJNDAEL_128;
-
-
-    /**
      * Base constructor.
      *
      * @throws CryptException
@@ -50,9 +34,7 @@ class Crypt
     {
         if ($this->isNull($this->driverInstance)) {
             try {
-                $this->driverInstance = Bridge\Crypt::getInstance($this->passwordAlgo, $this->cipherMode,
-                                                                   $this->cipher
-                );
+                $this->driverInstance = Bridge\Crypt::getInstance();
 
                 if (!$this->isInstanceOf($this->driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
                     throw new CryptException('The provided bridge does not implement the required

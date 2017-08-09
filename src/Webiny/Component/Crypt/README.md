@@ -1,25 +1,11 @@
 Crypt Component
 ===============
 The `Crypt` component provides methods for generating random numbers and strings, also, password hashing and password
-hash verification and methods for encryption and decryption of strings.
+hash verification and methods for encryption and decryption of strings. Internally it uses cryptographically secure methods.
 
-The component uses MCRYPT_DEV_URANDOM for providing randomness.
 
-For mixing seeds we use a basic combination of `mt_rand`, `shuffle` and `str_shuffle`.
-
-Password hashing and validation if done using native `password_hash` and `password_verify` methods.
-Encoding and decoding is done using `mcrypt_encrypt` and `mcrypt_decrypt` methods.
-
-Notice:
-This class will provide the necessary security for most your day-to-day operations, like
-storing and verifying passwords, generating random numbers and strings,
-and also basic encryption and decryption.
-
-The library has been tested, but not reviewed by a security expert. If you have
-any suggestions or improvements to report, feel free to open an issue.
-
-If you require a more advanced library for generating higher strength random numbers,
-we suggest you use, or create a driver for, [ircmaxell/RandomLib](https://github.com/ircmaxell/RandomLib).
+**Disclaimer:**
+The library was not reviewed by a security expert. 
 
 
 Install the component
@@ -75,11 +61,6 @@ Here are a few examples:
 
 ## Password hashing and validation
 
-A preferred way of storing users passwords in a database is by hashing/encrypting it first. You can use common hashing
-algorithms like `md5` or `sha1`, but a more secure way is using encryption algorithms like Blowfish.
-This component comes with a support for encrypting and validating passwords using such a method.
-Note that you don't need to add `salt` to your password, the salt is handled internally in the `createPasswordHash` method.
-
 
 ```php
     // hash password
@@ -91,10 +72,6 @@ Note that you don't need to add `salt` to your password, the salt is handled int
 
 ## Encrypting and decrypting strings
 
-The last feature provided by this component is encryption and decryption of strings. This process uses a secret key and
-a initialization vector (http://en.wikipedia.org/wiki/Initialization_vector). The IV is handled internally, within the method.
-The provided key needs to be exactly the same for the decryption process as is was for the encryption process,
-or else the string cannot be decrypted back to its original form. In that case, the component returns `false` as the result.
 
 ```php
     // encrypt it
@@ -104,19 +81,23 @@ or else the string cannot be decrypted back to its original form. In that case, 
     $decrypted = $crypt->decrypt($result, 'abcdefgh12345678'); // "some data"
 ```
 
-# Crypt config
+## Crypt config
 
-The component doesn't take any configuration.
-Internally the following values are set.
+There are three different internal crypt libraries that you can choose from:
+ 1. **OpenSSL** - this is the default library
+ 2. **Sodium** - library that utilizes [paragonie/halite](https://github.com/paragonie/halite) internally for password hashing, password verification, encryption and decryption. Please note that this library is highly CPU intensive.
+ 3. **Mcrypt** - this is the **depricated** library which will be removed once we hit PHP v7.2
 
-Password algorithm: `CRYPT_BLOWFISH`
-- used for generating password hashes
+To switch between libraries, just set a different `Bridge` in your configuration:
+```yaml
+Crypt:
+    Bridge: \Webiny\Component\Crypt\Bridge\Sodium\Crypt
+```
 
-Encryption cipher: `rijndael-128`
-
-Encryption mode: `cfb`
-- used for encryption and decryption
-
+and then in your code just call:
+```php
+\Webiny\Components\Crypt\Crypt::setConfig($pathToYourYaml);
+```
 
 ## Custom `Crypt` driver
 

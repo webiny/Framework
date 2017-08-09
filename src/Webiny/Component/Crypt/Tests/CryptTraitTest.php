@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Crypt\Tests;
 
-use Webiny\Component\Crypt\Crypt;
 use Webiny\Component\Crypt\CryptTrait;
 
 class CryptTraitTest extends \PHPUnit_Framework_TestCase
