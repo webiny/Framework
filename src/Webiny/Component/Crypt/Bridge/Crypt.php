@@ -24,7 +24,7 @@ class Crypt
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\Crypt\Bridge\Sodium\Crypt';
+    private static $library = '\Webiny\Component\Crypt\Bridge\Openssl\Crypt';
 
     /**
      * Get the name of bridge library which will be used as the driver.
