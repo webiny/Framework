@@ -22,7 +22,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.5.9"
+        "php": "^7"
     },
     "suggest": {
         "webiny/cache": "Install Webiny Cache component to add caching features to ClassLoader."

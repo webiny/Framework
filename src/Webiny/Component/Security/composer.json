@@ -23,7 +23,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.5.9",
+        "php": "^7",
         "webiny/http": "~1.4",
         "webiny/crypt": "~1.4",
         "webiny/oauth2": "~1.4",

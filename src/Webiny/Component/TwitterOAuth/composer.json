@@ -20,7 +20,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.5.9",
+        "php": "^7",
         "webiny/std-lib": "~1.4",
         "webiny/http": "~1.4",
         "league/oauth1-client": "~1.0"
