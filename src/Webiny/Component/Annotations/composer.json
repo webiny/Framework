@@ -26,7 +26,7 @@
         "minime/annotations": "~1.13"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4",
+        "phpunit/phpunit": "~6",
         "mybuilder/phpunit-accelerator": "dev-master"
     },
     "autoload": {

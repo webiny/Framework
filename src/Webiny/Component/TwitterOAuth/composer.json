@@ -29,7 +29,7 @@
         "webiny/oauth2": "Use Webiny OAuth2 component for OAuth2 protocol"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4",
+        "phpunit/phpunit": "~6",
         "mybuilder/phpunit-accelerator": "dev-master"
     },
     "autoload": {

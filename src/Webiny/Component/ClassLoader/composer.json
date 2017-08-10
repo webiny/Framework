@@ -28,7 +28,7 @@
         "webiny/cache": "Install Webiny Cache component to add caching features to ClassLoader."
     },
     "require-dev": {
-        "phpunit/phpunit": "~4",
+        "phpunit/phpunit": "~6",
         "webiny/cache": "~1.4",
         "mybuilder/phpunit-accelerator": "dev-master"
     },

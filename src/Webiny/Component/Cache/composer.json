@@ -30,7 +30,7 @@
         "webiny/forked-jamm-memory": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4",
+        "phpunit/phpunit": "~6",
         "mybuilder/phpunit-accelerator": "dev-master"
     },
     "autoload": {
