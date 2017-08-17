@@ -284,7 +284,16 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         }
 
         if ($this->isArray($item) || $this->isArrayObject($item)) {
-            $itemEntity = $entityClass::findById(isset($item['id']) ? $item['id'] : false);
+            if (isset($item['id'])) {
+                // Try getting the instance from cache
+                $itemEntity = Entity::getInstance()->get($entityClass, $item['id']);
+                if ($itemEntity) {
+                    return $itemEntity;
+                }
+
+                // If not found in cache, load from database
+                $itemEntity = $entityClass::findById($item['id']);
+            }
         }
 
         // If instance was not found, create a new entity instance
@@ -297,6 +306,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
             if ($fromDb) {
                 $item['__webiny_db__'] = true;
             }
+
             $itemEntity->populate($item);
         }
 
