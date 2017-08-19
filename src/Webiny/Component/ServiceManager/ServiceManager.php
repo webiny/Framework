@@ -42,19 +42,21 @@ class ServiceManager
      *
      * @throws ServiceManagerException
      * @return object
+     *
+     * @uber 30-50ms
      */
     public function getService($serviceName)
     {
-        $serviceName = $this->str($serviceName)->trimLeft("@")->val();
-        if (!$this->registeredServices->keyExists($serviceName)) {
+        $serviceName = ltrim($serviceName, '@');
+        if (!isset($this->registeredServices[$serviceName])) {
             throw new ServiceManagerException(ServiceManagerException::SERVICE_DEFINITION_NOT_FOUND, [$serviceName]);
         }
 
         // Instantiate new service or get existing service instance
-        if (!$this->instantiatedServices->keyExists($serviceName)) {
+        if (!isset($this->instantiatedServices[$serviceName])) {
             $service = $this->instantiateService($serviceName);
         } else {
-            $service = $this->instantiatedServices->key($serviceName);
+            $service = $this->instantiatedServices[$serviceName];
         }
 
         return $service;

@@ -106,13 +106,13 @@ abstract class AbstractIndex implements IndexInterface
     protected function normalizeFields()
     {
         $normalizedFields = [];
-        foreach($this->fields as $key => $field){
-            if($this->isNumber($key)){
+        foreach ($this->fields as $key => $field) {
+            if ($this->isNumber($key)) {
                 $direction = 1;
-                if($this->str($field)->startsWith('-')){
+                if (substr($field, 0, 1) === '-') {
                     $direction = -1;
                 }
-                $normalizedFields[$this->str($field)->trimLeft('-+')->val()] = $direction;
+                $normalizedFields[ltrim($field, '-+')] = $direction;
             } else {
                 $normalizedFields[$key] = $field;
             }
