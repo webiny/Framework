@@ -42,8 +42,6 @@ class ServiceManager
      *
      * @throws ServiceManagerException
      * @return object
-     *
-     * @uber 30-50ms
      */
     public function getService($serviceName)
     {
