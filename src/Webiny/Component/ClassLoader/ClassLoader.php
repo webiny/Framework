@@ -75,12 +75,11 @@ class ClassLoader
      */
     public function unregisterMap($mapPrefix)
     {
-        foreach($this->loaders as $l)
-        {
-            $loader = "\\Webiny\\Component\\ClassLoader\\Loaders\\".$l;
+        foreach ($this->loaders as $l) {
+            $loader = "\\Webiny\\Component\\ClassLoader\\Loaders\\" . $l;
             $result = $loader::getInstance()->unregisterMap($mapPrefix);
 
-            if($result){
+            if ($result) {
                 return true;
             }
         }
@@ -103,17 +102,15 @@ class ClassLoader
 
         // unregister the old autoloader
         spl_autoload_unregister([
-                                    self::$instance,
-                                    'getClass'
-                                ]
-        );
+                self::$instance,
+                'getClass'
+            ]);
 
         // prepend the new cache autoloader
         spl_autoload_register([
-                                  self::$instance,
-                                  'getClassFromCache'
-                              ], true, true
-        );
+            self::$instance,
+            'getClassFromCache'
+        ], true, true);
     }
 
     /**
@@ -177,11 +174,10 @@ class ClassLoader
         // from disk
         if ($file = $this->findClass($class)) {
             $this->cache->save('wf.component.class_loader.' . $class, $file, 600, [
-                                                                         '_wf',
-                                                                         '_component',
-                                                                         '_class_loader'
-                                                                     ]
-            );
+                    '_wf',
+                    '_component',
+                    '_class_loader'
+                ]);
             require $file;
         }
     }
@@ -213,10 +209,9 @@ class ClassLoader
     private static function registerAutoloader()
     {
         spl_autoload_register([
-                                  self::$instance,
-                                  'getClass'
-                              ], true, true
-        );
+            self::$instance,
+            'getClass'
+        ], true, true);
     }
 
 }
