@@ -34,15 +34,9 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     /**
      * Config data
      *
-     * @var ArrayObject
+     * @var array
      */
     protected $data;
-
-    /**
-     * Cache key used to store this object to ConfigCache
-     * @var string|null
-     */
-    private $cacheKey = null;
 
     /**
      * @var null|string
@@ -110,18 +104,18 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function get($name, $default = null, $toArray = false)
     {
-        if ($this->str($name)->contains('.')) {
-            $keys = $this->str($name)->trim('.')->explode('.', 2);
+        if (strpos($name, '.') !== false) {
+            $keys = explode('.', trim($name, '.'), 2);
 
-            if (!$this->data->keyExists($keys[0])) {
+            if (!array_key_exists($keys[0], $this->data)) {
                 return $default;
             }
 
-            return $this->data->key($keys[0])->get($keys[1], $default, $toArray);
+            return $this->data[$keys[0]]->get($keys[1], $default, $toArray);
         }
 
-        if ($this->data->keyExists($name)) {
-            $result = $this->data->key($name);
+        if (array_key_exists($name, $this->data)) {
+            $result = $this->data[$name];
             if ($toArray && ($result instanceof $this)) {
                 $result = $result->toArray();
             }
@@ -143,23 +137,23 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function set($name, $value)
     {
-        if ($this->str($name)->contains('.')) {
-            $keys = $this->str($name)->trim('.')->explode('.', 2);
+        if (strpos($name, '.') !== false) {
+            $keys = explode('.', trim($name, '.'), 2);
 
-            if (!$this->data->keyExists($keys[0])) {
-                $this->data->key($keys[0], new ConfigObject());
+            if (!array_key_exists($keys[0], $this->data)) {
+                $this->data[$keys[0]] = new ConfigObject();
             }
 
-            $this->data->key($keys[0])->set($keys[1], $value);
+            $this->data[$keys[0]]->set($keys[1], $value);
 
             return $this;
         }
 
-        if (!$this->data->keyExists($name)) {
-            $this->data->key($name, new ConfigObject());
+        if (!array_key_exists($name, $this->data)) {
+            $this->data[$name] = new ConfigObject();
         }
 
-        $this->data->key($name, $value);
+        $this->data[$name] = $value;
 
         return $this;
     }
@@ -169,11 +163,9 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      *
      * @param  array|ArrayObject|AbstractDriver $resource Config resource
      *
-     * @param bool                              $cache Store ConfigObject to cache or not
-     *
      * @throws ConfigException
      */
-    public function __construct($resource = [], $cache = true)
+    public function __construct($resource = [])
     {
         $driverAbstractClassName = '\Webiny\Component\Config\Drivers\AbstractDriver';
         $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
@@ -198,12 +190,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
 
         // Build internal data array from array resource
         $this->buildInternalData($resource);
-
-        // Store config to cache
-        if ($cache) {
-            $this->cacheKey = ConfigCache::createCacheKey($originalResource);
-            ConfigCache::setCache($this->cacheKey, $this);
-        }
     }
 
     /**
@@ -262,9 +248,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } else {
             $this->data[$name] = $value;
         }
-
-        // Update cache with new value
-        ConfigCache::setCache($this->cacheKey, $this);
     }
 
     /**
@@ -272,7 +255,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetExists($offset)
     {
-        return $this->data->keyExists($offset);
+        return array_key_exists($offset, $this->data);
     }
 
     /**
@@ -280,7 +263,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetGet($offset)
     {
-        return $this->data->key($offset);
+        return $this->data[$offset];
     }
 
     /**
@@ -288,7 +271,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetSet($offset, $value)
     {
-        $this->data->key($offset, $value);
+        $this->data[$offset] = $value;
     }
 
     /**
@@ -296,7 +279,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetUnset($offset)
     {
-        $this->data->removeKey($offset);
+        unset($this->data[$offset]);
     }
 
     /**
@@ -308,7 +291,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __isset($name)
     {
-        return $this->data->keyExists($name);
+        return isset($this->data[$name]);
     }
 
     /**
@@ -320,14 +303,14 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __unset($name)
     {
-        if ($this->data->keyExists($name)) {
-            $this->data->removeKey($name);
+        if (isset($this->data[$name])) {
+            unset($this->data[$name]);
         }
     }
 
     public function __toString()
     {
-        return var_export($this->toArray(), true);
+        return '' . var_export($this->toArray(), true);
     }
 
     /**
@@ -335,7 +318,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->data->getIterator();
+        return new \ArrayIterator($this->data);
     }
 
     /**
@@ -364,9 +347,9 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Merge current config with given config
+     * Merge current config with another config
      *
-     * @param array|ArrayObject|ConfigObject $config ConfigObject or array of ConfigObject to merge with
+     * @param array|ArrayObject|ConfigObject $config ConfigObject or array to merge with
      *
      * @throws ConfigException
      * @return $this
@@ -374,45 +357,20 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     public function mergeWith($config)
     {
         if ($this->isArray($config) || $this->isArrayObject($config)) {
-            $configs = StdObjectWrapper::toArray($config);
-            // Make sure it's an array of ConfigObject
-            if (!$this->isInstanceOf($this->arr($configs)->first()->val(), $this)) {
-                $configs = [Config::getInstance()->php($configs)];
-            }
-        } elseif ($this->isInstanceOf($config, $this)) {
-            $configs = [$config];
-        } else {
-            throw new ConfigException('Invalid parameter passed to ConfigObject mergeWith($config) method! Expecting a ConfigObject or array.');
+            $config = Config::getInstance()->php(StdObjectWrapper::toArray($config));
         }
 
-        /** @var ConfigObject $value */
-        foreach ($configs as $config) {
-            // If it's a PHP array or ArrayObject, convert it to ConfigObject
-            if ($this->isArray($config) || $this->isArrayObject($config)) {
-                $config = Config::getInstance()->php($config);
-            }
-
-            foreach ($config as $key => $value) {
-                if ($this->data->keyExists($key)) {
-                    if ($this->isNumber($key)) {
-                        $this->data[] = $value;
-                    } elseif ($this->isInstanceOf($value, $this) && $this->isInstanceOf($this->data[$key], $this)) {
-                        $this->data[$key]->mergeWith($value);
-                    } else {
-                        if ($this->isInstanceOf($value, $this)) {
-                            $this->data[$key] = new static($value->toArray(), false);
-                        } else {
-                            $this->data[$key] = $value;
-                        }
-                    }
-                } else {
-                    if ($this->isInstanceOf($value, $this)) {
-                        $this->data[$key] = new static($value->toArray(), false);
-                    } else {
-                        $this->data[$key] = $value;
-                    }
+        foreach ($config as $key => $value) {
+            if (array_key_exists($key, $this->data)) {
+                if (is_numeric($key)) {
+                    $this->data[] = $value;
+                    continue;
+                } elseif ($value instanceof ConfigObject && $this->data[$key] instanceof ConfigObject) {
+                    $this->data[$key]->mergeWith($value);
+                    continue;
                 }
             }
+            $this->data[$key] = $value instanceof ConfigObject ? new ConfigObject($value->toArray(), false) : $value;
         }
 
         return $this;
@@ -425,13 +383,15 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     private function buildInternalData($config)
     {
-        $this->data = $this->arr();
+        $this->data = [];
         $array = StdObjectWrapper::toArray($config);
         foreach ($array as $key => $value) {
             if ($this->isArray($value)) {
-                $this->data->key($key, new static($value, false));
+                $this->data[$key] = new static($value, false);
             } else {
-                $this->data->key($key, $value, true);
+                if (!isset($this->data[$key])) {
+                    $this->data[$key] = $value;
+                }
             }
         }
     }
@@ -441,8 +401,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         $data = [
             'data'         => [],
             'resourceType' => $this->resourceType,
-            'driverClass'  => $this->driverClass,
-            'cacheKey'     => $this->cacheKey
+            'driverClass'  => $this->driverClass
         ];
         $data['data'] = $this->data;
 
@@ -452,14 +411,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     public function unserialize($string)
     {
         $data = unserialize($string);
-        $this->cacheKey = $data['cacheKey'];
         $this->driverClass = $data['driverClass'];
         $this->resourceType = $data['resourceType'];
-        $this->data = new ArrayObject($data['data']);
-    }
-
-    public function __wakeup()
-    {
-        ConfigCache::setCache($this->cacheKey, $this);
+        $this->data = $data['data'];
     }
 }

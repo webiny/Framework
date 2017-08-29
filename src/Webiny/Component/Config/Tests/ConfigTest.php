@@ -7,9 +7,7 @@
 
 namespace Webiny\Component\Config\Tests;
 
-
 use Webiny\Component\Config\Config;
-use Webiny\Component\Config\ConfigException;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +16,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $yamlConfig = __DIR__ . '/Configs/config.yaml';
         $config = Config::getInstance()->yaml($yamlConfig);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
-        $this->assertEquals('Royal Oak', $config->get('bill-to.address.city'));
+        $this->assertEquals('Royal Oak', $config->get('billTo.address.city'));
     }
 
     public function testJsonConfig()
@@ -79,5 +77,32 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config = Config::getInstance()->parseResource($resource);
         $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
         $this->assertEquals('development', $config->application);
+    }
+
+    public function testSetGet()
+    {
+        $yamlConfig = __DIR__ . '/Configs/config.yaml';
+        $config = Config::getInstance()->yaml($yamlConfig);
+        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertEquals('Royal Oak', $config->get('billTo.address.city'));
+        $config->set('billTo.address.city', 'mars');
+        $config->set('a.new.nested.key', 'jupiter');
+        $this->assertEquals('mars', $config->get('billTo.address.city'));
+        $this->assertEquals('jupiter', $config->get('a.new.nested.key'));
+    }
+
+    public function testMerging()
+    {
+        $yamlConfig = __DIR__ . '/Configs/config.yaml';
+        $iniConfig = __DIR__ . '/Configs/config.ini';
+        $config = Config::getInstance()->yaml($yamlConfig);
+        $config2 = Config::getInstance()->ini($iniConfig);
+        $config3 = ['newKey' => 'newValue'];
+
+        $config->mergeWith($config2)->mergeWith($config3);
+
+        $this->assertEquals('pavel@webiny.com', $config->get('group1.someGroup.setting.email'));
+        $this->assertEquals('Helsinki', $config->get('billTo.address.city'));
+        $this->assertEquals('newValue', $config->get('newKey'));
     }
 }

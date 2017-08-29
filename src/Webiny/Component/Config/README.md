@@ -36,16 +36,9 @@ This will result in $config object containing the following properties:
     $config->properties->b->value = 'value';
 ```
 
-Config is using internal caching system, so if you call this twice, you will get the cached value, including any config changes you made through the code.
-If, however, you need an original config from file, you need to specify the second parameter, $flushCache. This will reload the file and overwrite the existing cache:
-
-```php
-    $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini', true);
-```
-
 If you don't want to use INI sections, or set custom nest delimiter, specify the following arguments:
 ```php
-    $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini', false, false, '_');
+    $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini', false, '_');
 ```
 
 You can get your config as string in any format using the following methods:
@@ -64,11 +57,7 @@ And you can also use custom driver
 
 You can also merge one config with another `ConfigObject` or array:
 ```php
-// Simple merge
 $config->mergeWith($config2);
-
-// Or merge with multiple ConfigObjects and config arrays at once
-$config->mergeWith([$config2, ['group2' => ['custom' => 'data']], $config3]);
 ```
 
 Resources
