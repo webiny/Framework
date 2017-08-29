@@ -14,7 +14,6 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
@@ -33,14 +32,9 @@ abstract class AbstractEntity implements \ArrayAccess
 
     /**
      * Entity attributes
-     * @var ArrayObject
+     * @var EntityAttributeContainer
      */
     protected $attributes;
-
-    /**
-     * @var EntityAttributeBuilder
-     */
-    protected $attributeBuilder;
 
     /**
      * @var string Entity collection name
@@ -48,7 +42,7 @@ abstract class AbstractEntity implements \ArrayAccess
     protected static $entityCollection = null;
 
     /**
-     * View mask (used for grids and many2one input fields)
+     * View mask (used for generation of readable string when converting an instance to string)
      * @var string
      */
     protected static $entityMask = '{id}';
@@ -193,16 +187,8 @@ abstract class AbstractEntity implements \ArrayAccess
     /**
      * Entity constructor
      */
-    public function  __construct()
+    public function __construct()
     {
-        if (!$this->attributes) {
-            $this->attributes = $this->arr();
-        }
-
-        if (!$this->attributeBuilder) {
-            $this->attributeBuilder = new EntityAttributeBuilder($this, $this->attributes);
-        }
-
         /**
          * Add ID to the list of attributes
          */
@@ -210,13 +196,17 @@ abstract class AbstractEntity implements \ArrayAccess
     }
 
     /**
-     * @param $attribute
+     * @param string $attribute
      *
-     * @return EntityAttributeBuilder
+     * @return EntityAttributeContainer
      */
     public function attr($attribute)
     {
-        return $this->attributeBuilder->attr($attribute);
+        if (!$this->attributes instanceof EntityAttributeContainer) {
+            $this->attributes = new EntityAttributeContainer($this);
+        }
+
+        return $this->attributes->attr($attribute);
     }
 
     /**
@@ -264,7 +254,7 @@ abstract class AbstractEntity implements \ArrayAccess
      */
     public function getAttribute($attribute)
     {
-        if (!$this->attributes->keyExists($attribute)) {
+        if (!isset($this->attributes[$attribute])) {
             throw new EntityException(EntityException::ATTRIBUTE_NOT_FOUND, [
                 $attribute,
                 get_class($this)
@@ -277,7 +267,7 @@ abstract class AbstractEntity implements \ArrayAccess
     /**
      * Get all entity attributes
      *
-     * @return ArrayObject
+     * @return EntityAttributeContainer
      */
     public function getAttributes()
     {
@@ -447,7 +437,7 @@ abstract class AbstractEntity implements \ArrayAccess
             }
 
             if ($this->isInstanceOf($attr, AttributeType::MANY2ONE)) {
-                /* @var $attr Many2OneAttribute  */
+                /* @var $attr Many2OneAttribute */
                 if ($attr->getOnDelete() === 'cascade') {
                     $many2oneDelete[] = $attr;
                 }

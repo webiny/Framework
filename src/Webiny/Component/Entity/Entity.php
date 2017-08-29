@@ -34,7 +34,6 @@ use Webiny\Component\ServiceManager\ServiceManagerTrait;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
 
 /**
@@ -58,9 +57,9 @@ class Entity
     private $validators = [];
 
     /**
-     * @var ArrayObject
+     * @var array
      */
-    private $pool;
+    public $pool;
 
     /**
      * Get entity database
@@ -95,13 +94,7 @@ class Entity
      */
     public function get($class, $id)
     {
-        $entityPool = $this->pool->key($class, $this->arr(), true);
-
-        if ($entityPool->keyExists($id)) {
-            return $entityPool->key($id);
-        }
-
-        return false;
+        return $this->pool[$class][$id] ?? false;
     }
 
     /**
@@ -114,8 +107,9 @@ class Entity
     public function add($instance)
     {
         $class = get_class($instance);
-        $entityPool = $this->pool->key($class, $this->arr(), true);
-        $entityPool->key($instance->id, $instance);
+        $entityPool = $this->pool[$class] ?? [];
+        $entityPool[$instance->id] = $instance;
+        $this->pool[$class] = $entityPool;
 
         return $instance;
     }
@@ -148,8 +142,13 @@ class Entity
      */
     public function remove(AbstractEntity $instance)
     {
-        $entityPool = $this->pool->key(get_class($instance), $this->arr(), true);
-        $entityPool->removeKey($instance->id);
+        $class = get_class($instance);
+        $entityPool = $this->pool[$class] ?? [];
+        $id = '' . $instance->id;
+        if (isset($entityPool[$id])) {
+            unset($entityPool[$id]);
+            $this->pool[$class] = $entityPool;
+        }
         unset($instance);
 
         return true;
@@ -160,13 +159,13 @@ class Entity
      */
     public function reset()
     {
-        $this->pool = $this->arr();
+        $this->pool = [];
     }
 
     protected function init()
     {
         // Create entity cache pool
-        $this->pool = $this->arr();
+        $this->pool = [];
 
         // Load built-in validators
         $builtInValidators = [
@@ -215,7 +214,7 @@ class Entity
                     $message = 'Attribute class for attribute "%s" must extend %s';
                     throw new EntityException($message, [$attr, $absClass]);
                 }
-                EntityAttributeBuilder::$classMap[$attr] = $class;
+                EntityAttributeContainer::$classMap[$attr] = $class;
             }
         }
     }
