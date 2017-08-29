@@ -13,11 +13,10 @@ class SodiumTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        \Webiny\Component\Crypt\Bridge\Crypt::setLibrary('Webiny\Component\Crypt\Bridge\Sodium\Crypt');
-
         if (!extension_loaded('libsodium')) {
             $this->markTestSkipped('Test skipped because libsodium extension is not installed.');
         }
+        \Webiny\Component\Crypt\Bridge\Crypt::setLibrary('Webiny\Component\Crypt\Bridge\Sodium\Crypt');
     }
 
     public function testConstructor()
