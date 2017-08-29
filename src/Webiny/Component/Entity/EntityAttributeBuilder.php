@@ -21,8 +21,6 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Many2OneAttribute;
 use Webiny\Component\Entity\Attribute\ObjectAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-
 
 /**
  * EntityBuilder
@@ -53,7 +51,7 @@ class EntityAttributeBuilder
     /**
      * @inheritDoc
      */
-    function __construct(AbstractEntity $entity, ArrayObject $attributes)
+    function __construct(AbstractEntity $entity, $attributes)
     {
         $this->entity = $entity;
         $this->attributes = $attributes;
@@ -68,6 +66,10 @@ class EntityAttributeBuilder
      */
     public function attr($attribute)
     {
+        if (strpos($attribute, '_') !== false) {
+            throw new EntityException('Underscore is not allowed in attribute names (found in \'' . $attribute . '\')');
+        }
+
         $this->attribute = $attribute;
 
         return $this;
