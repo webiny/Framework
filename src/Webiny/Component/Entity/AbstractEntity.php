@@ -633,7 +633,7 @@ abstract class AbstractEntity implements \ArrayAccess
      *
      * @return array
      */
-    private static function parseOrderParameters($order)
+    protected static function parseOrderParameters($order)
     {
         $parsedOrder = [];
         if (count($order) > 0) {
