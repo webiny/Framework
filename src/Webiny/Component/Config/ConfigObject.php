@@ -104,6 +104,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function get($name, $default = null, $toArray = false)
     {
+        $name = StdObjectWrapper::toString($name);
         if (strpos($name, '.') !== false) {
             $keys = explode('.', trim($name, '.'), 2);
 
@@ -137,6 +138,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function set($name, $value)
     {
+        $name = StdObjectWrapper::toString($name);
         if (strpos($name, '.') !== false) {
             $keys = explode('.', trim($name, '.'), 2);
 
