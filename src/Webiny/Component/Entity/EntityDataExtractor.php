@@ -171,7 +171,7 @@ class EntityDataExtractor
     public function buildEntityFields($fields)
     {
         $aliases = [];
-        $dottedFields = ['_name'];
+        $dottedFields = [];
 
         if (!$this->isArray($fields)) {
             $cacheKey = $fields;
