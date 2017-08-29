@@ -250,7 +250,7 @@ abstract class AbstractAttribute implements JsonSerializable
      *
      * @param array $params
      *
-     * @return string
+     * @return mixed
      */
     public function toArray($params = [])
     {
