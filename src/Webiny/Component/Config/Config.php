@@ -31,8 +31,8 @@ class Config
     /**
      * Get Config object from INI file or string
      *
-     * @param string $resource      Config resource in form of a file path or config string
-     * @param bool   $useSections   Default: true
+     * @param string $resource Config resource in form of a file path or config string
+     * @param bool   $useSections Default: true
      * @param string $nestDelimiter Delimiter for nested properties, ex: a.b.c or a-b-c
      *
      * @return ConfigObject
@@ -48,7 +48,7 @@ class Config
     /**
      * Get Config object from JSON file or string
      *
-     * @param string $resource   Config resource in form of a file path or config string
+     * @param string $resource Config resource in form of a file path or config string
      *
      * @return ConfigObject
      */
@@ -60,7 +60,7 @@ class Config
     /**
      * Get ConfigObject from YAML file or string
      *
-     * @param string $resource   Config resource in form of a file path or config string
+     * @param string $resource Config resource in form of a file path or config string
      *
      * @return ConfigObject
      */
@@ -73,7 +73,7 @@ class Config
     /**
      * Get Config object from PHP array
      *
-     * @param array|string $resource   Config resource in form of a PHP array
+     * @param array $resource Config resource in form of a PHP array
      *
      * @return ConfigObject
      */
@@ -86,7 +86,7 @@ class Config
      * Parse resource and create a Config object
      * A valid resource is a PHP array, ArrayObject or an instance of AbstractDriver
      *
-     * @param array|ArrayObject|AbstractDriver $resource   Config resource
+     * @param array|ArrayObject|AbstractDriver $resource Config resource
      *
      * @return ConfigObject
      */
