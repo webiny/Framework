@@ -21,6 +21,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     use MongoTrait, StdLibTrait;
 
     private $totalCount;
+    private $totalCountCalculation;
     private $entityClass;
     private $value = [];
     private $parameters = [];
@@ -113,18 +114,35 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
      */
     public function totalCount()
     {
-
         if (!isset($this->parameters['conditions'])) {
             return count($this->value);
         }
 
         if (!$this->totalCount) {
-            $mongo = Entity::getInstance()->getDatabase();
-            $entity = $this->entityClass;
-            $this->totalCount = $mongo->count($entity::getEntityCollection(), $this->parameters['conditions']);
+            if (is_callable($this->totalCountCalculation)) {
+                $this->totalCount = ($this->totalCountCalculation)();
+            } else {
+                $mongo = Entity::getInstance()->getDatabase();
+                $entity = $this->entityClass;
+                $this->totalCount = $mongo->count($entity::getEntityCollection(), $this->parameters['conditions']);
+            }
         }
 
         return $this->totalCount;
+    }
+
+    /**
+     * Overrides the default totalCount method.
+     *
+     * @param callable $callable
+     *
+     * @return $this
+     */
+    public function setTotalCountCalculation(callable $callable)
+    {
+        $this->totalCountCalculation = $callable;
+
+        return $this;
     }
 
     public function getLimit()
