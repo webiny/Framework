@@ -73,7 +73,7 @@ trait ManipulatorTrait
             $this->handleNestedValue($key, $value, true);
 
             return $value;
-        } elseif (!$value && !$setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
+        } elseif ($this->isNull($value) && !$setOnlyIfDoesntExist && !$this->keyExistsNested($key)) {
             // This means we are trying to get a value of nested key that does not exist
             return null;
         } else {
