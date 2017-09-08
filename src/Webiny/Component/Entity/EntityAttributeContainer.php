@@ -78,6 +78,19 @@ class EntityAttributeContainer implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Remove one or more attributes
+     * Ex: remove('name', 'name2', 'name3');
+     *
+     * @param array|string ...$attributes
+     */
+    public function remove(...$attributes)
+    {
+        foreach ($attributes as $attr) {
+            unset($this->attributes[$attr]);
+        }
+    }
+
+    /**
      * Set attribute instance
      *
      * @param AbstractAttribute $attribute
