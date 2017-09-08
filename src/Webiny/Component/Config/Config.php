@@ -31,109 +31,67 @@ class Config
     /**
      * Get Config object from INI file or string
      *
-     * @param string $resource      Config resource in form of a file path or config string
-     *
-     * @param bool   $flushCache    Flush existing cache and load config file
-     *
-     * @param bool   $useSections   Default: true
+     * @param string $resource Config resource in form of a file path or config string
+     * @param bool   $useSections Default: true
      * @param string $nestDelimiter Delimiter for nested properties, ex: a.b.c or a-b-c
      *
      * @return ConfigObject
      */
-    public function ini($resource, $flushCache = false, $useSections = true, $nestDelimiter = '.')
+    public function ini($resource, $useSections = true, $nestDelimiter = '.')
     {
-        $config = ConfigCache::getCache($resource);
-        if ($flushCache || !$config) {
-            $driver = new IniDriver($resource);
-            $driver->setDelimiter($nestDelimiter)->useSections($useSections);
+        $driver = new IniDriver($resource);
+        $driver->setDelimiter($nestDelimiter)->useSections($useSections);
 
-            return new ConfigObject($driver);
-        }
-
-        return $config;
+        return new ConfigObject($driver);
     }
 
     /**
      * Get Config object from JSON file or string
      *
-     * @param string $resource   Config resource in form of a file path or config string
-     *
-     * @param bool   $flushCache Flush existing cache and load config file
+     * @param string $resource Config resource in form of a file path or config string
      *
      * @return ConfigObject
      */
-    public function json($resource, $flushCache = false)
+    public function json($resource)
     {
-        $config = ConfigCache::getCache($resource);
-        if ($flushCache || !$config) {
-            return new ConfigObject(new JsonDriver($resource));
-        }
-
-        return $config;
-
+        return new ConfigObject(new JsonDriver($resource));
     }
 
     /**
      * Get ConfigObject from YAML file or string
      *
-     * @param string $resource   Config resource in form of a file path or config string
-     *
-     * @param bool   $flushCache Flush existing cache and load config file
+     * @param string $resource Config resource in form of a file path or config string
      *
      * @return ConfigObject
      */
-    public function yaml($resource, $flushCache = false)
+    public function yaml($resource)
     {
-        $config = ConfigCache::getCache($resource);
-        if ($flushCache || !$config) {
-            return new ConfigObject(new YamlDriver($resource));
-        }
-
-        return $config;
+        return new ConfigObject(new YamlDriver($resource));
     }
 
 
     /**
      * Get Config object from PHP array
      *
-     * @param array $resource   Config resource in form of a PHP array
-     *
-     * @param bool  $flushCache Flush existing cache and create new config
+     * @param array $resource Config resource in form of a PHP array
      *
      * @return ConfigObject
      */
-    public function php($resource, $flushCache = false)
+    public function php($resource)
     {
-        $config = ConfigCache::getCache($resource);
-        if ($flushCache || !$config) {
-            return new ConfigObject(new PhpDriver($resource));
-        }
-
-        return $config;
+        return new ConfigObject(new PhpDriver($resource));
     }
 
     /**
      * Parse resource and create a Config object
      * A valid resource is a PHP array, ArrayObject or an instance of AbstractDriver
      *
-     * @param array|ArrayObject|AbstractDriver $resource   Config resource
-     * @param bool                             $flushCache Flush existing cache and load config file
+     * @param array|ArrayObject|AbstractDriver $resource Config resource
      *
      * @return ConfigObject
      */
-    public function parseResource($resource, $flushCache = false)
+    public function parseResource($resource)
     {
-        $driver = $resource;
-        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\AbstractDriver';
-        if (self::isInstanceOf($resource, $driverAbstractClassName)) {
-            $resource = $resource->getResource();
-        }
-
-        $cache = ConfigCache::getCache($resource);
-        if ($flushCache || !$cache) {
-            return new ConfigObject($driver);
-        }
-
-        return $cache;
+        return new ConfigObject($resource);
     }
 }

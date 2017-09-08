@@ -53,7 +53,7 @@ After that you can use your custom driver in your calls to `Config` and `ConfigO
 ```php
 // Get ConfigObject
 $myCustomDriver = new MyCustomDriver($pathToFile);
-$config = Config::getInstance()->parseResource($myCustomDriver, $flushCache = false);
+$config = Config::getInstance()->parseResource($myCustomDriver);
 
 // Get ConfigObject as string
 $configString = $config->getAs($myCustomDriver);

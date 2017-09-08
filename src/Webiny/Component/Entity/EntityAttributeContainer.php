@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Entity;
 
+use ArrayIterator;
+use Traversable;
 use Webiny\Component\Entity\Attribute\ArrayAttribute;
 use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\BooleanAttribute;
@@ -21,14 +23,12 @@ use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Many2OneAttribute;
 use Webiny\Component\Entity\Attribute\ObjectAttribute;
 use Webiny\Component\Entity\Attribute\One2ManyAttribute;
-use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-
 
 /**
- * EntityBuilder
+ * EntityAttributeContainer
  * @package Webiny\Component\Entity
  */
-class EntityAttributeBuilder
+class EntityAttributeContainer implements \ArrayAccess, \IteratorAggregate
 {
     public static $classMap = [
         'boolean'   => '\Webiny\Component\Entity\Attribute\BooleanAttribute',
@@ -47,16 +47,15 @@ class EntityAttributeBuilder
     ];
 
     protected $entity;
-    protected $attributes;
+    protected $attributes = [];
     protected $attribute;
 
     /**
      * @inheritDoc
      */
-    function __construct(AbstractEntity $entity, ArrayObject $attributes)
+    function __construct(AbstractEntity $entity)
     {
         $this->entity = $entity;
-        $this->attributes = $attributes;
     }
 
     /**
@@ -65,9 +64,14 @@ class EntityAttributeBuilder
      * @param $attribute
      *
      * @return $this
+     * @throws EntityException
      */
     public function attr($attribute)
     {
+        if (strpos($attribute, '_') !== false) {
+            throw new EntityException('Underscore is not allowed in attribute names (found in \'' . $attribute . '\')');
+        }
+
         $this->attribute = $attribute;
 
         return $this;
@@ -195,5 +199,87 @@ class EntityAttributeBuilder
     public function geoPoint()
     {
         return $this->attributes[$this->attribute] = new self::$classMap['geoPoint']($this->attribute, $this->entity);
+    }
+
+    /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->attributes);
+    }
+
+    /**
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param mixed $offset <p>
+     * An offset to check for.
+     * </p>
+     *
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
+     * @since 5.0.0
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->attributes);
+    }
+
+    /**
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param mixed $offset <p>
+     * The offset to retrieve.
+     * </p>
+     *
+     * @return mixed Can return all value types.
+     * @since 5.0.0
+     */
+    public function offsetGet($offset)
+    {
+        return $this->attributes[$offset];
+    }
+
+    /**
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param mixed $offset <p>
+     * The offset to assign the value to.
+     * </p>
+     * @param mixed $value <p>
+     * The value to set.
+     * </p>
+     *
+     * @return void
+     * @since 5.0.0
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->attributes[$offset] = $value;
+    }
+
+    /**
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param mixed $offset <p>
+     * The offset to unset.
+     * </p>
+     *
+     * @return void
+     * @since 5.0.0
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->attributes[$offset]);
     }
 }

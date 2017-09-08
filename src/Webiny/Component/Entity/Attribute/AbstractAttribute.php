@@ -11,7 +11,7 @@ use JsonSerializable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
-use Webiny\Component\Entity\EntityAttributeBuilder;
+use Webiny\Component\Entity\EntityAttributeContainer;
 use Webiny\Component\StdLib\StdLibTrait;
 
 
@@ -250,7 +250,7 @@ abstract class AbstractAttribute implements JsonSerializable
      *
      * @param array $params
      *
-     * @return string
+     * @return mixed
      */
     public function toArray($params = [])
     {
@@ -333,7 +333,7 @@ abstract class AbstractAttribute implements JsonSerializable
      *
      * @param null|string $attribute
      *
-     * @return EntityAttributeBuilder|string
+     * @return EntityAttributeContainer|string
      */
     public function attr($attribute = null)
     {

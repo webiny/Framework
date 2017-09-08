@@ -1,6 +1,6 @@
 invoice: 34843
 date   : 2001-01-23
-bill-to: &id001
+billTo: &id001
     given  : Chris
     family : Dumars
     address:
