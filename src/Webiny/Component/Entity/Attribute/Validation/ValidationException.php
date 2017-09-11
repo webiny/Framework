@@ -44,8 +44,8 @@ class ValidationException extends AbstractException implements \IteratorAggregat
      */
     public function addError($key, $message, $params = null)
     {
-        if ($params !== null && is_int($message)) {
-            $message = vsprintf(static::$messages[$message], $params);
+        if (!is_string($message)) {
+            $message = vsprintf(static::$messages[$message], is_array($params) ? $params : []);
         }
         $this->errors[$key] = $message;
 
