@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Security\Tests;
 
+use Webiny\Component\Security\Authentication\Firewall;
+use Webiny\Component\Security\Security;
 use Webiny\Component\Security\SecurityTrait;
 
 class SecurityTraitTest extends \PHPUnit_Framework_TestCase
@@ -16,17 +18,16 @@ class SecurityTraitTest extends \PHPUnit_Framework_TestCase
     public function testSecurity()
     {
         // before we can use security we need to set the config
-        \Webiny\Component\Security\Security::setConfig(__DIR__ . '/ExampleConfig.yaml');
+        Security::setConfig(__DIR__ . '/ExampleConfig.yaml');
 
         // Test instance of Security
-        $this->assertInstanceOf('\Webiny\Component\Security\Security', $this->security());
+        $this->assertInstanceOf(Security::class, $this->security());
 
         // Test instance of Firewall
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Firewall',
-                                $this->security()->firewall('Admin'));
+        $this->assertInstanceOf(Firewall::class, $this->security()->firewall('Admin'));
 
         // Test shorter access to Firewall
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Firewall', $this->security('Admin'));
+        $this->assertInstanceOf(Firewall::class, $this->security('Admin'));
     }
 
 }

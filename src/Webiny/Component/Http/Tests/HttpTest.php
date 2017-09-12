@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Http\Tests;
 
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Http;
 
 class HttpTest extends \PHPUnit_Framework_TestCase
@@ -20,6 +21,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', Http::getConfig());
+        $this->assertInstanceOf(ConfigObject::class, Http::getConfig());
     }
 }

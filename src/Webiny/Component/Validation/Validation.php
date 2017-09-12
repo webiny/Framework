@@ -123,7 +123,7 @@ class Validation
         }
 
         // Load validators registered as a service
-        $validators = $this->servicesByTag('validation-plugin', '\Webiny\Component\Validation\ValidatorInterface');
+        $validators = $this->servicesByTag('validation-plugin', ValidatorInterface::class);
         foreach ($validators as $v) {
             $this->validators[$v->getName()] = $v;
         }

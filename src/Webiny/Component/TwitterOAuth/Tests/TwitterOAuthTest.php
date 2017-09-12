@@ -27,7 +27,7 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor(TwitterOAuth $instance)
     {
-        $this->assertInstanceOf('\Webiny\Component\TwitterOAuth\TwitterOAuth', $instance);
+        $this->assertInstanceOf(TwitterOAuth::class, $instance);
     }
 
     /**

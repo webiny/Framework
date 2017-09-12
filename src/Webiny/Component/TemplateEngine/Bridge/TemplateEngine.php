@@ -9,6 +9,7 @@ namespace Webiny\Component\TemplateEngine\Bridge;
 
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty;
 
 /**
  * This class creates instances of bridge drivers.
@@ -22,7 +23,7 @@ class TemplateEngine
     /**
      * @var string Default TemplateEngine bridge library.
      */
-    private static $library = ['Smarty' => '\Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty'];
+    private static $library = ['Smarty' => Smarty::class];
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -48,7 +49,7 @@ class TemplateEngine
     /**
      * Change the default library used for the driver.
      *
-     * @param string $engineName  Name of the template engine for which to set the bridge library.
+     * @param string $engineName Name of the template engine for which to set the bridge library.
      * @param string $pathToClass Path to the new driver class. Must be an instance of \Webiny\Bridge\Cache\CacheInterface
      */
     public static function setLibrary($engineName, $pathToClass)
@@ -59,8 +60,8 @@ class TemplateEngine
     /**
      * Create an instance of an TemplateEngine driver.
      *
-     * @param string                                $engineName Name of the template engine for which to load the instance.
-     * @param \Webiny\Component\Config\ConfigObject $config     Template engine config.
+     * @param string       $engineName Name of the template engine for which to load the instance.
+     * @param ConfigObject $config Template engine config.
      *
      * @throws TemplateEngineException
      * @throws \Exception
@@ -80,12 +81,8 @@ class TemplateEngine
             throw $e;
         }
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface')) {
-            throw new TemplateEngineException(TemplateEngineException::MSG_INVALID_ARG, [
-                    'driver',
-                    '\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface'
-                ]
-            );
+        if (!self::isInstanceOf($instance, TemplateEngineInterface::class)) {
+            throw new TemplateEngineException(TemplateEngineException::MSG_INVALID_ARG, ['driver', TemplateEngineInterface::class]);
         }
 
         return $instance;

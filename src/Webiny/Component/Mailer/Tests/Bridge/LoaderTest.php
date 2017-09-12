@@ -9,6 +9,8 @@ namespace Webiny\Component\Mailer\Tests\Bridge;
 
 
 use Webiny\Component\Mailer\Bridge\Loader;
+use Webiny\Component\Mailer\Bridge\MessageInterface;
+use Webiny\Component\Mailer\Bridge\TransportInterface;
 use Webiny\Component\Mailer\Mailer;
 
 class LoaderTest extends \PHPUnit_Framework_TestCase
@@ -23,11 +25,11 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMessage()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\MessageInterface', Loader::getMessage('Default'));
+        $this->assertInstanceOf(MessageInterface::class, Loader::getMessage('Default'));
     }
 
     public function testGetTransport()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Bridge\TransportInterface', Loader::getTransport('Default'));
+        $this->assertInstanceOf(TransportInterface::class, Loader::getTransport('Default'));
     }
 }

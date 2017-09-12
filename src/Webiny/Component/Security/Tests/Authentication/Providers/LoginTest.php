@@ -15,7 +15,7 @@ class LoginTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $login = new Login('username', 'password', true);
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $login);
+        $this->assertInstanceOf(Login::class, $login);
     }
 
     public function testSetAttribute()

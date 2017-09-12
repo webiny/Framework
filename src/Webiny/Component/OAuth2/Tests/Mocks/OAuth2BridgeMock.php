@@ -33,7 +33,7 @@ class OAuth2BridgeMock extends AbstractOAuth2
         $this->certificate = 'certificate_path';
         $this->accessTokenName = 'test_token';
 
-        $this->setOAuth2Server('\Webiny\Component\OAuth2\Tests\Mocks\ServerMock');
+        $this->setOAuth2Server(ServerMock::class);
     }
 
     /**

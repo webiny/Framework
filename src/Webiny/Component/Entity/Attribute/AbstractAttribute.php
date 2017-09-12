@@ -9,6 +9,7 @@ namespace Webiny\Component\Entity\Attribute;
 
 use JsonSerializable;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
+use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityAttributeContainer;
@@ -140,7 +141,7 @@ abstract class AbstractAttribute implements JsonSerializable
     /**
      * @var string
      */
-    protected $validatorInterface = '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface';
+    protected $validatorInterface = ValidatorInterface::class;
 
     /**
      * @param string         $name

@@ -23,7 +23,7 @@ class TwitterOAuth
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth';
+    private static $library = League\TwitterOAuth::class;
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -49,9 +49,9 @@ class TwitterOAuth
     /**
      * Create an instance of an TwitterOAuth driver.
      *
-     * @param string $clientId     Client id.
+     * @param string $clientId Client id.
      * @param string $clientSecret Client secret.
-     * @param string $redirectUri  Target url where to redirect after authentication.
+     * @param string $redirectUri Target url where to redirect after authentication.
      *
      * @throws TwitterOAuthException
      * @return TwitterOAuthInterface
@@ -66,12 +66,8 @@ class TwitterOAuth
             throw new TwitterOAuthException('Unable to create an instance of ' . $driver);
         }
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface')) {
-            throw new TwitterOAuthException(TwitterOAuthException::MSG_INVALID_ARG, [
-                    'driver',
-                    '\Webiny\Component\OAuth2\TwitterOAuth\TwitterOAuthInterface'
-                ]
-            );
+        if (!self::isInstanceOf($instance, TwitterOAuthInterface::class)) {
+            throw new TwitterOAuthException(TwitterOAuthException::MSG_INVALID_ARG, ['driver', TwitterOAuthInterface::class]);
         }
 
         return $instance;

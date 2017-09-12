@@ -24,7 +24,7 @@ class OAuth2
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\OAuth2\Bridge\League\OAuth2';
+    private static $library = League\OAuth2::class;
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -50,9 +50,9 @@ class OAuth2
     /**
      * Create an instance of an OAuth2 driver.
      *
-     * @param string $clientId     Client id.
+     * @param string $clientId Client id.
      * @param string $clientSecret Client secret.
-     * @param string $redirectUri  Target url where to redirect after authentication.
+     * @param string $redirectUri Target url where to redirect after authentication.
      * @param string $certificateFile
      *
      * @throws Exception
@@ -68,12 +68,8 @@ class OAuth2
             throw new Exception('Unable to create an instance of ' . $driver);
         }
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\OAuth2\Bridge\OAuth2Interface')) {
-            throw new Exception(Exception::MSG_INVALID_ARG, [
-                    'driver',
-                    '\Webiny\Component\OAuth2\Bridge\OAuth2Interface'
-                ]
-            );
+        if (!self::isInstanceOf($instance, OAuth2Interface::class)) {
+            throw new Exception(Exception::MSG_INVALID_ARG, ['driver', OAuth2Interface::class]);
         }
 
         if ($certificateFile != '') {

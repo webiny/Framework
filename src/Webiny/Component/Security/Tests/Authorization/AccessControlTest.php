@@ -22,7 +22,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $config = new ConfigObject(['DecisionStrategy' => 'affirmative']);
         $instance = new AccessControl($user, $config);
 
-        $this->assertInstanceOf('\Webiny\Component\Security\Authorization\AccessControl', $instance);
+        $this->assertInstanceOf(AccessControl::class, $instance);
     }
 
     /**
@@ -53,15 +53,14 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $user = new UserMock();
         $user->populate('test', 'test', [new Role('ROLE_MOCK')], true);
         $config = new ConfigObject([
-                                       'DecisionStrategy' => 'unanimous',
-                                       'Rules'            => [
-                                           [
-                                               'Path'  => '/^\/about/',
-                                               'Roles' => 'ROLE_GOD'
-                                           ]
-                                       ]
-                                   ]
-        );
+                'DecisionStrategy' => 'unanimous',
+                'Rules'            => [
+                    [
+                        'Path'  => '/^\/about/',
+                        'Roles' => 'ROLE_GOD'
+                    ]
+                ]
+            ]);
         $instance = new AccessControl($user, $config);
 
         $this->assertTrue($instance->isUserAllowedAccess());
@@ -75,15 +74,14 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $user = new UserMock();
         $user->populate('test', 'test', [new Role('ROLE_MOCK')], true);
         $config = new ConfigObject([
-                                       'DecisionStrategy' => 'unanimous',
-                                       'Rules'            => [
-                                           [
-                                               'Path'  => '/^\/about/',
-                                               'Roles' => 'ROLE_GOD'
-                                           ]
-                                       ]
-                                   ]
-        );
+                'DecisionStrategy' => 'unanimous',
+                'Rules'            => [
+                    [
+                        'Path'  => '/^\/about/',
+                        'Roles' => 'ROLE_GOD'
+                    ]
+                ]
+            ]);
         $instance = new AccessControl($user, $config);
 
         $this->assertFalse($instance->isUserAllowedAccess());
@@ -97,15 +95,14 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $user = new UserMock();
         $user->populate('test', 'test', [new Role('ROLE_MOCK')], true);
         $config = new ConfigObject([
-                                       'DecisionStrategy' => 'unanimous',
-                                       'Rules'            => [
-                                           [
-                                               'Path'  => '/^\/about/',
-                                               'Roles' => 'ROLE_MOCK'
-                                           ]
-                                       ]
-                                   ]
-        );
+                'DecisionStrategy' => 'unanimous',
+                'Rules'            => [
+                    [
+                        'Path'  => '/^\/about/',
+                        'Roles' => 'ROLE_MOCK'
+                    ]
+                ]
+            ]);
         $instance = new AccessControl($user, $config);
 
         $this->assertTrue($instance->isUserAllowedAccess());
@@ -119,15 +116,14 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
         $user = new UserMock();
         $user->populate('test', 'test', [new Role('ROLE_MOCK')], true);
         $config = new ConfigObject([
-                                       'DecisionStrategy' => 'affirmative',
-                                       'Rules'            => [
-                                           [
-                                               'Path'  => '/^\/about/',
-                                               'Roles' => 'ROLE_GOD'
-                                           ]
-                                       ]
-                                   ]
-        );
+                'DecisionStrategy' => 'affirmative',
+                'Rules'            => [
+                    [
+                        'Path'  => '/^\/about/',
+                        'Roles' => 'ROLE_GOD'
+                    ]
+                ]
+            ]);
         $instance = new AccessControl($user, $config);
 
         $this->assertTrue($instance->isUserAllowedAccess());

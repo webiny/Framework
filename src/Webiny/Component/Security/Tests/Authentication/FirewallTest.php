@@ -9,11 +9,15 @@ namespace Webiny\Component\Security\Tests\Authentication;
 
 
 use Webiny\Component\Config\Config;
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
 use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Encoder\Encoder;
 use Webiny\Component\Security\Security;
+use Webiny\Component\Security\Tests\Mocks\UserMock;
 use Webiny\Component\Security\Tests\Mocks\UserProviderMock;
+use Webiny\Component\Security\Token\Token;
+use Webiny\Component\Security\User\AnonymousUser;
 
 /**
  * Class FirewallTest
@@ -34,7 +38,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($firewall)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Firewall', $firewall);
+        $this->assertInstanceOf(Firewall::class, $firewall);
     }
 
     /**
@@ -105,7 +109,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     public function testGetUserWhileNotAuthenticated($firewall)
     {
         $user = $firewall->getUser();
-        $this->assertInstanceOf('\Webiny\Component\Security\User\AnonymousUser', $user);
+        $this->assertInstanceOf(AnonymousUser::class, $user);
         $this->assertFalse($user->isAuthenticated());
     }
 
@@ -118,7 +122,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     {
         $firewall->processLogin('MockProvider'); // let's authenticate the user
         $user = $firewall->getUser();
-        $this->assertInstanceOf('\Webiny\Component\Security\Tests\Mocks\UserMock', $user);
+        $this->assertInstanceOf(UserMock::class, $user);
     }
 
     /**
@@ -207,7 +211,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
     public function testGetConfig($firewall)
     {
         $config = $firewall->getConfig();
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertSame('MockEncoder', $config->get('Encoder'));
     }
 
@@ -218,7 +222,7 @@ class FirewallTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetToken($firewall)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\Token', $firewall->getToken());
+        $this->assertInstanceOf(Token::class, $firewall->getToken());
     }
 
     /**

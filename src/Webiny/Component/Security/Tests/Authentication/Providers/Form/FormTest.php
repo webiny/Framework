@@ -10,6 +10,7 @@ namespace Webiny\Component\Security\Tests\Authentication\Providers\Form;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
 use Webiny\Component\Security\Authentication\Providers\Form\Form;
+use Webiny\Component\Security\Authentication\Providers\Login;
 
 /**
  * Class FormTest
@@ -20,7 +21,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Form\Form', new Form());
+        $this->assertInstanceOf(Form::class, new Form());
     }
 
     public function testGetLoginObject()
@@ -37,7 +38,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = new Form();
         $c = new ConfigObject([]);
         $login = $form->getLoginObject($c);
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $login);
+        $this->assertInstanceOf(Login::class, $login);
         $this->assertSame('un', $login->getUsername());
         $this->assertSame('pw', $login->getPassword());
         // We pass an empty configuration to Form provider, which means `RememberMe` is disabled and we expect to receive `false`

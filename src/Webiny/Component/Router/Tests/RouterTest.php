@@ -9,6 +9,7 @@ namespace Webiny\Component\Router\Tests;
 
 
 use Webiny\Component\Cache\Cache;
+use Webiny\Component\Cache\CacheStorage;
 use Webiny\Component\Config\Config;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
@@ -25,7 +26,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        Router::getInstance()->prependRoutes(Config::getInstance()->yaml(__DIR__.'/ExampleConfig.yaml')->get('Router.Routes'));
+        Router::getInstance()->prependRoutes(Config::getInstance()->yaml(__DIR__ . '/ExampleConfig.yaml')->get('Router.Routes'));
         Request::getInstance()->setCurrentUrl('http://www.webiny.com/');
     }
 
@@ -78,7 +79,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         $nullCache = Cache::BlackHole();
         Router::getInstance()->setCache($nullCache);
-        $this->assertInstanceOf('\Webiny\Component\Cache\CacheStorage', Router::getInstance()->getCache());
+        $this->assertInstanceOf(CacheStorage::class, Router::getInstance()->getCache());
     }
 
     /**
@@ -104,9 +105,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         Router::getInstance()->appendRoutes(new ConfigObject($routeToAppend));
-        $this->assertSame('http://www.webiny.com/some-dummy-path/12',
-                          Router::getInstance()->generate('Test', ['id' => 12])
-        );
+        $this->assertSame('http://www.webiny.com/some-dummy-path/12', Router::getInstance()->generate('Test', ['id' => 12]));
     }
 
     public function matchProvider()

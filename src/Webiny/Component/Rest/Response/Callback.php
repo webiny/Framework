@@ -55,7 +55,7 @@ class Callback
     public function getCallbackResult()
     {
         $class = $this->requestBag->getClassData()['class'];
-        if(is_string($class)){
+        if (is_string($class)) {
             $this->requestBag->setClassInstance(new $class);
         } else {
             $this->requestBag->setClassInstance($class);
@@ -128,13 +128,13 @@ class Callback
                 $middleware = $this->requestBag->getApiConfig()->get('Middleware');
                 if ($middleware) {
                     $middleware = new $middleware;
-                    if (!$this->isInstanceOf($middleware, '\Webiny\Component\Rest\Interfaces\MiddlewareInterface')) {
-                        throw new RestException('Your custom Rest middleware must implement `\Webiny\Component\Rest\Interfaces\MiddlewareInterface`');
+                    if (!$this->isInstanceOf($middleware, MiddlewareInterface::class)) {
+                        throw new RestException('Your custom Rest middleware must implement `' . MiddlewareInterface::class . '`');
                     }
                     $this->middleware = $middleware;
                 }
 
-                if ($this->middleware){
+                if ($this->middleware) {
                     $result = $this->middleware->getResult($this->requestBag);
                 } else {
                     $result = call_user_func_array([
@@ -174,10 +174,10 @@ class Callback
 
                 if ($env == 'development') {
                     $cr->addDebugMessage([
-                            'file'   => $re->getFile(),
-                            'line'   => $re->getLine(),
-                            'traces' => explode('#', $re->getTraceAsString())
-                        ]);
+                        'file'   => $re->getFile(),
+                        'line'   => $re->getLine(),
+                        'traces' => explode('#', $re->getTraceAsString())
+                    ]);
                 }
             } catch (\Exception $e) {
                 // check if method has custom headers set
@@ -188,10 +188,10 @@ class Callback
                 if ($env == 'development') {
                     $cr->addErrorMessage(['message' => $e->getMessage()]);
                     $cr->addDebugMessage([
-                            'file'   => $e->getFile(),
-                            'line'   => $e->getLine(),
-                            'traces' => explode('#', $e->getTraceAsString())
-                        ]);
+                        'file'   => $e->getFile(),
+                        'line'   => $e->getLine(),
+                        'traces' => explode('#', $e->getTraceAsString())
+                    ]);
                 }
             }
         }

@@ -9,7 +9,9 @@ namespace Webiny\Component\Image\Tests;
 
 
 use Webiny\Component\Image\Image;
+use Webiny\Component\Image\ImageInterface;
 use Webiny\Component\Image\ImageLoader;
+use Webiny\Component\Storage\File\File;
 use Webiny\Component\Storage\StorageTrait;
 
 class ImageLoaderTest extends \PHPUnit_Framework_TestCase
@@ -27,14 +29,14 @@ class ImageLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $image = ImageLoader::create(1, 1, '#666666');
 
-        $this->assertInstanceOf('\Webiny\Component\Image\ImageInterface', $image);
+        $this->assertInstanceOf(ImageInterface::class, $image);
     }
 
     public function testLoad()
     {
         $image = ImageLoader::load(base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'));
 
-        $this->assertInstanceOf('\Webiny\Component\Image\ImageInterface', $image);
+        $this->assertInstanceOf(ImageInterface::class, $image);
     }
 
     public function testResource()
@@ -42,20 +44,16 @@ class ImageLoaderTest extends \PHPUnit_Framework_TestCase
         $stream = fopen('data://text/plain;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'r');
         $image = ImageLoader::resource($stream);
 
-        $this->assertInstanceOf('\Webiny\Component\Image\ImageInterface', $image);
+        $this->assertInstanceOf(ImageInterface::class, $image);
     }
 
     public function testOpen()
     {
         // build File mock
-        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\File')
-                     ->disableOriginalConstructor()
-                     ->setMethods([
-                                      'getAbsolutePath',
-                                      'getKey'
-                                  ]
-                     )
-                     ->getMock();
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->setMethods([
+            'getAbsolutePath',
+            'getKey'
+        ])->getMock();
 
         // getAbsolutePath mock
         $file->expects($this->any())->method('getAbsolutePath')->will($this->returnValue(__DIR__ . '/image.gif'));
@@ -64,7 +62,7 @@ class ImageLoaderTest extends \PHPUnit_Framework_TestCase
         $file->expects($this->once())->method('getKey')->will($this->returnValue(__DIR__ . '/image.gif'));
 
         $image = ImageLoader::open($file);
-        $this->assertInstanceOf('\Webiny\Component\Image\ImageInterface', $image);
+        $this->assertInstanceOf(ImageInterface::class, $image);
     }
 
 }

@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Entity\Attribute;
 
-
 /**
  * AttributeType class
  * @package Webiny\Component\Entity\AttributeType
@@ -15,17 +14,17 @@ namespace Webiny\Component\Entity\Attribute;
  */
 class AttributeType
 {
-    const BOOLEAN = '\Webiny\Component\Entity\Attribute\BooleanAttribute';
-    const CHAR = '\Webiny\Component\Entity\Attribute\CharAttribute';
-    const DATE_TIME = '\Webiny\Component\Entity\Attribute\DateTimeAttribute';
-    const DATE = '\Webiny\Component\Entity\Attribute\DateAttribute';
-    const INTEGER = '\Webiny\Component\Entity\Attribute\IntegerAttribute';
-    const FLOAT = '\Webiny\Component\Entity\Attribute\FloatAttribute';
-    const MANY2MANY = '\Webiny\Component\Entity\Attribute\Many2ManyAttribute';
-    const MANY2ONE = '\Webiny\Component\Entity\Attribute\Many2OneAttribute';
-    const ONE2MANY = '\Webiny\Component\Entity\Attribute\One2ManyAttribute';
-    const ARR = '\Webiny\Component\Entity\Attribute\ArrayAttribute';
-    const OBJECT = '\Webiny\Component\Entity\Attribute\ObjectAttribute';
-    const DYNAMIC = '\Webiny\Component\Entity\Attribute\DynamicAttribute';
-    const GEOPOINT = '\Webiny\Component\Entity\Attribute\GeoPointAttribute';
+    const BOOLEAN = BooleanAttribute::class;
+    const CHAR = CharAttribute::class;
+    const DATE_TIME = DateTimeAttribute::class;
+    const DATE = DateAttribute::class;
+    const INTEGER = IntegerAttribute::class;
+    const FLOAT = FloatAttribute::class;
+    const MANY2MANY = Many2ManyAttribute::class;
+    const MANY2ONE = Many2OneAttribute::class;
+    const ONE2MANY = One2ManyAttribute::class;
+    const ARR = ArrayAttribute::class;
+    const OBJECT = ObjectAttribute::class;
+    const DYNAMIC = DynamicAttribute::class;
+    const GEOPOINT = GeoPointAttribute::class;
 }

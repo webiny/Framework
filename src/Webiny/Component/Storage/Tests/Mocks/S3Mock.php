@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Storage\Tests\Mocks;
 
+use Webiny\Component\Amazon\S3;
 use Webiny\Component\Storage\Storage;
 
 /**
@@ -20,7 +21,7 @@ class S3Mock extends \PHPUnit_Framework_TestCase
 
     public function __construct($accessKeyId, $secretAccessKey)
     {
-        $bridgeClass = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
+        $bridgeClass = Storage::getConfig()->get('Bridges.AmazonS3', S3::class);
 
         $mock = $this->getMockBuilder($bridgeClass)->disableOriginalConstructor()->getMock();
 

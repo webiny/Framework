@@ -21,7 +21,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $request = Request::getInstance();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request', $request);
+        $this->assertInstanceOf(Request::class, $request);
     }
 
     public function testQuery()
@@ -64,7 +64,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         Request::deleteInstance();
         $server = Request::getInstance()->server();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Server', $server);
+        $this->assertInstanceOf(Request\Server::class, $server);
     }
 
     public function testFiles()
@@ -81,7 +81,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         Request::deleteInstance();
         $file = Request::getInstance()->files('test_file');
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Files\File', $file);
+        $this->assertInstanceOf(Request\Files\File::class, $file);
     }
 
     public function testGetTrustedProxies()

@@ -8,12 +8,12 @@
 namespace Webiny\Component\Mailer\Bridge;
 
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer;
 use Webiny\Component\Mailer\Mailer;
 use Webiny\Component\Mailer\MailerException;
 use Webiny\Component\Mailer\TransportInterface;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
-use WebinyPlatform\Apps\Core\Components\DevTools\Lib\Config;
 
 /**
  * Provides static functions for getting the message instance and transport instance.
@@ -27,7 +27,7 @@ class Loader
     /**
      * @var string Default Mailer bridge.
      */
-    private static $library = '\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer';
+    private static $library = SwiftMailer::class;
 
     /**
      * Returns an instance of MessageInterface based on current bridge.
@@ -51,10 +51,10 @@ class Loader
         $lib = self::getLibrary($mailer);
 
         /** @var MailerInterface $libInstance */
-        $libInstance = self::factory($lib, '\Webiny\Component\Mailer\Bridge\MailerInterface');
+        $libInstance = self::factory($lib, MailerInterface::class);
 
         $instance = $libInstance::getMessage($mailerConfig);
-        if (!self::isInstanceOf($instance, '\Webiny\Component\Mailer\Bridge\MessageInterface')) {
+        if (!self::isInstanceOf($instance, MessageInterface::class)) {
             throw new MailerException(MailerException::MESSAGE_INTERFACE);
         }
 
@@ -79,11 +79,11 @@ class Loader
 
         $lib = self::getLibrary($mailer);
 
-        /** @var MailerInterface $libInstance */
-        $libInstance = self::factory($lib, '\Webiny\Component\Mailer\Bridge\MailerInterface');
+        /* @var MailerInterface $libInstance */
+        $libInstance = self::factory($lib, MailerInterface::class);
 
         $instance = $libInstance::getTransport($config);
-        if (!self::isInstanceOf($instance, '\Webiny\Component\Mailer\Bridge\TransportInterface')) {
+        if (!self::isInstanceOf($instance, TransportInterface::class)) {
             throw new MailerException(MailerException::TRANSPORT_INTERFACE);
         }
 

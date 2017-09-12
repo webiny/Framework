@@ -9,6 +9,7 @@ namespace Webiny\Component\TemplateEngine\Tests\Bridge;
 
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\TemplateEngine\Bridge\TemplateEngine;
+use Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface;
 
 class TemplateEngineTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,15 +21,12 @@ class TemplateEngineTest extends \PHPUnit_Framework_TestCase
     public function testGetInstance()
     {
         $config = new ConfigObject([
-                                       'CompileDir'  => __DIR__ . '/Templates/Compile',
-                                       'CacheDir'    => __DIR__ . '/Templates/Cache',
-                                       'TemplateDir' => __DIR__ . '/Templates'
-                                   ]
-        );
+            'CompileDir'  => __DIR__ . '/Templates/Compile',
+            'CacheDir'    => __DIR__ . '/Templates/Cache',
+            'TemplateDir' => __DIR__ . '/Templates'
+        ]);
 
-        $this->assertInstanceOf('\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface',
-                                TemplateEngine::getInstance('Smarty', $config)
-        );
+        $this->assertInstanceOf(TemplateEngineInterface::class, TemplateEngine::getInstance('Smarty', $config));
     }
 
     /**

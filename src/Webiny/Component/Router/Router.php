@@ -151,9 +151,9 @@ class Router
     /**
      * Generate a url from a route.
      *
-     * @param string $name       Name of the Route.
+     * @param string $name Name of the Route.
      * @param array  $parameters List of parameters that need to be replaced within the Route path.
-     * @param bool   $absolute   Do you want to get the absolute url or relative. Default is absolute.
+     * @param bool   $absolute Do you want to get the absolute url or relative. Default is absolute.
      *
      * @return string Generated url.
      * @throws RouterException
@@ -186,10 +186,10 @@ class Router
             $this->cache = $cache;
         } else {
             if (is_object($cache)) {
-                if ($this->isInstanceOf($cache, '\Webiny\Component\Cache\CacheStorage')) {
+                if ($this->isInstanceOf($cache, CacheStorage::class)) {
                     $this->cache = $cache;
                 } else {
-                    throw new RouterException('$cache must either be a boolean or instance of \Webiny\Component\Cache\CacheStorage.');
+                    throw new RouterException('$cache must either be a boolean or instance of ' . CacheStorage::class . '.');
                 }
             } else {
                 $this->cache = $this->cache($cache);
@@ -226,6 +226,7 @@ class Router
      */
     public function appendRoutes(ConfigObject $routes)
     {
+        /* @var $routeConfig ConfigObject */
         foreach ($routes as $name => $routeConfig) {
             self::$routeCollection->add($name, $this->loader->processRoute($routeConfig));
         }
@@ -242,6 +243,7 @@ class Router
      */
     public function prependRoutes(ConfigObject $routes)
     {
+        /* @var $routeConfig ConfigObject */
         foreach ($routes as $name => $routeConfig) {
             self::$routeCollection->prepend($name, $this->loader->processRoute($routeConfig));
         }
@@ -277,24 +279,22 @@ class Router
 
         $this->setCache(self::getConfig()->get('Cache', false));
         $this->initializedFlag = true;
-
-        //print_r(Router::getConfig()->toArray());
     }
 
     /**
      * Save the given value into cache.
      *
-     * @param string $path  This is the cache key.
+     * @param string $path This is the cache key.
      * @param string $value This is the value that is going to be stored.
      */
     private function saveToCache($path, $value)
     {
         if ($this->getCache()) {
             $this->getCache()->save(self::CACHE_KEY . md5($path), $value, null, [
-                    '_wf',
-                    '_component',
-                    '_router'
-                ]);
+                '_wf',
+                '_component',
+                '_router'
+            ]);
         }
     }
 

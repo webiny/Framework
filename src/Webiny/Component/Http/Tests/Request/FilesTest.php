@@ -31,7 +31,7 @@ class FilesTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $files = new Files();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Files', $files);
+        $this->assertInstanceOf(Files::class, $files);
     }
 
     public function testGet()
@@ -39,7 +39,7 @@ class FilesTest extends \PHPUnit_Framework_TestCase
         $files = new Files();
         $testFile = $files->get("test_file");
 
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Files\File', $testFile);
+        $this->assertInstanceOf(Files\File::class, $testFile);
     }
 
 

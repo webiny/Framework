@@ -14,9 +14,7 @@ class PluginMock extends Plugin
 
     public function __construct()
     {
-        parent::__construct('myCustomUpper', 'modifier',
-                            '\Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\PluginMock::myCallback'
-        );
+        parent::__construct('myCustomUpper', 'modifier', PluginMock::class . '::myCallback');
     }
 
     public static function myCallback($val)

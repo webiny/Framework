@@ -11,6 +11,7 @@ namespace Webiny\Component\Mongo;
 
 use MongoDB\BSON\ObjectID;
 use MongoDB\Model\BSONDocument;
+use Webiny\Component\Mongo\Bridge\MongoDb;
 use Webiny\Component\Mongo\Bridge\MongoInterface;
 use Webiny\Component\Mongo\Index\IndexInterface;
 use Webiny\Component\StdLib\ComponentTrait;
@@ -46,7 +47,7 @@ class Mongo
     public function __construct($uri, array $uriOptions = [], array $driverOptions = [], $collectionPrefix = '')
     {
         $driverOptions = $this->arr($this->defaultDriverOptions)->mergeSmart($driverOptions)->val();
-        $mongoBridge = $this->getConfig()->get('Driver', '\Webiny\Component\Mongo\Bridge\MongoDb');
+        $mongoBridge = $this->getConfig()->get('Driver', MongoDb::class);
         $this->bridge = new $mongoBridge();
         $this->bridge->connect($uri, $uriOptions, $driverOptions);
         $this->collectionPrefix = $collectionPrefix;

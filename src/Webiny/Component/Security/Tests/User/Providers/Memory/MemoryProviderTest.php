@@ -9,18 +9,19 @@ namespace Webiny\Component\Security\Tests\User\Providers\Memory;
 
 use Webiny\Component\Security\Authentication\Providers\Login;
 use Webiny\Component\Security\User\Providers\Memory\Memory;
+use Webiny\Component\Security\User\Providers\Memory\User;
 
 class MemoryProviderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @param MemoryProvide $instance
+     * @param Memory $instance
      *
      * @dataProvider dataProvider
      */
     public function testConstructor($instance)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\User\Providers\Memory\Memory', $instance);
+        $this->assertInstanceOf(Memory::class, $instance);
     }
 
     /**
@@ -32,11 +33,11 @@ class MemoryProviderTest extends \PHPUnit_Framework_TestCase
     {
         $login = new Login('kent', '');
         $user = $instance->getUser($login);
-        $this->assertInstanceOf('\Webiny\Component\Security\User\Providers\Memory\User', $user);
+        $this->assertInstanceOf(User::class, $user);
     }
 
     /**
-     * @param MemoryProvider $instance
+     * @param Memory $instance
      *
      * @dataProvider dataProvider
      * @expectedException \Webiny\Component\Security\User\Exceptions\UserNotFoundException

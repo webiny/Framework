@@ -9,6 +9,7 @@ namespace Webiny\Component\Image\Tests\Bridge\Imagine;
 
 use Webiny\Component\Image\Image;
 use Webiny\Component\Image\ImageLoader;
+use Webiny\Component\Storage\File\File;
 
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +20,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($image)
     {
-        $this->assertInstanceOf('\Webiny\Component\Image\Bridge\Imagine\Image', $image);
+        $this->assertInstanceOf(\Webiny\Component\Image\Bridge\Imagine\Image::class, $image);
     }
 
     /**
@@ -37,10 +38,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $size = $image->getSize()->val();
         $this->assertSame([
-                              'width'  => 1,
-                              'height' => 1
-                          ], $size
-        );
+            'width'  => 1,
+            'height' => 1
+        ], $size);
     }
 
     public function provideImage()
@@ -48,18 +48,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         Image::setConfig(realpath(__DIR__ . '/../../' . self::CONFIG));
 
         // build File mock
-        $file = $this->getMockBuilder('\Webiny\Component\Storage\File\File')
-                     ->disableOriginalConstructor()
-                     ->setMethods([
-                                      'getAbsolutePath',
-                                      'getKey'
-                                  ]
-                     )
-                     ->getMock();
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->setMethods([
+            'getAbsolutePath',
+            'getKey'
+        ])->getMock();
 
         // getAbsolutePath mock
-        $file->expects($this->any())->method('getAbsolutePath')->will($this->returnValue(__DIR__ . '/../../image.gif')
-        );
+        $file->expects($this->any())->method('getAbsolutePath')->will($this->returnValue(__DIR__ . '/../../image.gif'));
 
         // getKey mock
         $file->expects($this->once())->method('getKey')->will($this->returnValue(__DIR__ . '/../../image.gif'));

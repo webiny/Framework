@@ -11,22 +11,24 @@ namespace Webiny\Component\ServiceManager\Tests;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\ServiceManager\ServiceManager;
+use Webiny\Component\ServiceManager\ServiceManagerException;
+use Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass;
 
 class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
 {
 
     protected static $services = [
-        'First'  => [
+        'First' => [
             'Class' => '%ExceptionService.Class%'
         ],
 
         'Second' => [
-            'Class'     => '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass',
+            'Class'     => ConstructorArgumentClass::class,
             'Arguments' => ['@Exception.Unknown']
         ],
 
-        'Third'  => [
-            'Class'     => '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass',
+        'Third' => [
+            'Class'     => ConstructorArgumentClass::class,
             'Arguments' => ['@Exception.First']
         ]
     ];
@@ -42,7 +44,7 @@ class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
      */
     public function testMissingParameterException()
     {
-        $this->setExpectedException('\Webiny\Component\ServiceManager\ServiceManagerException');
+        $this->setExpectedException(ServiceManagerException::class);
         ServiceManager::getInstance()->getService('Exception.First');
     }
 
@@ -51,7 +53,7 @@ class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
      */
     public function testMissingServiceException()
     {
-        $this->setExpectedException('\Webiny\Component\ServiceManager\ServiceManagerException');
+        $this->setExpectedException(ServiceManagerException::class);
         ServiceManager::getInstance()->getService('Exception.Second');
     }
 
@@ -60,7 +62,7 @@ class ServiceManagerExceptionTest extends PHPUnit_Framework_TestCase
      */
     public function testCircularReferencingException()
     {
-        $this->setExpectedException('\Webiny\Component\ServiceManager\ServiceManagerException');
+        $this->setExpectedException(ServiceManagerException::class);
         ServiceManager::getInstance()->getService('Exception.Third');
     }
 }

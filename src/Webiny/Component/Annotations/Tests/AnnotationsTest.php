@@ -19,7 +19,7 @@ class AnnotationsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetClassAnnotations()
     {
-        $annotations = Annotations::getClassAnnotations('\Webiny\Component\Annotations\Tests\TestClass');
+        $annotations = Annotations::getClassAnnotations(TestClass::class);
 
         $this->assertSame('SomeProperty that has a string value.', $annotations->prop);
         $this->assertSame('AuthorName', $annotations->get('author.name'));
@@ -29,7 +29,7 @@ class AnnotationsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPropertyAnnotations()
     {
-        $annotations = Annotations::getPropertyAnnotations('\Webiny\Component\Annotations\Tests\TestClass', 'someVar');
+        $annotations = Annotations::getPropertyAnnotations(TestClass::class, 'someVar');
 
         $this->assertSame("SomeVarAnnotation", $annotations->var);
         $this->assertNotNull($annotations->public);
@@ -39,9 +39,7 @@ class AnnotationsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPropertyAnnotations2()
     {
-        $annotations = Annotations::getPropertyAnnotations('\Webiny\Component\Annotations\Tests\TestClass',
-                                                           '$anotherVar'
-        );
+        $annotations = Annotations::getPropertyAnnotations(TestClass::class, '$anotherVar');
 
         $this->assertSame("ADMIN", $annotations->access->role);
         $this->assertSame("3", $annotations->access->level);
@@ -50,7 +48,7 @@ class AnnotationsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMethodAnnotations()
     {
-        $annotations = Annotations::getMethodAnnotations('\Webiny\Component\Annotations\Tests\TestClass', 'someMethod');
+        $annotations = Annotations::getMethodAnnotations(TestClass::class, 'someMethod');
 
         $this->assertNotNull($annotations->post);
         $this->assertNotNull($annotations->get);

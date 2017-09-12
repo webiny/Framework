@@ -15,13 +15,13 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInstance()
     {
-        $this->assertInstanceOf('\Webiny\Component\ClassLoader\ClassLoader', ClassLoader::getInstance());
+        $this->assertInstanceOf(ClassLoader::class, ClassLoader::getInstance());
     }
 
     public function testRegisterSpl()
     {
         $autoloaders = spl_autoload_functions();
-        $this->assertSame('Webiny\Component\ClassLoader\ClassLoader', get_class($autoloaders[0][0]));
+        $this->assertSame(ClassLoader::class, get_class($autoloaders[0][0]));
         $this->assertSame('getClass', $autoloaders[0][1]);
     }
 
@@ -38,7 +38,7 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
                                                     'Webiny\Component\ClassLoader' => realpath(__DIR__ . '/../')
                                                 ]
         );
-        $class = ClassLoader::getInstance()->findClass('Webiny\Component\ClassLoader\ClassLoader');
+        $class = ClassLoader::getInstance()->findClass(ClassLoader::class);
         $this->assertSame(realpath(__DIR__ . '/../ClassLoader.php'), $class);
     }
 

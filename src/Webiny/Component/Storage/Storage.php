@@ -152,7 +152,7 @@ class Storage
 
     /**
      * Check if key is a directory<br />
-     * Requires '\Webiny\Component\Storage\Driver\DirectoryAwareInterface' to be implemented by a Driver class
+     * Requires 'Webiny\Component\Storage\Driver\DirectoryAwareInterface' to be implemented by a Driver class
      *
      * @param string $key
      *
@@ -170,7 +170,7 @@ class Storage
 
     /**
      * Touch a file (change time modified)<br />
-     * Requires '\Webiny\Component\Storage\Driver\TouchableInterface' to be implemented by a Driver class
+     * Requires 'Webiny\Component\Storage\Driver\TouchableInterface' to be implemented by a Driver class
      *
      * @param string $key
      *
@@ -187,7 +187,7 @@ class Storage
 
     /**
      * Get file size<br />
-     * Requires '\Webiny\Component\Storage\Driver\SizeAwareInterface' to be implemented by a Driver class
+     * Requires 'Webiny\Component\Storage\Driver\SizeAwareInterface' to be implemented by a Driver class
      *
      * @param string $key
      *
@@ -204,7 +204,7 @@ class Storage
 
     /**
      * Get absolute file path<br />
-     * Requires '\Webiny\Component\Storage\Driver\AbsolutePathInterface' to be implemented by a Driver class
+     * Requires 'Webiny\Component\Storage\Driver\AbsolutePathInterface' to be implemented by a Driver class
      *
      * @param $key
      *

@@ -28,7 +28,7 @@ class RestTest extends \PHPUnit_Framework_TestCase
     {
         $rest = Rest::initRest('ExampleApi', 'http://www.example.com/services/tests/mocks/mock-api-class/test');
 
-        $this->assertInstanceOf('\Webiny\Component\Rest\Rest', $rest);
+        $this->assertInstanceOf(Rest::class, $rest);
     }
 
     public function testSetGetEnv()

@@ -12,6 +12,9 @@ use Webiny\Component\Security\Role\Role;
 use Webiny\Component\Security\Tests\Mocks\TokenCryptMock;
 use Webiny\Component\Security\Tests\Mocks\TokenStorageMock;
 use Webiny\Component\Security\Tests\Mocks\UserMock;
+use Webiny\Component\Security\Token\AbstractTokenStorage;
+use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
+use Webiny\Component\Security\Token\TokenData;
 
 class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +22,7 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $instance = new TokenStorageMock();
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\AbstractTokenStorage', $instance);
+        $this->assertInstanceOf(AbstractTokenStorage::class, $instance);
     }
 
     public function testSetGetTokenName()
@@ -35,10 +38,8 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $crypt = new TokenCryptMock(new ConfigObject([]));
 
         $instance->setCrypt($crypt);
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface',
-                                $instance->getCrypt()
-        );
-        $this->assertInstanceOf('\Webiny\Component\Security\Tests\Mocks\TokenCryptMock', $instance->getCrypt());
+        $this->assertInstanceOf(CryptDriverInterface::class, $instance->getCrypt());
+        $this->assertInstanceOf(TokenCryptMock::class, $instance->getCrypt());
     }
 
     public function testEncryptUserData()
@@ -75,7 +76,7 @@ class TokenStorageAbstractTest extends \PHPUnit_Framework_TestCase
         $result = $instance->encryptUserData($user);
 
         $tokenData = $instance->decryptUserData($result);
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\TokenData', $tokenData);
+        $this->assertInstanceOf(TokenData::class, $tokenData);
         $this->assertSame('uname', $tokenData->getUsername());
     }
 }

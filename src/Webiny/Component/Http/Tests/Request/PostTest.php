@@ -21,7 +21,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $post = new Post();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Post', $post);
+        $this->assertInstanceOf(Post::class, $post);
     }
 
     public function testGet()

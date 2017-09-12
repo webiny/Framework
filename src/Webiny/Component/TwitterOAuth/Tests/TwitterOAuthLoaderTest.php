@@ -23,10 +23,10 @@ class TwitterOAuthLoaderTest extends \PHPUnit_Framework_TestCase
         Request::getInstance()->setCurrentUrl('http://admin.w3.com/batman-is-better-than-superman/?batman=one&superman=two');
 
         // other tests might change the library, which can cause this test to fail
-        Bridge::setLibrary('\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth');
+        Bridge::setLibrary(\Webiny\Component\TwitterOAuth\Bridge\League\TwitterOAuth::class);
 
         $instance = TwitterOAuthLoader::getInstance('MyTwitterApp');
-        $this->assertInstanceOf('\Webiny\Component\TwitterOAuth\TwitterOAuth', $instance);
+        $this->assertInstanceOf(TwitterOAuth::class, $instance);
     }
 
     /**

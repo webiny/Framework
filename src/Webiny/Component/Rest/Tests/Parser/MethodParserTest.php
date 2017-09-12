@@ -9,7 +9,9 @@ namespace Webiny\Component\Rest\Tests\Parser;
 
 use Webiny\Component\Annotations\Annotations;
 use Webiny\Component\Rest\Parser\MethodParser;
+use Webiny\Component\Rest\Parser\ParsedMethod;
 use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Tests\Mocks\MockApiClass;
 
 class MethodParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,21 +24,19 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
-        $reflection = new \ReflectionClass($className);
+        $reflection = new \ReflectionClass(MockApiClass::class);
         $method = $reflection->getMethod('someMethod');
-        $instance = new MethodParser('\Webiny\Component\Rest\Tests\Mocks\MockApiClass', $method, true);
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\MethodParser', $instance);
+        $instance = new MethodParser([MockApiClass::class], $method, true);
+        $this->assertInstanceOf(MethodParser::class, $instance);
     }
 
     public function testParse()
     {
-        $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
-        $reflection = new \ReflectionClass($className);
+        $reflection = new \ReflectionClass(MockApiClass::class);
         $method = $reflection->getMethod('someMethod');
-        $instance = new MethodParser([new \ReflectionClass('\Webiny\Component\Rest\Tests\Mocks\MockApiClass')], $method, true);
+        $instance = new MethodParser([new \ReflectionClass(MockApiClass::class)], $method, true);
         $parsedMethod = $instance->parse();
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedMethod', $parsedMethod);
+        $this->assertInstanceOf(ParsedMethod::class, $parsedMethod);
 
         // validate parsed method
         $this->assertSame('someMethod', $parsedMethod->name);
@@ -59,12 +59,11 @@ class MethodParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParseSimpleMethod()
     {
-        $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
-        $reflection = new \ReflectionClass($className);
+        $reflection = new \ReflectionClass(MockApiClass::class);
         $method = $reflection->getMethod('simpleMethod');
-        $instance = new MethodParser([new \ReflectionClass('\Webiny\Component\Rest\Tests\Mocks\MockApiClass')], $method, true);
+        $instance = new MethodParser([new \ReflectionClass(MockApiClass::class)], $method, true);
         $parsedMethod = $instance->parse();
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedMethod', $parsedMethod);
+        $this->assertInstanceOf(ParsedMethod::class, $parsedMethod);
 
         // validate parsed method
         $this->assertSame('simpleMethod', $parsedMethod->name);

@@ -70,7 +70,7 @@ class Smarty implements TemplateEngineInterface
         // mute expected errors
         if ($config->get('MuteExpectedErrors', false)) {
             $this->smarty->muteExpectedErrors();
-        }else{
+        } else {
             $this->smarty->unmuteExpectedErrors();
         }
 
@@ -197,7 +197,7 @@ class Smarty implements TemplateEngineInterface
     /**
      * Fetch the template from the given location, parse it and return the output.
      *
-     * @param string $template   Path to the template.
+     * @param string $template Path to the template.
      * @param array  $parameters A list of parameters to pass to the template.
      *
      * @throws SmartyException
@@ -206,7 +206,7 @@ class Smarty implements TemplateEngineInterface
     public function fetch($template, $parameters = [])
     {
         try {
-            if(count($parameters)>0){
+            if (count($parameters) > 0) {
                 $this->smarty->assign($parameters);
             }
 
@@ -219,14 +219,14 @@ class Smarty implements TemplateEngineInterface
     /**
      * Fetch the template from the given location, parse it and output the result to the browser.
      *
-     * @param string $template   Path to the template.
+     * @param string $template Path to the template.
      * @param array  $parameters A list of parameters to pass to the template.
      *
      * @return void
      */
     public function render($template, $parameters = [])
     {
-        if(count($parameters)<1){
+        if (count($parameters) < 1) {
             $parameters = null;
         }
         echo $this->smarty->fetch($template, $parameters);
@@ -235,7 +235,7 @@ class Smarty implements TemplateEngineInterface
     /**
      * Assign a variable and its value into the template engine.
      *
-     * @param string $var   Variable name.
+     * @param string $var Variable name.
      * @param mixed  $value Variable value.
      *
      * @return void
@@ -257,9 +257,7 @@ class Smarty implements TemplateEngineInterface
     {
         try {
             $this->smarty->registerPlugin($plugin->getType(), $plugin->getName(), $plugin->getCallbackFunction(),
-                $plugin->getAttribute('Cachable', true),
-                $plugin->getAttribute('CacheAttr', null)
-            );
+                $plugin->getAttribute('Cachable', true), $plugin->getAttribute('CacheAttr', null));
         } catch (\SmartyException $e) {
             throw new SmartyException($e);
         }
@@ -273,15 +271,13 @@ class Smarty implements TemplateEngineInterface
     public function registerExtensions()
     {
         // register extensions
-        $extensions = $this->servicesByTag('Smarty.Extension',
-            '\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionInterface'
-        );
+        $extensions = $this->servicesByTag('Smarty.Extension', SmartyExtensionInterface::class);
 
         /**
          * @var $e SmartyExtensionInterface
          */
         if (count($extensions) > 0) {
-            $methods = get_class_methods('\Webiny\Component\TemplateEngine\Drivers\Smarty\SmartyExtensionInterface');
+            $methods = get_class_methods(SmartyExtensionInterface::class);
             foreach ($extensions as $e) {
                 foreach ($methods as $m) {
                     if ($m != 'getName') {

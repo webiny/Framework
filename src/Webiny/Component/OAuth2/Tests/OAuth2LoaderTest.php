@@ -25,7 +25,7 @@ class OAuth2LoaderTest extends \PHPUnit_Framework_TestCase
         OAuth2::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
 
         $instance = OAuth2Loader::getInstance('Facebook');
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\OAuth2', $instance);
+        $this->assertInstanceOf(OAuth2::class, $instance);
     }
 
     /**

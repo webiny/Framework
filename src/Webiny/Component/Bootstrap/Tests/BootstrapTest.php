@@ -2,6 +2,8 @@
 
 namespace Webiny\Component\Bootstrap\Tests;
 
+use Webiny\Component\Bootstrap\Bootstrap;
+use Webiny\Component\Bootstrap\Environment;
 use Webiny\Component\Http\Request;
 
 /**
@@ -10,7 +12,8 @@ use Webiny\Component\Http\Request;
  */
 class BootstrapTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp(){
+    public function setUp()
+    {
         Request::getInstance()->setCurrentUrl('http://www.myapp.com/');
     }
 
@@ -22,27 +25,27 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunApplicationException()
     {
-        \Webiny\Component\Bootstrap\Bootstrap::getInstance()->runApplication();
+        Bootstrap::getInstance()->runApplication();
     }
 
     public function testInitializeEnvironment()
     {
-        $b = \Webiny\Component\Bootstrap\Bootstrap::getInstance();
-        $b->initializeEnvironment(__DIR__.'/DemoApp/');
-        $this->assertInstanceOf('\Webiny\Component\Bootstrap\Environment', $b->getEnvironment());
+        $b = Bootstrap::getInstance();
+        $b->initializeEnvironment(__DIR__ . '/DemoApp/');
+        $this->assertInstanceOf(Environment::class, $b->getEnvironment());
     }
 
     public function testInitializeRouter()
     {
-        $b = \Webiny\Component\Bootstrap\Bootstrap::getInstance();
-        $b->initializeEnvironment(__DIR__.'/DemoApp/');
+        $b = Bootstrap::getInstance();
+        $b->initializeEnvironment(__DIR__ . '/DemoApp/');
         $b->initializeRouter();
     }
 
 
     public function testGetEnvironment()
     {
-        $env = \Webiny\Component\Bootstrap\Bootstrap::getInstance()->getEnvironment();
-        $this->assertInstanceOf('\Webiny\Component\Bootstrap\Environment', $env);
+        $env = Bootstrap::getInstance()->getEnvironment();
+        $this->assertInstanceOf(Environment::class, $env);
     }
 }

@@ -24,7 +24,7 @@ class MailerTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testMailerTrait()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Mailer', $this->mailer('Default'));
+        $this->assertInstanceOf(Mailer::class, $this->mailer('Default'));
     }
 
     /**

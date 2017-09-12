@@ -10,13 +10,13 @@
 Cache:
     Services:
         TestCache:
-            Factory: \Webiny\Component\Cache\Cache
+            Factory: Webiny\Component\Cache\Cache
             Method: SessionArray
         SomeOtherCache:
-            Factory: \Webiny\Component\Cache\Cache
+            Factory: Webiny\Component\Cache\Cache
             Method: SessionArray
     Bridges:
-        Apc: \Webiny\Component\Cache\Bridge\Memory\APC
-        Couchbase: \Webiny\Component\Cache\Bridge\Memory\Couchbase
-        Memcache: \Webiny\Component\Cache\Bridge\Memory\Memcache
-        Redis: \Webiny\Component\Cache\Bridge\Memory\Redis
+        Apc: Webiny\Component\Cache\Bridge\Memory\APC
+        Couchbase: Webiny\Component\Cache\Bridge\Memory\Couchbase
+        Memcache: Webiny\Component\Cache\Bridge\Memory\Memcache
+        Redis: Webiny\Component\Cache\Bridge\Memory\Redis

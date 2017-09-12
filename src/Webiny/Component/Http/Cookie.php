@@ -10,6 +10,7 @@ namespace Webiny\Component\Http;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Cookie\CookieException;
 use Webiny\Component\Http\Cookie\CookieStorageInterface;
+use Webiny\Component\Http\Cookie\Storage\NativeStorage;
 use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\SingletonTrait;
@@ -23,8 +24,6 @@ use Webiny\Component\StdLib\StdLibTrait;
 class Cookie
 {
     use StdLibTrait, FactoryLoaderTrait, SingletonTrait;
-
-    private static $nativeDriver = '\Webiny\Component\Http\Cookie\Storage\NativeStorage';
 
     private $cookieBag;
     private $storage;
@@ -64,11 +63,11 @@ class Cookie
     /**
      * Save a cookie.
      *
-     * @param string $name       Name of the cookie.
-     * @param string $value      Cookie value.
+     * @param string $name Name of the cookie.
+     * @param string $value Cookie value.
      * @param int    $expiration Timestamp when the cookie should expire.
-     * @param bool   $httpOnly   Is the cookie https-only or not.
-     * @param string $path       Path under which the cookie is accessible.
+     * @param bool   $httpOnly Is the cookie https-only or not.
+     * @param string $path Path under which the cookie is accessible.
      *
      * @return bool True if cookie was save successfully, otherwise false.
      * @throws CookieException
@@ -137,10 +136,8 @@ class Cookie
     {
         if (!isset($this->storage)) {
             try {
-                $driver = $config->get('Storage.Driver', self::$nativeDriver);
-                $this->storage = $this->factory($driver, '\Webiny\Component\Http\Cookie\CookieStorageInterface',
-                                                 [$config]
-                );
+                $driver = $config->get('Storage.Driver', NativeStorage::class);
+                $this->storage = $this->factory($driver, CookieStorageInterface::class, [$config]);
             } catch (Exception $e) {
                 throw new CookieException($e->getMessage());
             }

@@ -156,16 +156,13 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __construct($resource = [])
     {
-        $driverAbstractClassName = '\Webiny\Component\Config\Drivers\AbstractDriver';
-        $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
-
         // Validate given resources
-        if (!$this->isArray($resource) && !$this->isInstanceOf($resource, $driverAbstractClassName) && !$this->isArrayObject($resource)) {
-            throw new ConfigException("ConfigObject resource must be a valid array, $arrayObjectClassName or $driverAbstractClassName");
+        if (!$this->isArray($resource) && !$this->isInstanceOf($resource, AbstractDriver::class) && !$this->isArrayObject($resource)) {
+            throw new ConfigException("ConfigObject resource must be a valid array, " . ArrayObject::class . " or " . AbstractDriver::class);
         }
 
 
-        if ($this->isInstanceOf($resource, $driverAbstractClassName)) {
+        if ($this->isInstanceOf($resource, AbstractDriver::class)) {
             // Store driver class name
             $this->driverClass = get_class($resource);
             // Get driver to parse resource and return data array

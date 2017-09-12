@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Security\Tests;
 
+use Webiny\Component\Security\Authentication\Firewall;
 use Webiny\Component\Security\Security;
 
 class SecurityTest extends \PHPUnit_Framework_TestCase
@@ -19,7 +20,7 @@ class SecurityTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($security)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Security', $security);
+        $this->assertInstanceOf(Security::class, $security);
     }
 
     /**
@@ -29,7 +30,7 @@ class SecurityTest extends \PHPUnit_Framework_TestCase
      */
     public function testFirewall($security)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Firewall', $security->firewall('Admin'));
+        $this->assertInstanceOf(Firewall::class, $security->firewall('Admin'));
     }
 
     /**
@@ -41,7 +42,7 @@ class SecurityTest extends \PHPUnit_Framework_TestCase
      */
     public function testFirewallException($security)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Firewall', $security->firewall('test'));
+        $this->assertInstanceOf(Firewall::class, $security->firewall('test'));
     }
 
     public function dataProvider()

@@ -15,7 +15,7 @@ class RoleTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $role = new Role('ROLE_MOCK');
-        $this->assertInstanceOf('\Webiny\Component\Security\Role\Role', $role);
+        $this->assertInstanceOf(Role::class, $role);
     }
 
     public function testGetRole()

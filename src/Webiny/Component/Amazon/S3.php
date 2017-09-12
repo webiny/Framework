@@ -25,7 +25,7 @@ class S3 implements S3ClientInterface
      * @var array Default configuration params.
      */
     private static $defaultConfig = [
-        'Bridge' => '\Webiny\Component\Amazon\Bridge\S3\S3'
+        'Bridge' => Bridge\S3\S3::class
     ];
 
     /**
@@ -39,7 +39,7 @@ class S3 implements S3ClientInterface
      * @param $region
      * @param $endpoint
      */
-    public function __construct($accessKeyId, $secretAccessKey, $region, $endpoint=null)
+    public function __construct($accessKeyId, $secretAccessKey, $region, $endpoint = null)
     {
         $bridgeClass = $this->getConfig()->get('Bridge');
         $this->instance = new $bridgeClass($accessKeyId, $secretAccessKey, $region, $endpoint);
@@ -87,9 +87,9 @@ class S3 implements S3ClientInterface
     /**
      * Determines whether or not a bucket exists by name
      *
-     * @param string $bucket    The name of the bucket
+     * @param string $bucket The name of the bucket
      * @param bool   $accept403 Set to true if 403s are acceptable
-     * @param array  $params    Additional options to add to the executed command
+     * @param array  $params Additional options to add to the executed command
      *
      * @return bool
      */
@@ -140,9 +140,9 @@ class S3 implements S3ClientInterface
      * Deletes objects from Amazon S3 that match the result of a ListObjects operation. For example, this allows you
      * to do things like delete all objects that match a specific key prefix.
      *
-     * @param string $bucket  Bucket that contains the object keys
-     * @param string $prefix  Optionally delete only objects under this key prefix
-     * @param string $regex   Delete only objects that match this regex
+     * @param string $bucket Bucket that contains the object keys
+     * @param string $prefix Optionally delete only objects under this key prefix
+     * @param string $regex Delete only objects that match this regex
      * @param array  $options Options used when deleting the object:
      *                        - before_delete: Callback to invoke before each delete. The callback will receive a
      *                        Guzzle\Common\Event object with context.
@@ -274,9 +274,9 @@ class S3 implements S3ClientInterface
      * Recursively uploads all files in a given directory to a given bucket.
      *
      * @param string $directory Full path to a directory to upload
-     * @param string $bucket    Name of the bucket
+     * @param string $bucket Name of the bucket
      * @param string $keyPrefix Virtual directory key prefix to add to each upload
-     * @param array  $options   Associative array of upload options
+     * @param array  $options Associative array of upload options
      *                          - params: Array of parameters to use with each PutObject operation performed during the transfer
      *                          - base_dir: Base directory to remove from each object key
      *                          - force: Set to true to upload every file, even if the file is already in Amazon S3 and has not changed
@@ -312,7 +312,7 @@ class S3 implements S3ClientInterface
      * Determines whether or not an object exists by name
      *
      * @param string $bucket The name of the bucket
-     * @param string $key    The key of the object
+     * @param string $key The key of the object
      * @param array  $params Additional options to add to the executed command
      *
      * @return bool
@@ -375,10 +375,10 @@ class S3 implements S3ClientInterface
      * Returns the URL to an object identified by its bucket and key. If an expiration time is provided, the URL will
      * be signed and set to expire at the provided time.
      *
-     * @param string $bucket  The name of the bucket where the object is located
-     * @param string $key     The key of the object
+     * @param string $bucket The name of the bucket where the object is located
+     * @param string $key The key of the object
      * @param mixed  $expires The time at which the URL should expire
-     * @param array  $args    Arguments to the GetObject command. Additionally you can specify a "Scheme" if you would
+     * @param array  $args Arguments to the GetObject command. Additionally you can specify a "Scheme" if you would
      *                        like the URL to use a different scheme than what the client is configured to use
      *
      * @return string The URL to the object
@@ -392,9 +392,9 @@ class S3 implements S3ClientInterface
      * Downloads a bucket to the local filesystem
      *
      * @param string $directory Directory to download to
-     * @param string $bucket    Bucket to download from
+     * @param string $bucket Bucket to download from
      * @param string $keyPrefix Only download objects that use this key prefix
-     * @param array  $options   Associative array of download options
+     * @param array  $options Associative array of download options
      *                          - params: Array of parameters to use with each GetObject operation performed during the transfer
      *                          - base_dir: Base directory to remove from each object key when storing in the local filesystem
      *                          - force: Set to true to download every file, even if the file is already on the local filesystem and has not

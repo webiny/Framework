@@ -23,7 +23,7 @@ class StorageTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testStorage()
     {
-        $this->assertInstanceOf('\Webiny\Component\Storage\Storage', $this->storage('LocalStorage'));
-        $this->assertInstanceOf('\Webiny\Component\Storage\Storage', $this->storage('CloudStorage'));
+        $this->assertInstanceOf(Storage::class, $this->storage('LocalStorage'));
+        $this->assertInstanceOf(Storage::class, $this->storage('CloudStorage'));
     }
 }

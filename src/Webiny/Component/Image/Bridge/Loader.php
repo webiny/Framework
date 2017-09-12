@@ -8,6 +8,7 @@
 namespace Webiny\Component\Image\Bridge;
 
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Image\Bridge\Imagine\Imagine;
 use Webiny\Component\Image\Image;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -25,8 +26,7 @@ class Loader
     /**
      * @var string Default Image bridge.
      */
-    private static $library = '\Webiny\Component\Image\Bridge\Imagine\Imagine';
-
+    private static $library = Imagine::class;
 
     /**
      * Returns an instance of ImageLoaderInterface based on current bridge.
@@ -35,23 +35,21 @@ class Loader
      *
      * @throws ImageException
      *
-     * @return \Webiny\Component\Image\ImageLoaderInterface
+     * @return \Webiny\Component\Image\Bridge\ImageLoaderInterface
      */
     public static function getImageLoader(ConfigObject $config)
     {
         $lib = self::getLibrary();
 
         /** @var ImageLoaderInterface $libInstance */
-        $instance = self::factory($lib, '\Webiny\Component\Image\Bridge\ImageLoaderInterface', [$config]);
+        $instance = self::factory($lib, ImageLoaderInterface::class, [$config]);
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\Image\Bridge\ImageLoaderInterface')) {
-            throw new ImageException('The message library must implement "\Webiny\Component\Image\Bridge\ImageLoaderInterface".'
-            );
+        if (!self::isInstanceOf($instance, ImageLoaderInterface::class)) {
+            throw new ImageException('The message library must implement "' . ImageLoaderInterface::class . '".');
         }
 
         return $instance;
     }
-
 
     /**
      * Get the name of bridge library which will be used as the driver.

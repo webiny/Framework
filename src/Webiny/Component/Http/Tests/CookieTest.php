@@ -21,7 +21,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $cookie = Cookie::getInstance();
-        $this->assertInstanceOf('\Webiny\Component\Http\Cookie', $cookie);
+        $this->assertInstanceOf(Cookie::class, $cookie);
     }
 
     public function testSave()

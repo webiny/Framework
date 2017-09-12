@@ -22,7 +22,7 @@ class OAuth2UserTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($u)
     {
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\OAuth2User', $u);
+        $this->assertInstanceOf(OAuth2User::class, $u);
     }
 
     /**

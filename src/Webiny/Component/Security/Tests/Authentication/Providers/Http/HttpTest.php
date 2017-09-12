@@ -11,13 +11,14 @@ use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Session;
 use Webiny\Component\Security\Authentication\Providers\Http\Http;
+use Webiny\Component\Security\Authentication\Providers\Login;
 
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testConstructor()
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Http\Http', new Http());
+        $this->assertInstanceOf(Http::class, new Http());
     }
 
     public function testGetLoginObject()
@@ -28,7 +29,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $http = new Http();
         $c = new ConfigObject([]);
         $login = $http->getLoginObject($c);
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $login);
+        $this->assertInstanceOf(Login::class, $login);
         $this->assertSame('un', $login->getUsername());
         $this->assertSame('pw', $login->getPassword());
     }

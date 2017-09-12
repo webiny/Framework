@@ -11,23 +11,26 @@ namespace Webiny\Component\ServiceManager\Tests;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\ServiceManager\ServiceManager;
+use Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass;
+use Webiny\Component\ServiceManager\Tests\Classes\FactoryService;
+use Webiny\Component\ServiceManager\Tests\Classes\InstanceService;
 use Webiny\Component\ServiceManager\Tests\Classes\MainService;
 
 class ServiceManagerTest extends PHPUnit_Framework_TestCase
 {
 
     protected static $services = [
-        'Parameters'    => [
-            'MainService.Class' => '\Webiny\Component\ServiceManager\Tests\Classes\MainService'
+        'Parameters'      => [
+            'MainService.Class' => MainService::class
         ],
-        'MainService'   => [
+        'MainService'     => [
             'Class'     => '%MainService.Class%',
             'Arguments' => [
-                'first'  => 'FirstArgument',
-                'factory' => '@FactoryService',
-                'instance'  => '@InstanceService',
-                'fourth' => [
-                    'Object'          => '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass',
+                'first'    => 'FirstArgument',
+                'factory'  => '@FactoryService',
+                'instance' => '@InstanceService',
+                'fourth'   => [
+                    'Object'          => ConstructorArgumentClass::class,
                     'ObjectArguments' => ['SomeParameter', '@InstanceService']
                 ]
             ],
@@ -38,13 +41,13 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         ],
-        'FactoryService' => [
-            'Factory'         => '\Webiny\Component\ServiceManager\Tests\Classes\FactoryService',
+        'FactoryService'  => [
+            'Factory'         => FactoryService::class,
             'Method'          => 'getObject',
             'MethodArguments' => ['InjectedServiceValue']
         ],
-        'InstanceService'  => [
-            'Class' => '\Webiny\Component\ServiceManager\Tests\Classes\InstanceService'
+        'InstanceService' => [
+            'Class' => InstanceService::class
         ]
     ];
 
@@ -64,9 +67,8 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('InjectedServiceValue', $mainService->getFactoryService());
         $this->assertEquals('Webiny', $mainService->getCallValue());
         $this->assertEquals('FirstArgument', $mainService->getFirstArgumentValue());
-        $checkInstance = '\Webiny\Component\ServiceManager\Tests\Classes\ConstructorArgumentClass';
-        $this->assertInstanceOf($checkInstance, $mainService->getSomeInstance());
-        $this->assertInstanceOf('\Webiny\Component\ServiceManager\Tests\Classes\InstanceService', $mainService->getInstanceService());
+        $this->assertInstanceOf(ConstructorArgumentClass::class, $mainService->getSomeInstance());
+        $this->assertInstanceOf(InstanceService::class, $mainService->getInstanceService());
         $this->assertEquals('SomeParameter', $mainService->getSomeInstance()->getConstructorParameterValue());
     }
 }

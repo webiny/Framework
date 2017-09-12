@@ -93,10 +93,7 @@ class AccessControl
     private function getVoters()
     {
         // we have 2 built in voters
-        $voters = $this->servicesByTag('Security.Voter',
-                                       '\Webiny\Component\Security\Authorization\Voters\RoleVoterInterface'
-        );
-
+        $voters = $this->servicesByTag('Security.Voter', VoterInterface::class);
         $voters[] = new AuthenticationVoter();
         $voters[] = new RoleVoter();
 

@@ -82,7 +82,7 @@ abstract class AbstractUser implements UserInterface
 
         $this->roles = $this->arr([]);
         foreach ($roles as $r) {
-            if($this->isInstanceOf($r, '\Webiny\Component\Security\Role\Role')) {
+            if($this->isInstanceOf($r, Role::class)) {
                 $this->roles->append($r);
             } else {
                 $this->roles->append(new Role($r));

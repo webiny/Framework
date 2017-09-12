@@ -21,7 +21,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $query = new Query();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Query', $query);
+        $this->assertInstanceOf(Query::class, $query);
     }
 
     public function testGet()

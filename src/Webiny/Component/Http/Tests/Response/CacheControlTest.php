@@ -21,7 +21,7 @@ class CacheControlTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $cc = new CacheControl();
-        $this->assertInstanceOf('\Webiny\Component\Http\Response\CacheControl', $cc);
+        $this->assertInstanceOf(CacheControl::class, $cc);
     }
 
     public function testSetAsDontCache()

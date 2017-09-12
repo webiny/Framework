@@ -164,10 +164,8 @@ abstract class AbstractCollectionAttribute extends AbstractAttribute implements 
         }
 
         $entityClass = $this->getEntity();
-        $entityCollectionClass = '\Webiny\Component\Entity\EntityCollection';
-
         // Validate Many2many attribute value
-        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, $entityCollectionClass)) {
+        if (!$this->isArray($value) && !$this->isArrayObject($value) && !$this->isInstanceOf($value, EntityCollection::class)) {
             $exception = new ValidationException(ValidationException::DATA_TYPE, [
                 'array, ArrayObject or EntityCollection',
                 gettype($value)

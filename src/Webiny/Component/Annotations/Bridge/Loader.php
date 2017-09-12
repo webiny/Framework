@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Annotations\Bridge;
 
+use Webiny\Component\Annotations\Bridge\Minime\Annotations;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -23,7 +24,7 @@ class Loader
     /**
      * @var string Default Annotations bridge.
      */
-    private static $library = '\Webiny\Component\Annotations\Bridge\Minime\Annotations';
+    private static $library = Annotations::class;
 
 
     /**
@@ -58,7 +59,7 @@ class Loader
         $driver = static::getLibrary();
 
         try {
-            $instance = self::factory($driver, '\Webiny\Component\Annotations\Bridge\AnnotationsInterface');
+            $instance = self::factory($driver, AnnotationsInterface::class);
         } catch (\Exception $e) {
             throw new AnnotationsException($e->getMessage());
         }

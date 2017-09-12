@@ -8,6 +8,8 @@
 namespace Webiny\Component\Image\Tests;
 
 
+use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Image\Bridge\Imagine\Imagine;
 use Webiny\Component\Image\Image;
 
 class ImageTest extends \PHPUnit_Framework_TestCase
@@ -21,13 +23,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', Image::getConfig());
+        $this->assertInstanceOf(ConfigObject::class, Image::getConfig());
     }
 
     public function testConfigContent()
     {
         $this->assertSame(90, Image::getConfig()->Quality);
         $this->assertSame('gd', Image::getConfig()->Library);
-        $this->assertSame('\Webiny\Component\Image\Bridge\Imagine\Imagine', Image::getConfig()->Bridge);
+        $this->assertSame('\\' . Imagine::class, Image::getConfig()->Bridge);
     }
 }

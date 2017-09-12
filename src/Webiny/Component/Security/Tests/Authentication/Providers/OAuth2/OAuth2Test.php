@@ -10,6 +10,7 @@ namespace Webiny\Component\Security\Tests\Authentication\Providers\OAuth2;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Request;
 use Webiny\Component\Http\Session;
+use Webiny\Component\Security\Authentication\Providers\Login;
 use Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2;
 
 
@@ -24,7 +25,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $instance = new OAuth2('Facebook', ['ROLE_ADMIN']);
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\OAuth2\OAuth2', $instance);
+        $this->assertInstanceOf(OAuth2::class, $instance);
     }
 
     /**
@@ -72,7 +73,6 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
         $oauth2 = new OAuth2('Facebook', ['ROLE_ADMIN']);
         $oauth2->setExitTrigger(OAuth2::EXIT_TRIGGER_EXCEPTION);
         $result = $oauth2->getLoginObject(new ConfigObject([]));
-        $this->assertInstanceOf('\Webiny\Component\Security\Authentication\Providers\Login', $result);
+        $this->assertInstanceOf(Login::class, $result);
     }
-
 }

@@ -22,7 +22,7 @@ class APC extends AbstractCache
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\Cache\Bridge\Memory\APC';
+    private static $library = Memory\APC::class;
 
     /**
      * Get the name of bridge library which will be used as the driver.

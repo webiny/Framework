@@ -8,6 +8,7 @@
 namespace Webiny\Component\Http\Tests\Response;
 
 use Webiny\Component\Http\Http;
+use Webiny\Component\Http\Response;
 use Webiny\Component\Http\Response\JsonResponse;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
 
@@ -21,8 +22,8 @@ class JsonResponseTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $jr = new JsonResponse([]);
-        $this->assertInstanceOf('\Webiny\Component\Http\Response\JsonResponse', $jr);
-        $this->assertInstanceOf('\Webiny\Component\Http\Response', $jr);
+        $this->assertInstanceOf(JsonResponse::class, $jr);
+        $this->assertInstanceOf(Response::class, $jr);
     }
 
     public function testArrayConstructor()

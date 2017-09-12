@@ -57,7 +57,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $server = new Server();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Server', $server);
+        $this->assertInstanceOf(Server::class, $server);
     }
 
     public function testGet()
@@ -128,9 +128,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testHttpAccept()
     {
         $server = new Server();
-        $this->assertSame("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                          $server->httpAccept()
-        );
+        $this->assertSame("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8", $server->httpAccept());
     }
 
     public function testHttpAcceptCharset()
@@ -148,8 +146,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testHttpAcceptLanguage()
     {
         $server = new Server();
-        $this->assertSame("en-US,en;q=0.8,hr;q=0.6,sr;q=0.4,de;q=0.2,bs;q=0.2", $server->httpAcceptLanguage()
-        );
+        $this->assertSame("en-US,en;q=0.8,hr;q=0.6,sr;q=0.4,de;q=0.2,bs;q=0.2", $server->httpAcceptLanguage());
     }
 
     public function testHttpConnection()
@@ -168,8 +165,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $server = new Server();
         $this->assertSame("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.49 Safari/537.36",
-                          $server->httpUserAgent()
-        );
+            $server->httpUserAgent());
     }
 
     public function testHttps()

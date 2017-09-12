@@ -10,6 +10,9 @@ namespace Webiny\Component\Rest;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Rest\Compiler\Cache;
+use Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver;
+use Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface;
+use Webiny\Component\Rest\Compiler\CacheDrivers\FilesystemDriver;
 use Webiny\Component\Rest\Compiler\Compiler;
 use Webiny\Component\Rest\Parser\Parser;
 use Webiny\Component\Rest\Response\Router;
@@ -39,8 +42,8 @@ class Rest
     /**
      * Default cache drivers
      */
-    const DEV_CACHE_DRIVER = '\Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver';
-    const PROD_CACHE_DRIVER = '\Webiny\Component\Rest\Compiler\CacheDrivers\FilesystemDriver';
+    const DEV_CACHE_DRIVER = ArrayDriver::class;
+    const PROD_CACHE_DRIVER = FilesystemDriver::class;
 
     /**
      * @var string Name of the api configuration.
@@ -87,8 +90,8 @@ class Rest
      * Initializes the current Rest configuration, tries to match the current URL with the defined Path.
      * If match was successful, an instance of Rest class is returned, otherwise false.
      *
-     * @param string $api    Api configuration Name
-     * @param string $url    Url on which the to match. Leave blank to use the current url.
+     * @param string $api Api configuration Name
+     * @param string $url Url on which the to match. Leave blank to use the current url.
      * @param string $method Name of the HTTP method that will be used to match the request.
      *                       Leave blank to use the method from the current HTTP request.
      *
@@ -142,6 +145,7 @@ class Rest
 
         self::$url = $url;
         self::$method = $method;
+
         return self::processRouterResponse($result, $config, $api);
     }
 
@@ -150,8 +154,8 @@ class Rest
      * This method then processes that matched response and then creates and returns a Rest instance back to iniRest.
      *
      * @param MatchedRoute $matchedRoute The matched route.
-     * @param ConfigObject $config       Current api config.
-     * @param string       $api          Current api name.
+     * @param ConfigObject $config Current api config.
+     * @param string       $api Current api name.
      *
      * @return Rest
      * @throws \Webiny\Component\StdLib\StdObject\StringObject\StringObjectException
@@ -177,7 +181,7 @@ class Rest
     /**
      * Base constructor.
      *
-     * @param string $api   Name of the api configuration.
+     * @param string $api Name of the api configuration.
      * @param string $class Name of the class that will been registered with the api.
      *
      * @throws RestException
@@ -317,7 +321,7 @@ class Rest
 
         // create driver instance
         try {
-            $instance = $this->factory($driver, '\Webiny\Component\Rest\Compiler\CacheDrivers\CacheDriverInterface');
+            $instance = $this->factory($driver, CacheDriverInterface::class);
             $this->cacheInstance = new Cache($instance);
         } catch (Exception $e) {
             throw $e;

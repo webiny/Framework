@@ -21,7 +21,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $headers = new Headers();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Headers', $headers);
+        $this->assertInstanceOf(Headers::class, $headers);
     }
 
     public function testGet()

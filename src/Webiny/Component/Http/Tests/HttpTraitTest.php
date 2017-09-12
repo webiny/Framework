@@ -8,6 +8,7 @@
 namespace Webiny\Component\Http\Tests;
 
 use Webiny\Component\Http\HttpTrait;
+use Webiny\Component\Http\Request;
 
 class HttpTraitTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,6 +21,6 @@ class HttpTraitTest extends \PHPUnit_Framework_TestCase
      */
     public function testRequest()
     {
-        $this->assertInstanceOf('\Webiny\Component\Http\Request', $this->httpRequest());
+        $this->assertInstanceOf(Request::class, $this->httpRequest());
     }
 }

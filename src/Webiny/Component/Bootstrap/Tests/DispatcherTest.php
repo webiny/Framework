@@ -4,6 +4,7 @@ namespace Webiny\Component\Bootstrap\Tests;
 
 
 use Webiny\Component\Bootstrap\Dispatcher;
+use Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl;
 
 class DispatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +12,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testMvcDispatcher()
     {
         $d = Dispatcher::mvcDispatcher('MyModule', 'MyCtrl', 'MyAct', []);
-        $this->assertInstanceOf('\Webiny\Component\Bootstrap\Dispatcher', $d);
+        $this->assertInstanceOf(Dispatcher::class, $d);
     }
 
     /**
@@ -25,9 +26,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testCustomDispatcher()
     {
-        $class = '\Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl';
-        $d = Dispatcher::customDispatcher($class, 'MyActAction', []);
-        $this->assertInstanceOf('\Webiny\Component\Bootstrap\Dispatcher', $d);
+        $d = Dispatcher::customDispatcher(MyCtrl::class, 'MyActAction', []);
+        $this->assertInstanceOf(Dispatcher::class, $d);
     }
 
     /**
@@ -83,8 +83,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testGetClassName()
     {
         $d = Dispatcher::mvcDispatcher('MyModule', 'MyCtrl', 'MyAct', ['test1', 'test2']);
-        $class = '\Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl';
-        $this->assertSame($class, $d->getClassName());
+        $this->assertSame('\\' . MyCtrl::class, $d->getClassName());
     }
 
     /**

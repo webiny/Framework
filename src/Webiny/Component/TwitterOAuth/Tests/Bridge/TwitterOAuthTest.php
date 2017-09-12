@@ -8,14 +8,14 @@
 namespace Webiny\Component\TwitterOAuth\Tests\Bridge;
 
 use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuth;
+use Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface;
+use Webiny\Component\TwitterOAuth\Tests\Mocks\FakeBridgeMock;
 
 class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetInstance()
     {
-        $this->assertInstanceOf('\Webiny\Component\TwitterOAuth\Bridge\TwitterOAuthInterface',
-                                TwitterOAuth::getInstance('client', 'secret', 'redirect')
-        );
+        $this->assertInstanceOf(TwitterOAuthInterface::class, TwitterOAuth::getInstance('client', 'secret', 'redirect'));
     }
 
     /**
@@ -23,7 +23,7 @@ class TwitterOAuthTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetInstanceException()
     {
-        TwitterOAuth::setLibrary('\Webiny\Component\TwitterOAuth\Tests\Mocks\FakeBridgeMock');
+        TwitterOAuth::setLibrary(FakeBridgeMock::class);
         TwitterOAuth::getInstance('client', 'secret', 'redirect');
     }
 }

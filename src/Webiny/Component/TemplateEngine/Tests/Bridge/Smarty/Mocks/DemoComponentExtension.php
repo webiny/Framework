@@ -20,9 +20,7 @@ class DemoComponentExtension extends AbstractSmartyExtension
     public function getModifiers()
     {
         return [
-            new SmartySimplePlugin('demoComponentPlugin', 'modifier',
-                                   '\Webiny\Component\TemplateEngine\Tests\Bridge\Smarty\Mocks\DemoComponentExtension::myCallback'
-            )
+            new SmartySimplePlugin('demoComponentPlugin', 'modifier', DemoComponentExtension::class . '::myCallback')
         ];
     }
 

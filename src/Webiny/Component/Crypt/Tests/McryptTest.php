@@ -20,7 +20,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     {
         $crypt = new Crypt();
 
-        $this->assertInstanceOf('\Webiny\Component\Crypt\Crypt', $crypt);
+        $this->assertInstanceOf(Crypt::class, $crypt);
     }
 
     public function testGenerateRandomInt()

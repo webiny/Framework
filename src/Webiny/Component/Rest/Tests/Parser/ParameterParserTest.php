@@ -11,7 +11,9 @@ use Webiny\Component\Annotations\Annotations;
 use Webiny\Component\Annotations\AnnotationsTrait;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Rest\Parser\ParameterParser;
+use Webiny\Component\Rest\Parser\ParsedParameter;
 use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Tests\Mocks\MockApiClass;
 
 class ParameterParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,33 +27,31 @@ class ParameterParserTest extends \PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
         $methodName = 'someMethod';
 
         // get method annotations
-        $annotations = $this->annotationsFromMethod($className, $methodName);
+        $annotations = $this->annotationsFromMethod(MockApiClass::class, $methodName);
         $paramAnnotations = $annotations->get('param', new ConfigObject([]));
 
         // extract params
-        $reflection = new \ReflectionClass($className);
+        $reflection = new \ReflectionClass(MockApiClass::class);
         $method = $reflection->getMethod('someMethod');
         $params = $method->getParameters();
 
         $instance = new ParameterParser($params, $paramAnnotations);
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParameterParser', $instance);
+        $this->assertInstanceOf(ParameterParser::class, $instance);
     }
 
     public function testParse()
     {
-        $className = '\Webiny\Component\Rest\Tests\Mocks\MockApiClass';
         $methodName = 'someMethod';
 
         // get method annotations
-        $annotations = $this->annotationsFromMethod($className, $methodName);
+        $annotations = $this->annotationsFromMethod(MockApiClass::class, $methodName);
         $paramAnnotations = $annotations->get('param', new ConfigObject([]));
 
         // extract params
-        $reflection = new \ReflectionClass($className);
+        $reflection = new \ReflectionClass(MockApiClass::class);
         $method = $reflection->getMethod('someMethod');
         $params = $method->getParameters();
 
@@ -59,7 +59,7 @@ class ParameterParserTest extends \PHPUnit_Framework_TestCase
         $parsedParams = $instance->parse();
         $this->assertInternalType('array', $parsedParams);
 
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\ParsedParameter', $parsedParams[0]);
+        $this->assertInstanceOf(ParsedParameter::class, $parsedParams[0]);
 
         // validate parameters
         $this->assertCount(3, $parsedParams);

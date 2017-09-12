@@ -35,7 +35,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(123, ['email'], false));
         $this->assertInternalType('string', $this->validation()->validate('notAnEmail', 'email', false));
         $this->assertInternalType('string', $this->validation()->validate('wrong@domain.123', 'email', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(123, 'email');
     }
 
@@ -43,7 +43,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->validation()->validate(50, 'gt:21'));
         $this->assertInternalType('string', $this->validation()->validate(123, 'gt:150', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(123, 'gt:200');
     }
 
@@ -52,7 +52,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate(50, 'gte:21'));
         $this->assertTrue($this->validation()->validate(21, 'gte:21'));
         $this->assertInternalType('string', $this->validation()->validate(123, 'gt:150', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(123, 'gt:200');
     }
 
@@ -65,7 +65,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(['lat' => 12], 'geoLocation', false));
         $this->assertInternalType('string', $this->validation()->validate(['lng' => 12], 'geoLocation', false));
         $this->assertInternalType('string', $this->validation()->validate([1, 2, 3], 'geoLocation', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(123, 'geoLocation');
     }
 
@@ -73,7 +73,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->validation()->validate(10, 'lt:21'));
         $this->assertInternalType('string', $this->validation()->validate(200, 'lt:150', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(220, 'lt:200');
     }
 
@@ -82,7 +82,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate(21, 'lte:50'));
         $this->assertTrue($this->validation()->validate(21, 'lte:21'));
         $this->assertInternalType('string', $this->validation()->validate(155, 'lte:150', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate(220, 'lte:200');
     }
 
@@ -92,7 +92,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate([1, 2, 3], 'maxLength:5'));
         $this->assertInternalType('string', $this->validation()->validate('abcdef', 'maxLength:5', false));
         $this->assertInternalType('string', $this->validation()->validate([1, 2, 3, 4, 5, 6], 'maxLength:5', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('abcd', 'maxLength:2');
     }
 
@@ -102,7 +102,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate([1, 2, 3], 'minLength:2'));
         $this->assertInternalType('string', $this->validation()->validate('ab', 'minLength:3', false));
         $this->assertInternalType('string', $this->validation()->validate([1, 2], 'minLength:3', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('a', 'minLength:2');
     }
 
@@ -110,7 +110,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->validation()->validate('c', 'in:a:b:c'));
         $this->assertInternalType('string', $this->validation()->validate('c', 'in:a:b', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('a', 'in:b:c');
     }
 
@@ -121,7 +121,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate(10.5, 'number'));
         $this->assertInternalType('string', $this->validation()->validate('abc', 'number', false));
         $this->assertInternalType('string', $this->validation()->validate([], 'number', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('a', 'number');
     }
 
@@ -132,7 +132,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(10.5, 'integer', false));
         $this->assertInternalType('string', $this->validation()->validate('abc', 'integer', false));
         $this->assertInternalType('string', $this->validation()->validate([], 'integer', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('10.5', 'integer');
     }
 
@@ -146,7 +146,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(true, 'url', false));
         $this->assertInternalType('string', $this->validation()->validate('abc', 'url', false));
         $this->assertInternalType('string', $this->validation()->validate([], 'url', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('not-a-url', 'url');
     }
 
@@ -159,7 +159,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate('123', 'password', false));
         $this->assertInternalType('string', $this->validation()->validate('Password', 'password', false));
         $this->assertInternalType('string', $this->validation()->validate('NoNumbers', 'password', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('12345678', 'password');
     }
 
@@ -169,7 +169,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validation()->validate(123, 'required'));
         $this->assertInternalType('string', $this->validation()->validate('', 'required', false));
         $this->assertInternalType('string', $this->validation()->validate(null, 'required', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('', 'required');
     }
 
@@ -180,7 +180,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(null, 'phone', false));
         $this->assertInternalType('string', $this->validation()->validate('123/123_123', 'phone', false));
         $this->assertInternalType('string', $this->validation()->validate('123 123 123', 'phone', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('', 'phone');
     }
 
@@ -192,7 +192,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate(null, 'countryCode', false));
         $this->assertInternalType('string', $this->validation()->validate(123, 'countryCode', false));
         $this->assertInternalType('string', $this->validation()->validate('de', 'countryCode', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('america', 'countryCode');
     }
 
@@ -207,7 +207,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate('4242424242424241', 'creditCardNumber', false));
         $this->assertInternalType('string', $this->validation()->validate('randomString123', 'creditCardNumber', false));
         $this->assertInternalType('string', $this->validation()->validate('4135624544434141', 'creditCardNumber', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('4242424242424241', 'creditCardNumber');
     }
 
@@ -229,7 +229,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->validation()->validate('123456', 'euVatNumber', false));
         $this->assertInternalType('string', $this->validation()->validate('vatnumber', 'euVatNumber', false));
         $this->assertInternalType('string', $this->validation()->validate('GB9999AB973', 'euVatNumber', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('12345678', 'euVatNumber');
     }
 
@@ -237,7 +237,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->validation()->validate('+385(0)98000-0000', 'regex:/^[-+0-9()]+$/'));
         $this->assertInternalType('string', $this->validation()->validate('abcdefg', 'regex:/^[-+0-9()]+$/', false));
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('abcdefg', 'regex:/^[-+0-9()]+$/');
     }
 
@@ -266,7 +266,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
 
     public function testUnknownValidator()
     {
-        $this->setExpectedException('\Webiny\Component\Validation\ValidationException');
+        $this->setExpectedException(ValidationException::class);
         $this->validation()->validate('whatever', 'missing');
     }
 }

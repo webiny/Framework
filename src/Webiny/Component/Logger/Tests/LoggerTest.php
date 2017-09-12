@@ -24,7 +24,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructor($logger)
     {
-        $this->assertInstanceOf('\Webiny\Component\Logger\Logger', $logger);
+        $this->assertInstanceOf(Logger::class, $logger);
     }
 
     /**
@@ -32,7 +32,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
      */
     public function testLogger(Logger $logger)
     {
-        $fileLocation = __DIR__.'/UnitTest.log';
+        $fileLocation = __DIR__ . '/UnitTest.log';
         $logger->error('Test error message!', ['customValue' => 'Webiny']);
         $this->assertFileExists($fileLocation);
         $logContents = file_get_contents($fileLocation);

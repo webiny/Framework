@@ -11,6 +11,7 @@ namespace Webiny\Component\ServiceManager\Tests;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\ServiceManager\ServiceManager;
+use Webiny\Component\ServiceManager\Tests\Classes\AbstractService;
 
 class ServiceManagerInheritanceTest extends PHPUnit_Framework_TestCase
 {
@@ -18,10 +19,10 @@ class ServiceManagerInheritanceTest extends PHPUnit_Framework_TestCase
     protected static $services = [
         'Abstract' => [
             'Abstract' => true,
-            'Class'    => '\Webiny\Component\ServiceManager\Tests\Classes\AbstractService'
+            'Class'    => AbstractService::class
         ],
 
-        'Real'     => [
+        'Real' => [
             'Parent'    => '@Inheritance.Abstract',
             'Arguments' => ['Webiny']
         ]

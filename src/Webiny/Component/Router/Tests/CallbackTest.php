@@ -9,6 +9,7 @@ namespace Webiny\Component\Router\Tests;
 
 use Webiny\Component\Http\Request;
 use Webiny\Component\Router\Router;
+use Webiny\Component\Router\RouterException;
 
 /**
  * Class CallbackTest
@@ -26,21 +27,21 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidCallback()
     {
-        $this->setExpectedException('\Webiny\Component\Router\RouterException');
+        $this->setExpectedException(RouterException::class);
         $result = Router::getInstance()->match('http://www.webiny.com/blog/tag/php');
         Router::getInstance()->execute($result);
     }
 
     public function testMissingClass()
     {
-        $this->setExpectedException('\Webiny\Component\Router\RouterException');
+        $this->setExpectedException(RouterException::class);
         $result = Router::getInstance()->match('http://www.webiny.com/no/class');
         Router::getInstance()->execute($result);
     }
 
     public function testMissingClassMethod()
     {
-        $this->setExpectedException('\Webiny\Component\Router\RouterException');
+        $this->setExpectedException(RouterException::class);
         $result = Router::getInstance()->match('http://www.webiny.com/no/class/method');
         Router::getInstance()->execute($result);
     }

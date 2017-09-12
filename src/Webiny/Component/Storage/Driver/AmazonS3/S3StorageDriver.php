@@ -56,7 +56,7 @@ class S3StorageDriver implements DriverInterface, SizeAwareInterface
             throw new StorageException('Storage driver config must be an array or ArrayObject!');
         }
 
-        $bridge = Storage::getConfig()->get('Bridges.AmazonS3', '\Webiny\Component\Amazon\S3');
+        $bridge = Storage::getConfig()->get('Bridges.AmazonS3', S3::class);
         $accessKeyId = $config->key('AccessKeyId');
         $secretAccessKey = $config->key('SecretAccessKey');
         $region = $config->key('Region');

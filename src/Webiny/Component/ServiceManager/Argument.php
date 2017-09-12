@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\ServiceManager;
 
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\StdLib\StdLibTrait;
 
 /**
@@ -79,7 +80,7 @@ class Argument
     private function createValue($object, $arguments = [])
     {
 
-        if ($this->isInstanceOf($arguments, '\Webiny\Component\Config\ConfigObject')) {
+        if ($this->isInstanceOf($arguments, ConfigObject::class)) {
             $arguments = $arguments->toArray();
         }
 

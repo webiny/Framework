@@ -7,8 +7,11 @@
 
 namespace Webiny\Component\Mailer\Tests;
 
+use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer;
 use Webiny\Component\Mailer\Email;
 use Webiny\Component\Mailer\Mailer;
+use Webiny\Component\Mailer\MessageInterface;
 
 class MailerTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,7 +26,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $mailer = new Mailer();
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Mailer', $mailer);
+        $this->assertInstanceOf(Mailer::class, $mailer);
     }
 
     /**
@@ -32,13 +35,13 @@ class MailerTest extends \PHPUnit_Framework_TestCase
     public function testConstructorException()
     {
         $mailer = new Mailer('doesnt exist');
-        $this->assertInstanceOf('\Webiny\Component\Mailer\Mailer', $mailer);
+        $this->assertInstanceOf(Mailer::class, $mailer);
     }
 
     public function testGetMessage()
     {
         $mailer = new Mailer();
-        $this->assertInstanceOf('\Webiny\Component\Mailer\MessageInterface', $mailer->getMessage());
+        $this->assertInstanceOf(MessageInterface::class, $mailer->getMessage());
     }
 
     public function testSend()
@@ -53,12 +56,12 @@ class MailerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', Mailer::getConfig());
+        $this->assertInstanceOf(ConfigObject::class, Mailer::getConfig());
     }
 
     public function testConfigContent()
     {
         $this->assertSame('nikola@localhost', Mailer::getConfig()->Default->Sender->Email);
-        $this->assertSame('\Webiny\Component\Mailer\Bridge\SwiftMailer\SwiftMailer', Mailer::getConfig()->Bridge->Default);
+        $this->assertSame('\\' . SwiftMailer::class, Mailer::getConfig()->Bridge->Default);
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Entity;
 
+use Webiny\Component\Entity\Attribute\AbstractAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidatorInterface;
 use Webiny\Component\Entity\Attribute\Validation\Validators\CountryCode;
 use Webiny\Component\Entity\Attribute\Validation\Validators\CreditCardNumber;
@@ -197,7 +198,7 @@ class Entity
         }
 
         // Load validators registered as a service
-        $validators = $this->servicesByTag('entity-validator', '\Webiny\Component\Entity\Attribute\Validation\ValidatorInterface');
+        $validators = $this->servicesByTag('entity-validator', ValidatorInterface::class);
         foreach ($validators as $v) {
             $this->validators[$v->getName()] = $v;
         }
@@ -208,11 +209,10 @@ class Entity
         // If attribute class maps are defined - set them into EntityAttributeBuilder
         $classMap = Entity::getConfig()->get('Attributes');
         if ($classMap) {
-            $absClass = 'Webiny\Component\Entity\Attribute\AbstractAttribute';
             foreach ($classMap as $attr => $class) {
-                if (!in_array($absClass, class_parents($class))) {
+                if (!in_array(AbstractAttribute::class, class_parents($class))) {
                     $message = 'Attribute class for attribute "%s" must extend %s';
-                    throw new EntityException($message, [$attr, $absClass]);
+                    throw new EntityException($message, [$attr, AbstractAttribute::class]);
                 }
                 EntityAttributeContainer::$classMap[$attr] = $class;
             }

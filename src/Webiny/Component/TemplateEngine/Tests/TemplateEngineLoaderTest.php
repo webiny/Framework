@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\TemplateEngine\Tests;
 
+use Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface;
 use Webiny\Component\TemplateEngine\TemplateEngine;
 use Webiny\Component\TemplateEngine\TemplateEngineLoader;
 
@@ -19,9 +20,7 @@ class TemplateEngineLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInstance()
     {
-        $this->assertInstanceOf('\Webiny\Component\TemplateEngine\Bridge\TemplateEngineInterface',
-                                TemplateEngineLoader::getInstance('Smarty')
-        );
+        $this->assertInstanceOf(TemplateEngineInterface::class, TemplateEngineLoader::getInstance('Smarty'));
     }
 
     /**

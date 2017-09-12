@@ -8,6 +8,7 @@
 namespace Webiny\Component\Cache\Tests;
 
 use Webiny\Component\Cache\Cache;
+use Webiny\Component\Cache\CacheStorage;
 use Webiny\Component\Cache\CacheTrait;
 
 class CacheTraitTest extends \PHPUnit_Framework_TestCase
@@ -23,6 +24,6 @@ class CacheTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testCache()
     {
-        $this->assertInstanceOf('\Webiny\Component\Cache\CacheStorage', $this->cache('SomeOtherCache'));
+        $this->assertInstanceOf(CacheStorage::class, $this->cache('SomeOtherCache'));
     }
 }

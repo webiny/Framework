@@ -10,6 +10,7 @@ namespace Webiny\Component\Rest\Tests\Parser;
 use Webiny\Component\Annotations\Annotations;
 use Webiny\Component\Rest\Parser\Parser;
 use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Tests\Mocks\MockApiClass;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,13 +24,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $instance = new Parser();
-        $this->assertInstanceOf('\Webiny\Component\Rest\Parser\Parser', $instance);
+        $this->assertInstanceOf(Parser::class, $instance);
     }
 
     public function testParseApi()
     {
         $instance = new Parser();
-        $parsedApi = $instance->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
+        $parsedApi = $instance->parseApi(MockApiClass::class, true);
 
         $this->assertCount(2, $parsedApi->versions);
         $this->assertSame('1.0', $parsedApi->currentVersion);

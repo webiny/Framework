@@ -8,6 +8,7 @@
 namespace Webiny\Component\Bootstrap;
 
 use Webiny\Component\Bootstrap\ApplicationClasses\Application;
+use Webiny\Component\Bootstrap\ApplicationTraits\AppTrait;
 use Webiny\Component\ClassLoader\ClassLoader;
 use Webiny\Component\StdLib\StdObjectTrait;
 
@@ -51,10 +52,10 @@ class Dispatcher
     /**
      * Creates a Dispatcher instance from MVC parameters.
      *
-     * @param string $module     Module name.
+     * @param string $module Module name.
      * @param string $controller Controller name.
-     * @param string $action     Action name.
-     * @param array  $params     Parameters.
+     * @param string $action Action name.
+     * @param array  $params Parameters.
      *
      * @return Dispatcher
      */
@@ -70,8 +71,7 @@ class Dispatcher
         $applicationConfig = Bootstrap::getInstance()->getEnvironment()->getApplicationConfig();
 
         // build the class name
-        $className = '\\' . $applicationConfig->Namespace . '\Modules\\' . $dispatcher->getModule(
-            ) . '\Controllers\\' . $dispatcher->getController();
+        $className = '\\' . $applicationConfig->Namespace . '\Modules\\' . $dispatcher->getModule() . '\Controllers\\' . $dispatcher->getController();
         $dispatcher->setClassName($className);
 
         return $dispatcher;
@@ -81,8 +81,8 @@ class Dispatcher
      * Creates a Dispatcher instance from a class name.
      *
      * @param string $className Fully qualified class name.
-     * @param string $action    Action name.
-     * @param array  $params    Parameters.
+     * @param string $action Action name.
+     * @param array  $params Parameters.
      *
      * @return Dispatcher
      */
@@ -197,7 +197,6 @@ class Dispatcher
         } catch (\Exception $e) {
             throw $e;
         }
-
     }
 
     /**
@@ -221,10 +220,9 @@ class Dispatcher
 
         // call the controller
         call_user_func_array([
-                                 $instance,
-                                 $this->getAction() . 'Action'
-                             ], $this->getParams()
-        );
+            $instance,
+            $this->getAction() . 'Action'
+        ], $this->getParams());
 
         $response = $instance->app()->httpResponse();
         if ($response) {
@@ -251,9 +249,8 @@ class Dispatcher
         // is we use the class_traits method, we only get the traits of the current level, we don't get the traits
         // if the class extends another class that actually implements the trait
         if (!method_exists($instance, 'setAppInstance')) {
-            if (!isset($traits['Webiny\Component\Bootstrap\ApplicationTraits\AppTrait'])) {
-                throw new BootstrapException('Class "' . $className . '" must use "Webiny\Component\Bootstrap\ApplicationTraits\AppTrait" trait.'
-                );
+            if (!isset($traits[AppTrait::class])) {
+                throw new BootstrapException('Class "' . $className . '" must use "' . AppTrait::class . '" trait.');
             }
         }
 
@@ -282,10 +279,11 @@ class Dispatcher
     {
         // we don't know what is the template extension, so we need to match by action name
         if (!empty($this->getModule()) && $instance->app()->view()->getAutoload()) {
-            $templateDir = Bootstrap::getInstance()->getEnvironment()->getApplicationAbsolutePath(
-                ) . 'App/Modules/' . $this->getModule() . '/Views/' . $this->getController();
+            $templateDir = Bootstrap::getInstance()
+                                    ->getEnvironment()
+                                    ->getApplicationAbsolutePath() . 'App/Modules/' . $this->getModule() . '/Views/' . $this->getController();
 
-            if(!is_dir($templateDir)){
+            if (!is_dir($templateDir)) {
                 return false;
             }
 
@@ -303,9 +301,10 @@ class Dispatcher
                 }
 
                 if ($tplFilename != '') {
-                    $instance->app()->view()->setTemplate('../Modules/' . $this->getModule(
-                                                          ) . '/Views/' . $this->getController() . '/' . $tplFilename
-                    );
+                    $instance->app()
+                             ->view()
+                             ->setTemplate('../Modules/' . $this->getModule() . '/Views/' . $this->getController() . '/' . $tplFilename);
+
                     return true;
                 }
             }
@@ -322,8 +321,6 @@ class Dispatcher
     private function getApplicationInstance()
     {
         // create the app instance
-        $app = new Application(Bootstrap::getInstance()->getEnvironment());
-
-        return $app;
+        return new Application(Bootstrap::getInstance()->getEnvironment());
     }
 }

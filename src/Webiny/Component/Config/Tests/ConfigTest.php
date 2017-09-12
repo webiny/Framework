@@ -8,6 +8,7 @@
 namespace Webiny\Component\Config\Tests;
 
 use Webiny\Component\Config\Config;
+use Webiny\Component\Config\ConfigObject;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +16,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $yamlConfig = __DIR__ . '/Configs/config.yaml';
         $config = Config::getInstance()->yaml($yamlConfig);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('Royal Oak', $config->get('billTo.address.city'));
     }
 
@@ -23,7 +24,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $jsonConfig = __DIR__ . '/Configs/config.json';
         $config = Config::getInstance()->json($jsonConfig);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('Webiny', $config->get('website.name'));
     }
 
@@ -52,14 +53,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $phpConfig = __DIR__ . '/Configs/config.php';
         $config = Config::getInstance()->php($phpConfig);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('www.webiny.com', $config->get('default.url'));
     }
 
     public function testPhpArrayConfig()
     {
         $config = Config::getInstance()->php(['key' => 'value']);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('value', $config->get('key'));
     }
 
@@ -67,7 +68,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $iniConfig = __DIR__ . '/Configs/config.ini';
         $config = Config::getInstance()->ini($iniConfig);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('coolProperty', $config->group2->newProperty);
     }
 
@@ -75,7 +76,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $resource = ['application' => 'development'];
         $config = Config::getInstance()->parseResource($resource);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('development', $config->application);
     }
 
@@ -83,7 +84,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $yamlConfig = __DIR__ . '/Configs/config.yaml';
         $config = Config::getInstance()->yaml($yamlConfig);
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', $config);
+        $this->assertInstanceOf(ConfigObject::class, $config);
         $this->assertEquals('Royal Oak', $config->get('billTo.address.city'));
         $config->set('billTo.address.city', 'mars');
         $config->set('a.new.nested.key', 'jupiter');

@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Http;
 
+use Webiny\Component\Http\Session\Storage\NativeStorage;
 use Webiny\Component\StdLib\ComponentTrait;
 
 /**
@@ -27,7 +28,7 @@ class Http
     private static $defaultConfig = [
         'Session'        => [
             'Storage' => [
-                'Driver'     => '\Webiny\Component\Http\Session\Storage\NativeStorage',
+                'Driver'     => NativeStorage::class,
                 'Prefix'     => '',
                 'ExpireTime' => 86400
             ]
@@ -41,7 +42,7 @@ class Http
         ],
         'Cookie'         => [
             'Storage'    => [
-                'Driver' => '\Webiny\Component\Http\Cookie\Storage\NativeStorage'
+                'Driver' => Cookie\Storage\NativeStorage::class
             ],
             'Prefix'     => '',
             'HttpOnly'   => 'true',

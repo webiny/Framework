@@ -7,7 +7,7 @@
 
 namespace Webiny\Component\Config\Tests;
 
-
+use Webiny\Component\Config\Config;
 use Webiny\Component\Config\ConfigTrait;
 
 class ConfigTraitTest extends \PHPUnit_Framework_TestCase
@@ -16,6 +16,6 @@ class ConfigTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testTrait()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\Config', $this->config());
+        $this->assertInstanceOf(Config::class, $this->config());
     }
 }

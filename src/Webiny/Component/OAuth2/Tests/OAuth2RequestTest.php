@@ -24,7 +24,7 @@ class OAuth2RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($r)
     {
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\OAuth2Request', $r);
+        $this->assertInstanceOf(OAuth2Request::class, $r);
     }
 
     /**
@@ -89,10 +89,9 @@ class OAuth2RequestTest extends \PHPUnit_Framework_TestCase
     public function testSetParams($r)
     {
         $r->setParams([
-                          'p1' => 'a',
-                          'p2' => 'b'
-                      ]
-        );
+                'p1' => 'a',
+                'p2' => 'b'
+            ]);
     }
 
     /**
@@ -119,10 +118,9 @@ class OAuth2RequestTest extends \PHPUnit_Framework_TestCase
     public function testSetHeaders($r)
     {
         $r->setHeaders([
-                           'h1' => 'a',
-                           'h2' => 'b'
-                       ]
-        );
+                'h1' => 'a',
+                'h2' => 'b'
+            ]);
     }
 
     /**

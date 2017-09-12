@@ -20,13 +20,13 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $response = new Response();
-        $this->assertInstanceOf('\Webiny\Component\Http\Response', $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
 
     public function testCreate()
     {
         $response = Response::create();
-        $this->assertInstanceOf('\Webiny\Component\Http\Response', $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
 
     public function testSetContent()
@@ -119,6 +119,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testCacheControl()
     {
         $response = Response::create();
-        $this->assertInstanceOf('\Webiny\Component\Http\Response\CacheControl', $response->cacheControl());
+        $this->assertInstanceOf(Response\CacheControl::class, $response->cacheControl());
     }
 }

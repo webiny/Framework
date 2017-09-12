@@ -11,6 +11,7 @@ use ArrayIterator;
 use Traversable;
 use Webiny\Component\Entity\Attribute\ArrayAttribute;
 use Webiny\Component\Entity\Attribute\AbstractAttribute;
+use Webiny\Component\Entity\Attribute\AttributeType;
 use Webiny\Component\Entity\Attribute\BooleanAttribute;
 use Webiny\Component\Entity\Attribute\CharAttribute;
 use Webiny\Component\Entity\Attribute\DateAttribute;
@@ -31,19 +32,19 @@ use Webiny\Component\Entity\Attribute\One2ManyAttribute;
 class EntityAttributeContainer implements \ArrayAccess, \IteratorAggregate
 {
     public static $classMap = [
-        'boolean'   => '\Webiny\Component\Entity\Attribute\BooleanAttribute',
-        'char'      => '\Webiny\Component\Entity\Attribute\CharAttribute',
-        'integer'   => '\Webiny\Component\Entity\Attribute\IntegerAttribute',
-        'float'     => '\Webiny\Component\Entity\Attribute\FloatAttribute',
-        'arr'       => '\Webiny\Component\Entity\Attribute\ArrayAttribute',
-        'object'    => '\Webiny\Component\Entity\Attribute\ObjectAttribute',
-        'datetime'  => '\Webiny\Component\Entity\Attribute\DateTimeAttribute',
-        'date'      => '\Webiny\Component\Entity\Attribute\DateAttribute',
-        'many2one'  => '\Webiny\Component\Entity\Attribute\Many2OneAttribute',
-        'one2many'  => '\Webiny\Component\Entity\Attribute\One2ManyAttribute',
-        'many2many' => '\Webiny\Component\Entity\Attribute\Many2ManyAttribute',
-        'dynamic'   => '\Webiny\Component\Entity\Attribute\DynamicAttribute',
-        'geoPoint'  => '\Webiny\Component\Entity\Attribute\GeoPointAttribute'
+        'boolean'   => AttributeType::BOOLEAN,
+        'char'      => AttributeType::CHAR,
+        'integer'   => AttributeType::INTEGER,
+        'float'     => AttributeType::FLOAT,
+        'arr'       => AttributeType::ARR,
+        'object'    => AttributeType::OBJECT,
+        'datetime'  => AttributeType::DATE_TIME,
+        'date'      => AttributeType::DATE,
+        'many2one'  => AttributeType::MANY2ONE,
+        'one2many'  => AttributeType::ONE2MANY,
+        'many2many' => AttributeType::MANY2MANY,
+        'dynamic'   => AttributeType::DYNAMIC,
+        'geoPoint'  => AttributeType::GEOPOINT
     ];
 
     protected $entity;

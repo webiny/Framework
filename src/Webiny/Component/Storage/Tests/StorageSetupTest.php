@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Storage\Tests;
 
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Storage\Storage;
 
 class StorageSetupTest extends \PHPUnit_Framework_TestCase
@@ -15,12 +16,12 @@ class StorageSetupTest extends \PHPUnit_Framework_TestCase
 
     public function testSetConfig()
     {
-        Storage::setConfig(realpath(__DIR__). self::CONFIG);
+        Storage::setConfig(realpath(__DIR__) . self::CONFIG);
     }
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', Storage::getConfig());
+        $this->assertInstanceOf(ConfigObject::class, Storage::getConfig());
     }
 
     public function testConfigServices()

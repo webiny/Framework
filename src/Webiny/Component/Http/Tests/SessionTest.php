@@ -21,7 +21,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $session = Session::getInstance();
-        $this->assertInstanceOf('\Webiny\Component\Http\Session', $session);
+        $this->assertInstanceOf(Session::class, $session);
     }
 
     public function testSave()

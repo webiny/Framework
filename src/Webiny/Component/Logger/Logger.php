@@ -9,6 +9,7 @@ namespace Webiny\Component\Logger;
 
 use Webiny\Component\Logger\Bridge\LoggerAbstract;
 use Webiny\Component\Logger\Bridge\LoggerDriverInterface;
+use Webiny\Component\Logger\Driver\NullDriver;
 use Webiny\Component\Logger\Driver\Webiny;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -25,8 +26,8 @@ class Logger
 
     private static $defaultConfig = [
         'Parameters'  => [
-            'Logger.Class'        => '\Webiny\Component\Logger\Logger',
-            'Logger.Driver.Class' => '\Webiny\Component\Logger\Driver\NullDriver'
+            'Logger.Class'        => Logger::class,
+            'Logger.Driver.Class' => NullDriver::class
         ],
         'Services'    => [
             'Webiny' => [

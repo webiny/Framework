@@ -21,7 +21,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $crypt = new Crypt('Password');
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt', $crypt);
+        $this->assertInstanceOf(Crypt::class, $crypt);
     }
 
     public function testEncryptDecrypt()

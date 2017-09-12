@@ -24,7 +24,7 @@ class Crypt
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\Crypt\Bridge\Openssl\Crypt';
+    private static $library = Openssl\Crypt::class;
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -64,12 +64,8 @@ class Crypt
             throw new Exception('Unable to create an instance of ' . $driver);
         }
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
-            throw new Exception(Exception::MSG_INVALID_ARG, [
-                    'driver',
-                    '\Webiny\Component\Crypt\Bridge\CryptInterface'
-                ]
-            );
+        if (!self::isInstanceOf($instance, CryptInterface::class)) {
+            throw new Exception(Exception::MSG_INVALID_ARG, ['driver', CryptInterface::class]);
         }
 
         return $instance;

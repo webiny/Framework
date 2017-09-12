@@ -36,10 +36,8 @@ class Crypt
             try {
                 $this->driverInstance = Bridge\Crypt::getInstance();
 
-                if (!$this->isInstanceOf($this->driverInstance, '\Webiny\Component\Crypt\Bridge\CryptInterface')) {
-                    throw new CryptException('The provided bridge does not implement the required
-												interface "\Webiny\Component\Crypt\Bridge\CryptInterface"'
-                    );
+                if (!$this->isInstanceOf($this->driverInstance, CryptInterface::class)) {
+                    throw new CryptException('The provided bridge does not implement the required interface "' . CryptInterface::class . '"');
                 }
             } catch (\Exception $e) {
                 throw $e;
@@ -70,7 +68,7 @@ class Crypt
      * If $chars param is empty, the string will be generated using numbers, letters and special characters.
      *
      * @param int    $length Length of the generated string.
-     * @param string $chars  A string containing a list of chars that will be uses for generating the random string.
+     * @param string $chars A string containing a list of chars that will be uses for generating the random string.
      *
      * @throws CryptException
      * @return string Random string with the given $length containing only the provided set of $chars.
@@ -121,6 +119,7 @@ class Crypt
     }
 
     // password hashing and verification
+
     /**
      * Creates a hash from the given $password string.
      * The hashing algorithm used depends on your config.
@@ -143,7 +142,7 @@ class Crypt
      * Verify if the given $hash matches the given $password.
      *
      * @param string $password Original, un-hashed, password.
-     * @param string $hash     Hash string to which the check should be made
+     * @param string $hash Hash string to which the check should be made
      *
      * @throws CryptException
      * @return bool True if $password matches the $hash, otherwise false is returned.
@@ -158,11 +157,12 @@ class Crypt
     }
 
     // encryption and decryption
+
     /**
      * Encrypt the given $string using a cypher and the secret $key
      *
      * @param string $string The string you want to encrypt.
-     * @param string $key    The secret key that will be used to encrypt the string.
+     * @param string $key The secret key that will be used to encrypt the string.
      *
      * @throws CryptException
      *
@@ -183,7 +183,7 @@ class Crypt
      * process.
      *
      * @param string $string The string you want to decrypt.
-     * @param string $key    The secret key that was used to encrypt the $string.
+     * @param string $key The secret key that was used to encrypt the $string.
      *
      * @throws CryptException
      * @return string Decrypted string or false if unable to decrypt (wrong key).

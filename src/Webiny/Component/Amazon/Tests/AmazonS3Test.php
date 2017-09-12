@@ -9,18 +9,20 @@ namespace Webiny\Component\Amazon\Tests;
 
 
 use Webiny\Component\Amazon\S3;
+use Webiny\Component\Amazon\Tests\Mocks\S3BridgeMock;
 use Webiny\Component\Config\ConfigObject;
 
 class AmazonS3Test extends \PHPUnit_Framework_TestCase
 {
     private $bucket = 'webiny-test';
     private $key = 'webiny-test.txt';
+
     /**
      * @dataProvider driverSet
      */
     public function testConstructor($S3)
     {
-        $this->assertInstanceOf('Webiny\Component\Amazon\S3', $S3);
+        $this->assertInstanceOf(S3::class, $S3);
     }
 
     /**
@@ -45,10 +47,8 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
 
     public function driverSet()
     {
-        $config = new ConfigObject(['Bridge' => '\Webiny\Component\Amazon\Tests\Mocks\S3BridgeMock']);
+        S3::setConfig(new ConfigObject(['Bridge' => S3BridgeMock::class]));
 
-        S3::setConfig($config);
-        
         return [
             [new S3(false, false, false)]
         ];

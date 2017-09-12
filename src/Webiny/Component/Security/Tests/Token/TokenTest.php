@@ -17,6 +17,6 @@ class TokenTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $token = new Token('wf_token_test_realm', false, '', new TokenCryptMock(new ConfigObject([])));
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\Token', $token);
+        $this->assertInstanceOf(Token::class, $token);
     }
 }

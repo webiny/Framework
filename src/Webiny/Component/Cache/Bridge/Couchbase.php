@@ -23,7 +23,7 @@ class Couchbase extends AbstractCache
      *
      * @var string
      */
-    private static $library = '\Webiny\Component\Cache\Bridge\Memory\Couchbase';
+    private static $library = Memory\Couchbase::class;
 
     /**
      * Get the name of bridge library which will be used as the driver.
@@ -50,10 +50,10 @@ class Couchbase extends AbstractCache
      *
      * @see      CacheAbstract::getInstance()
      *
-     * @param string $user     Couchbase username.
+     * @param string $user Couchbase username.
      * @param string $password Couchbase password.
-     * @param string $bucket   Couchbase bucket.
-     * @param string $host     Couchbase host (with port number).
+     * @param string $bucket Couchbase bucket.
+     * @param string $host Couchbase host (with port number).
      *
      * @throws \Webiny\Component\Cache\CacheException
      * @internal param \Couchbase $couchbase Instance of Couchbase class.
@@ -67,8 +67,7 @@ class Couchbase extends AbstractCache
         // check if Couchbase extension is loaded
         if (!class_exists('Couchbase', true)) {
             throw new CacheException('The "Couchbase" SDK must be installed if you wish to use Couchbase.
-										For more information visit: http://www.couchbase.com/develop/php/current'
-            );
+										For more information visit: http://www.couchbase.com/develop/php/current');
         } else {
             $couchbase = new \Couchbase($host, $user, $password, $bucket);
         }
@@ -79,12 +78,8 @@ class Couchbase extends AbstractCache
             throw new CacheException($e->getMessage());
         }
 
-        if (!self::isInstanceOf($instance, '\Webiny\Component\Cache\Bridge\CacheStorageInterface')) {
-            throw new CacheException(CacheException::MSG_INVALID_ARG, [
-                    'driver',
-                    '\Webiny\Component\Cache\Bridge\CacheStorageInterface'
-                ]
-            );
+        if (!self::isInstanceOf($instance, CacheStorageInterface::class)) {
+            throw new CacheException(CacheException::MSG_INVALID_ARG, ['driver', CacheStorageInterface::class]);
         }
 
         return $instance;

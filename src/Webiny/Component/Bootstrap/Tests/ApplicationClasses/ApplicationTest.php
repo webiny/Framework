@@ -2,6 +2,7 @@
 
 namespace Webiny\Component\Bootstrap\Tests\ApplicationClasses;
 
+use Webiny\Component\Bootstrap\ApplicationClasses\View;
 use Webiny\Component\Bootstrap\Environment;
 use Webiny\Component\Bootstrap\ApplicationClasses\Application;
 use Webiny\Component\Http\Request;
@@ -260,7 +261,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
         $app = new Application($env);
 
-        $this->assertInstanceOf('\Webiny\Component\Bootstrap\ApplicationClasses\View', $app->view());
+        $this->assertInstanceOf(View::class, $app->view());
     }
 
     /*
@@ -274,6 +275,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($app->httpResponse());
 
         $app->view()->setTemplate($app->getAbsolutePath().'App/Modules/MyModule/Views/MyCtrl/MyAct.tpl');
-        $this->assertInstanceOf('\Webiny\Component\Http\Response', $app->httpResponse());
+        $this->assertInstanceOf('Webiny\Component\Http\Response', $app->httpResponse());
     }*/
 }

@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\Crypt\Tests;
 
+use Webiny\Component\Crypt\Crypt;
 use Webiny\Component\Crypt\CryptTrait;
 
 class CryptTraitTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +17,7 @@ class CryptTraitTest extends \PHPUnit_Framework_TestCase
     public function testCrypt()
     {
         $instance = $this->crypt();
-        $this->assertInstanceOf('\Webiny\Component\Crypt\Crypt', $instance);
+        $this->assertInstanceOf(Crypt::class, $instance);
     }
 
 }

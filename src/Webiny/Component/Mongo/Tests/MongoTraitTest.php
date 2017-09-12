@@ -23,6 +23,6 @@ class MongoTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testMongo()
     {
-        $this->assertInstanceOf('\Webiny\Component\Mongo\Mongo', $this->mongo());
+        $this->assertInstanceOf(Mongo::class, $this->mongo());
     }
 }

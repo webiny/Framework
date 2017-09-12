@@ -9,6 +9,7 @@ namespace Webiny\Component\Http;
 
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\Http\Session\SessionException;
+use Webiny\Component\Http\Session\Storage\NativeStorage;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
@@ -51,7 +52,7 @@ class Session
         session_register_shutdown();
 
         // get the driver
-        $saveHandler = $config->get('Storage.Driver', '\Webiny\Component\Http\Session\Storage\NativeStorage');
+        $saveHandler = $config->get('Storage.Driver', NativeStorage::class);
 
         try {
             // try to create driver instance
@@ -79,7 +80,7 @@ class Session
      * Get a session value for the given $key.
      * If key doesn't not exist, $value will be returned and assigned under that key.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Default value that will be returned if $key doesn't exist.
      *
      * @return string Value of the given $key.
@@ -95,7 +96,7 @@ class Session
     /**
      * Save, or overwrite, a session value under the given $key with the given $value.
      *
-     * @param string $key   Key for which you wish to get the value.
+     * @param string $key Key for which you wish to get the value.
      * @param mixed  $value Value that will be stored under the $key.
      *
      * @return $this

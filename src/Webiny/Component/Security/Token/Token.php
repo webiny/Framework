@@ -8,6 +8,8 @@
 namespace Webiny\Component\Security\Token;
 
 use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
+use Webiny\Component\Security\Token\Storage\Cookie;
+use Webiny\Component\Security\Token\Storage\Session;
 use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\StdLib\Exception\Exception;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
@@ -22,9 +24,9 @@ class Token
     use FactoryLoaderTrait;
 
     // store token into cookie -> only if remember me is TRUE
-    const TOKEN_COOKIE_STORAGE = '\Webiny\Component\Security\Token\Storage\Cookie';
+    const TOKEN_COOKIE_STORAGE = Cookie::class;
     // store token into session -> only if remember me is FALSE
-    const TOKEN_SESSION_STORAGE = '\Webiny\Component\Security\Token\Storage\Session';
+    const TOKEN_SESSION_STORAGE = Session::class;
 
     /**
      * @var AbstractTokenStorage
@@ -39,8 +41,8 @@ class Token
     /**
      * Base constructor.
      *
-     * @param string                            $tokenName   Name of the token.
-     * @param bool                              $rememberMe  Do you want to store the token into cookie, or not. If you don't store it into cookie, the
+     * @param string                            $tokenName Name of the token.
+     * @param bool                              $rememberMe Do you want to store the token into cookie, or not. If you don't store it into cookie, the
      *                                                       token is only valid for current session.
      * @param string                            $securityKey Security key that will be used for encryption of token data
      * @param CryptDrivers\CryptDriverInterface $cryptDriver
@@ -64,7 +66,7 @@ class Token
             if (!$storageClass) {
                 $storageClass = $this->getStorageName();
             }
-            $this->storage = $this->factory($storageClass, '\Webiny\Component\Security\Token\AbstractTokenStorage');
+            $this->storage = $this->factory($storageClass, AbstractTokenStorage::class);
             $this->storage->setSecurityKey($securityKey);
             $this->storage->setCrypt($cryptDriver);
         } catch (Exception $e) {
@@ -99,6 +101,7 @@ class Token
      * Should token be remembered or not
      *
      * @param bool $rememberMe
+     *
      * @return $this
      */
     public function setRememberMe($rememberMe)

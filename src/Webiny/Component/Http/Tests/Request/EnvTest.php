@@ -21,7 +21,7 @@ class EnvTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $env = new Env();
-        $this->assertInstanceOf('\Webiny\Component\Http\Request\Env', $env);
+        $this->assertInstanceOf(Env::class, $env);
     }
 
     public function testGet()

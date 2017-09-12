@@ -10,8 +10,10 @@ namespace Webiny\Component\Security;
 use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\EventManager\EventManagerTrait;
 use Webiny\Component\Security\Authentication\Firewall;
+use Webiny\Component\Security\Encoder\Drivers\Crypt;
+use Webiny\Component\Security\Encoder\Drivers\Plain;
 use Webiny\Component\Security\Encoder\Encoder;
-use Webiny\Component\Security\User\Providers\Memory\MemoryProvider;
+use Webiny\Component\Security\User\UserProviderInterface;
 use Webiny\Component\StdLib\ComponentTrait;
 use Webiny\Component\StdLib\FactoryLoaderTrait;
 use Webiny\Component\StdLib\SingletonTrait;
@@ -40,10 +42,10 @@ class Security
      *            the fully qualified class names in the yaml config.
      */
     private static $userProviders = [
-        'Entity'       => '\Webiny\Component\Security\User\Providers\Entity\Entity',
-        'Memory'       => '\Webiny\Component\Security\User\Providers\Memory\Memory',
-        'OAuth2'       => '\Webiny\Component\Security\User\Providers\OAuth2\OAuth2',
-        'TwitterOAuth' => '\Webiny\Component\Security\User\Providers\TwitterOAuth\TwitterOAuth'
+        'Entity'       => User\Providers\Entity\Entity::class,
+        'Memory'       => User\Providers\Memory\Memory::class,
+        'OAuth2'       => User\Providers\OAuth2\OAuth2::class,
+        'TwitterOAuth' => User\Providers\TwitterOAuth\TwitterOAuth::class
     ];
 
     /**
@@ -51,8 +53,8 @@ class Security
      *            the fully qualified class names in the yaml config.
      */
     private static $encoders = [
-        'Crypt'  => '\Webiny\Component\Security\Encoder\Drivers\Crypt',
-        'Plain'  => '\Webiny\Component\Security\Encoder\Drivers\Plain'
+        'Crypt' => Crypt::class,
+        'Plain' => Plain::class
     ];
 
 
@@ -82,14 +84,12 @@ class Security
 
 
                 if (!$firewall) {
-                    throw new SecurityException("Firewall '" . $firewallKey . "' is not defined under Security.Firewalls."
-                    );
+                    throw new SecurityException("Firewall '" . $firewallKey . "' is not defined under Security.Firewalls.");
                 }
             }
 
             $fw = new Firewall($firewallKey, $firewall, $this->getFirewallUserProviders($firewallKey),
-                               $this->getFirewallEncoder($firewallKey)
-            );
+                $this->getFirewallEncoder($firewallKey));
 
             $this->firewalls[$firewallKey] = $fw;
         }
@@ -130,13 +130,15 @@ class Security
                     $driver = self::$userProviders[$driver];
                 }
                 $params = $gConfig->get('Params', null, true);
-            } else if (isset(self::$userProviders[$pk])) {
-                $driver = self::$userProviders[$pk];
-                if($gConfig){
-                    $params = $gConfig->get('Params', null, true);
-                }
             } else {
-                throw new SecurityException('User providers "' . $pk . '" is missing a Driver.');
+                if (isset(self::$userProviders[$pk])) {
+                    $driver = self::$userProviders[$pk];
+                    if ($gConfig) {
+                        $params = $gConfig->get('Params', null, true);
+                    }
+                } else {
+                    throw new SecurityException('User providers "' . $pk . '" is missing a Driver.');
+                }
             }
 
             // In case of memory user provider, we don't have the parameters, but we have the user accounts
@@ -148,9 +150,7 @@ class Security
 
 
             try {
-                $userProviders[$pk] = $this->factory($driver, '\Webiny\Component\Security\User\UserProviderInterface',
-                                                     is_null($params) ? null : [$params]
-                );
+                $userProviders[$pk] = $this->factory($driver, UserProviderInterface::class, is_null($params) ? null : [$params]);
             } catch (\Exception $e) {
                 throw new SecurityException($e->getMessage());
             }
@@ -193,10 +193,14 @@ class Security
         // get the driver class name
         if (!$driver && isset(self::$encoders[$encoderName])) { // use built-in driver
             $driver = self::$encoders[$encoderName];
-        } else if (isset(self::$encoders[$driver])) { // driver defined as short-name built-in driver
-            $driver = self::$encoders[$driver];
-        } else if (!$driver) {
-            throw new SecurityException('Invalid "Driver" param for "' . $encoderName . '" encoder.');
+        } else {
+            if (isset(self::$encoders[$driver])) { // driver defined as short-name built-in driver
+                $driver = self::$encoders[$driver];
+            } else {
+                if (!$driver) {
+                    throw new SecurityException('Invalid "Driver" param for "' . $encoderName . '" encoder.');
+                }
+            }
         }
 
         // create encoder instance

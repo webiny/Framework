@@ -36,10 +36,7 @@ class Encoder
     public function __construct($driver, $params = null)
     {
         try {
-            $this->encoderProviderInstance = $this->factory($driver,
-                                                             '\Webiny\Component\Security\Encoder\EncoderDriverInterface',
-                                                             $params
-            );
+            $this->encoderProviderInstance = $this->factory($driver, EncoderDriverInterface::class, $params);
         } catch (\Exception $e) {
             throw new EncoderException($e->getMessage());
         }

@@ -2,6 +2,8 @@
 
 namespace Webiny\Component\Bootstrap\Tests;
 
+use Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl;
+
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
     public function testInitializeRouter()
@@ -9,7 +11,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $dispatcher = \Webiny\Component\Bootstrap\Router::getInstance()->initializeRouter('http://www.myapp.com/');
         $cName = $dispatcher->getClassName();
 
-        $this->assertSame('\Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl', $cName);
+        $this->assertSame('\\' . MyCtrl::class, $cName);
     }
 
     /**
@@ -26,7 +28,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $dispatcher = \Webiny\Component\Bootstrap\Router::getInstance()->mvcRouter('/my-module/my-ctrl/my-act/');
         $cName = $dispatcher->getClassName();
 
-        $this->assertSame('\Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl', $cName);
+        $this->assertSame('\\' . MyCtrl::class, $cName);
     }
 
     public function testMvcRouterCamelCase()
@@ -34,7 +36,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $dispatcher = \Webiny\Component\Bootstrap\Router::getInstance()->mvcRouter('/MyModule/MyCtrl/MyAct/');
         $cName = $dispatcher->getClassName();
 
-        $this->assertSame('\Webiny\Component\Bootstrap\Tests\DemoApp\Modules\MyModule\Controllers\MyCtrl', $cName);
+        $this->assertSame('\\' . MyCtrl::class, $cName);
     }
 
     /**

@@ -7,6 +7,7 @@
 namespace Webiny\Component\Logger\Driver\Webiny\Handler;
 
 use Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterInterface;
+use Webiny\Component\Logger\Driver\Webiny\Processor\ProcessorInterface;
 use Webiny\Component\Logger\Driver\Webiny\Record;
 use Webiny\Component\Logger\LoggerException;
 use Webiny\Component\StdLib\StdLibTrait;
@@ -27,11 +28,9 @@ abstract class AbstractHandler
      * @var FormatterInterface
      */
     protected $formatter = null;
-    protected $processors = [];
+    protected $processors;
+    protected $bufferProcessors;
     protected $records = [];
-
-    private $processorInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Processor\ProcessorInterface';
-    private $formatterInterfaceClass = '\Webiny\Component\Logger\Driver\Webiny\Formatter\FormatterInterface';
 
     /**
      * Writes the record down to the log of the implementing handler
@@ -45,12 +44,12 @@ abstract class AbstractHandler
     /**
      * Get default formatter for this handler
      *
-     * @return FormatterAbstract
+     * @return FormatterInterface
      */
     abstract protected function getDefaultFormatter();
 
     /**
-     * @param array|ArrayObject $levels The minimum logging level at which this handler will be triggered
+     * @param array $levels The minimum logging level at which this handler will be triggered
      * @param Boolean           $bubble Whether the messages that are handled can bubble up the stack or not
      * @param bool              $buffer
      *
@@ -62,6 +61,7 @@ abstract class AbstractHandler
         $this->bubble = $bubble;
         $this->buffer = $buffer;
         $this->processors = $this->arr();
+        $this->bufferProcessors = $this->arr();
     }
 
     /**
@@ -117,9 +117,8 @@ abstract class AbstractHandler
      */
     public function addProcessor($callback, $processBufferRecord = false)
     {
-        if (!is_callable($callback) && !$this->isInstanceOf($callback, $this->processorInterfaceClass)) {
-            throw new \InvalidArgumentException('Processor must be valid callable or an instance of ' . $this->processorInterfaceClass
-            );
+        if (!is_callable($callback) && !$this->isInstanceOf($callback, ProcessorInterface::class)) {
+            throw new \InvalidArgumentException('Processor must be valid callable or an instance of ' . ProcessorInterface::class);
         }
 
         if ($processBufferRecord) {
@@ -175,7 +174,7 @@ abstract class AbstractHandler
     {
 
         foreach ($this->processors as $processor) {
-            if ($this->isInstanceOf($processor, $this->processorInterfaceClass)) {
+            if ($this->isInstanceOf($processor, ProcessorInterface::class)) {
                 $processor->processRecord($record);
             } else {
                 call_user_func($processor, $record);
@@ -194,7 +193,7 @@ abstract class AbstractHandler
     {
         $record = new Record();
         $formatter = $this->getFormatter();
-        if ($this->isInstanceOf($formatter, $this->formatterInterfaceClass)) {
+        if ($this->isInstanceOf($formatter, FormatterInterface::class)) {
             $formatter->formatRecords($records, $record);
         }
 
@@ -211,8 +210,8 @@ abstract class AbstractHandler
     {
         if ($this->isNull($this->formatter)) {
             $this->formatter = $this->getDefaultFormatter();
-            if (!$this->isInstanceOf($this->formatter, $this->formatterInterfaceClass)) {
-                throw new LoggerException('Formatter must be an instance of ' . $this->formatterInterfaceClass);
+            if (!$this->isInstanceOf($this->formatter, FormatterInterface::class)) {
+                throw new LoggerException('Formatter must be an instance of ' . FormatterInterface::class);
             }
         }
 

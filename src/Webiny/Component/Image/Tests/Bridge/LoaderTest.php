@@ -8,6 +8,7 @@
 namespace Webiny\Component\Image\Tests\Bridge;
 
 use Webiny\Component\Config\ConfigObject;
+use Webiny\Component\Image\Bridge\ImageLoaderInterface;
 use Webiny\Component\Image\Bridge\Loader;
 
 class LoaderTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +18,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     {
         $config = new ConfigObject([]);
         $loader = Loader::getImageLoader($config);
-        $this->assertInstanceOf('\Webiny\Component\Image\Bridge\ImageLoaderInterface', $loader);
+        $this->assertInstanceOf(ImageLoaderInterface::class, $loader);
     }
 
     /**

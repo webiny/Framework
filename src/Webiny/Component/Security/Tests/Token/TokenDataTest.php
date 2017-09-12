@@ -20,7 +20,7 @@ class TokenDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($tokenData)
     {
-        $this->assertInstanceOf('\Webiny\Component\Security\Token\TokenData', $tokenData);
+        $this->assertInstanceOf(TokenData::class, $tokenData);
     }
 
     /**

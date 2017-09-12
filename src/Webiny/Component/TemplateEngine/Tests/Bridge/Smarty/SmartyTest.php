@@ -47,25 +47,23 @@ class SmartyTest extends \PHPUnit_Framework_TestCase
     public function testConstructNoCacheDirException()
     {
         $config = new ConfigObject([
-                                       'CompileDir' => '/tmp/'
-                                   ]
-        );
+            'CompileDir' => '/tmp/'
+        ]);
 
-        $smarty = new Smarty($config);
+        new Smarty($config);
     }
 
     public function testConstruct()
     {
         $config = new ConfigObject([
-                                       'CompileDir'  => '/tmp/',
-                                       'CacheDir'    => '/tmp/',
-                                       'TemplateDir' => __DIR__
-                                   ]
-        );
+            'CompileDir'  => '/tmp/',
+            'CacheDir'    => '/tmp/',
+            'TemplateDir' => __DIR__
+        ]);
 
         $smarty = new Smarty($config);
 
-        $this->assertInstanceOf('\Webiny\Component\TemplateEngine\Bridge\Smarty\Smarty', $smarty);
+        $this->assertInstanceOf(Smarty::class, $smarty);
     }
 
     /**
@@ -131,10 +129,9 @@ class SmartyTest extends \PHPUnit_Framework_TestCase
     public function testFetchWithParams(Smarty $smarty)
     {
         $result = $smarty->fetch('TestWithParams.tpl', [
-                'name'      => 'Batman',
-                'otherName' => 'Superman'
-            ]
-        );
+            'name'      => 'Batman',
+            'otherName' => 'Superman'
+        ]);
         $this->assertSame('Hello Batman. My name is Superman.', $result);
     }
 
@@ -179,11 +176,10 @@ class SmartyTest extends \PHPUnit_Framework_TestCase
     public function dataProvider()
     {
         $config = new ConfigObject([
-                                       'CompileDir'  => __DIR__ . '/Templates/Compile',
-                                       'CacheDir'    => __DIR__ . '/Templates/Cache',
-                                       'TemplateDir' => __DIR__ . '/Templates'
-                                   ]
-        );
+            'CompileDir'  => __DIR__ . '/Templates/Compile',
+            'CacheDir'    => __DIR__ . '/Templates/Cache',
+            'TemplateDir' => __DIR__ . '/Templates'
+        ]);
 
         $smarty = new Smarty($config);
 

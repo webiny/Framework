@@ -7,6 +7,7 @@
 
 namespace Webiny\Component\OAuth2\Tests;
 
+use Webiny\Component\OAuth2\AbstractServer;
 use Webiny\Component\OAuth2\OAuth2;
 
 
@@ -22,7 +23,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($oauth2)
     {
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\OAuth2', $oauth2);
+        $this->assertInstanceOf(OAuth2::class, $oauth2);
     }
 
     /**
@@ -32,7 +33,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
      */
     public function testRequest($oauth2)
     {
-        $this->assertInstanceOf('\Webiny\Component\OAuth2\AbstractServer', $oauth2->request());
+        $this->assertInstanceOf(AbstractServer::class, $oauth2->request());
     }
 
     /**
@@ -157,7 +158,7 @@ class OAuth2Test extends \PHPUnit_Framework_TestCase
     public function testGetConfig()
     {
         OAuth2::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
-        $this->assertSame('\Webiny\Component\OAuth2\Bridge\League\OAuth2', OAuth2::getConfig()->Bridge);
+        $this->assertSame('\\' . \Webiny\Component\OAuth2\Bridge\League\OAuth2::class, OAuth2::getConfig()->Bridge);
         $this->assertSame(123, OAuth2::getConfig()->Facebook->ClientId);
     }
 

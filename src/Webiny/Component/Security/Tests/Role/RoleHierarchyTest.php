@@ -15,17 +15,16 @@ class RoleHierarchyTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $roleHierarchy = new RoleHierarchy(['ROLE_MOCK' => 'ROLE_USER']);
-        $this->assertInstanceOf('\Webiny\Component\Security\Role\RoleHierarchy', $roleHierarchy);
+        $this->assertInstanceOf(RoleHierarchy::class, $roleHierarchy);
     }
 
     public function testGetAccessibleRoles()
     {
         $roleHierarchy = new RoleHierarchy([
-                                               'ROLE_USER'  => 'ROLE_EDITOR',
-                                               'ROLE_ADMIN' => 'ROLE_USER',
-                                               'ROLE_MOCK'  => 'ROLE_ADMIN'
-                                           ]
-        );
+                'ROLE_USER'  => 'ROLE_EDITOR',
+                'ROLE_ADMIN' => 'ROLE_USER',
+                'ROLE_MOCK'  => 'ROLE_ADMIN'
+            ]);
 
         $roles = [new Role('ROLE_EDITOR')];
         $this->assertCount(1, $roleHierarchy->getAccessibleRoles($roles));

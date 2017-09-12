@@ -7,7 +7,9 @@
 
 namespace Webiny\Component\Cache\Tests;
 
+use Webiny\Component\Cache\Bridge\Memory\Memcache;
 use Webiny\Component\Cache\Cache;
+use Webiny\Component\Config\ConfigObject;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,14 +22,13 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf('\Webiny\Component\Config\ConfigObject', Cache::getConfig());
+        $this->assertInstanceOf(ConfigObject::class, Cache::getConfig());
     }
 
     public function testConfigServices()
     {
-        $this->assertSame('\Webiny\Component\Cache\Cache', Cache::getConfig()->get('Services.TestCache.Factory'));
-        $this->assertSame('\Webiny\Component\Cache\Bridge\Memory\Memcache', Cache::getConfig()->get('Bridges.Memcache')
-        );
+        $this->assertSame(Cache::class, Cache::getConfig()->get('Services.TestCache.Factory'));
+        $this->assertSame(Memcache::class, Cache::getConfig()->get('Bridges.Memcache'));
         $this->assertFalse(Cache::getConfig()->get('Bridges.FakeBridge', false));
     }
 }
