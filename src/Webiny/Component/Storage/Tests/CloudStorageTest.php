@@ -23,7 +23,7 @@ class CloudStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($storage)
     {
-        $this->assertInstanceOf('Webiny\Component\Storage\Storage', $storage);
+        $this->assertInstanceOf(Storage::class, $storage);
     }
 
     /**

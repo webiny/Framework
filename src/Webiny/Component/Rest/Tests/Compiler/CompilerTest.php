@@ -13,6 +13,7 @@ use Webiny\Component\Rest\Compiler\CacheDrivers\ArrayDriver;
 use Webiny\Component\Rest\Compiler\Compiler;
 use Webiny\Component\Rest\Parser\Parser;
 use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Tests\Mocks\MockApiClass;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,23 +27,22 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $instance = new Compiler('ExampleApi', true, new Cache(new ArrayDriver()));
-        $this->assertInstanceOf('Webiny\Component\Rest\Compiler\Compiler', $instance);
+        $this->assertInstanceOf(Compiler::class, $instance);
     }
 
     public function testWriteCacheFiles()
     {
         $parser = new Parser();
-        $parserApi = $parser->parseApi('Webiny\Component\Rest\Tests\Mocks\MockApiClass', true);
+        $parserApi = $parser->parseApi(MockApiClass::class, true);
 
         $cache = new Cache(new ArrayDriver());
         $instance = new Compiler('ExampleApi', true, $cache);
         $instance->writeCacheFiles($parserApi);
 
         // now let's validate what was written
-        $cRoot = Rest::getConfig()->ExampleApi->CompilePath;
-        $cache = $cache->getCacheContent('ExampleApi', 'Webiny\Component\Rest\Tests\Mocks\MockApiClass', 'current');
+        $cache = $cache->getCacheContent('ExampleApi', MockApiClass::class, 'current');
 
-        $this->assertSame($cache['class'], 'Webiny\Component\Rest\Tests\Mocks\MockApiClass');
+        $this->assertSame($cache['class'], MockApiClass::class);
         $this->assertSame($cache['version'], '1.0');
         $this->assertInternalType('array', $cache['post']);
         $this->assertCount(1, $cache['post']);

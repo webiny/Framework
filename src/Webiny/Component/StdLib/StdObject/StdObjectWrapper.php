@@ -8,7 +8,9 @@
 namespace Webiny\Component\StdLib\StdObject;
 
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
+use Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
+use Webiny\Component\StdLib\StdObject\UrlObject\UrlObject;
 use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
@@ -45,7 +47,7 @@ class StdObjectWrapper extends AbstractStdObject
     public static function returnStdObject(&$var)
     {
         // check if $var is already a standard object
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\AbstractStdObject')) {
+        if (self::isInstanceOf($var, AbstractStdObject::class)) {
             return $var;
         }
 
@@ -75,10 +77,8 @@ class StdObjectWrapper extends AbstractStdObject
         if (self::isString($var)) {
             return $var;
         } else {
-            if (self::isObject($var)) {
-                if (self::isStringObject($var) || self::isFileObject($var)) {
-                    return $var->val();
-                }
+            if (self::isObject($var) && self::isStringObject($var)) {
+                return $var->val();
             }
         }
 
@@ -100,7 +100,7 @@ class StdObjectWrapper extends AbstractStdObject
             return $var;
         } else {
             if (self::isObject($var)) {
-                if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject')) {
+                if (self::isInstanceOf($var, ArrayObject::class)) {
                     return $var->val();
                 }
             }
@@ -144,7 +144,7 @@ class StdObjectWrapper extends AbstractStdObject
      */
     public static function isArrayObject($var)
     {
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject')) {
+        if (self::isInstanceOf($var, ArrayObject::class)) {
             return true;
         }
 
@@ -160,7 +160,7 @@ class StdObjectWrapper extends AbstractStdObject
      */
     public static function isStringObject($var)
     {
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\StringObject\StringObject')) {
+        if (self::isInstanceOf($var, StringObject::class)) {
             return true;
         }
 
@@ -176,7 +176,7 @@ class StdObjectWrapper extends AbstractStdObject
      */
     public static function isDateTimeObject($var)
     {
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\DateTimeObject\DateTimeObject')) {
+        if (self::isInstanceOf($var, DateTimeObject::class)) {
             return true;
         }
 
@@ -192,23 +192,7 @@ class StdObjectWrapper extends AbstractStdObject
      */
     public static function isUrlObject($var)
     {
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\UrlObject\UrlObject')) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if $var is an instance of FileObject.
-     *
-     * @param mixed $var Element to check.
-     *
-     * @return bool
-     */
-    public static function isFileObject($var)
-    {
-        if (self::isInstanceOf($var, 'Webiny\Component\StdLib\StdObject\FileObject\FileObject')) {
+        if (self::isInstanceOf($var, UrlObject::class)) {
             return true;
         }
 

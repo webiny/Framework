@@ -26,9 +26,9 @@ interface CacheDriverInterface
     /**
      * Read the compiled cache array.
      *
-     * @param $api Name of the API.
-     * @param $class Name of the class.
-     * @param $version Version of the class.
+     * @param string $api Name of the API.
+     * @param string $class Name of the class.
+     * @param string $version Version of the class.
      *
      * @return bool|array Returns the compiled cache array, or false if cache is not found.
      */

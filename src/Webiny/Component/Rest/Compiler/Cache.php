@@ -39,7 +39,7 @@ class Cache
      * A valid file is considered and existing cache file that has a newer creation time, than the modify time,
      * of an api class that the cache file belongs to.
      *
-     * @param string $api   Name of the rest api configuration.
+     * @param string $api Name of the rest api configuration.
      * @param string $class Fully qualified class name.
      *
      * @throws \Webiny\Component\Rest\RestException
@@ -62,9 +62,9 @@ class Cache
     /**
      * Returns the contents of an existing cache file in form of an array.
      *
-     * @param $api     Name of the API.
-     * @param $class   Name of the class.
-     * @param $version Version of the class.
+     * @param string $api Name of the API.
+     * @param string $class Name of the class.
+     * @param string $version Version of the class.
      *
      * @return array
      * @throws \Webiny\Component\Rest\RestException

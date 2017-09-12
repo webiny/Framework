@@ -24,7 +24,7 @@ class MongoTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructor($mongo)
     {
-        $this->assertInstanceOf('Webiny\Component\Mongo\Mongo', $mongo);
+        $this->assertInstanceOf(Mongo::class, $mongo);
     }
 
     /**

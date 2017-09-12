@@ -13,7 +13,7 @@ class OpensslTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        \Webiny\Component\Crypt\Bridge\Crypt::setLibrary('Webiny\Component\Crypt\Bridge\Openssl\Crypt');
+        \Webiny\Component\Crypt\Bridge\Crypt::setLibrary(\Webiny\Component\Crypt\Bridge\Openssl\Crypt::class);
     }
 
     public function testConstructor()

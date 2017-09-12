@@ -252,7 +252,7 @@ class ValidationTest extends PHPUnit_Framework_TestCase
     public function testCustomValidatorService()
     {
         $service = new ConfigObject([
-            'Class' => 'Webiny\Component\Validation\Tests\Lib\CustomValidator',
+            'Class' => CustomValidator::class,
             'Tags'  => ['validation-plugin']
         ]);
 

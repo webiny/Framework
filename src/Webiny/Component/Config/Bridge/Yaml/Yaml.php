@@ -7,11 +7,10 @@
 
 namespace Webiny\Component\Config\Bridge\Yaml;
 
+use Webiny\Component\Config\Bridge\Yaml\SymfonyYaml\SymfonyYaml;
 use Webiny\Component\StdLib\Exception\AbstractException;
 use Webiny\Component\StdLib\StdLibTrait;
-use Webiny\Component\StdLib\StdObject\FileObject\FileObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
-use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 /**
  * Bridge for Yaml parser
@@ -31,19 +30,13 @@ class Yaml implements YamlInterface
      * Default Yaml driver class name
      * @var string
      */
-    private static $driverClass = 'Webiny\Component\Config\Bridge\Yaml\SymfonyYaml\SymfonyYaml';
+    private static $driverClass = SymfonyYaml::class;
 
     /**
      * Instance of Yaml driver to use
      * @var null|YamlInterface
      */
     private static $customDriver = null;
-
-    /**
-     * Driver interface to enforce
-     * @var string
-     */
-    private static $driverInterface = 'Webiny\Component\Config\Bridge\Yaml\YamlInterface';
 
     /**
      * Set Yaml driver to use by Yaml bridge
@@ -55,21 +48,17 @@ class Yaml implements YamlInterface
     public static function setDriver($driver)
     {
 
-        if (!self::isInstanceOf($driver, self::$driverInterface)) {
+        if (!self::isInstanceOf($driver, YamlInterface::class)) {
             if (self::isString($driver) || self::isStringObject($driver)) {
                 $driver = StdObjectWrapper::toString($driver);
                 $driver = new $driver;
-                if (self::isInstanceOf($driver, self::$driverInterface)) {
+                if (self::isInstanceOf($driver, YamlInterface::class)) {
                     self::$customDriver = $driver;
 
                     return;
                 }
             }
-            throw new YamlException(AbstractException::MSG_INVALID_ARG, [
-                    '$driver',
-                    self::$driverInterface
-                ]
-            );
+            throw new YamlException(AbstractException::MSG_INVALID_ARG, ['$driver', YamlInterface::class]);
         }
         self::$customDriver = $driver;
 
@@ -134,11 +123,11 @@ class Yaml implements YamlInterface
     public function setResource($resource)
     {
         $res = $this->driverInstance->setResource($resource);
-        if (!$this->isInstanceOf($res, self::$driverInterface)) {
+        if (!$this->isInstanceOf($res, YamlInterface::class)) {
             throw new YamlException('YamlInterface method setSource() must return YamlInterface object.');
         }
 
-        return $res;
+        return $this;
     }
 
     /**
@@ -148,7 +137,7 @@ class Yaml implements YamlInterface
      */
     private function __construct($resource = null)
     {
-        if ($this->isInstanceOf(self::$customDriver, self::$driverInterface)) {
+        if ($this->isInstanceOf(self::$customDriver, YamlInterface::class)) {
             // If custom driver instance was set, we need to use a copy of it and set it's resource
             $this->driverInstance = clone $this->driverInstance->setResource($resource);
         } else {

@@ -15,7 +15,7 @@ class RequestBagTest extends \PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $instance = new RequestBag();
-        $this->assertInstanceOf('Webiny\Component\Rest\Response\RequestBag', $instance);
+        $this->assertInstanceOf(RequestBag::class, $instance);
     }
 
     public function testSetGetApi()

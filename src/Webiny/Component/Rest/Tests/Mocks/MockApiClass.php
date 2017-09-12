@@ -91,8 +91,8 @@ class MockApiClass implements VersionInterface
     public static function getAllVersions()
     {
         return [
-            '1.0' => 'Webiny\Component\Rest\Tests\Mocks\MockApiClass',
-            '1.1' => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassNew'
+            '1.0' => MockApiClass::class,
+            '1.1' => MockApiClassNew::class
         ];
     }
 }

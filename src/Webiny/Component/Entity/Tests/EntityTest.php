@@ -287,13 +287,13 @@ class EntityTest extends PHPUnit_Framework_TestCase
         Entity::getInstance()->reset();
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
-        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
+        $this->assertInstanceOf(AbstractEntity::class, $entity);
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'NO TITLE']);
         $this->assertNull($entity);
 
         $entity = Lib\NoValidation\Entity::findById($id);
-        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
+        $this->assertInstanceOf(AbstractEntity::class, $entity);
 
         $collection = Lib\NoValidation\Entity::find(['char' => 'Webiny Test']);
         $this->assertEquals(1, $collection->count());
@@ -307,7 +307,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
     public function testRestrictException()
     {
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Webiny Test']);
-        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
+        $this->assertInstanceOf(AbstractEntity::class, $entity);
         $entity->one2many = [
             ['char' => 'first']
         ];
@@ -363,7 +363,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         Entity::getInstance()->reset();
 
         $entity = Lib\NoValidation\Entity::findOne(['char' => 'Default Title']);
-        $this->assertInstanceOf('Webiny\Component\Entity\AbstractEntity', $entity);
+        $this->assertInstanceOf(AbstractEntity::class, $entity);
     }
 
     public function testMany2Many()

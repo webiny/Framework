@@ -24,7 +24,7 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($storage)
     {
-        $this->assertInstanceOf('Webiny\Component\Storage\Storage', $storage);
+        $this->assertInstanceOf(Storage::class, $storage);
     }
 
     /**
@@ -63,7 +63,7 @@ class LocalStorageTest extends \PHPUnit_Framework_TestCase
     public function driverSet()
     {
         Storage::setConfig(realpath(__DIR__ . '/' . self::CONFIG));
-        
+
         return [
             [$this->storage('LocalStorage')]
         ];

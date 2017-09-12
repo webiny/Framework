@@ -7,6 +7,8 @@
 
 namespace Webiny\Component\Rest\Parser;
 
+use Webiny\Component\Rest\Interfaces\AccessInterface;
+use Webiny\Component\Rest\Interfaces\CacheKeyInterface;
 use Webiny\Component\Rest\RestException;
 
 /**
@@ -42,7 +44,7 @@ class ClassParser
     /**
      * Base constructor.
      *
-     * @param string $class     Fully qualified name of the api class.
+     * @param string $class Fully qualified name of the api class.
      * @param bool   $normalize Should the class name and the method name be normalized.
      *
      * @throws RestException
@@ -102,11 +104,11 @@ class ClassParser
         $interfaces = array_unique($interfaces);
 
         foreach ($interfaces as $i) {
-            if ($i == 'Webiny\Component\Rest\Interfaces\AccessInterface') {
+            if ($i == AccessInterface::class) {
                 $this->parsedClass->accessInterface = true;
             }
 
-            if ($i == 'Webiny\Component\Rest\Interfaces\CacheKeyInterface') {
+            if ($i == CacheKeyInterface::class) {
                 $this->parsedClass->cacheKeyInterface = true;
             }
         }

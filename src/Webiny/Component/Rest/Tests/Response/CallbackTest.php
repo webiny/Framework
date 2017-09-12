@@ -12,6 +12,8 @@ use Webiny\Component\Cache\Cache;
 use Webiny\Component\Rest\Response\Callback;
 use Webiny\Component\Rest\Response\RequestBag;
 use Webiny\Component\Rest\Rest;
+use Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback;
+use Webiny\Component\Rest\Tests\Mocks\MockCacheTestApiClass;
 
 class CallbackTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,17 +28,16 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $instance = new Callback(new RequestBag());
-        $this->assertInstanceOf('Webiny\Component\Rest\Response\Callback', $instance);
+        $this->assertInstanceOf(Callback::class, $instance);
     }
 
     public function testGetCallbackResultNoMethodMatched()
     {
         $requestBag = new RequestBag();
         $requestBag->setApi('CacheTest')->setClassData([
-                                                           'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockCacheTestApiClass',
-                                                           'version' => '1.0'
-                                                       ]
-        );
+            'class'   => MockCacheTestApiClass::class,
+            'version' => '1.0'
+        ]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -63,10 +64,9 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
         $requestBag = new RequestBag();
         $requestBag->setApi('CacheTest')->setClassData([
-                                                           'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
-                                                           'version' => '1.0'
-                                                       ]
-        )->setMethodData($methodData)->setMethodParameters([]);
+            'class'   => MockApiClassCallback::class,
+            'version' => '1.0'
+        ])->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -93,10 +93,9 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
         $requestBag = new RequestBag();
         $requestBag->setApi('CacheTest')->setClassData([
-                                                           'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
-                                                           'version' => '1.0'
-                                                       ]
-        )->setMethodData($methodData)->setMethodParameters([]);
+            'class'   => MockApiClassCallback::class,
+            'version' => '1.0'
+        ])->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();
@@ -123,10 +122,9 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
         $requestBag = new RequestBag();
         $requestBag->setApi('CacheTest')->setClassData([
-                                                           'class'   => 'Webiny\Component\Rest\Tests\Mocks\MockApiClassCallback',
-                                                           'version' => '1.0'
-                                                       ]
-        )->setMethodData($methodData)->setMethodParameters([]);
+            'class'   => MockApiClassCallback::class,
+            'version' => '1.0'
+        ])->setMethodData($methodData)->setMethodParameters([]);
 
         $callback = new Callback($requestBag);
         $response = $callback->getCallbackResult()->getOutput();

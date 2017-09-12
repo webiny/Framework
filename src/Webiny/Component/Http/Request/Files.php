@@ -36,7 +36,7 @@ class Files
      * If you have a multi-dimensional upload field name, than you should pass the optional $arrayOffset
      * param to get the right File object.
      *
-     * @param string   $name        Name of the upload field.
+     * @param string   $name Name of the upload field.
      * @param null|int $arrayOffset Optional array offset for multi-dimensional upload fields.
      *
      * @throws Files\FilesException
@@ -66,8 +66,7 @@ class Files
         } else {
             if (!isset($file['name'][$arrayOffset])) {
                 throw new FilesException('Uploaded file with name "' . $name . '" and
-											offset "' . $arrayOffset . '" was not found in the $_FILES array.'
-                );
+											offset "' . $arrayOffset . '" was not found in the $_FILES array.');
             }
 
             $fileObject = $this->createFileObject($file, $arrayOffset);
@@ -87,10 +86,8 @@ class Files
     private function createFileObject($file, $arrayOffset = null)
     {
         if (!is_null($arrayOffset)) {
-            $fileObject = new File($file['name'][$arrayOffset], $file['tmp_name'][$arrayOffset],
-                                   $file['type'][$arrayOffset], $file['error'][$arrayOffset],
-                                   $file['size'][$arrayOffset]
-            );
+            $fileObject = new File($file['name'][$arrayOffset], $file['tmp_name'][$arrayOffset], $file['type'][$arrayOffset],
+                $file['error'][$arrayOffset], $file['size'][$arrayOffset]);
             $this->fileObject[$file['name']][$arrayOffset] = $fileObject;
         } else {
             $fileObject = new File($file['name'], $file['tmp_name'], $file['type'], $file['error'], $file['size']);
@@ -111,18 +108,13 @@ class Files
     private function getFileObject($name, $arrayOffset = null)
     {
         if (!is_null($arrayOffset)) {
-            if (isset($this->fileObject[$name]) && $this->isArray($this->fileObject[$name]
-                ) && isset($this->fileObject[$name][$arrayOffset]) && $this->isInstanceOf($this->fileObject[$name][$arrayOffset],
-                                                                                           'Webiny\Component\Http\Request\Files\File'
-                )
+            if (isset($this->fileObject[$name]) && $this->isArray($this->fileObject[$name]) && isset($this->fileObject[$name][$arrayOffset]) && $this->isInstanceOf($this->fileObject[$name][$arrayOffset],
+                    File::class)
             ) {
                 return $this->fileObject[$name][$arrayOffset];
             }
         } else {
-            if (isset($this->fileObject[$name]) && $this->isInstanceOf($this->fileObject[$name],
-                                                                        'Webiny\Component\Http\Request\Files\File'
-                )
-            ) {
+            if (isset($this->fileObject[$name]) && $this->isInstanceOf($this->fileObject[$name], File::class)) {
                 return $this->fileObject[$name];
             }
         }

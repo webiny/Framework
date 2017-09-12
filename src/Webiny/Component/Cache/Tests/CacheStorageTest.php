@@ -29,7 +29,7 @@ class CacheStorageTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertInstanceOf('Webiny\Component\Cache\CacheStorage', $this->instance);
+        $this->assertInstanceOf(CacheStorage::class, $this->instance);
     }
 
     public function testSave()

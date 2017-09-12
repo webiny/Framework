@@ -10,6 +10,7 @@
 
 namespace Webiny\Component\StdLib;
 
+use Webiny\Component\StdLib\StdObject\AbstractStdObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 /**
@@ -212,7 +213,7 @@ trait ValidatorTrait
     /**
      * Check if $instance is of $type.
      *
-     * @param mixed $instance
+     * @param mixed  $instance
      * @param string $type
      *
      * @return bool
@@ -226,7 +227,7 @@ trait ValidatorTrait
      * Check if $subclass is a subclass of $class.
      *
      * @param string|object $subclass
-     * @param string $class
+     * @param string        $class
      *
      * @return bool
      */
@@ -244,7 +245,7 @@ trait ValidatorTrait
      */
     protected static function isStdObject($instance)
     {
-        if (self::isInstanceOf($instance, 'Webiny\Component\StdLib\StdObject\AbstractStdObject')) {
+        if (self::isInstanceOf($instance, AbstractStdObject::class)) {
             return true;
         }
 
@@ -273,18 +274,6 @@ trait ValidatorTrait
     protected static function isDateTimeObject($instance)
     {
         return StdObjectWrapper::isDateTimeObject($instance);
-    }
-
-    /**
-     * Check if $instance is a FileObject.
-     *
-     * @param mixed $instance
-     *
-     * @return bool
-     */
-    protected static function isFileObject($instance)
-    {
-        return StdObjectWrapper::isFileObject($instance);
     }
 
     /**
@@ -327,7 +316,7 @@ trait ValidatorTrait
     /**
      * Checks if given object $instance has the given method.
      *
-     * @param object $instance   Object instance.
+     * @param object $instance Object instance.
      * @param string $methodName Name of the method you wish to check.
      *
      * @return bool

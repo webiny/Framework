@@ -10,6 +10,7 @@ namespace Webiny\Component\Config\Bridge\Yaml\SymfonyYaml;
 use Symfony\Component\Yaml\Yaml;
 use Webiny\Component\Config\Bridge\Yaml\Spyc\SymfonyYamlException;
 use Webiny\Component\Config\Bridge\Yaml\YamlInterface;
+use Webiny\Component\Config\ConfigObject;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
@@ -65,10 +66,9 @@ class SymfonyYaml implements YamlInterface
 
     /**
      * Parse given Yaml resource and build array
-     * This method must support file paths (string or StringObject) and FileObject
      *
      * @throws SymfonyYamlException
-     * @return string
+     * @return array
      */
     private function parseResource()
     {
@@ -76,7 +76,7 @@ class SymfonyYaml implements YamlInterface
             return StdObjectWrapper::toArray($this->resource);
         } elseif ($this->isString($this->resource)) {
             return Yaml::parse($this->resource);
-        } elseif ($this->isInstanceOf($this->resource, 'Webiny\Component\Config\ConfigObject')) {
+        } elseif ($this->isInstanceOf($this->resource, ConfigObject::class)) {
             return $this->resource->toArray();
         }
 
@@ -87,7 +87,7 @@ class SymfonyYaml implements YamlInterface
      * Convert given data to Yaml string
      *
      * @throws SymfonyYamlException
-     * @return $this
+     * @return string
      */
     private function toString()
     {

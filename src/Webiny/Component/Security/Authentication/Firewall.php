@@ -83,6 +83,11 @@ class Firewall
     private $authProvider;
 
     /**
+     * @var string
+     */
+    private $authProviderName;
+
+    /**
      * @var \Webiny\Component\Config\ConfigObject
      */
     private $authProviderConfig;
@@ -156,9 +161,8 @@ class Firewall
         try {
             // if we are on login page, first try to get the instance of Login object from current auth provider
             $login = $this->getAuthProvider($authProvider)->getLoginObject($this->getConfig());
-            if (!$this->isInstanceOf($login, 'Webiny\Component\Security\Authentication\Providers\Login')) {
-                throw new FirewallException('Authentication provider method getLoginObject() must return an instance of
-														"Webiny\Component\Security\Authentication\Providers\Login".');
+            if (!$this->isInstanceOf($login, Login::class)) {
+                throw new FirewallException('Authentication provider method getLoginObject() must return an instance of "' . Login::class . '".');
             }
             $login->setAuthProviderName($this->authProviderName);
         } catch (\Exception $e) {
