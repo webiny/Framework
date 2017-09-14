@@ -27,11 +27,11 @@ abstract class AbstractIndex implements IndexInterface
     protected $dropDuplicates = false;
 
     /**
-     * @param string $name           Index name
-     * @param array  $fields         Index fields, ex: title (ascending), -title (descending)
-     * @param bool   $sparse         Is index sparse?
-     * @param bool   $unique         Is index unique?
-     * @param bool   $dropDuplicates Drop duplicate documents (only if $unique is used)
+     * @param string     $name Index name
+     * @param array      $fields Index fields, ex: title (ascending), -title (descending)
+     * @param bool|array $sparse If boolean `true`, creates a `sparse` index. If array, creates a partial index.
+     * @param bool       $unique Is index unique?
+     * @param bool       $dropDuplicates Drop duplicate documents (only if $unique is used)
      */
     public function __construct($name, $fields, $sparse = false, $unique = false, $dropDuplicates = false)
     {
@@ -90,10 +90,14 @@ abstract class AbstractIndex implements IndexInterface
     {
         $options = [
             'name'     => $this->name,
-            'sparse'   => $this->sparse,
+            'sparse'   => is_bool($this->sparse) ? $this->sparse : false,
             'dropDups' => $this->dropDuplicates,
             'unique'   => $this->unique
         ];
+
+        if (is_array($this->sparse)) {
+            $options['partialFilterExpression'] = $this->sparse;
+        }
 
         return $options;
     }

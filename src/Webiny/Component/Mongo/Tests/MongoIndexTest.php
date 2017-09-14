@@ -49,6 +49,10 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $indexName = $mongo->createIndex($collection, $index);
         $this->assertEquals('TitleCategory', $indexName);
 
+        $index = new CompoundIndex('PartialTitleCount', ['title', 'count'], ['count' => ['$gt' => 5]]);
+        $indexName = $mongo->createIndex($collection, $index);
+        $this->assertEquals('PartialTitleCount', $indexName);
+
         $index = new TextIndex('CompoundTextIndex', ['title', 'category']);
         $indexName = $mongo->createIndex($collection, $index);
         $this->assertEquals('CompoundTextIndex', $indexName);
@@ -65,7 +69,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Location', $indexName);
 
         $indexes = $mongo->listIndexes($collection);
-        $this->assertEquals(5, count($indexes));
+        $this->assertEquals(6, count($indexes));
     }
 
     /**
@@ -78,7 +82,7 @@ class MongoIndexTest extends PHPUnit_Framework_TestCase
 
         $indexes = $mongo->listIndexes($collection);
         $this->assertNotContains('Name', $indexes);
-        $this->assertEquals(4, count($indexes));
+        $this->assertEquals(5, count($indexes));
 
         $mongo->dropIndexes($collection);
         // _id_ index is always present so the count is 1 at least
