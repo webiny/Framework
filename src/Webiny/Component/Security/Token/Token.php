@@ -42,7 +42,7 @@ class Token
      * Base constructor.
      *
      * @param string                            $tokenName Name of the token.
-     * @param bool                              $rememberMe Do you want to store the token into cookie, or not. If you don't store it into cookie, the
+     * @param bool|int                          $rememberMe Do you want to store the token into cookie, or not. If you don't store it into cookie, the
      *                                                       token is only valid for current session.
      * @param string                            $securityKey Security key that will be used for encryption of token data
      * @param CryptDrivers\CryptDriverInterface $cryptDriver
@@ -142,6 +142,15 @@ class Token
     public function deleteUserToken()
     {
         return $this->storage->deleteUserToken();
+    }
+
+    /**
+     * Get token TTL in seconds
+     * @return int
+     */
+    public function getTtl()
+    {
+        return $this->storage->getTokenTtl();
     }
 
     /**

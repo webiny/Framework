@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Security\Token\Storage;
 
-use Webiny\Component\Crypt\CryptTrait;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Security\Token\AbstractTokenStorage;
 use Webiny\Component\Security\User\AbstractUser;
@@ -30,7 +29,7 @@ class Cookie extends AbstractTokenStorage
      */
     public function saveUserToken(AbstractUser $user)
     {
-        return $this->httpCookie()->save($this->getTokenName(), $this->encryptUserData($user));
+        return $this->httpCookie()->save($this->getTokenName(), $this->encryptUserData($user), $this->getTokenTtl());
     }
 
     /**
@@ -75,5 +74,10 @@ class Cookie extends AbstractTokenStorage
     public function setTokenString($token)
     {
         $this->httpCookie()->save($this->getTokenName(), $token);
+    }
+
+    public function getTokenTtl()
+    {
+        return 86400;
     }
 }

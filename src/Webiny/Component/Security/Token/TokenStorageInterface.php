@@ -73,4 +73,11 @@ interface TokenStorageInterface
      * @param string $token Token string to save.
      */
     public function setTokenString($token);
+
+    /**
+     * Get token TTL in seconds
+     *
+     * @return int
+     */
+    public function getTokenTtl();
 }

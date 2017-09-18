@@ -7,7 +7,6 @@
 
 namespace Webiny\Component\Security\Token\Storage;
 
-use Webiny\Component\Crypt\CryptTrait;
 use Webiny\Component\Http\HttpTrait;
 use Webiny\Component\Security\Token\AbstractTokenStorage;
 use Webiny\Component\Security\User\AbstractUser;
@@ -19,7 +18,6 @@ use Webiny\Component\Security\User\AbstractUser;
  */
 class Session extends AbstractTokenStorage
 {
-
     use HttpTrait;
 
     /**
@@ -31,7 +29,9 @@ class Session extends AbstractTokenStorage
      */
     public function saveUserToken(AbstractUser $user)
     {
-        return $this->httpSession()->save($this->getTokenName(), $this->encryptUserData($user));
+        $this->httpSession()->save($this->getTokenName(), $this->encryptUserData($user));
+
+        return true;
     }
 
     /**
@@ -76,5 +76,10 @@ class Session extends AbstractTokenStorage
     public function setTokenString($token)
     {
         $this->httpSession()->save($this->getTokenName(), $token);
+    }
+
+    public function getTokenTtl()
+    {
+        return 0;
     }
 }

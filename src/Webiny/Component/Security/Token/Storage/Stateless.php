@@ -74,17 +74,12 @@ class Stateless extends AbstractTokenStorage
      */
     public function encryptUserData(AbstractUser $user)
     {
-        $seconds = 86400; // 1 day
-        if ($this->tokenRememberMe) {
-            $seconds = is_numeric($this->tokenRememberMe) ? intval($this->tokenRememberMe) : 2592000; // 30 days
-        }
-
         // data (we use short syntax to reduce the size of the cookie or session)
         $data = [
             // username
             'u'  => $user->getUsername(),
             // valid until
-            'vu' => time() + $seconds,
+            'vu' => time() + $this->getTokenTtl(),
             // auth provider driver
             'ap' => $user->getAuthProviderName(),
             // user provider driver
@@ -159,6 +154,7 @@ class Stateless extends AbstractTokenStorage
             if (!$token) {
                 $token = $this->httpRequest()->post('Authorization');
             }
+
             return $token;
         }
 
@@ -173,5 +169,20 @@ class Stateless extends AbstractTokenStorage
     public function setTokenString($token)
     {
         $this->tokenString = $token;
+    }
+
+    /**
+     * Get token TTL in seconds
+     * @return int
+     */
+    public function getTokenTtl()
+    {
+        $rememberMe = $this->tokenRememberMe;
+        $ttl = 86400; // 1 day
+        if ($rememberMe) {
+            $ttl = is_numeric($rememberMe) ? intval($rememberMe) : 2592000; // 30 days
+        }
+
+        return $ttl;
     }
 }
