@@ -68,4 +68,9 @@ class TokenStorageMock extends AbstractTokenStorage
     {
         //
     }
+
+    public function getTokenTtl()
+    {
+        return 0;
+    }
 }
