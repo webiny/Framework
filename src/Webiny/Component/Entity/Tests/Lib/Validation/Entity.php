@@ -1,4 +1,5 @@
 <?php
+
 namespace Webiny\Component\Entity\Tests\Lib\Validation;
 
 use Webiny\Component\Entity\AbstractEntity;
@@ -15,7 +16,7 @@ class Entity extends AbstractEntity
 {
     protected static $entityCollection = "Validation_Entity";
 
-    public function  __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->attr('char')->char()->setValidators('minLength:3,maxLength:5,in:abc:def');
@@ -28,7 +29,10 @@ class Entity extends AbstractEntity
         $this->attr('geoPoint')->geoPoint();
         $this->attr('many2one')->many2one()->setEntity(Classes::MANY_2_ONE_VALIDATION);
         $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_VALIDATION)->setValidators('minLength:2');
-        $this->attr('many2many')->many2many('Whatever')->setEntity(Classes::MANY_2_MANY_NO_VALIDATION)->setValidators('minLength:2');
+        $this->attr('many2many')
+             ->many2many('Whatever', 'Entity', 'Many2Many')
+             ->setEntity(Classes::MANY_2_MANY_NO_VALIDATION)
+             ->setValidators('minLength:2');
         $this->attr('vatNumber')->char()->setValidators('euVatNumber');
         $this->attr('creditCardNumber')->char()->setValidators('creditCardNumber');
         $this->attr('email')->char()->setValidators('email');

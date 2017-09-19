@@ -12,6 +12,6 @@ class Many2Many extends AbstractEntity
     {
         parent::__construct();
         $this->attr('char')->char()->setToArrayDefault();
-        $this->attr('many2many')->many2many('NoValidation_Many2Many2Entity')->setEntity(Classes::ENTITY_NO_VALIDATION);
+        $this->attr('many2many')->many2many('NoValidation_Many2Many2Entity', 'Many2Many', 'Entity')->setEntity(Classes::ENTITY_NO_VALIDATION);
     }
 }

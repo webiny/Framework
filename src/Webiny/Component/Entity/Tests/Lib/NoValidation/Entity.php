@@ -48,6 +48,6 @@ class Entity extends AbstractEntity
         $this->attr('many2oneNew')->many2one()->setEntity(Classes::MANY_2_ONE_NO_VALIDATION);
         $this->attr('many2oneExisting')->many2one()->setEntity(Classes::MANY_2_ONE_NO_VALIDATION);
         $this->attr('one2many')->one2many('entity')->setEntity(Classes::ONE_2_MANY_NO_VALIDATION);
-        $this->attr('many2many')->many2many('NoValidation_Many2Many2Entity')->setEntity(Classes::MANY_2_MANY_NO_VALIDATION);
+        $this->attr('many2many')->many2many('NoValidation_Many2Many2Entity', 'Entity', 'Many2Many')->setEntity(Classes::MANY_2_MANY_NO_VALIDATION);
     }
 }

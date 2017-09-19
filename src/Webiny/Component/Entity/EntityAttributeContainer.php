@@ -190,11 +190,16 @@ class EntityAttributeContainer implements \ArrayAccess, \IteratorAggregate
     /**
      * @param string $collectionName Intermediate collection name
      *
+     * @param string $thisField Field name containing ID of this entity
+     * @param string $refField Field name containing ID of referenced entity
+     *
      * @return Many2ManyAttribute
      */
-    public function many2many($collectionName)
+    public function many2many($collectionName, $thisField, $refField)
     {
-        return $this->attributes[$this->attribute] = new self::$classMap['many2many']($this->attribute, $this->entity, $collectionName);
+        $params = [$this->attribute, $thisField, $refField, $this->entity, $collectionName];
+
+        return $this->attributes[$this->attribute] = new self::$classMap['many2many'](...$params);
     }
 
     /**

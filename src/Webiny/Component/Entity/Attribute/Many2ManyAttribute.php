@@ -11,7 +11,6 @@ use MongoDB\Driver\Exception\BulkWriteException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\AbstractEntity;
 use Webiny\Component\Entity\EntityCollection;
-use Webiny\Component\Mongo\Index\CompoundIndex;
 use Webiny\Component\Mongo\MongoTrait;
 
 
@@ -23,14 +22,49 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
 {
     use MongoTrait;
 
+    /**
+     * @var string Collection used to store the aggregation data (ids of linked entities)
+     */
     protected $intermediateCollection;
+
+    /**
+     * @var string Field name that contains the ID of this (parent) entity
+     */
+    protected $thisField;
+
+    /**
+     * @var string Field name that contains the ID of referenced entity
+     */
+    protected $refField;
 
     protected $addedItems = [];
 
-    public function __construct($attribute = null, AbstractEntity $entity = null, $collectionName)
+    public function __construct($attribute = null, $thisField = '', $refField = '', AbstractEntity $entity = null, $collectionName)
     {
         $this->intermediateCollection = $collectionName;
+        $this->thisField = $thisField;
+        $this->refField = $refField;
         parent::__construct($attribute, $entity);
+    }
+
+    /**
+     * Get field name that points to the entity this attribute belongs to
+     *
+     * @return string
+     */
+    public function getThisField()
+    {
+        return $this->thisField;
+    }
+
+    /**
+     * Get field name that points to the referenced entity
+     *
+     * @return string
+     */
+    public function getRefField()
+    {
+        return $this->refField;
     }
 
     /**
@@ -136,23 +170,7 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
     public function save()
     {
         $collectionName = $this->intermediateCollection;
-        $firstClassName = $this->extractClassName($this->getParentEntity());
-        $secondClassName = $this->extractClassName($this->getEntity());
 
-        // Make sure indexes exist
-        $indexOrder = [$firstClassName, $secondClassName];
-        list($indexKey1, $indexKey2) = $this->arr($indexOrder)->sort()->val();
-
-        $index = new CompoundIndex($collectionName, [
-            $indexKey1 => 1,
-            $indexKey2 => 1
-        ], false, true);
-
-        Entity::getInstance()->getDatabase()->createIndex($collectionName, $index, ['background' => true]);
-
-        /**
-         * Insert values
-         */
         $existingIds = [];
         $firstEntityId = $this->getParentEntity()->id;
         foreach ($this->getValue() as $item) {
@@ -169,8 +187,8 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
             $existingIds[] = $secondEntityId;
 
             $data = [
-                $firstClassName  => $firstEntityId,
-                $secondClassName => $secondEntityId
+                $this->thisField => $firstEntityId,
+                $this->refField  => $secondEntityId
             ];
 
             try {
@@ -185,8 +203,8 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
          * Remove old links
          */
         $removeQuery = [
-            $firstClassName  => $firstEntityId,
-            $secondClassName => [
+            $this->thisField => $firstEntityId,
+            $this->refField  => [
                 '$nin' => $existingIds
             ]
         ];
@@ -206,18 +224,15 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
      */
     protected function load()
     {
-        $firstClassName = $this->extractClassName($this->getParentEntity());
-        $secondClassName = $this->extractClassName($this->getEntity());
-
         // Select related IDs from aggregation table
         $query = [
-            $firstClassName => $this->getParentEntity()->id
+            $this->thisField => $this->getParentEntity()->id
         ];
 
-        $relatedObjects = Entity::getInstance()->getDatabase()->find($this->intermediateCollection, $query, [$secondClassName => 1]);
+        $relatedObjects = Entity::getInstance()->getDatabase()->find($this->intermediateCollection, $query, [$this->refField => 1]);
         $relatedIds = [];
         foreach ($relatedObjects as $rObject) {
-            $relatedIds[] = $rObject[$secondClassName];
+            $relatedIds[] = $rObject[$this->refField];
         }
 
         // Find all related entities using $relatedIds
@@ -249,31 +264,13 @@ class Many2ManyAttribute extends AbstractCollectionAttribute
             return false;
         }
 
-        $firstClassName = $this->extractClassName($this->getParentEntity());
-        $secondClassName = $this->extractClassName($this->getEntity());
         $query = $this->arr([
-            $firstClassName  => $sourceEntityId,
-            $secondClassName => $item
+            $this->thisField => $sourceEntityId,
+            $this->refField  => $item
         ])->sortKey()->val();
 
         $res = Entity::getInstance()->getDatabase()->delete($this->intermediateCollection, $query);
 
         return $res->getDeletedCount() == 1;
-    }
-
-    /**
-     * Extract short class name from class namespace
-     *
-     * @param $class
-     *
-     * @return string
-     */
-    protected function extractClassName($class)
-    {
-        if (!$this->isString($class)) {
-            $class = get_class($class);
-        }
-
-        return $this->str($class)->explode('\\')->last()->val();
     }
 }
