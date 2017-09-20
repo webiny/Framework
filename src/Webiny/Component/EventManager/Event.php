@@ -8,6 +8,7 @@
 namespace Webiny\Component\EventManager;
 
 use Webiny\Component\StdLib\StdLibTrait;
+use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 
 
 /**
@@ -29,14 +30,13 @@ class Event implements \ArrayAccess, \IteratorAggregate
         if (!$this->isNull($eventData)) {
             if (!$this->isArray($eventData) && !$this->isArrayObject($eventData)) {
                 throw new EventManagerException(EventManagerException::MSG_INVALID_ARG, [
-                        '$eventData',
-                        'array|ArrayObject'
-                    ]
-                );
+                    '$eventData',
+                    'array|ArrayObject'
+                ]);
             }
-            $this->eventData = $this->arr($eventData);
+            $this->eventData = StdObjectWrapper::toArray($eventData);
         } else {
-            $this->eventData = $this->arr();
+            $this->eventData = [];
         }
     }
 
@@ -71,11 +71,19 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function get($name, $default = null)
     {
-        if ($this->eventData->keyExists($name)) {
-            return $this->eventData->key($name);
+        if (array_key_exists($name, $this->eventData)) {
+            return $this->eventData[$name];
         }
 
         return $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->eventData;
     }
 
     /**
@@ -112,74 +120,35 @@ class Event implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Whether a offset exists
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
-     *
-     * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
-     *       The return value will be casted to boolean if non-boolean was returned.
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
-        return $this->eventData->keyExists($offset);
+        return array_key_exists($offset, $this->eventData);
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to retrieve
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
-     *
-     * @return mixed Can return all value types.
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
-        return $this->eventData->key($offset);
+        return $this->eventData[$offset];
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to set
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value  <p>
-     *                      The value to set.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
-        $this->eventData->key($offset, $value);
+        $this->eventData[$offset] = $value;
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to unset
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
-     * @param mixed $offset
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
-     *
-     * @return void
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
-        $this->eventData->removeKey($offset);
+        unset($this->eventData[$offset]);
     }
 
     /**
@@ -191,7 +160,7 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function __isset($name)
     {
-        return $this->eventData->keyExists($name);
+        return isset($this->eventData[$name]);
     }
 
     /**
@@ -203,34 +172,16 @@ class Event implements \ArrayAccess, \IteratorAggregate
      */
     public function __unset($name)
     {
-        if ($this->eventData->keyExists($name)) {
-            $this->eventData->removeKey($name);
+        if (array_key_exists($name, $this->eventData)) {
+            unset($this->eventData[$name]);
         }
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
+     * @inheritdoc
      */
     public function getIterator()
     {
-        return $this->eventData->getIterator();
-    }
-
-    /**
-     * Get event data in form of an array
-     * @return array Event data array
-     */
-    public function toArray()
-    {
-        $data = [];
-        foreach ($this->eventData as $k => $v) {
-            $data[$k] = $v;
-        }
-
-        return $data;
+        return new \ArrayIterator($this->eventData);
     }
 }
