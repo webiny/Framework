@@ -124,7 +124,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
             } else {
                 $mongo = Entity::getInstance()->getDatabase();
                 $entity = $this->entityClass;
-                $this->totalCount = $mongo->count($entity::getEntityCollection(), $this->parameters['conditions']);
+                $this->totalCount = $mongo->count($entity::getCollection(), $this->parameters['conditions']);
             }
         }
 

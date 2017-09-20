@@ -186,7 +186,7 @@ class One2ManyAttribute extends AbstractCollectionAttribute
                 return false;
             }
             $query = [$this->relatedAttribute => $entityId];
-            $entityCollection = call_user_func_array([$this->entityClass, 'getEntityCollection'], []);
+            $entityCollection = call_user_func_array([$this->entityClass, 'getCollection'], []);
 
             return boolval(Entity::getInstance()->getDatabase()->count($entityCollection, $query));
         }
