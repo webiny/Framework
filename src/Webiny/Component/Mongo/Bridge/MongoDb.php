@@ -9,16 +9,8 @@ namespace Webiny\Component\Mongo\Bridge;
 
 use InvalidArgumentException;
 use MongoDB\BSON\ObjectID;
-use MongoDB\BulkWriteResult;
 use MongoDB\Client;
 use MongoDB\Database;
-use MongoDB\DeleteResult;
-use MongoDB\Driver\Cursor;
-use MongoDB\InsertManyResult;
-use MongoDB\InsertOneResult;
-use MongoDB\Model\IndexInfoIterator;
-use MongoDB\UpdateResult;
-use Traversable;
 use Webiny\Component\Mongo\MongoException;
 use Webiny\Component\StdLib\StdLibTrait;
 
@@ -41,6 +33,9 @@ class MongoDb implements MongoInterface
      */
     private $db;
 
+    /**
+     * @inheritdoc
+     */
     public function connect($uri, array $uriOptions = [], array $driverOptions = [])
     {
         $server = 'mongodb://' . $uri;
@@ -52,9 +47,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * Select database
-     *
-     * @param string $database
+     * @inheritdoc
      */
     public function selectDatabase($database)
     {
@@ -63,11 +56,7 @@ class MongoDb implements MongoInterface
 
 
     /**
-     * Create a mongo ID instance
-     *
-     * @param null|string $id
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function id($id = null)
     {
@@ -84,11 +73,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * Check if given string/object is a valid mongo ID.
-     *
-     * @param mixed $id
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isId($id)
     {
@@ -110,11 +95,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $pipeline
-     * @param array  $options
-     *
-     * @return Traversable
+     * @inheritdoc
      */
     public function aggregate($collectionName, array $pipeline, array $options = [])
     {
@@ -122,11 +103,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $operations
-     * @param array  $options
-     *
-     * @return BulkWriteResult
+     * @inheritdoc
      */
     public function bulkWrite($collectionName, array $operations, array $options = [])
     {
@@ -134,11 +111,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $filter
-     * @param array  $options
-     *
-     * @return int
+     * @inheritdoc
      */
     public function count($collectionName, $filter = [], array $options = [])
     {
@@ -146,11 +119,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $key
-     * @param array        $options
-     *
-     * @return string
+     * @inheritdoc
      */
     public function createIndex($collectionName, $key, array $options = [])
     {
@@ -158,10 +127,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $indexes
-     *
-     * @return \string[]
+     * @inheritdoc
      */
     public function createIndexes($collectionName, array $indexes)
     {
@@ -169,11 +135,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $filter
-     * @param array        $options
-     *
-     * @return DeleteResult
+     * @inheritdoc
      */
     public function delete($collectionName, $filter, array $options = [])
     {
@@ -181,12 +143,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param string $fieldName
-     * @param array  $filter
-     * @param array  $options
-     *
-     * @return \mixed[]
+     * @inheritdoc
      */
     public function distinct($collectionName, $fieldName, $filter = [], array $options = [])
     {
@@ -194,10 +151,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $options
-     *
-     * @return object
+     * @inheritdoc
      */
     public function createCollection($collectionName, array $options = [])
     {
@@ -205,10 +159,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $options
-     *
-     * @return array|object
+     * @inheritdoc
      */
     public function dropCollection($collectionName, array $options = [])
     {
@@ -216,11 +167,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param string $indexName
-     * @param array  $options
-     *
-     * @return array|object
+     * @inheritdoc
      */
     public function dropIndex($collectionName, $indexName, array $options = [])
     {
@@ -228,10 +175,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $options
-     *
-     * @return array|object
+     * @inheritdoc
      */
     public function dropIndexes($collectionName, array $options = [])
     {
@@ -239,11 +183,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $filter
-     * @param array  $options
-     *
-     * @return Cursor
+     * @inheritdoc
      */
     public function find($collectionName, $filter = [], array $options = [])
     {
@@ -251,11 +191,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $filter
-     * @param array  $options
-     *
-     * @return null|object
+     * @inheritdoc
      */
     public function findOne($collectionName, $filter = [], array $options = [])
     {
@@ -263,11 +199,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $filter
-     * @param array        $options
-     *
-     * @return null|object
+     * @inheritdoc
      */
     public function findOneAndDelete($collectionName, $filter, array $options = [])
     {
@@ -275,12 +207,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $filter
-     * @param array|object $replacement
-     * @param array        $options
-     *
-     * @return null|object
+     * @inheritdoc
      */
     public function findOneAndReplace($collectionName, $filter, $replacement, array $options = [])
     {
@@ -288,12 +215,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $filter
-     * @param array|object $update
-     * @param array        $options
-     *
-     * @return null|object
+     * @inheritdoc
      */
     public function findOneAndUpdate($collectionName, $filter, $update, array $options = [])
     {
@@ -301,9 +223,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getNamespace($collectionName)
     {
@@ -311,11 +231,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $documents
-     * @param array  $options
-     *
-     * @return InsertManyResult
+     * @inheritdoc
      */
     public function insertMany($collectionName, array $documents, array $options = [])
     {
@@ -323,11 +239,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $document
-     * @param array        $options
-     *
-     * @return InsertOneResult
+     * @inheritdoc
      */
     public function insertOne($collectionName, $document, array $options = [])
     {
@@ -335,9 +247,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param array $options
-     *
-     * @return \MongoDB\Model\CollectionInfoIterator
+     * @inheritdoc
      */
     public function listCollections(array $options = [])
     {
@@ -345,10 +255,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string $collectionName
-     * @param array  $options
-     *
-     * @return IndexInfoIterator
+     * @inheritdoc
      */
     public function listIndexes($collectionName, array $options = [])
     {
@@ -356,12 +263,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param string       $collectionName
-     * @param array|object $filter
-     * @param array|object $update
-     * @param array        $options
-     *
-     * @return UpdateResult
+     * @inheritdoc
      */
     public function update($collectionName, $filter, $update, array $options = [])
     {
@@ -369,11 +271,7 @@ class MongoDb implements MongoInterface
     }
 
     /**
-     * @param array|object $command
-     * @param array        $options
-     *
-     * @return Cursor
-     * @throws MongoException
+     * @inheritdoc
      */
     public function command($command, array $options = [])
     {

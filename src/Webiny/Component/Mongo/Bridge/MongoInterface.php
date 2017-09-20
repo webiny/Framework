@@ -94,7 +94,7 @@ interface MongoInterface
      *
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
+     * @param array $filter Query by which to filter documents
      * @param array        $options Command options
      *
      * @return integer
@@ -106,7 +106,7 @@ interface MongoInterface
      *
      *
      * @param string       $collectionName
-     * @param array|object $key Document containing fields mapped to values,
+     * @param array $key Document containing fields mapped to values,
      *                              which denote order or an index type
      * @param array        $options Index options
      *
@@ -148,7 +148,7 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/delete/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to delete documents
+     * @param array $filter Query by which to delete documents
      * @param array        $options Command options
      *
      * @return DeleteResult
@@ -161,7 +161,7 @@ interface MongoInterface
      *
      * @param string       $collectionName
      * @param string       $fieldName Field for which to return distinct values
-     * @param array|object $filter Query by which to filter documents
+     * @param array $filter Query by which to filter documents
      * @param array        $options Command options
      *
      * @return mixed[]
@@ -174,7 +174,7 @@ interface MongoInterface
      * @param string $collectionName
      * @param array  $options Additional options
      *
-     * @return array|object Command result document
+     * @return array Command result document
      */
     public function createCollection($collectionName, array $options = []);
 
@@ -184,7 +184,7 @@ interface MongoInterface
      * @param string $collectionName
      * @param array  $options Additional options
      *
-     * @return array|object Command result document
+     * @return array Command result document
      */
     public function dropCollection($collectionName, array $options = []);
 
@@ -195,7 +195,7 @@ interface MongoInterface
      * @param string $indexName Index name
      * @param array  $options Additional options
      *
-     * @return array|object Command result document
+     * @return array Command result document
      * @throws InvalidArgumentException if $indexName is an empty string or "*"
      */
     public function dropIndex($collectionName, $indexName, array $options = []);
@@ -206,7 +206,7 @@ interface MongoInterface
      * @param string $collectionName
      * @param array  $options Additional options
      *
-     * @return array|object Command result document
+     * @return array Command result document
      */
     public function dropIndexes($collectionName, array $options = []);
 
@@ -216,7 +216,7 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/core/read-operations-introduction/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
+     * @param array $filter Query by which to filter documents
      * @param array        $options Additional options
      *
      * @return Cursor
@@ -229,10 +229,10 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/core/read-operations-introduction/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
+     * @param array $filter Query by which to filter documents
      * @param array        $options Additional options
      *
-     * @return object|null
+     * @return array|null
      */
     public function findOne($collectionName, $filter = [], array $options = []);
 
@@ -247,10 +247,10 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
+     * @param array $filter Query by which to filter documents
      * @param array        $options Command options
      *
-     * @return object|null
+     * @return array|null
      */
     public function findOneAndDelete($collectionName, $filter, array $options = []);
 
@@ -268,11 +268,11 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
-     * @param array|object $replacement Replacement document
+     * @param array $filter Query by which to filter documents
+     * @param array $replacement Replacement document
      * @param array        $options Command options
      *
-     * @return object|null
+     * @return array|null
      */
     public function findOneAndReplace($collectionName, $filter, $replacement, array $options = []);
 
@@ -290,11 +290,11 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
-     * @param array|object $update Update to apply to the matched document
+     * @param array $filter Query by which to filter documents
+     * @param array $update Update to apply to the matched document
      * @param array        $options Command options
      *
-     * @return object|null
+     * @return array|null
      */
     public function findOneAndUpdate($collectionName, $filter, $update, array $options = []);
 
@@ -315,7 +315,7 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/insert/
      *
      * @param string           $collectionName
-     * @param array[]|object[] $documents The documents to insert
+     * @param array[][] $documents The documents to insert
      * @param array            $options Command options
      *
      * @return InsertManyResult
@@ -328,7 +328,7 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/insert/
      *
      * @param string       $collectionName
-     * @param array|object $document The document to insert
+     * @param array $document The document to insert
      * @param array        $options Command options
      *
      * @return InsertOneResult
@@ -360,8 +360,8 @@ interface MongoInterface
      * @see http://docs.mongodb.org/manual/reference/command/update/
      *
      * @param string       $collectionName
-     * @param array|object $filter Query by which to filter documents
-     * @param array|object $update Update to apply to the matched documents
+     * @param array $filter Query by which to filter documents
+     * @param array $update Update to apply to the matched documents
      * @param array        $options Command options
      *
      * @return UpdateResult
@@ -371,7 +371,7 @@ interface MongoInterface
     /**
      * Execute a command on this database.
      *
-     * @param array|object $command Command document
+     * @param array $command Command document
      * @param array        $options Options for command execution
      * @return Cursor
      * @throws InvalidArgumentException
