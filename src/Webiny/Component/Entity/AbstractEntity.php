@@ -203,7 +203,7 @@ abstract class AbstractEntity implements \ArrayAccess
     public function attr($attribute)
     {
         if (!$this->attributes instanceof EntityAttributeContainer) {
-            $this->attributes = new EntityAttributeContainer($this);
+            $this->attributes = $this->createEntityAttributeContainer();
         }
 
         return $this->attributes->attr($attribute);
@@ -602,6 +602,17 @@ abstract class AbstractEntity implements \ArrayAccess
     public function offsetUnset($offset)
     {
         // Nothing to unset
+    }
+
+    /**
+     * Get a new instance of entity attribute container
+     * By separating this into a method we allow other developers to create their own subclasses of EntityAttributeContainer for better autocomplete in IDEs.
+     *
+     * @return EntityAttributeContainer
+     */
+    protected function createEntityAttributeContainer()
+    {
+        return new EntityAttributeContainer($this);
     }
 
     /**
