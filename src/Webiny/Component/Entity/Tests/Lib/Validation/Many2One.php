@@ -5,7 +5,7 @@ use Webiny\Component\Entity\AbstractEntity;
 
 class Many2One extends AbstractEntity
 {
-    protected static $entityCollection = "Validation_Many2One";
+    protected static $collection = "Validation_Many2One";
 
     public function  __construct()
     {

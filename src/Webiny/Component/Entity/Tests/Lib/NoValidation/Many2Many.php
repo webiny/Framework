@@ -6,7 +6,7 @@ use Webiny\Component\Entity\Tests\Lib\Classes;
 
 class Many2Many extends AbstractEntity
 {
-    protected static $entityCollection = "NoValidation_Many2Many";
+    protected static $collection = "NoValidation_Many2Many";
 
     public function  __construct()
     {

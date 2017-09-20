@@ -39,21 +39,21 @@ abstract class AbstractEntity implements \ArrayAccess
     /**
      * @var string Entity collection name
      */
-    protected static $entityCollection = null;
+    protected static $collection = null;
 
     /**
      * View mask (used for generation of readable string when converting an instance to string)
      * @var string
      */
-    protected static $entityMask = '{id}';
+    protected static $mask = '{id}';
 
     /**
      * Get collection name
      * @return string
      */
-    public static function getEntityCollection()
+    public static function getCollection()
     {
-        return static::$entityCollection;
+        return static::$collection;
     }
 
     /**
@@ -73,7 +73,7 @@ abstract class AbstractEntity implements \ArrayAccess
             return $instance;
         }
         $mongo = static::entity()->getDatabase();
-        $data = $mongo->findOne(static::$entityCollection, ['_id' => $mongo->id($id)]);
+        $data = $mongo->findOne(static::$collection, ['_id' => $mongo->id($id)]);
         if (!$data) {
             return null;
         }
@@ -94,7 +94,7 @@ abstract class AbstractEntity implements \ArrayAccess
      */
     public static function count(array $conditions = [])
     {
-        return static::entity()->getDatabase()->count(static::$entityCollection, $conditions);
+        return static::entity()->getDatabase()->count(static::$collection, $conditions);
     }
 
     /**
@@ -107,7 +107,7 @@ abstract class AbstractEntity implements \ArrayAccess
      */
     public static function findOne(array $conditions = [])
     {
-        $data = static::entity()->getDatabase()->findOne(static::$entityCollection, $conditions);
+        $data = static::entity()->getDatabase()->findOne(static::$collection, $conditions);
 
         if (!$data) {
             return null;
@@ -130,7 +130,7 @@ abstract class AbstractEntity implements \ArrayAccess
      */
     public static function random(array $conditions = [])
     {
-        $count = static::entity()->getDatabase()->count(static::$entityCollection, $conditions);
+        $count = static::entity()->getDatabase()->count(static::$collection, $conditions);
         if ($count === 0) {
             return null;
         }
@@ -173,7 +173,7 @@ abstract class AbstractEntity implements \ArrayAccess
         $order = self::parseOrderParameters($order);
         $offset = $limit * ($page > 0 ? $page - 1 : 0);
 
-        $data = self::entity()->getDatabase()->find(static::$entityCollection, $conditions, $order, $limit, $offset);
+        $data = self::entity()->getDatabase()->find(static::$collection, $conditions, $order, $limit, $offset);
         $parameters = [
             'conditions' => $conditions,
             'order'      => $order,
@@ -277,8 +277,8 @@ abstract class AbstractEntity implements \ArrayAccess
     public function getMaskedValue()
     {
         $maskItems = [];
-        preg_match_all('/\{(.*?)\}/', static::$entityMask, $maskItems);
-        $maskedValue = $this->str(static::$entityMask);
+        preg_match_all('/\{(.*?)\}/', static::$mask, $maskItems);
+        $maskedValue = $this->str(static::$mask);
         foreach ($maskItems[1] as $attr) {
             $maskedValue->replace('{' . $attr . '}', $this->getAttribute($attr)->getValue());
         }
@@ -338,11 +338,11 @@ abstract class AbstractEntity implements \ArrayAccess
         if (!$this->exists()) {
             $data['_id'] = $mongo->isId($data['id']) ? $mongo->id($data['id']) : $mongo->id();
             $data['id'] = (string)$data['_id'];
-            $mongo->insertOne(static::$entityCollection, $data);
+            $mongo->insertOne(static::$collection, $data);
             $this->id = $data['id'];
         } else {
             $where = ['_id' => $mongo->id($this->id)];
-            $mongo->update(static::$entityCollection, $where, ['$set' => $data], ['upsert' => true]);
+            $mongo->update(static::$collection, $where, ['$set' => $data], ['upsert' => true]);
         }
 
         /**
@@ -478,7 +478,7 @@ abstract class AbstractEntity implements \ArrayAccess
         /**
          * Delete $this
          */
-        $this->entity()->getDatabase()->delete(static::$entityCollection, ['_id' => $this->entity()->getDatabase()->id($this->id)]);
+        $this->entity()->getDatabase()->delete(static::$collection, ['_id' => $this->entity()->getDatabase()->id($this->id)]);
 
         static::entity()->remove($this);
 

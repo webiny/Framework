@@ -14,7 +14,7 @@ use Webiny\Component\Entity\Tests\Lib\Classes;
  */
 class Entity extends AbstractEntity
 {
-    protected static $entityCollection = "Validation_Entity";
+    protected static $collection = "Validation_Entity";
 
     public function __construct()
     {

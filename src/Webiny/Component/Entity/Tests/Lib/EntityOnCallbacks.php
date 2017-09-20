@@ -13,7 +13,7 @@ use Webiny\Component\Entity\Tests\Lib\Classes;
  */
 class EntityOnCallbacks extends AbstractEntity
 {
-    protected static $entityCollection = "OnCallbacks_Entity";
+    protected static $collection = "OnCallbacks_Entity";
 
     public function  __construct()
     {

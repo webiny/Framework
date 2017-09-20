@@ -6,7 +6,7 @@ use Webiny\Component\Entity\Tests\Lib\Classes;
 
 class One2Many extends AbstractEntity
 {
-    protected static $entityCollection = "Validation_One2Many";
+    protected static $collection = "Validation_One2Many";
 
     public function  __construct()
     {
