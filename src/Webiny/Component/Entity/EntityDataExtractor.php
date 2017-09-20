@@ -71,7 +71,7 @@ class EntityDataExtractor
             $entityAttributeValue = $entityAttribute->getValue($params);
             $isOne2Many = $this->isInstanceOf($entityAttribute, AttributeType::ONE2MANY);
             $isMany2Many = $this->isInstanceOf($entityAttribute, AttributeType::MANY2MANY);
-            $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE);
+            $isMany2One = $this->isInstanceOf($entityAttribute, AttributeType::MANY2ONE) || $entityAttributeValue instanceof AbstractEntity;
             $isArray = $this->isInstanceOf($entityAttribute, AttributeType::ARR);
             $isObject = $this->isInstanceOf($entityAttribute, AttributeType::OBJECT);
             $isDynamic = $this->isInstanceOf($entityAttribute, AttributeType::DYNAMIC);
