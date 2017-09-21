@@ -574,7 +574,7 @@ trait ManipulatorTrait
         foreach ($array as $key => $value) {
             if (array_key_exists($key, $this->value)) {
                 if ($this->isNumber($key)) {
-                    $this->value[] = $value;
+                    $this->value[$key] = $value;
                 } elseif (is_array($value) || $this->isInstanceOf($value, $this)) {
                     $this->value[$key] = (new self($this->value[$key]))->mergeSmart($value)->val();
                 } else {

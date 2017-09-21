@@ -43,18 +43,16 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     public function testConstructorCombine()
     {
         $a = new ArrayObject([
-                                 'key1',
-                                 'key2'
-                             ], [
-                                 'value1',
-                                 'value2'
-                             ]
-        );
+            'key1',
+            'key2'
+        ], [
+            'value1',
+            'value2'
+        ]);
         $this->assertSame(array(
-                              'key1' => 'value1',
-                              'key2' => 'value2'
-                          ), $a->val()
-        );
+            'key1' => 'value1',
+            'key2' => 'value2'
+        ), $a->val());
     }
 
     /**
@@ -63,32 +61,29 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     public function testConstructorCombine2()
     {
         $a = new ArrayObject([
-                                 'key1',
-                                 'key2',
-                                 ''
-                             ], [
-                                 'value1',
-                                 'value2',
-                                 'value3',
-                                 'value4',
-                                 'value5'
-                             ]
-        );
+            'key1',
+            'key2',
+            ''
+        ], [
+            'value1',
+            'value2',
+            'value3',
+            'value4',
+            'value5'
+        ]);
         $this->assertSame(array(
-                              'key1' => 'value1',
-                              'key2' => 'value2'
-                          ), $a->val()
-        );
+            'key1' => 'value1',
+            'key2' => 'value2'
+        ), $a->val());
     }
 
     public function testSum()
     {
         $a = new ArrayObject([
-                                 1,
-                                 2,
-                                 3
-                             ]
-        );
+            1,
+            2,
+            3
+        ]);
         $sum = $a->sum();
         $this->assertSame(6, $sum);
     }
@@ -177,16 +172,14 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         $a = new ArrayObject($array);
         $a->val([
-                    'k1',
-                    'k2' => 'v2'
-                ]
-        );
+            'k1',
+            'k2' => 'v2'
+        ]);
 
         $this->assertSame([
-                              'k1',
-                              'k2' => 'v2'
-                          ], $a->val()
-        );
+            'k1',
+            'k2' => 'v2'
+        ], $a->val());
     }
 
     /**
@@ -364,7 +357,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for filtering
         $callable = function ($item) {
-            if(is_string($item) && strpos($item, 'v') !== false) {
+            if (is_string($item) && strpos($item, 'v') !== false) {
                 return $item;
             }
 
@@ -439,7 +432,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
 
         // callback function used for filtering
         $callable = function ($a, $b) {
-            if($a == $b) {
+            if ($a == $b) {
                 return 0;
             }
 
@@ -482,7 +475,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
 
         // callback function used for filtering
         $callable = function ($a, $b) {
-            if($a == $b) {
+            if ($a == $b) {
                 return 0;
             }
 
@@ -503,7 +496,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for mapping
         $callable = function ($item) {
-            if(is_array($item)) {
+            if (is_array($item)) {
                 $item['new'] = 'value';
             } else {
                 $item = $item . '_appended';
@@ -701,7 +694,7 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
     {
         // callback function used for mapping
         $callable = function ($item) {
-            if(is_array($item)) {
+            if (is_array($item)) {
                 $item['new'] = 'value';
             } else {
                 $item = $item . '_appended';
@@ -968,37 +961,28 @@ class ArrayObjectTest extends \PHPUnit_Framework_TestCase
                         ]
                     ]
                 ],
-                'result'   =>
-                    [
-                        'key1' =>
+                'result'   => [
+                    'key1' => [
+                        'data1' => 2,
+                        'data2' => [
                             [
-                                'data1' => 2,
-                                'data2' =>
-                                    [
-                                        [
-                                            0 => 12,
-                                            1 => 13,
-                                            2 => 14,
-                                        ],
-                                        [
-                                            0 => 1,
-                                            1 => 2,
-                                            2 => 3,
-                                        ],
-                                        [
-                                            0 => 3,
-                                            1 => 4,
-                                            2 => 5,
-                                        ]
-                                    ],
-                                'data3' => 3,
-                                'data5' =>
-                                    [
-                                        'name' => 'WebinyPlatform'
-                                    ],
-                                'data4' => 'something'
+                                0 => 1,
+                                1 => 2,
+                                2 => 3,
+                            ],
+                            [
+                                0 => 3,
+                                1 => 4,
+                                2 => 5,
                             ]
+                        ],
+                        'data3' => 3,
+                        'data4' => 'something',
+                        'data5' => [
+                            'name' => 'WebinyPlatform'
+                        ],
                     ]
+                ]
             ]
         ];
     }
