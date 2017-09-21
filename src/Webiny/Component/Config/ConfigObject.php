@@ -311,7 +311,7 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         foreach ($config as $key => $value) {
             if ($this->data->keyExists($key)) {
                 if (is_numeric($key)) {
-                    $this->data[] = $value;
+                    $this->data[$key] = $value;
                     continue;
                 } elseif ($value instanceof ConfigObject && $this->data[$key] instanceof ConfigObject) {
                     $this->data[$key]->mergeWith($value);
