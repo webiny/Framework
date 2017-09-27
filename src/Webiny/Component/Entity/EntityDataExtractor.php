@@ -112,6 +112,11 @@ class EntityDataExtractor
                     }
                     $value = $value->val();
                 }
+
+                if (count($value) == 0) {
+                    $value = new \stdClass();
+                }
+
                 $data[$attrName] = $value;
             } elseif ($isArray) {
                 $value = $entityAttribute->toArray();
@@ -200,8 +205,8 @@ class EntityDataExtractor
             }
 
             return self::$cache[$cacheKey] = [
-                'fields'  => $fields,
-                'aliases' => $aliases,
+                'fields'       => $fields,
+                'aliases'      => $aliases,
                 'dottedFields' => $dottedFields
             ];
         }
@@ -240,8 +245,8 @@ class EntityDataExtractor
         }
 
         return self::$cache[$cacheKey] = [
-            'fields'  => $parsedFields->val(),
-            'aliases' => $aliases,
+            'fields'       => $parsedFields->val(),
+            'aliases'      => $aliases,
             'dottedFields' => $dottedFields
         ];
     }
@@ -309,7 +314,7 @@ class EntityDataExtractor
     /**
      * Parse attribute key recursively
      *
-     * @param ArrayObject        $parsedFields Reference to array of parsed fields
+     * @param ArrayObject  $parsedFields Reference to array of parsed fields
      * @param StringObject $key Current key to parse
      */
     private function buildFields(&$parsedFields, StringObject $key)
