@@ -106,6 +106,46 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     }
 
     /**
+     * Filter current EntityCollection using the given \Closure and return a new array
+     *
+     * @param \Closure $callback
+     *
+     * @return array
+     */
+    public function filter(\Closure $callback)
+    {
+        $result = [];
+        foreach ($this->value as $entity) {
+            if ($callback($entity)) {
+                $result[] = $entity;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Apply the callback to each entity in the current EntityCollection
+     *
+     * Returns a new array containing the return values of each callback execution.
+     *
+     * @param \Closure $callback
+     *
+     * @return array
+     */
+    public function map(\Closure $callback)
+    {
+        $result = [];
+        foreach ($this->value as $entity) {
+            if ($callback($entity)) {
+                $result[] = $entity;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Count total number of items in collection
      *
      * TODO: unittest
