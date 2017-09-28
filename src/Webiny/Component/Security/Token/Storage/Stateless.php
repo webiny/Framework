@@ -183,6 +183,6 @@ class Stateless extends AbstractTokenStorage
             $ttl = is_numeric($rememberMe) ? intval($rememberMe) : 2592000; // 30 days
         }
 
-        return 10;
+        return $ttl;
     }
 }
