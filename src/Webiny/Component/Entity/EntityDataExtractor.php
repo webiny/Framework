@@ -323,6 +323,8 @@ class EntityDataExtractor
             $parts = $key->explode('.', 2)->val();
             if (!isset($parsedFields[$parts[0]])) {
                 $parsedFields[$parts[0]] = [];
+            } elseif (!is_array($parsedFields[$parts[0]])) {
+                $parsedFields[$parts[0]] = [];
             }
 
             $this->buildFields($parsedFields[$parts[0]], $this->str($parts[1]));
