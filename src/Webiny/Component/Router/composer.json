@@ -21,11 +21,11 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7",
-        "webiny/std-lib": "~1.5",
-        "webiny/cache": "~1.5",
-        "webiny/config": "~1.5",
-        "webiny/http": "~1.5",
-        "webiny/service-manager": "~1.5"
+        "webiny/std-lib": "~1.6",
+        "webiny/cache": "~1.6",
+        "webiny/config": "~1.6",
+        "webiny/http": "~1.6",
+        "webiny/service-manager": "~1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "~6",
@@ -38,7 +38,7 @@
     },
     "extras": {
         "branch-alias": {
-            "dev-master": "1.5-dev"
+            "dev-master": "1.6-dev"
         }
     }
 }

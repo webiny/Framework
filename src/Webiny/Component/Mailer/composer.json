@@ -26,10 +26,10 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7",
-        "webiny/config": "~1.5",
-        "webiny/std-lib": "~1.5",
-        "webiny/storage": "~1.5",
-        "webiny/event-manager": "~1.5",
+        "webiny/config": "~1.6",
+        "webiny/std-lib": "~1.6",
+        "webiny/storage": "~1.6",
+        "webiny/event-manager": "~1.6",
         "swiftmailer/swiftmailer": "5.2.1",
         "mandrill/mandrill": "~1.0",
         "sendgrid/sendgrid": "~2.2"
@@ -45,7 +45,7 @@
     },
     "extras": {
         "branch-alias": {
-            "dev-master": "1.5-dev"
+            "dev-master": "1.6-dev"
         }
     }
 }

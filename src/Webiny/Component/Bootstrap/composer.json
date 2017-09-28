@@ -25,12 +25,12 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7",
-        "webiny/std-lib": "~1.5",
-        "webiny/config": "~1.5",
-        "webiny/class-loader": "~1.5",
-        "webiny/http": "~1.5",
-        "webiny/router": "~1.5",
-        "webiny/template-engine": "~1.5"
+        "webiny/std-lib": "~1.6",
+        "webiny/config": "~1.6",
+        "webiny/class-loader": "~1.6",
+        "webiny/http": "~1.6",
+        "webiny/router": "~1.6",
+        "webiny/template-engine": "~1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.*"
@@ -42,7 +42,7 @@
     },
     "extras": {
         "branch-alias": {
-            "dev-master": "1.5-dev"
+            "dev-master": "1.6-dev"
         }
     }
 }

@@ -22,9 +22,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7",
-        "webiny/config": "~1.5",
-        "webiny/std-lib": "~1.5",
-        "webiny/service-manager": "~1.5",
+        "webiny/config": "~1.6",
+        "webiny/std-lib": "~1.6",
+        "webiny/service-manager": "~1.6",
         "smarty/smarty": "3.1.*"
     },
     "require-dev": {
@@ -38,7 +38,7 @@
     },
     "extras": {
         "branch-alias": {
-            "dev-master": "1.5-dev"
+            "dev-master": "1.6-dev"
         }
     }
 }
