@@ -23,8 +23,8 @@ use Webiny\Component\Security\Security;
 use Webiny\Component\Security\SecurityEvent;
 use Webiny\Component\Security\Token\CryptDrivers\Crypt\Crypt;
 use Webiny\Component\Security\Token\CryptDrivers\CryptDriverInterface;
+use Webiny\Component\Security\Token\TokenException;
 use Webiny\Component\Security\User\AnonymousUser;
-use Webiny\Component\Security\User\Providers\Memory;
 use Webiny\Component\Security\Token\Token;
 use Webiny\Component\Security\User\AbstractUser;
 use Webiny\Component\StdLib\Exception\Exception;
@@ -209,9 +209,9 @@ class Firewall
     /**
      * Tries to retrieve the user from current token.
      * If the token does not exist, AnonymousUser is returned.
-     *
+     * @return bool|AbstractUser
      * @throws FirewallException
-     * @return bool|\Webiny\Component\Security\User\AbstractUser
+     * @throws TokenException
      */
     public function getUser()
     {
@@ -241,6 +241,8 @@ class Firewall
 
                 return $this->user;
             }
+        } catch (TokenException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->userAuthenticated = true;
             throw new FirewallException($e->getMessage());

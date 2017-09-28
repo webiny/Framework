@@ -122,7 +122,7 @@ class Stateless extends AbstractTokenStorage
 
         // check that token data is still valid
         if ($this->datetime($data['vu'])->isPast()) {
-            return false;
+            throw new TokenException(TokenException::TOKEN_EXPIRED);
         }
 
         return new TokenData($data);
@@ -183,6 +183,6 @@ class Stateless extends AbstractTokenStorage
             $ttl = is_numeric($rememberMe) ? intval($rememberMe) : 2592000; // 30 days
         }
 
-        return $ttl;
+        return 10;
     }
 }

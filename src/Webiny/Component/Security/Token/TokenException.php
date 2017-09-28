@@ -16,4 +16,9 @@ use Webiny\Component\StdLib\Exception\AbstractException;
  */
 class TokenException extends AbstractException
 {
+    const TOKEN_EXPIRED = 100;
+
+    protected static $messages = [
+        100 => 'Token expired'
+    ];
 }

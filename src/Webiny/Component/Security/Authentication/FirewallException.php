@@ -16,4 +16,5 @@ use Webiny\Component\StdLib\Exception\AbstractException;
  */
 class FirewallException extends AbstractException
 {
+
 }
