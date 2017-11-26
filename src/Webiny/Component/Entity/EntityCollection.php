@@ -137,9 +137,7 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     {
         $result = [];
         foreach ($this->value as $entity) {
-            if ($callback($entity)) {
-                $result[] = $entity;
-            }
+            $result[] = $callback($entity);
         }
 
         return $result;
@@ -147,8 +145,6 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
 
     /**
      * Count total number of items in collection
-     *
-     * TODO: unittest
      *
      * @return mixed
      */
@@ -198,8 +194,6 @@ class EntityCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     /**
      * Check if given item is already in the data set.<br>
      * NOTE: this triggers loading of data from database if not yet loaded
-     *
-     * TODO: unittest
      *
      * @param string|AbstractEntity $item ID or AbstractEntity instance
      *

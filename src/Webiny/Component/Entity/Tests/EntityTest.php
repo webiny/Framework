@@ -10,7 +10,6 @@ namespace Webiny\Component\Entity\Tests;
 use MongoDB\Model\CollectionInfo;
 use PHPUnit_Framework_TestCase;
 use Webiny\Component\Entity\AbstractEntity;
-use Webiny\Component\Entity\Attribute\Many2ManyAttribute;
 use Webiny\Component\Entity\Attribute\Validation\ValidationException;
 use Webiny\Component\Entity\Entity;
 use Webiny\Component\Entity\EntityException;
@@ -39,7 +38,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        //self::deleteAllTestCollections();
+        self::deleteAllTestCollections();
     }
 
     /**
